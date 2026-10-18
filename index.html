@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vyas Sathya</title>
+<meta name="description" content="Comedian who builds things. AI agents, MCP servers, apps, voice tools and launch films.">
+<meta property="og:title" content="Vyas Sathya">
+<meta property="og:description" content="Comedian who builds things.">
+<meta property="og:image" content="https://vyassathya.github.io/media/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/geist-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/geist-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css">
+<script>
+try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip" href="#work">Skip to work</a>
+
+<header class="bar">
+  <a class="mark" href="#top" aria-label="Vyas Sathya, top of page">VS</a>
+  <nav aria-label="Sections">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+    <button class="theme" type="button" aria-label="Switch light or dark">
+      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 2.75a7.25 7.25 0 0 1 0 14.5z" fill="currentColor"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <h1>Vyas Sathya</h1>
+    <p class="line">Comedian who builds things.</p>
+  </section>
+
+  <section id="work" class="work" aria-labelledby="work-h">
+    <h2 id="work-h" class="label">Work</h2>
+    <div class="grid" data-group="work">
+      <!-- tiles are written by films.js from FILMS so the grids and the player share one list -->
+    </div>
+  </section>
+
+  <section id="range" class="range" aria-labelledby="range-h" hidden>
+    <h2 id="range-h" class="label">Range</h2>
+    <div class="grid" data-group="range"></div>
+  </section>
+
+  <section id="services" class="services" aria-labelledby="services-h">
+    <h2 id="services-h" class="label">Services</h2>
+    <ul class="rows">
+      <li>
+        <h3>AI agents and automation</h3>
+        <p>Agents that run a real workflow end to end, with memory you can read and logs you can check. Claude, OpenAI or local models.</p>
+        <a class="eg" href="#agent-brain">agent-brain</a>
+      </li>
+      <li>
+        <h3>MCP servers</h3>
+        <p>Servers that give Claude and other assistants safe, scoped access to your data and tools. I run one in production for my own app.</p>
+      </li>
+      <li>
+        <h3>Apps</h3>
+        <p>iOS, Android and web apps with Expo, React Native, Next.js and Supabase, taken through TestFlight. Games in Unity.</p>
+        <a class="eg" href="#singstan">SingStan</a>
+      </li>
+      <li>
+        <h3>Voice</h3>
+        <p>Speech in and out, local or cloud: Whisper, Kokoro, realtime voice agents, push-to-talk or always on.</p>
+        <a class="eg" href="#talkover">Talkover</a>
+      </li>
+      <li>
+        <h3>Launch films</h3>
+        <p>A short film of your product made from its real screens. Share the code or a build and you get a 16:9 and a 9:16 cut with an original score.</p>
+        <a class="eg" href="#work">The films above</a>
+      </li>
+    </ul>
+  </section>
+
+  <section id="contact" class="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h" class="label">Contact</h2>
+    <p class="ask">Tell me what you want built.</p>
+    <ul class="links">
+      <li><a href="https://github.com/VyasSathya">github.com/VyasSathya</a></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Vyas Sathya, 2026</span>
+  <a href="https://github.com/VyasSathya/video-studio">Films made with video-studio</a>
+</footer>
+
+<dialog class="player" aria-labelledby="p-name">
+  <div class="p-body">
+    <div class="p-stage"><video class="p-video" controls playsinline preload="none"></video></div>
+    <aside class="p-info">
+      <p class="p-kind"></p>
+      <h2 id="p-name" class="p-name"></h2>
+      <p class="p-what"></p>
+      <p class="p-film"></p>
+      <ul class="p-links"></ul>
+      <div class="p-nav">
+        <button type="button" class="p-prev" aria-label="Previous film">Previous</button>
+        <button type="button" class="p-next" aria-label="Next film">Next</button>
+      </div>
+    </aside>
+    <button type="button" class="p-close" aria-label="Close">
+      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</dialog>
+
+<script src="films.js"></script>
+</body>
+</html>
