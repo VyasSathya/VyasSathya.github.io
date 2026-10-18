@@ -64,9 +64,10 @@ const FILMS = [
     links: [],
   },
   {
-    id: "punchpad", row: 1, name: "Punchpad", kind: "App for stand-up comedians", ar: "9/16", ready: false,
-    what: "",
-    film: "",
+    id: "punchpad", row: 1, name: "Punchpad", kind: "App for stand-up comics", ar: "16/9",
+    tall: "punchpad-tall",
+    what: "A notebook and recorder for stand-up comics. Record every set, find every laugh, replay the laughs, watch a bit get better, build the next set.",
+    film: "Launch film from the real app, filled with a made-up demo workspace. Original score.",
     links: [],
   },
 ];
