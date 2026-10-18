@@ -75,7 +75,7 @@ main, .foot { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 /* work grid: justified rows, every tile in a row the same height */
 .grid { display: flex; flex-direction: column; gap: clamp(28px, 3.4vw, 44px); }
 .row { display: flex; gap: clamp(12px, 1.6vw, 20px); align-items: flex-start; }
-.tile { flex: 1 1 0; min-width: 0; } /* grow is set per tile to its aspect ratio, so heights match */
+.tile { flex: var(--grow, 1) 1 0; min-width: 0; } /* grow = the tile's aspect ratio, so heights in a row match */
 .tile button {
   display: block; width: 100%; padding: 0; border: 0; background: var(--tile); cursor: pointer;
   border-radius: var(--radius); overflow: hidden; position: relative; aspect-ratio: var(--ar);

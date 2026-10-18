@@ -34,6 +34,36 @@ const FILMS = [
     links: [["Code", "https://github.com/VyasSathya/agent-brain"]],
   },
   {
+    id: "range-whiteboard", group: "range", row: 0, name: "Whiteboard", kind: "How Talkover works", ar: "16/9",
+    what: "A whiteboard explainer drawn on screen: you talk, Whisper turns it into text, Claude answers, Kokoro reads it back, and saying wait stops it.",
+    film: "Every step comes from the Talkover README. Original score.",
+    links: [["Code", "https://github.com/VyasSathya/talkover"]],
+  },
+  {
+    id: "range-course", group: "range", row: 0, name: "Course lesson", kind: "Build your first MCP tool", ar: "16/9",
+    what: "A short lesson: install the MCP Python SDK, write one tool, call it from a client. Chapters, a progress bar and a lesson-complete card.",
+    film: "Every command was run for real and its output is shown unedited. Synthetic voice.",
+    links: [],
+  },
+  {
+    id: "range-short", group: "range", row: 0, name: "Vertical short", kind: "Voyager 1", ar: "9/16",
+    what: "A fast vertical short about Voyager 1: word-by-word captions and a cut every half second or so.",
+    film: "Facts from NASA's mission page; NASA images, public domain. Synthetic voice.",
+    links: [],
+  },
+  {
+    id: "range-story", group: "range", row: 1, name: "Story reel", kind: "A year in space", ar: "16/9",
+    what: "A short documentary cut from NASA footage of Scott Kelly's year on the space station, with his own words as captions.",
+    film: "NASA footage, public domain. Original score.",
+    links: [],
+  },
+  {
+    id: "range-showreel", group: "range", row: 1, name: "Showreel", kind: "The films on this page", ar: "16/9",
+    what: "A fast cut of the films above: grids, splits and hard cuts on a drum and bass track.",
+    film: "Cut from the films on this page. Original score.",
+    links: [],
+  },
+  {
     id: "punchpad", row: 1, name: "Punchpad", kind: "App for stand-up comedians", ar: "9/16", ready: false,
     what: "",
     film: "",
@@ -62,7 +92,7 @@ const FILMS = [
       fig.className = "tile " + (tall ? "tall" : "wide") + (tall && talls === 1 ? " solo" : "");
       fig.style.setProperty("--ar", f.ar.replace("/", " / "));
       const [aw, ah] = f.ar.split("/").map(Number);
-      fig.style.flexGrow = aw / ah;
+      fig.style.setProperty("--grow", aw / ah);
       fig.style.margin = "0";
       fig.innerHTML =
         `<button type="button" aria-label="Play the ${f.name} film">` +
