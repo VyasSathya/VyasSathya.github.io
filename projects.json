@@ -36,7 +36,15 @@
         "Interrupt",
         "Stop playback and pick up the conversation."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/talkover-wide.svg",
+      "medium": "thumbnails/talkover-medium.svg",
+      "compact": "thumbnails/talkover-compact.svg",
+      "player": "thumbnails/talkover-player.svg",
+      "background": "#101215"
+    },
+    "playerPoster": "thumbnails/talkover-player.svg"
   },
   {
     "id": "kpop-sing",
@@ -75,7 +83,15 @@
         "Build",
         "Expo and native mobile integrations."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/kpop-sing-wide.svg",
+      "medium": "thumbnails/kpop-sing-medium.svg",
+      "compact": "thumbnails/kpop-sing-compact.svg",
+      "player": "thumbnails/kpop-sing-player.svg",
+      "background": "#160c25"
+    },
+    "playerPoster": "thumbnails/kpop-sing-player.svg"
   },
   {
     "id": "brainrot-brawl",
@@ -105,7 +121,15 @@
         "Mobile",
         "Unity game development and mobile builds."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/brainrot-brawl-wide.svg",
+      "medium": "thumbnails/brainrot-brawl-medium.svg",
+      "compact": "thumbnails/brainrot-brawl-compact.svg",
+      "player": "thumbnails/brainrot-brawl-player.svg",
+      "background": "#30215b"
+    },
+    "playerPoster": "thumbnails/brainrot-brawl-player.svg"
   },
   {
     "id": "punchpad",
@@ -135,7 +159,15 @@
         "Prepare",
         "Organize bits and build the next set."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/punchpad-wide.svg",
+      "medium": "thumbnails/punchpad-medium.svg",
+      "compact": "thumbnails/punchpad-compact.svg",
+      "player": "thumbnails/punchpad-player.svg",
+      "background": "#f3efe7"
+    },
+    "playerPoster": "thumbnails/punchpad-player.svg"
   },
   {
     "id": "crewboard",
@@ -170,7 +202,15 @@
         "Decisions",
         "Keep the work that needs attention visible."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/crewboard-wide.svg",
+      "medium": "thumbnails/crewboard-medium.svg",
+      "compact": "thumbnails/crewboard-compact.svg",
+      "player": "thumbnails/crewboard-player.svg",
+      "background": "#ede7f6"
+    },
+    "playerPoster": "thumbnails/crewboard-player.svg"
   },
   {
     "id": "agent-brain",
@@ -209,7 +249,15 @@
         "Check",
         "Reproducible CLI scenarios for continuity and isolation."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/agent-brain-wide.svg",
+      "medium": "thumbnails/agent-brain-medium.svg",
+      "compact": "thumbnails/agent-brain-compact.svg",
+      "player": "thumbnails/agent-brain-player.svg",
+      "background": "#e4ebe1"
+    },
+    "playerPoster": "thumbnails/agent-brain-player.svg"
   },
   {
     "id": "marquee",
@@ -244,7 +292,15 @@
         "Operate",
         "An owner workspace for contacts, messages, and campaigns."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/marquee-wide.svg",
+      "medium": "thumbnails/marquee-medium.svg",
+      "compact": "thumbnails/marquee-compact.svg",
+      "player": "thumbnails/marquee-player.svg",
+      "background": "#191917"
+    },
+    "playerPoster": "thumbnails/marquee-player.svg"
   },
   {
     "id": "front-of-line",
@@ -279,7 +335,15 @@
         "Feedback",
         "Structured evaluation tied to answer and context revisions."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/front-of-line-wide.svg",
+      "medium": "thumbnails/front-of-line-medium.svg",
+      "compact": "thumbnails/front-of-line-compact.svg",
+      "player": "thumbnails/front-of-line-player.svg",
+      "background": "#0d1421"
+    },
+    "playerPoster": "thumbnails/front-of-line-player.svg"
   },
   {
     "id": "flower-girls",
@@ -315,7 +379,15 @@
         "Role",
         "Development, rather than authorship of the collection artwork."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/flower-girls-wide.svg",
+      "medium": "thumbnails/flower-girls-medium.svg",
+      "compact": "thumbnails/flower-girls-compact.svg",
+      "player": "thumbnails/flower-girls-player.svg",
+      "background": "#e9dfe0"
+    },
+    "playerPoster": "thumbnails/flower-girls-player.svg"
   },
   {
     "id": "puzzle-people",
@@ -351,7 +423,15 @@
         "Backend",
         "Express and MongoDB mint-request handling."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/puzzle-people-wide.svg",
+      "medium": "thumbnails/puzzle-people-medium.svg",
+      "compact": "thumbnails/puzzle-people-compact.svg",
+      "player": "thumbnails/puzzle-people-player.svg",
+      "background": "#0e2523"
+    },
+    "playerPoster": "thumbnails/puzzle-people-player.svg"
   },
   {
     "id": "standup",
@@ -362,9 +442,9 @@
     "accent": "#f2d09c",
     "wordmark": "On stage.",
     "tagline": "Vyas Sathya, on stage.",
-    "summary": "Live stand-up performance. The original public clip remains available while a new highlight reel is assembled from source recordings.",
+    "summary": "Live stand-up performance. The highlight reel contains two uninterrupted excerpts from my own public set, with the complete original performance also linked.",
     "contribution": "The writing and live performance.",
-    "state": "The new highlight reel is in production. It will preserve complete setups, punchlines, timing, and audience response.",
+    "state": "Landscape highlight reel made from the original performance. Original speech, pauses and room response are retained.",
     "poster": "standup.jpg",
     "film": "standup-highlights.mp4",
     "filmNote": "Two uninterrupted excerpts from my own public set. Original speech, pauses and room response, reframed for landscape with audio mastering. The full original performance is also linked.",
@@ -388,7 +468,15 @@
         "Edit",
         "Complete comic beats, with source provenance retained."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/standup-wide.svg",
+      "medium": "thumbnails/standup-medium.svg",
+      "compact": "thumbnails/standup-compact.svg",
+      "player": "thumbnails/standup-player.svg",
+      "background": "#171a20"
+    },
+    "playerPoster": "thumbnails/standup-player.svg"
   },
   {
     "id": "whiteboard",
@@ -427,7 +515,15 @@
         "Ground",
         "The product documentation is the source."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/whiteboard-wide.svg",
+      "medium": "thumbnails/whiteboard-medium.svg",
+      "compact": "thumbnails/whiteboard-compact.svg",
+      "player": "thumbnails/whiteboard-player.svg",
+      "background": "#f6f6ee"
+    },
+    "playerPoster": "thumbnails/whiteboard-player.svg"
   },
   {
     "id": "video-studio",
@@ -470,7 +566,15 @@
         "Verify",
         "Frame strips and technical checks on the rendered file."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/video-studio-wide.svg",
+      "medium": "thumbnails/video-studio-medium.svg",
+      "compact": "thumbnails/video-studio-compact.svg",
+      "player": "thumbnails/video-studio-player.svg",
+      "background": "#221b1a"
+    },
+    "playerPoster": "thumbnails/video-studio-player.svg"
   },
   {
     "id": "mad-balls",
@@ -500,7 +604,15 @@
         "Footage",
         "Bot matches from an existing development build."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/mad-balls-wide.svg",
+      "medium": "thumbnails/mad-balls-medium.svg",
+      "compact": "thumbnails/mad-balls-compact.svg",
+      "player": "thumbnails/mad-balls-player.svg",
+      "background": "#16343c"
+    },
+    "playerPoster": "thumbnails/mad-balls-player.svg"
   },
   {
     "id": "buildwhatever",
@@ -540,7 +652,15 @@
         "Evidence",
         "Public source archive and release repository."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/buildwhatever-wide.svg",
+      "medium": "thumbnails/buildwhatever-medium.svg",
+      "compact": "thumbnails/buildwhatever-compact.svg",
+      "player": "thumbnails/buildwhatever-player.svg",
+      "background": "#11271e"
+    },
+    "playerPoster": "thumbnails/buildwhatever-player.svg"
   },
   {
     "id": "asset-pipeline",
@@ -571,6 +691,14 @@
         "Optimize",
         "Texture and performance tooling."
       ]
-    ]
+    ],
+    "thumbnail": {
+      "wide": "thumbnails/asset-pipeline-wide.svg",
+      "medium": "thumbnails/asset-pipeline-medium.svg",
+      "compact": "thumbnails/asset-pipeline-compact.svg",
+      "player": "thumbnails/asset-pipeline-player.svg",
+      "background": "#25282d"
+    },
+    "playerPoster": "thumbnails/asset-pipeline-player.svg"
   }
 ]

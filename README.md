@@ -21,6 +21,11 @@ All and every Work collection use the same two-column, two-row page. Arrows adva
 touch scrolling snaps to pages. Services describe deliverables and link to four relevant examples each.
 Project pages work without JavaScript; video controls and public links remain available.
 
+Responsive project posters have separate wide, medium, phone and 16:9 player compositions.
+See `docs/poster-art-direction.md` for dimensions, the source manifest and regeneration.
+The hero overview plays only after an explicit action. About, working-together and Contact
+sections link to actual project evidence and the verified LinkedIn contact routes.
+
 Film status is explicit. A missing film is not replaced with a fake demo, and a prototype is not labeled
 as a public release. Front of Line footage uses a fictional practice workspace. The J Will Media case
 shows the new local implementation; the existing Marquee domain currently serves the previous site.

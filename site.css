@@ -503,6 +503,20 @@ main,
 .case-stage .wordmark {
   font-size: clamp(40px, 8vw, 100px);
 }
+.case-play {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border: 1px solid #ffffff70;
+  border-radius: 8px;
+  background: #f4f1e9;
+  color: #18231e;
+  font-size: 13px;
+}
 .case-film-note {
   font-size: 12px;
   color: var(--muted);

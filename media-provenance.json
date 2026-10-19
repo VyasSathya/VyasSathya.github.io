@@ -209,5 +209,10 @@
     "source_file": "buildwhatever.mp4",
     "source_seconds": 0.8,
     "content": "Actual frame of the final reviewed film; architecture maps are labeled public source rather than runtime screenshots."
+  },
+  "thumbnails/": {
+    "producer": "scripts/build-thumbnails.py, native SVG with Geist glyph paths and approved imagery",
+    "manifest": "media/thumbnails/provenance.json",
+    "content": "Four art-directed variants for every project; separate 16:9 overview cover. Existing images and app-drawn panel only, no generated substitute UI. Films unchanged."
   }
 }

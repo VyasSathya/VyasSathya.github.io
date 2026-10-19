@@ -95,10 +95,13 @@
     a.className = `project-card identity-${p.id}`;
     a.href = `work/${p.id}/`;
     a.style.setProperty("--brand", p.accent);
-    const art = p.poster
+    const art = p.thumbnail
+      ? `<picture><source media="(max-width: 500px)" srcset="media/${esc(p.thumbnail.compact)}"><source media="(max-width: 1100px)" srcset="media/${esc(p.thumbnail.medium)}"><img src="media/${esc(p.thumbnail.wide)}" alt="${esc(p.imageAlt || p.name)}" loading="lazy" decoding="async" width="1611" height="504"></picture>`
+      : p.poster
       ? `<img src="media/${esc(p.poster)}" alt="${esc(p.imageAlt || p.name)}" loading="lazy" decoding="async">`
       : `<span class="wordmark">${esc(p.wordmark || p.name)}</span>`;
     a.innerHTML = `<div class="project-image">${art}<span class="explore" aria-hidden="true">&#8599;</span></div><div class="caption"><h3>${esc(p.name)}</h3><p>${esc(p.kind)}</p></div>`;
+    if (p.thumbnail) a.querySelector('.project-image').style.background = p.thumbnail.background;
     return a;
   }
   let accessTimer;
@@ -198,6 +201,9 @@
     const aliases = { singstan: "kpop-sing", "range-whiteboard": "whiteboard" };
     const project = PROJECTS.find((p) => p.id === (aliases[hash] || hash));
     if (project) location.replace(`work/${project.id}/`);
+    if (['work','services','about','process','contact'].includes(parts[0])) {
+      requestAnimationFrame(() => document.getElementById(parts[0]).scrollIntoView({block:'start',behavior:'instant'}));
+    }
   }
   for (const [id, label] of groups) {
     const b = document.createElement("button");

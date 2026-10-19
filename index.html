@@ -43,6 +43,7 @@
       <nav aria-label="Main navigation">
         <a href="#work" data-view="work">Work</a
         ><a href="#services" data-view="services">Services</a
+        ><a href="#about">About</a
         ><a href="#contact">Contact</a
         ><button
           class="theme"
@@ -64,18 +65,30 @@
       </nav>
     </header>
     <main>
-      <section class="hero">
+      <section class="hero" aria-labelledby="intro-heading">
+        <div class="hero-copy">
         <p class="eyebrow">Independent developer &amp; creative</p>
-        <h1>From idea to<br />working product.</h1>
+        <h1 id="intro-heading">From idea to<br />working product.</h1>
         <p class="intro">
           Apps, games, tools, and the films that tell their story.
         </p>
         <a
           class="reel-link"
-          href="media/portfolio-overview.mp4"
+          href="#overview"
           id="overview-link"
-          >Watch the work <span aria-hidden="true">&#8599;</span></a
+          >Watch the work <span aria-hidden="true">&#8594;</span></a
         >
+        </div>
+        <div class="hero-reel" id="overview">
+          <video playsinline preload="none" poster="media/thumbnails/overview-player.svg" aria-label="Portfolio overview: apps, games, tools and films">
+            <source src="media/portfolio-overview.mp4" type="video/mp4" />
+            <a href="media/portfolio-overview.mp4">Watch the portfolio overview</a>
+          </video>
+          <button class="hero-play" type="button" aria-label="Play portfolio overview with sound">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 4l13 8-13 8z" fill="currentColor"/></svg>
+            <span>Play overview</span><span class="reel-time">1:01</span>
+          </button>
+        </div>
       </section>
       <section id="work" class="view" aria-labelledby="work-h">
         <div class="section-head">
@@ -124,13 +137,39 @@
           >Discuss a project <span aria-hidden="true">&#8599;</span></a
         >
       </section>
+      <section id="about" class="support-section" aria-labelledby="about-h">
+        <div class="support-heading"><p class="eyebrow">About</p><h2 id="about-h">The product.<br />And the story around it.</h2></div>
+        <div class="support-content"><p>I build apps, games and useful tools, then make the films that explain them. My work spans product interfaces, agent workflows, game tooling and collection launches.</p>
+          <div class="experience-links">
+            <a href="work/marquee/"><span>Client work</span><strong>J Will Media / Marquee</strong><span aria-hidden="true">&#8599;</span></a>
+            <a href="work/agent-brain/"><span>Open source</span><strong>agent-brain</strong><span aria-hidden="true">&#8599;</span></a>
+            <a href="work/flower-girls/"><span>Collection development</span><strong>Flower Girls</strong><span aria-hidden="true">&#8599;</span></a>
+            <a href="work/puzzle-people/"><span>Collection development</span><strong>Puzzle People</strong><span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </div>
+      </section>
+      <section id="process" class="support-section" aria-labelledby="process-h">
+        <div class="support-heading"><p class="eyebrow">Working together</p><h2 id="process-h">A clear path<br />to something real.</h2></div>
+        <div class="support-content disclosure-list">
+          <details><summary><span>01</span>Define the outcome</summary><p>Start with the people using it, the problem to solve, and what already exists. Agree the scope, deliverables and pricing before the build.</p></details>
+          <details><summary><span>02</span>Build and review</summary><p>Review a working version, make the important decisions in context, and refine the result against the agreed scope.</p></details>
+          <details><summary><span>03</span>Hand over the work</summary><p>Receive the agreed source, assets and operating notes, with the checks and any remaining release steps made clear.</p></details>
+        </div>
+      </section>
       <section id="contact" class="contact" aria-labelledby="contact-h">
-        <h2 id="contact-h">Have something in mind?</h2>
+        <div><p class="eyebrow">Contact</p><h2 id="contact-h">What are you making?</h2><p class="contact-intro">Tell me where you want to get to.</p>
         <a
-          class="text-link"
+          class="contact-primary"
           href="https://www.linkedin.com/in/vyas-sathya-4b7b38351/"
-          >Message me on LinkedIn <span aria-hidden="true">&#8599;</span></a
+          >Start a conversation <span aria-hidden="true">&#8599;</span></a
         >
+        <a class="contact-secondary" href="https://www.linkedin.com/services/page/714a94347b37190647/">View LinkedIn services &#8599;</a>
+        <p class="pricing">Contact for pricing.</p></div>
+        <div class="contact-brief disclosure-list">
+          <details><summary>A useful first message</summary><p>What you are making, who it is for, and what needs to change. Include a link or build if one exists, plus your timing and budget range.</p></details>
+          <details><summary>What can we build?</summary><p>Products and websites, workflow automation, games and 3D tooling, launch experiences, or a film of the work.</p><a class="text-link" href="#services">Explore services &#8594;</a></details>
+          <details><summary>How does a project start?</summary><p>Send a message on LinkedIn. We can discuss the brief and agree the scope, deliverables and price there.</p></details>
+        </div>
       </section>
       <noscript
         ><p class="notice">
@@ -149,5 +188,6 @@
     </footer>
     <script src="catalog.js"></script>
     <script src="films.js"></script>
+    <script src="portfolio.js"></script>
   </body>
 </html>

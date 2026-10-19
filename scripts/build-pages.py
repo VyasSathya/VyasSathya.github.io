@@ -7,13 +7,13 @@ ROOT = Path(__file__).resolve().parents[1]
 projects = json.loads((ROOT / "projects.json").read_text(encoding="utf-8"))
 esc = lambda s: html.escape(str(s), quote=True)
 theme = "try{const t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}"
-toggle = "document.querySelector('.theme').addEventListener('click',()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=d?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme);}catch(e){}});const b=document.querySelector('[data-watch]');if(b)b.addEventListener('click',()=>{const v=document.querySelector('video');v.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});v.play().catch(()=>{v.focus();});});"
+toggle = "document.querySelector('.theme').addEventListener('click',()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=d?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme);}catch(e){}});const v=document.querySelector('video'),play=document.querySelector('.case-play');if(v&&play){v.controls=false;play.hidden=false;const start=()=>{v.controls=true;v.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});v.play().then(()=>{play.hidden=true;v.focus();}).catch(()=>{v.focus();});};play.addEventListener('click',start);document.querySelector('[data-watch]')?.addEventListener('click',start);v.addEventListener('play',()=>{play.hidden=true;});v.addEventListener('ended',()=>{play.hidden=false;});}"
 for i,p in enumerate(projects):
-    poster = f'../../media/{p["poster"]}' if p.get('poster') else ''
+    poster = f'../../media/{p.get("playerPoster",p["poster"])}' if p.get('poster') else ''
     actions = '<button class="primary" type="button" data-watch>Watch film</button>' if p.get('film') else ''
     actions += ''.join(f'<a href="{esc(href)}" rel="noopener">{esc(label)} &#8599;</a>' for label,href in p['links'])
     if p.get('film'):
-        media = f'<video controls playsinline preload="none" poster="{poster}" tabindex="0" aria-label="{esc(p["name"])} film"><source src="../../media/{esc(p["film"])}" type="video/mp4"></video>'
+        media = f'<video controls playsinline preload="none" poster="{poster}" tabindex="0" aria-label="{esc(p["name"])} film"><source src="../../media/{esc(p["film"])}" type="video/mp4"></video><button class="case-play" type="button" hidden aria-label="Play {esc(p["name"])} film with sound">&#9654; <span>Play film</span></button>'
     elif p.get('youtube'):
         media = f'<iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/{esc(p["youtube"])}" title="Vyas Sathya stand-up performance" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>'
     elif poster:
