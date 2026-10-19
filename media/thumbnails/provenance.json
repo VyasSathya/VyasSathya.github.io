@@ -192,25 +192,6 @@
       "source_note": "Original collection website and original artwork by Varvara Alay. Website development case, composed for landscape with an original local score."
     },
     {
-      "id": "puzzle-people",
-      "source": "media/puzzle-people.jpg",
-      "sha256": "70e2bc7c3d47f30774bdcf0742e9bf903523ad5c46fb16fb9db33939452db7b8",
-      "source_crop_pixels": [
-        691,
-        192,
-        1229,
-        632
-      ],
-      "background": "#0e2523",
-      "outputs": {
-        "wide": "thumbnails/puzzle-people-wide.svg",
-        "medium": "thumbnails/puzzle-people-medium.svg",
-        "compact": "thumbnails/puzzle-people-compact.svg",
-        "player": "thumbnails/puzzle-people-player.svg"
-      },
-      "source_note": "Historical collection website, original artwork, and the original V4nimal (Vyas) Art and Code credit. Historical minting text belongs to the original website."
-    },
-    {
       "id": "standup",
       "source": "media/standup.jpg",
       "sha256": "952a8c1af9f3901dbf1efafd02db657a4aa4eba5b513856d11297a47fa8529cd",
@@ -270,25 +251,6 @@
       "additional_source": "media/range-whiteboard.jpg, complete Talkover workflow diagram"
     },
     {
-      "id": "mad-balls",
-      "source": "media/mad-balls.jpg",
-      "sha256": "5535de1ec7876e3d55bcfa818bfa2f10a5922046f65f3cb6892f88c916da3545",
-      "source_crop_pixels": [
-        0,
-        114,
-        1280,
-        1115
-      ],
-      "background": "#16343c",
-      "outputs": {
-        "wide": "thumbnails/mad-balls-wide.svg",
-        "medium": "thumbnails/mad-balls-medium.svg",
-        "compact": "thumbnails/mad-balls-compact.svg",
-        "player": "thumbnails/mad-balls-player.svg"
-      },
-      "source_note": "Existing bot gameplay: a continuous pickup-to-impact sequence and the recorded match result. Landscape composition and original local score; no game changes."
-    },
-    {
       "id": "buildwhatever",
       "source": "media/buildwhatever.jpg",
       "sha256": "39ea967277da49d7fc5259ce3176fe7fa57304429c886fe7a53dc0e549017767",
@@ -325,6 +287,44 @@
         "player": "thumbnails/asset-pipeline-player.svg"
       },
       "source_note": "Original and repaired material compared in Blender, followed by a turntable of the original repaired asset. Original local score."
+    },
+    {
+      "id": "puzzle-people",
+      "source": "media/puzzle-people.jpg",
+      "sha256": "70e2bc7c3d47f30774bdcf0742e9bf903523ad5c46fb16fb9db33939452db7b8",
+      "source_crop_pixels": [
+        691,
+        192,
+        1229,
+        632
+      ],
+      "background": "#0e2523",
+      "outputs": {
+        "wide": "thumbnails/puzzle-people-wide.svg",
+        "medium": "thumbnails/puzzle-people-medium.svg",
+        "compact": "thumbnails/puzzle-people-compact.svg",
+        "player": "thumbnails/puzzle-people-player.svg"
+      },
+      "source_note": "My original pre-AI artwork, drawn in Procreate using layers, alongside the historical collection website and original V4nimal (Vyas) Art and Code credit."
+    },
+    {
+      "id": "mad-balls",
+      "source": "media/mad-balls.jpg",
+      "sha256": "5535de1ec7876e3d55bcfa818bfa2f10a5922046f65f3cb6892f88c916da3545",
+      "source_crop_pixels": [
+        0,
+        114,
+        1280,
+        1115
+      ],
+      "background": "#16343c",
+      "outputs": {
+        "wide": "thumbnails/mad-balls-wide.svg",
+        "medium": "thumbnails/mad-balls-medium.svg",
+        "compact": "thumbnails/mad-balls-compact.svg",
+        "player": "thumbnails/mad-balls-player.svg"
+      },
+      "source_note": "Existing bot gameplay recorded under the former Mad Balls name: a continuous pickup-to-impact sequence and the match result. Original footage and local score; gameplay is unchanged."
     }
   ],
   "overview": {

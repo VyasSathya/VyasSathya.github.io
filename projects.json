@@ -101,7 +101,7 @@
     "type": "Own product",
     "accent": "#edbd47",
     "tagline": "A cast of characters. One chaotic arena.",
-    "summary": "A mobile party brawler built in Unity. The portfolio footage shows existing bot matches in the Mad Balls arena.",
+    "summary": "A mobile party brawler built in Unity. The portfolio footage shows existing bot matches in the Ricochet Riot arena.",
     "contribution": "Game and mobile development, arena interaction, character integration, and the build and content pipeline.",
     "state": "Development build. The footage shows bots, rather than a public multiplayer session.",
     "poster": "brainrot-wide.jpg",
@@ -429,13 +429,13 @@
       ]
     ],
     "thumbnail": {
-      "wide": "thumbnails/puzzle-people-wide.svg",
-      "medium": "thumbnails/puzzle-people-medium.svg",
-      "compact": "thumbnails/puzzle-people-compact.svg",
-      "player": "thumbnails/puzzle-people-player.svg",
+      "wide": "thumbnails/puzzle-people-wide.svg?v=d51d390029",
+      "medium": "thumbnails/puzzle-people-medium.svg?v=dcf3f0b6f8",
+      "compact": "thumbnails/puzzle-people-compact.svg?v=455e65d05a",
+      "player": "thumbnails/puzzle-people-player.svg?v=ec65fe9630",
       "background": "#0e2523"
     },
-    "playerPoster": "thumbnails/puzzle-people-player.svg"
+    "playerPoster": "thumbnails/puzzle-people-player.svg?v=ec65fe9630"
   },
   {
     "id": "standup",
@@ -582,7 +582,7 @@
   },
   {
     "id": "mad-balls",
-    "name": "Mad Balls",
+    "name": "Ricochet Riot",
     "group": "games",
     "kind": "Arena gameplay case study",
     "type": "Part of Brainrot Brawl",
@@ -593,7 +593,7 @@
     "state": "A minigame inside Brainrot Brawl, not a separate released product.",
     "poster": "mad-balls.jpg",
     "film": "mad-balls.mp4",
-    "filmNote": "Existing bot gameplay: a continuous pickup-to-impact sequence and the recorded match result. Landscape composition and original local score; no game changes.",
+    "filmNote": "Existing bot gameplay recorded under the former Mad Balls name: a continuous pickup-to-impact sequence and the match result. Original footage and local score; gameplay is unchanged.",
     "links": [],
     "details": [
       [
@@ -610,13 +610,13 @@
       ]
     ],
     "thumbnail": {
-      "wide": "thumbnails/mad-balls-wide.svg",
-      "medium": "thumbnails/mad-balls-medium.svg",
-      "compact": "thumbnails/mad-balls-compact.svg",
-      "player": "thumbnails/mad-balls-player.svg",
+      "wide": "thumbnails/mad-balls-wide.svg?v=2658c8deb0",
+      "medium": "thumbnails/mad-balls-medium.svg?v=f45fadb60a",
+      "compact": "thumbnails/mad-balls-compact.svg?v=15e860c701",
+      "player": "thumbnails/mad-balls-player.svg?v=93fdcc76a2",
       "background": "#16343c"
     },
-    "playerPoster": "thumbnails/mad-balls-player.svg"
+    "playerPoster": "thumbnails/mad-balls-player.svg?v=93fdcc76a2"
   },
   {
     "id": "buildwhatever",
