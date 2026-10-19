@@ -5,30 +5,34 @@
   const app = document.getElementById('app');
   const SLOT = 'vp-owner-key';
   let data = null, busy = false, fresh = null; // fresh = a just-created link, shown once
+  let seenSent = false, lastSeen = null;
   P.themeButton();
+  P.registerWorker();
 
-  if (!P.takeKey(SLOT)) { gate(); return; }
-  load();
+  if (!P.takeKey(SLOT)) gate();
+  else load();
   addEventListener('hashchange', render);
   document.getElementById('reload').addEventListener('click', () => load(true));
+  document.addEventListener('portal:refresh', () => load());
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && data && !busy && !app.contains(document.activeElement)) load(); });
   setInterval(() => { if (document.visibilityState === 'visible' && !busy && !app.contains(document.activeElement)) load(); }, 120000);
 
-  function gate(text = 'Open your owner link on this device.') {
-    app.innerHTML = `<div class="gate"><h1>Studio</h1><p>${esc(text)}</p></div>`;
-  }
+  function gate(text = 'Open your owner link on this device, or paste it here.') { P.gate(app, 'Studio', text, load); }
 
   async function load(note) {
     try {
       data = await P.api('view');
       if (data.role !== 'owner') { location.href = '../portal/'; return; }
+      if (!seenSent) { lastSeen = data.seen_at; seenSent = true; P.api('seen').catch(() => {}); P.refreshSubscription(); }
       render();
       if (note) P.toast('Up to date');
     } catch (e) {
-      if (e.status === 401) { P.forget(SLOT); return gate('This owner key was turned off. Open a current owner link.'); }
+      if (e.status === 401) { P.forget(SLOT); return gate('This owner key was turned off. Open or paste a current owner link.'); }
       gate(e.message);
     }
   }
 
+  const isNew = t => lastSeen && t && new Date(t) > new Date(lastSeen);
   const route = () => { const m = location.hash.match(/^#\/p\/([a-z0-9-]+)/); return m ? m[1] : location.hash === '#/new' ? 'new' : null; };
   const unread = pid => data.messages.filter(m => m.project_id === pid && m.author === 'client' && !m.read_at).length;
   const msOf = pid => data.milestones.filter(m => m.project_id === pid).sort((a, b) => a.seq - b.seq);
@@ -54,6 +58,10 @@
     if (ms.some(m => m.state === 'changes_requested')) out.push('<span class="chip wait">Changes requested</span>');
     const due = ms.filter(m => m.pay_state === 'due'); if (due.length) out.push(`<span class="chip">${money(due.reduce((s, m) => s + (+m.amount_cents || 0), 0)) || 'Invoice'} due</span>`);
     const n = unread(p.id); if (n) out.push(`<span class="chip go">${n} new message${n > 1 ? 's' : ''}</span>`);
+    const fresh = data.asks.filter(a => a.project_id === p.id && a.answered_at && isNew(a.answered_at)).length;
+    if (fresh) out.push(`<span class="chip go">${fresh} new answer${fresh > 1 ? 's' : ''}</span>`);
+    const openQ = data.asks.filter(a => a.project_id === p.id && !a.answered_at && !a.closed).length;
+    if (openQ) out.push(`<span class="chip wait">${openQ} decision${openQ > 1 ? 's' : ''} open</span>`);
     const lm = lastMove(p.id);
     if (p.status === 'active' && lm && daysSince(lm) >= 7) out.push(`<span class="chip bad">Still ${daysSince(lm)}d</span>`);
     return out.join('');
@@ -74,10 +82,17 @@
     syncLine();
     const r = route();
     const open = new Set([...app.querySelectorAll('details[open]')].map(d => d.dataset.k));
+    const drafts = [...app.querySelectorAll('form textarea, form input[type=text], form input[type=url]')].filter(x => x.value && x.closest('form').dataset.keep).map(x => [x.closest('form').dataset.keep, x.name, x.value]);
     if (r === 'new') app.innerHTML = projectForm(null);
     else if (r && data.projects.some(p => p.id === r)) app.innerHTML = detail(data.projects.find(p => p.id === r));
     else app.innerHTML = home();
     app.querySelectorAll('details[data-k]').forEach(d => { if (open.has(d.dataset.k)) d.open = true; });
+    for (const [k, name, v] of drafts) { const f = app.querySelector(`form[data-keep="${k}"] [name="${name}"]`); if (f && !f.value) f.value = v; }
+    const phone = app.querySelector('#phone');
+    if (phone) P.renderPhoneCard(phone, {
+      pushKey: data.push_key, muted: !!data.prefs?.mute, who: 'Approvals, change requests, answers and messages from clients.',
+      onMute: async v => { await P.api('prefs', { mute: v }); data.prefs = { mute: v }; P.toast(v ? 'Paused' : 'Resumed'); },
+    });
     if (r && r !== 'new' && unread(r)) P.api('mark_read', { project_id: r }).then(() => data.messages.forEach(m => { if (m.project_id === r) m.read_at = m.read_at || new Date().toISOString(); })).catch(() => {});
   }
 
@@ -102,10 +117,22 @@
     const section = (t, list) => list.length ? `<h2>${t}</h2><div class="overview">${list.map(card).join('')}</div>` : '';
     return `<div class="row"><h1>Projects</h1><a class="btn" href="#/new">New project</a></div>
       ${data.projects.length ? '' : '<p class="note">Add your first project.</p>'}
+      ${activity()}
       ${section('Client work', client)}
       ${section('My projects', own)}
       ${rest.length ? `<details class="edit" data-k="rest"><summary>Paused, done and archived</summary><div class="overview" style="margin-top:10px">${rest.map(card).join('')}</div></details>` : ''}
+      <h2>This device</h2><div class="card phone" id="phone" hidden></div>
       <h2>Access</h2>${accessList(null)}`;
+  }
+
+  // What clients did and what the server did for you, newest first.
+  function activity() {
+    const list = data.notices.filter(n => n.audience === 'owner').slice(0, 8);
+    if (!list.length) return '';
+    const name = pid => data.projects.find(p => p.id === pid)?.title || '';
+    return `<h2>Activity</h2><div class="list">${list.map(n => `<button class="prow" type="button" ${n.project_id ? `data-go="${esc(n.project_id)}"` : ''}>
+      <div class="t"><span>${isNew(n.created_at) ? '<span class="dot" style="margin:0 8px 1px 0"></span>' : ''}${esc(n.title)}</span><span class="count">${ago(n.created_at)}</span></div>
+      <div class="m">${esc([name(n.project_id), n.body].filter(Boolean).join(' - '))}</div></button>`).join('')}</div>`;
   }
 
   // ---------- project detail ----------
@@ -123,11 +150,17 @@
         ${p.kind === 'client' ? `<button class="btn small" data-newlink="${esc(p.id)}">New client link</button>` : ''}
       </div>
       ${fresh && fresh.project === p.id ? freshBox() : ''}
+      ${clientSeen(p)}
       ${sig.last_activity || sig.remaining ? `<p class="note">${sig.last_activity ? `Last activity ${ago(sig.last_activity)}` : ''}${sig.remaining ? ` &middot; Handoff: ${sig.remaining} remaining` : ''}${sig.last_commit ? ` &middot; Last commit ${ago(sig.last_commit)}` : ''}</p>` : ''}
 
       <h2>Milestones</h2>
       ${ms.map(m => milestoneCard(p, m)).join('') || '<p class="note">No milestones yet.</p>'}
       <details class="edit" data-k="addm"><summary>+ Add milestone or change order</summary>${milestoneForm(p, null)}</details>
+      ${budgetLine(ms)}
+
+      <h2>Decisions</h2>
+      ${askList(p)}
+      <details class="edit card" data-k="newask" style="margin-top:12px"><summary style="color:var(--fg);font-weight:500">Ask ${p.kind === 'client' ? 'the client' : ''} a question</summary>${askForm(p)}</details>
 
       <h2>Check-ins</h2>
       <details class="edit card" data-k="newci" style="margin-top:0"><summary style="color:var(--fg);font-weight:500">Write a check-in</summary>${checkinForm(p, null)}</details>
@@ -138,6 +171,41 @@
       ${p.kind === 'client' ? `<h2>Client links</h2>${accessList(p.id)}` : ''}
       <h2>Settings</h2>
       <details class="edit card" data-k="settings" style="margin-top:0"><summary style="color:var(--fg);font-weight:500">Project settings and feeds</summary>${projectForm(p)}</details>`;
+  }
+
+  function clientSeen(p) {
+    if (p.kind !== 'client') return '';
+    const ls = data.links.filter(l => l.role === 'client' && !l.revoked_at && l.project_ids.includes(p.id));
+    if (!ls.length) return '<p class="note">No client link yet.</p>';
+    const last = ls.map(l => l.last_used_at).filter(Boolean).sort().pop();
+    const phones = ls.reduce((n, l) => n + (data.devices.find(d => d.access_id === l.id)?.n || 0), 0);
+    return `<p class="note">${last ? `Client last opened ${ago(last)}` : 'Client has not opened it yet'}${phones ? ` &middot; updates on ${phones} device${phones > 1 ? 's' : ''}` : ''}</p>`;
+  }
+
+  function budgetLine(ms) {
+    const b = P.budget(ms); if (!b) return '';
+    const cell = (label, v) => `<div><div class="count">${label}</div><div class="fig">${money(v, b.currency)}</div></div>`;
+    return `<div class="budget">${cell('Total', b.total)}${cell('Paid', b.paid)}${cell('Due', b.due)}${cell('Not billed', b.later)}</div>`;
+  }
+
+  function askList(p) {
+    const asks = data.asks.filter(a => a.project_id === p.id);
+    if (!asks.length) return '<p class="note" style="margin-top:0">No questions yet.</p>';
+    return `<div class="list">${asks.map(a => `<details data-k="q-${a.id}"><summary><div class="row"><span class="sum-title">${esc(a.question)}</span>
+        ${a.answered_at ? `<span class="chip go">${isNew(a.answered_at) ? 'New answer' : 'Answered'}</span>` : a.closed ? '<span class="chip">Closed</span>' : `<span class="chip wait">${a.due_on ? 'Due ' + day(a.due_on) : 'Open'}</span>`}</div>
+        ${a.answered_at ? `<div class="sum-meta">${esc([a.answer, a.answer_note].filter(Boolean).join(' - '))}</div>` : a.choices.length ? `<div class="sum-meta">${esc(a.choices.join(' / '))}</div>` : ''}</summary>
+      <div class="body">${a.detail ? `<p class="note" style="margin-top:0;white-space:pre-wrap">${esc(a.detail)}</p>` : ''}
+        <div class="actions">${!a.answered_at && !a.closed ? `<button class="btn small" data-askclose="${a.id}">Close</button>` : ''}<button class="btn small ghost" data-askdel="${a.id}">Delete</button></div></div></details>`).join('')}</div>`;
+  }
+
+  function askForm(p) {
+    return `<form data-askform="${esc(p.id)}" data-keep="ask-${esc(p.id)}">
+      <label class="f">Question</label><input type="text" name="question" required placeholder="Which hero image should the homepage use?" />
+      <label class="f">Options, one per line (leave empty for a written answer)</label><textarea name="choices" placeholder="Option A&#10;Option B"></textarea>
+      <label class="f">Details</label><textarea name="detail" placeholder="What each option means, links to previews"></textarea>
+      <div class="grid2"><div><label class="f">Decide by</label><input type="date" name="due_on" /></div></div>
+      <div class="actions"><button class="btn primary" type="submit">${p.kind === 'client' ? 'Send to client' : 'Save'}</button></div>
+    </form>`;
   }
 
   function milestoneCard(p, m) {
@@ -201,7 +269,7 @@
     const ms = msOf(p.id), ids = new Set(ms.map(m => m.id));
     const recent = data.items.filter(i => ids.has(i.milestone_id) && i.done && i.client_visible && daysSince(i.done_at) <= 7).map(i => '- ' + i.title).join('\n');
     const waiting = data.items.filter(i => ids.has(i.milestone_id) && !i.done && i.waiting_on === 'client').map(i => `- ${i.title} (asked ${day(i.waiting_since)})`).join('\n');
-    return `<form data-ciform="${esc(p.id)}">
+    return `<form data-ciform="${esc(p.id)}" data-keep="ci-${esc(p.id)}">
       <label class="f">Done</label><textarea name="done">${esc(recent)}</textarea>
       <label class="f">Next</label><textarea name="next"></textarea>
       <label class="f">Waiting on you</label><textarea name="needs" placeholder="Item, date asked, date needed, what slips if late">${esc(waiting)}</textarea>
@@ -312,6 +380,8 @@
       if (r) { fresh = { ...r, project: null }; render(); }
       return;
     }
+    if (d.askclose) return act(() => { const a = data.asks.find(x => x.id === d.askclose); return P.api('save_ask', { ask: { ...a, closed: true } }); }, 'Closed');
+    if (d.askdel) { if (!confirm('Delete this question?')) return; return act(() => P.api('delete_ask', { id: d.askdel }), 'Deleted'); }
     if (d.revoke) { if (!confirm('Turn this link off? Whoever has it loses access.')) return; return act(() => P.api('revoke_link', { id: d.revoke }), 'Turned off'); }
     if (d.copy) { try { await navigator.clipboard.writeText(d.copy); P.toast('Copied'); } catch (_) { prompt('Copy this link', d.copy); } return; }
     if ('dismiss' in d) { fresh = null; render(); }
@@ -337,8 +407,12 @@
       if (f.dataset.mform !== 'new') m.id = f.dataset.mform;
       return act(() => P.api('save_milestone', { milestone: m }), 'Saved');
     }
+    if (f.dataset.askform) {
+      const choices = (v.choices || '').split('\n').map(x => x.trim()).filter(Boolean);
+      return act(async () => { await P.api('save_ask', { ask: { project_id: f.dataset.askform, question: v.question, detail: v.detail, due_on: v.due_on || null, choices } }); f.reset(); }, 'Sent');
+    }
     if (f.dataset.ciform) {
-      return act(() => P.api('save_update', { update: { project_id: f.dataset.ciform, ...v, client_visible: !!v.visible } }), 'Posted');
+      return act(async () => { await P.api('save_update', { update: { project_id: f.dataset.ciform, ...v, client_visible: !!v.visible } }); f.reset(); }, 'Posted');
     }
   });
 })();

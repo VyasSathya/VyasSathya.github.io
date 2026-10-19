@@ -33,6 +33,45 @@ The raw owner and sync keys live in `%USERPROFILE%\.vyasapps-portal\keys.json`, 
 - **Payment.** Paste a Stripe hosted invoice link on the milestone to show Pay to the client, then "Mark paid".
 - **Change orders.** These are milestones marked Change, with their own amount.
 
+## Phone app and notifications
+
+- Both pages install as apps. The client app is dark and the studio app is green. On iPhone: Share, then Add to Home Screen,
+  then open it and tap Turn on updates (iOS 16.4+; iOS needs the installed app for push). On Android and desktop
+  Chrome there is an Install app button. The key is saved in a cookie as well as localStorage because an iPhone
+  Home Screen app starts with Safari's cookies but not its localStorage (iOS 17.2+). Otherwise, paste the link on
+  the first screen.
+- Push uses Web Push with VAPID keys. The private key is only in the function secrets (`PORTAL_VAPID_*`) and in
+  `%USERPROFILE%\.vyasapps-portal\keys.json`. The payloads are Declarative Web Push JSON, so iOS 18.4+ shows
+  them without the service worker. Other browsers get them through `portal/sw-core.js`, which also refreshes
+  any open page.
+- Clients hear about:
+  - check-ins they can see
+  - a milestone sent for review
+  - an invoice
+  - payment received
+  - Vyas's messages
+  - new decisions
+  - review closing in a day
+  - things waiting on them for 3+ days (nudged at most every 3 days)
+  - auto-acceptance
+- Vyas hears about:
+  - approvals
+  - change requests
+  - answers
+  - client messages
+  - auto-acceptance
+  - nudges sent
+- Each device can pause updates. Every notice is also kept as the feed: "Since your last visit" for clients and
+  Activity in Studio.
+- Reminders run on Supabase itself with pg_cron (`vyasapps-portal-tick`, every 15 min). It posts `tick` with a
+  `cron` key stored in the vault as `portal_cron_key`, so it keeps working when the PC is off.
+
+## Decisions, budget, calendar
+
+- **Decisions.** A question with options the client taps (or a written answer) and a due date.
+- **Budget.** Total, paid, due and not yet billed, from the milestone amounts.
+- **Add dates to calendar.** Downloads an .ics file with target dates, review deadlines and decision due dates.
+
 ## Feeds (`portal-sync.py`)
 
 Each project's feeds are set in Studio > Settings:
