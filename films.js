@@ -1,180 +1,244 @@
-// One list drives the grid and the player. Rows keep tiles in a row the same height.
-const FILMS = [
-  {
-    id: "talkover", row: 0, name: "Talkover", kind: "Voice for Claude Code", ar: "16/9",
-    tall: "talkover-tall",
-    what: "Hands-free, two-way voice for Claude Code on Windows. You talk and it types. It reads the replies back. Say wait and it stops, then picks up where you cut in. Speech stays on your machine.",
-    film: "Launch film. The panel is drawn by the app's own code; the score is original.",
-    links: [["Code", "https://github.com/VyasSathya/talkover"], ["Site", "https://vyassathya.github.io/talkover/"]],
-  },
-  {
-    id: "singstan", row: 0, name: "SingStan", kind: "K-pop karaoke app", ar: "9/16",
-    what: "A karaoke app for K-pop that spells the lyrics the way they sound, so you can sing along without reading Korean. Built with Expo for iOS and Android.",
-    film: "Music video cut. The performers are AI-generated; the track is original.",
-    links: [],
-  },
-  {
-    id: "brainrot-brawl", row: 0, name: "Brainrot Brawl", kind: "Mobile party brawler", ar: "9/16",
-    what: "A ball-throwing brawler for phones. Grab a ball, throw it, everyone is a target. Built in Unity.",
-    film: "Game ad cut from bot matches in the current build. Character voices and animation are made with AI.",
-    links: [],
-  },
-  {
-    id: "crewboard", row: 1, name: "crewboard", kind: "Dashboard for coding agents", ar: "16/9",
-    tall: "crewboard-tall",
-    what: "One screen for every Claude Code session and subagent, plus a task list that you and your agents both write. Runs on your machine.",
-    film: "Editorial cut from the real app.",
-    links: [["Code", "https://github.com/VyasSathya/crewboard"]],
-  },
-  {
-    id: "agent-brain", row: 1, name: "agent-brain", kind: "Memory for coding agents", ar: "16/9",
-    tall: "agent-brain-tall",
-    what: "One shared memory that Claude Code and Codex both read and write. Every handoff cites the file and line it came from. Plain files, standard library Python.",
-    film: "Diagram film. Every line on screen is the tool's real output.",
-    links: [["Code", "https://github.com/VyasSathya/agent-brain"]],
-  },
-  {
-    id: "range-whiteboard", group: "range", row: 0, name: "Whiteboard", kind: "How Talkover works", ar: "16/9",
-    what: "A whiteboard explainer drawn on screen: you talk, Whisper turns it into text, Claude answers, Kokoro reads it back, and saying wait stops it.",
-    film: "Every step comes from the Talkover README. Original score.",
-    links: [["Code", "https://github.com/VyasSathya/talkover"]],
-  },
-  {
-    id: "range-course", group: "range", row: 0, name: "Course lesson", kind: "Build your first MCP tool", ar: "16/9",
-    what: "A short lesson: install the MCP Python SDK, write one tool, call it from a client. Chapters, a progress bar and a lesson-complete card.",
-    film: "Every command was run for real and its output is shown unedited. Synthetic voice.",
-    links: [],
-  },
-  {
-    id: "range-short", group: "range", row: 0, name: "Vertical short", kind: "Voyager 1", ar: "9/16",
-    what: "A fast vertical short about Voyager 1: word-by-word captions and a cut every half second or so.",
-    film: "Facts from NASA's mission page; NASA images, public domain. Synthetic voice.",
-    links: [],
-  },
-  {
-    id: "range-story", group: "range", row: 1, name: "Story reel", kind: "A year in space", ar: "16/9",
-    what: "A short documentary cut from NASA footage of Scott Kelly's year on the space station, with his own words as captions.",
-    film: "NASA footage, public domain. Original score.",
-    links: [],
-  },
-  {
-    id: "range-showreel", group: "range", row: 1, name: "Showreel", kind: "The films on this page", ar: "16/9",
-    what: "A fast cut of the films above: grids, splits and hard cuts on a drum and bass track.",
-    film: "Cut from the films on this page. Original score.",
-    links: [],
-  },
-  {
-    id: "punchpad", row: 1, name: "Punchpad", kind: "App for stand-up comics", ar: "16/9",
-    tall: "punchpad-tall",
-    what: "A notebook and recorder for stand-up comics. Record every set, find every laugh, replay the laughs, watch a bit get better, build the next set.",
-    film: "Launch film from the real app, filled with a made-up demo workspace. Original score.",
-    links: [],
-  },
-];
-
-(function () {
-  const list = FILMS.filter((f) => f.ready !== false);
-  const rows = [];
-  for (const f of list) {
-    const key = (f.group || "work") + ":" + f.row;
-    if (!rows[key]) rows.push((rows[key] = []));
-    rows[key].push(f);
+/* Four identical cards per page in All and every collection. */
+(() => {
+  const groups = [
+    ["all", "All"],
+    ["apps", "Products & websites"],
+    ["games", "Games & 3D"],
+    ["automation", "Agents & tools"],
+    ["art", "Art & creative"],
+  ];
+  const services = [
+    {
+      id: "products",
+      name: "Build a product",
+      title: "An idea people can use.",
+      description:
+        "A website or app, from the first flow through the working product and handover.",
+      deliverables: [
+        "Product flows and interface design",
+        "A working website or app",
+        "Integrations, checks, and release handover",
+      ],
+      proof: ["marquee", "front-of-line", "punchpad", "kpop-sing"],
+    },
+    {
+      id: "automation",
+      name: "Automate a workflow",
+      title: "Make the work flow.",
+      description:
+        "Connect your tools, context, and decisions into a workflow you can inspect and run.",
+      deliverables: [
+        "Workflow and integration design",
+        "Agents and custom tools",
+        "Checks, logs, and operating notes",
+      ],
+      proof: ["talkover", "crewboard", "agent-brain", "video-studio"],
+    },
+    {
+      id: "games",
+      name: "Games & 3D",
+      title: "A playable idea.",
+      description:
+        "Interactive experiences, editor tools, and the asset workflows behind them.",
+      deliverables: [
+        "Gameplay and interaction",
+        "Game-ready asset tooling",
+        "A playable build or working tool",
+      ],
+      proof: ["brainrot-brawl", "mad-balls", "buildwhatever", "asset-pipeline"],
+    },
+    {
+      id: "films",
+      name: "Make a film",
+      title: "Let people see what it does.",
+      description:
+        "A product film built from real screens, with enough time to follow the work.",
+      deliverables: [
+        "Story and real product capture",
+        "Landscape and portrait compositions",
+        "Music, export, and revision",
+      ],
+      proof: ["talkover", "punchpad", "crewboard", "whiteboard"],
+    },
+    {
+      id: "launches",
+      name: "Launch an experience",
+      title: "Bring the work to people.",
+      description:
+        "Collection sites and interactive launch experiences, with the tools to support them.",
+      deliverables: [
+        "Launch website and interactions",
+        "Collection or product integrations",
+        "Owner workflows and handover",
+      ],
+      proof: ["flower-girls", "puzzle-people", "marquee", "kpop-sing"],
+    },
+  ];
+  const deck = document.querySelector("#work-deck"),
+    prev = document.querySelector("#previous"),
+    next = document.querySelector("#next");
+  let collection = "all";
+  const esc = (s) =>
+    String(s).replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+  function card(p) {
+    const a = document.createElement("a");
+    a.className = `project-card identity-${p.id}`;
+    a.href = `work/${p.id}/`;
+    a.style.setProperty("--brand", p.accent);
+    const art = p.poster
+      ? `<img src="media/${esc(p.poster)}" alt="${esc(p.imageAlt || p.name)}" loading="lazy" decoding="async">`
+      : `<span class="wordmark">${esc(p.wordmark || p.name)}</span>`;
+    a.innerHTML = `<div class="project-image">${art}<span class="explore" aria-hidden="true">&#8599;</span></div><div class="caption"><h3>${esc(p.name)}</h3><p>${esc(p.kind)}</p></div>`;
+    return a;
   }
-
-  for (const r of rows) {
-    const grid = document.querySelector(`.grid[data-group="${r[0].group || "work"}"]`);
-    grid.closest("section").hidden = false;
-    const row = document.createElement("div");
-    row.className = "row";
-    const talls = r.filter((f) => f.ar === "9/16").length;
-    for (const f of r) {
-      const tall = f.ar === "9/16";
-      const fig = document.createElement("figure");
-      fig.className = "tile " + (tall ? "tall" : "wide") + (tall && talls === 1 ? " solo" : "");
-      fig.style.setProperty("--ar", f.ar.replace("/", " / "));
-      const [aw, ah] = f.ar.split("/").map(Number);
-      fig.style.setProperty("--grow", aw / ah);
-      fig.style.margin = "0";
-      fig.innerHTML =
-        `<button type="button" aria-label="Play the ${f.name} film">` +
-        `<img src="media/${f.id}.jpg" alt="" loading="lazy" decoding="async">` +
-        `<video muted loop playsinline preload="none" aria-hidden="true"></video></button>` +
-        `<figcaption class="cap"><span class="name">${f.name}</span><span class="kind">${f.kind}</span></figcaption>`;
-      const btn = fig.querySelector("button");
-      const vid = fig.querySelector("video");
-      btn.addEventListener("click", () => open(f.id));
-      if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
-        btn.addEventListener("pointerenter", () => {
-          if (!vid.src) vid.src = `media/${f.id}.mp4`;
-          vid.play().then(() => fig.classList.add("live")).catch(() => {});
-        });
-        btn.addEventListener("pointerleave", () => { vid.pause(); fig.classList.remove("live"); });
-      }
-      row.appendChild(fig);
+  function position() {
+    if (!deck.clientWidth) return;
+    const index = Math.round(deck.scrollLeft / deck.clientWidth);
+    prev.disabled = index === 0;
+    next.disabled = index >= deck.children.length - 1;
+    document.querySelector("#page-status").textContent =
+      `Page ${index + 1} of ${deck.children.length}`;
+    [...deck.children].forEach((page, i) => {
+      page.inert = i !== index;
+      page.setAttribute("aria-hidden", String(i !== index));
+    });
+  }
+  function work() {
+    const shown = PROJECTS.filter(
+      (p) => collection === "all" || p.group === collection,
+    );
+    deck.replaceChildren();
+    for (let i = 0; i < shown.length; i += 4) {
+      const page = document.createElement("div");
+      page.className = "project-grid project-page";
+      page.setAttribute("role", "group");
+      page.setAttribute(
+        "aria-label",
+        `Projects ${i + 1} to ${Math.min(i + 4, shown.length)}`,
+      );
+      page.append(...shown.slice(i, i + 4).map(card));
+      deck.append(page);
     }
-    grid.appendChild(row);
+    deck.scrollLeft = 0;
+    document
+      .querySelectorAll("[data-collection]")
+      .forEach((b) =>
+        b.setAttribute(
+          "aria-pressed",
+          String(b.dataset.collection === collection),
+        ),
+      );
+    position();
   }
-
-  // player
-  const dlg = document.querySelector(".player");
-  const video = dlg.querySelector(".p-video");
-  const $ = (s) => dlg.querySelector(s);
-  let cur = -1;
-  const portrait = () => matchMedia("(max-aspect-ratio: 1/1)").matches;
-
-  function show(i) {
-    cur = (i + list.length) % list.length;
-    const f = list[cur];
-    const src = f.tall && portrait() ? f.tall : f.id;
-    video.poster = `media/${src}.jpg`;
-    video.src = `media/${src}.mp4`;
-    $(".p-kind").textContent = f.kind;
-    $(".p-name").textContent = f.name;
-    $(".p-what").textContent = f.what;
-    $(".p-film").textContent = f.film;
-    const ul = $(".p-links");
-    ul.innerHTML = "";
-    for (const [label, href] of f.links) {
-      const li = document.createElement("li");
-      li.innerHTML = `<a href="${href}" target="_blank" rel="noopener">${label}</a>`;
-      ul.appendChild(li);
+  function service(id) {
+    const s = services.find((s) => s.id === id) || services[0];
+    document.querySelector("#service-title").textContent = s.title;
+    document.querySelector("#service-description").textContent = s.description;
+    document.querySelector("#service-deliverables").replaceChildren(
+      ...s.deliverables.map((text) => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        return li;
+      }),
+    );
+    document
+      .querySelector("#service-proof")
+      .replaceChildren(
+        ...s.proof.map((id) => card(PROJECTS.find((p) => p.id === id))),
+      );
+    document
+      .querySelectorAll("[data-service]")
+      .forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.service === s.id)),
+      );
+  }
+  function view() {
+    const hash = location.hash.slice(1),
+      parts = hash.split("/"),
+      active = parts[0] === "services" ? "services" : "work";
+    ["work", "services"].forEach(
+      (id) => (document.getElementById(id).hidden = id !== active),
+    );
+    document
+      .querySelectorAll("[data-view]")
+      .forEach((a) =>
+        a.setAttribute(
+          "aria-current",
+          a.dataset.view === active ? "page" : "false",
+        ),
+      );
+    if (active === "services") service(parts[1]);
+    else if (groups.some(([id]) => id === parts[1])) {
+      collection = parts[1];
+      work();
+    } else position();
+    const aliases = { singstan: "kpop-sing", "range-whiteboard": "whiteboard" };
+    const project = PROJECTS.find((p) => p.id === (aliases[hash] || hash));
+    if (project) location.replace(`work/${project.id}/`);
+  }
+  for (const [id, label] of groups) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.dataset.collection = id;
+    b.addEventListener("click", () => {
+      collection = id;
+      work();
+      history.replaceState(null, "", `#work/${id}`);
+    });
+    document.querySelector("#collections").append(b);
+  }
+  for (const s of services) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = s.name;
+    b.dataset.service = s.id;
+    b.addEventListener("click", () => {
+      service(s.id);
+      history.replaceState(null, "", `#services/${s.id}`);
+    });
+    document.querySelector("#service-options").append(b);
+  }
+  function advance(direction) {
+    deck.scrollBy({
+      left: direction * deck.clientWidth,
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
+  }
+  prev.addEventListener("click", () => advance(-1));
+  next.addEventListener("click", () => advance(1));
+  deck.addEventListener("scroll", position, { passive: true });
+  deck.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      advance(e.key === "ArrowRight" ? 1 : -1);
     }
-    history.replaceState(null, "", "#" + f.id);
-    video.play().catch(() => {});
-  }
-  function open(id) {
-    const i = list.findIndex((f) => f.id === id);
-    if (i < 0) return;
-    if (!dlg.open) dlg.showModal();
-    show(i);
-  }
-  function close() { video.pause(); dlg.close(); }
-  dlg.addEventListener("close", () => {
-    video.pause(); video.removeAttribute("src"); video.load();
-    if (list.some((f) => "#" + f.id === location.hash)) history.replaceState(null, "", location.pathname + "#work");
   });
-  $(".p-close").addEventListener("click", close);
-  $(".p-prev").addEventListener("click", () => show(cur - 1));
-  $(".p-next").addEventListener("click", () => show(cur + 1));
-  dlg.addEventListener("click", (e) => { if (e.target === dlg || e.target.classList.contains("p-stage")) close(); });
-  dlg.addEventListener("keydown", (e) => {
-    if (e.target === video) return; // the video's own controls use the arrow keys
-    if (e.key === "ArrowRight") show(cur + 1);
-    else if (e.key === "ArrowLeft") show(cur - 1);
-  });
-
-  const fromHash = () => {
-    const h = location.hash.slice(1);
-    if (list.some((f) => f.id === h)) open(h);
-  };
-  window.addEventListener("hashchange", fromHash);
-  fromHash();
-
-  // theme toggle: system by default, remembered once chosen
+  new ResizeObserver(position).observe(deck);
   document.querySelector(".theme").addEventListener("click", () => {
-    const root = document.documentElement;
-    const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    const root = document.documentElement,
+      dark = root.dataset.theme
+        ? root.dataset.theme === "dark"
+        : matchMedia("(prefers-color-scheme: dark)").matches;
     root.dataset.theme = dark ? "light" : "dark";
-    try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+    try {
+      localStorage.setItem("theme", root.dataset.theme);
+    } catch (e) {}
   });
+  work();
+  service("products");
+  view();
+  window.addEventListener("hashchange", view);
 })();

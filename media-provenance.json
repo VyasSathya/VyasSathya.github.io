@@ -1,0 +1,61 @@
+{
+  "front-of-line.mp4": {
+    "producer": "video-studio studio.launch",
+    "source_file": "front-of-line-rooms-1920x1080.mp4",
+    "content": "Real application interface in a fictional practice workspace. No private source is published."
+  },
+  "front-of-line.jpg": {
+    "producer": "ffmpeg",
+    "source_file": "front-of-line.mp4",
+    "source_seconds": 5
+  },
+  "kpop-sing.jpg": {
+    "producer": "video-studio capture/flow.mjs",
+    "source_file": "singstan-ads/capture/shots/tab-home2.png",
+    "content": "Real signed-out Expo web app. It is a browse screen, not proof of karaoke playback."
+  },
+  "marquee.jpg": {
+    "producer": "Headless browser capture",
+    "source": "New local J Will Media implementation for John Williams, from the marquee-studios project",
+    "content": "Website screenshot. The public Marquee domain still serves the previous site. Photography and video shown inside the client website belong to the client's portfolio."
+  },
+  "puzzle-people.jpg": {
+    "producer": "Headless browser capture",
+    "source": "https://puzzle-people.netlify.app",
+    "content": "Historical project homepage. No wallet connection or transaction."
+  },
+  "flower-girls.jpg": {
+    "producer": "Headless browser capture",
+    "source": "https://www.flowergirlsnft.com",
+    "source_image": "https://www.flowergirlsnft.com/wp-content/uploads/2021/11/FG-Blue-Venus.jpg",
+    "credit": "Artwork by Varvara Alay. Vyas's role is collection development."
+  },
+  "standup.jpg": {
+    "producer": "yt-dlp thumbnail retrieval and ffmpeg conversion",
+    "source": "https://www.youtube.com/watch?v=o2yYGrDhbDE",
+    "content": "Public video titled comedy set on Vyas Sathya's channel, published August 25, 2025. Thumbnail only; original video download failed."
+  },
+  "asset-pipeline.jpg": {
+    "producer": "Existing Blender comparison, resized with ffmpeg",
+    "source_file": "madballs_ball_standard_before_after_blender_fixed_glb.png",
+    "content": "Original and repaired game-prop material, rendered in Blender. No new generation."
+  },
+  "brainrot-wide.jpg": {
+    "producer": "ffmpeg frame extraction",
+    "source_file": "brainrot-ads/capture/raw/crowd-wide.mp4",
+    "source_seconds": 20,
+    "content": "Existing bot-only development gameplay capture. No game changes made for the portfolio."
+  },
+  "mad-balls.jpg": {
+    "producer": "ffmpeg frame extraction",
+    "source_file": "brainrot-ads/capture/raw/crowd-wide.mp4",
+    "source_seconds": 55,
+    "content": "Same game, dedicated minigame case study."
+  },
+  "video-studio.jpg": {
+    "producer": "ffmpeg frame extraction",
+    "source_file": "talkover.mp4",
+    "source_seconds": 11.9,
+    "content": "An example of video-studio output: the Talkover film."
+  }
+}

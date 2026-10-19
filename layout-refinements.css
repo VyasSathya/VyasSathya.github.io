@@ -1,0 +1,15 @@
+/* Compact explorer: the four-card page keeps the same geometry in every collection. */
+@media (min-width: 701px) {
+  .hero {
+    padding: 32px 0;
+  }
+  .hero h1 {
+    font-size: 56px;
+  }
+  .project-image {
+    height: 170px;
+  }
+  .caption {
+    height: 39px;
+  }
+}

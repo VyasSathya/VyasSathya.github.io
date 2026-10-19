@@ -1,0 +1,149 @@
+/* Project identity follows the real product's palette and material. */
+.identity-crewboard.case-shell {
+  --brand: #8d74c2;
+  --bg: #faf8fd;
+  --tile: #ece6f5;
+  --line: #dfd8e8;
+  --scrim: rgba(250, 248, 253, 0.94);
+}
+.identity-crewboard .case-hero {
+  padding-top: 86px;
+  padding-bottom: 48px;
+}
+.identity-crewboard .case-hero h1 {
+  font-size: clamp(56px, 9vw, 132px);
+  letter-spacing: -0.075em;
+}
+.identity-agent-brain.case-shell {
+  --brand: #427165;
+  --bg: #f4f5ef;
+  --tile: #e7ebe2;
+  --line: #d4dacb;
+  --scrim: rgba(244, 245, 239, 0.94);
+}
+.identity-agent-brain .case-hero {
+  border-left: 1px solid var(--line);
+  padding-left: 32px;
+  margin-top: 34px;
+  padding-top: 30px;
+}
+.identity-agent-brain .case-hero h1 {
+  font-weight: 400;
+  letter-spacing: -0.055em;
+}
+.identity-flower-girls.case-shell {
+  --brand: #986e82;
+  --bg: #fcf7f7;
+  --tile: #f1e6ec;
+  --line: #e8dce2;
+  --scrim: rgba(252, 247, 247, 0.94);
+}
+.identity-flower-girls .case-hero {
+  max-width: none;
+  text-align: center;
+  padding: 80px 0 60px;
+}
+.identity-flower-girls .case-tagline {
+  margin: 24px auto 0;
+}
+.identity-flower-girls .case-actions {
+  justify-content: center;
+}
+.identity-puzzle-people.case-shell {
+  --brand: #8f7430;
+  --bg: #faf8ef;
+  --tile: #ede7d6;
+  --line: #ded7c5;
+  --scrim: rgba(250, 248, 239, 0.94);
+}
+.identity-puzzle-people .case-hero h1 {
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  max-width: 750px;
+}
+.identity-puzzle-people .case-stage {
+  border-radius: 4px;
+  background: #0b1718;
+}
+.identity-marquee .case-hero h1 {
+  font-size: clamp(48px, 7vw, 100px);
+  max-width: 1050px;
+}
+.identity-brainrot-brawl .case-hero h1,
+.identity-mad-balls .case-hero h1 {
+  font-weight: 600;
+  letter-spacing: -0.065em;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .identity-crewboard.case-shell {
+    --bg: #15131b;
+    --fg: #f2eef8;
+    --tile: #24212d;
+    --line: #393243;
+    --scrim: rgba(21, 19, 27, 0.94);
+  }
+  :root:not([data-theme="light"]) .identity-agent-brain.case-shell {
+    --bg: #101815;
+    --fg: #eaf0e8;
+    --tile: #1b2720;
+    --line: #2d3d33;
+    --scrim: rgba(16, 24, 21, 0.94);
+  }
+  :root:not([data-theme="light"]) .identity-flower-girls.case-shell {
+    --bg: #1b1619;
+    --fg: #f4e9ee;
+    --tile: #2d2329;
+    --line: #41303a;
+    --scrim: rgba(27, 22, 25, 0.94);
+  }
+  :root:not([data-theme="light"]) .identity-puzzle-people.case-shell {
+    --bg: #171a16;
+    --fg: #f5f0df;
+    --tile: #282a21;
+    --line: #3d3c2b;
+    --scrim: rgba(23, 26, 22, 0.94);
+  }
+}
+:root[data-theme="dark"] .identity-crewboard.case-shell {
+  --bg: #15131b;
+  --fg: #f2eef8;
+  --tile: #24212d;
+  --line: #393243;
+  --scrim: rgba(21, 19, 27, 0.94);
+}
+:root[data-theme="dark"] .identity-agent-brain.case-shell {
+  --bg: #101815;
+  --fg: #eaf0e8;
+  --tile: #1b2720;
+  --line: #2d3d33;
+  --scrim: rgba(16, 24, 21, 0.94);
+}
+:root[data-theme="dark"] .identity-flower-girls.case-shell {
+  --bg: #1b1619;
+  --fg: #f4e9ee;
+  --tile: #2d2329;
+  --line: #41303a;
+  --scrim: rgba(27, 22, 25, 0.94);
+}
+:root[data-theme="dark"] .identity-puzzle-people.case-shell {
+  --bg: #171a16;
+  --fg: #f5f0df;
+  --tile: #282a21;
+  --line: #3d3c2b;
+  --scrim: rgba(23, 26, 22, 0.94);
+}
+@media (max-width: 700px) {
+  .identity-crewboard .case-hero {
+    padding: 48px 0 30px;
+  }
+  .identity-agent-brain .case-hero {
+    padding-left: 16px;
+    margin-top: 22px;
+  }
+  .identity-flower-girls .case-hero {
+    padding: 50px 0 36px;
+  }
+  .identity-marquee .case-hero h1 {
+    font-size: 47px;
+  }
+}
