@@ -549,10 +549,10 @@
     "tagline": "From raw asset to game-ready.",
     "summary": "Tooling for the work between asset generation and a usable game character: import cleanup, humanoid setup, animation, texture compression, and performance.",
     "contribution": "Character import and preparation workflows for game development.",
-    "state": "Engineering work. A public-safe asset demonstration is being selected.",
+    "state": "The film demonstrates material repair and inspection on an original game prop.",
     "poster": "asset-pipeline.jpg",
-    "film": null,
-    "filmNote": "Film in production from an original material comparison and a render of the repaired asset.",
+    "film": "asset-pipeline.mp4",
+    "filmNote": "Original and repaired material compared in Blender, followed by a turntable of the original repaired asset. Original local score.",
     "links": [],
     "details": [
       [

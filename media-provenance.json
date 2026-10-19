@@ -57,5 +57,16 @@
     "source_file": "talkover.mp4",
     "source_seconds": 11.9,
     "content": "An example of video-studio output: the Talkover film."
+  },
+  "asset-pipeline.mp4": {
+    "producer": "video-studio HyperFrames and background Blender",
+    "source_files": [
+      "madballs_ball_standard_before_after_blender_fixed_glb.png",
+      "madballs_ball_standard_fixed_lowpoly_textured.glb"
+    ],
+    "content": "Matched original/repaired material comparison and an actual render of the repaired GLB. No generated replacement asset or gameplay changes.",
+    "audio": "Original local studio.music instrumental score.",
+    "sha256": "89b656e914994a21824e34d1eed300a96dbb33eff7c71e67db0da49c265f77a2",
+    "review": "Two independent blind comparisons accepted the revised visual composition. Encoded technical checks passed; local transcription detected no speech."
   }
 }
