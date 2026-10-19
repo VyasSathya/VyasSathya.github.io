@@ -50,8 +50,8 @@
     "contribution": "The mobile and web experience, multilingual lyric workflows, recording, and native TV integration.",
     "state": "Internal TestFlight build. TV receiver setup and device validation are in progress.",
     "poster": "kpop-sing.jpg",
-    "film": null,
-    "filmNote": "Landscape product film in production. The phone app is in internal testing.",
+    "film": "kpop-sing.mp4",
+    "filmNote": "Landscape marketing film composed from existing generated performers, the real app catalog and an original local score. Performance footage is promotional, not a live karaoke or device test.",
     "links": [
       [
         "TV display",
@@ -90,7 +90,7 @@
     "state": "Development build. The footage shows bots, rather than a public multiplayer session.",
     "poster": "brainrot-wide.jpg",
     "film": null,
-    "filmNote": "Landscape film in production from existing game captures. No gameplay changes are part of this portfolio work.",
+    "filmNote": "Existing bot-only development capture. Mad Balls has its own gameplay film below.",
     "links": [],
     "details": [
       [
@@ -224,7 +224,7 @@
     "state": "New local site implementation for John Williams. The existing studio domain currently serves the previous website.",
     "poster": "marquee.jpg",
     "film": null,
-    "filmNote": "New J Will Media website implementation for John Williams and his studio. Landscape film in production; the public studio link still shows the previous site.",
+    "filmNote": "New J Will Media website implementation for John Williams and his studio. The public studio link still shows the previous site.",
     "links": [
       [
         "Visit studio",
@@ -295,7 +295,7 @@
     "state": "Historical collection development. Original artwork by Varvara Alay.",
     "poster": "flower-girls.jpg",
     "film": null,
-    "filmNote": "A collection-specific film is in production from original artwork and website captures.",
+    "filmNote": "Original collection website and artwork. Artwork by Varvara Alay.",
     "links": [
       [
         "Collection",
@@ -328,10 +328,10 @@
     "tagline": "A collection with its own character.",
     "summary": "A separate art collection and launch, with a React landing and wallet client and an Express minting backend.",
     "contribution": "Launch and sales web experiences, wallet-related flows, and collection tooling.",
-    "state": "Historical project. The public source is archived; no current minting or wallet operation is represented as working.",
+    "state": "Historical project with public source. No current minting or wallet operation is represented as working.",
     "poster": "puzzle-people.jpg",
     "film": null,
-    "filmNote": "Collection film in production from the historical project's original assets.",
+    "filmNote": "Original historical collection website, artwork and Art and Code credit.",
     "links": [
       [
         "Code archive",
@@ -366,8 +366,8 @@
     "contribution": "The writing and live performance.",
     "state": "The new highlight reel is in production. It will preserve complete setups, punchlines, timing, and audience response.",
     "poster": "standup.jpg",
-    "film": null,
-    "filmNote": "Watch the existing performance clip. A new highlight reel has not been completed.",
+    "film": "standup-highlights.mp4",
+    "filmNote": "Two uninterrupted excerpts from my own public set. Original speech, pauses and room response, reframed for landscape with audio mastering. The full original performance is also linked.",
     "youtube": "o2yYGrDhbDE",
     "links": [
       [
@@ -442,7 +442,7 @@
     "state": "Public toolchain with rendered examples. Individual films have their own source and review records.",
     "poster": "video-studio.jpg",
     "film": null,
-    "filmNote": "Toolchain film in production. The Talkover film is an existing example of its output.",
+    "filmNote": "The Talkover film is an existing example of this toolchain's output.",
     "links": [
       [
         "Code",
@@ -480,8 +480,8 @@
     "contribution": "Arena gameplay and its integration into the Brainrot Brawl suite.",
     "state": "A minigame inside Brainrot Brawl, not a separate released product.",
     "poster": "mad-balls.jpg",
-    "film": null,
-    "filmNote": "Dedicated landscape gameplay film in production from existing footage.",
+    "film": "mad-balls.mp4",
+    "filmNote": "Existing bot gameplay: a continuous pickup-to-impact sequence and the recorded match result. Landscape composition and original local score; no game changes.",
     "links": [],
     "details": [
       [
@@ -509,7 +509,7 @@
     "tagline": "Game creation, inside the editor.",
     "summary": "An AI-native game editor built on a Godot fork, bringing AI-assisted creative workflows into the engine's editing environment.",
     "contribution": "AI integration and editor tooling in the Godot-based engine.",
-    "state": "Historical engine work. The public source is archived and no longer maintained.",
+    "state": "Historical engine work. The public source is no longer maintained.",
     "poster": null,
     "film": null,
     "filmNote": "Editor film pending a verified product capture.",

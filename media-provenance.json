@@ -33,7 +33,7 @@
   "standup.jpg": {
     "producer": "yt-dlp thumbnail retrieval and ffmpeg conversion",
     "source": "https://www.youtube.com/watch?v=o2yYGrDhbDE",
-    "content": "Public video titled comedy set on Vyas Sathya's channel, published August 25, 2025. Thumbnail only; original video download failed."
+    "content": "Thumbnail from the public source performance. The full owned recording was subsequently recovered through the normal YouTube Studio download control."
   },
   "asset-pipeline.jpg": {
     "producer": "Existing Blender comparison, resized with ffmpeg",
@@ -68,5 +68,49 @@
     "audio": "Original local studio.music instrumental score.",
     "sha256": "89b656e914994a21824e34d1eed300a96dbb33eff7c71e67db0da49c265f77a2",
     "review": "Two independent blind comparisons accepted the revised visual composition. Encoded technical checks passed; local transcription detected no speech."
+  },
+  "mad-balls.mp4": {
+    "producer": "video-studio HyperFrames",
+    "source_files": [
+      "brainrot-ads/capture/raw/tralalero-hero.mp4",
+      "brainrot-ads/capture/raw/tung-stockflash.mp4",
+      "brainrot-ads/capture/clips/result-tralalero-hero.mp4"
+    ],
+    "content": "Existing bot-only development capture. A source-continuous pickup/throw/impact sequence and the real result of the same recorded match. No gameplay changes.",
+    "sha256": "475a8470b56fd05a0f6435897f4ca8e37b43cb47341f0fe7b56ee5663d0533a9",
+    "audio": "Original local studio.music instrumental score.",
+    "review": "Two fresh, swapped blind comparisons accepted the revision. Encoded technical checks passed; local transcription detected no speech."
+  },
+  "kpop-sing.mp4": {
+    "producer": "video-studio HyperFrames",
+    "source_files": [
+      "singstan-elegant-ballad-singer-kpop-karaoke-real-baked-micro-zoom-001/provider_fal_seedance.mp4",
+      "singstan-male-karaoke-ballad-vocalist-kpop-karaoke-real-baked-micro-zoom-001/provider_fal_seedance.mp4",
+      "singstan-ads/capture/shots/tab-home2.png",
+      "singstan/assets/icon/app-icons-pink/ios/Icon-1024.png"
+    ],
+    "content": "Existing generated fictional performance assets recomposed for landscape with an actual app catalog screenshot and current Kpop Sing end card. No new generation. Promotional performance is not a live karaoke test.",
+    "sha256": "366561742b6d7c260c69cb4c77695e08ecd0f95f5af48f24311e8e6bc5991b5b",
+    "audio": "Existing original local dance-pop score from the editable singstan-mv project.",
+    "review": "Two fresh swapped comparisons preferred this composition to the existing three approved portrait ads. Technical and blank-frame gates passed; local transcription detected no speech."
+  },
+  "standup-highlights.mp4": {
+    "producer": "video-studio source-preserving ffmpeg edit",
+    "source": "https://www.youtube.com/watch?v=o2yYGrDhbDE",
+    "source_sha256": "925882191b188d07386be66d3c7dd3729b827770332f5400f3f6de9e359caf10",
+    "source_spans": [
+      [
+        0,
+        81.2
+      ],
+      [
+        408,
+        469
+      ]
+    ],
+    "content": "Owned comedy set, two uninterrupted excerpts. Actual landscape crop follows source camera movement. No invented jokes, subtitle rewrites or audience response. This is an editorial selection for the owner to judge.",
+    "sha256": "eade257de8e63ce9e49d19ae1c237a8b5e0512d736a5dd0054babd4390b8d740",
+    "audio": "Original performance and room audio in the same uninterrupted source spans. Two-pass loudness normalization includes dynamic range and true peak control, with 30/100ms edge fades. No music, synthetic speech, substituted response or internal time edits.",
+    "review": "Technical gates passed. Fresh blind visual review passed sampled framing. Eight five-second windows match pre-master source audio exactly and final timing at zero offset. Continuous motion and comedy selection remain owner review, not inferred from contact sheets."
   }
 }
