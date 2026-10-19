@@ -1,6 +1,6 @@
 .contact { grid-template-columns: .85fr 1.3fr; gap: 90px; }
-.contact h2 { font-size: 44px; max-width: 330px; }
-.contact-intro { max-width: 300px; line-height: 1.7; }
+.contact h2 { font-size: clamp(44px,4vw,60px); max-width: 470px; }
+.contact-intro { max-width: 380px; line-height: 1.7; font-size: 17px; }
 .inquiry-form { display: grid; gap: 22px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .inquiry-form label { display: grid; gap: 8px; font-size: 12px; color: var(--fg); }
@@ -13,4 +13,5 @@
 .form-actions span { color:var(--muted); font-size:11px; }
 .form-status { min-height:22px; font-size:13px; line-height:1.5; }
 .form-status.error { color:#b54438; }.form-status.success { color:var(--accent); }
+@media(min-width:701px){.inquiry-form label{font-size:14px}.inquiry-form input,.inquiry-form textarea,.inquiry-form select{font-size:16px;padding:15px}.form-actions button{font-size:15px}.form-actions span{font-size:12px}}
 @media(max-width:700px){.contact{grid-template-columns:1fr;gap:32px}.contact h2{font-size:35px}.form-row{gap:14px}.inquiry-form{gap:18px}.form-actions{align-items:flex-start;flex-direction:column;gap:12px}}

@@ -21,7 +21,7 @@ PROJECTS = json.loads((ROOT / 'projects.json').read_text())
 DESIGNS = {
  'talkover': ('thumbnails/source-panel.png', (0,0,1,1), '#101215', '#f5f4f0', '#d77d57', ['Talkover'], 'Voice for coding agents'),
  'kpop-sing': ('kpop-sing.jpg', (.46,0,1,1), '#160c25', '#fff4ff', '#f7a4e5', ['Kpop','Sing'], 'K-pop karaoke'),
- 'brainrot-brawl': ('brainrot-wide.jpg', (0,.10,1,.98), '#30215b', '#fff5cf', '#f6ca5b', ['Brainrot','Brawl'], 'Mobile party game'),
+ 'brainrot-brawl': ('brainrot-current.jpg', (0,0,1,1), '#30215b', '#fff5cf', '#f6ca5b', ['Brainrot','Brawl'], 'Mobile party game'),
  'punchpad': ('punchpad.jpg', (.535,.06,.97,.94), '#f3efe7', '#242324', '#dd7245', ['Punchpad'], 'Record. Review. Prepare.'),
  'crewboard': ('crewboard.jpg', (.48,.13,.98,.94), '#ede7f6', '#302539', '#8966b2', ['crewboard'], 'A view of every agent'),
  'agent-brain': ('agent-brain.jpg', (.04,.15,.98,.94), '#e4ebe1', '#234536', '#427165', ['agent-brain'], 'Source-linked memory'),
@@ -33,6 +33,7 @@ DESIGNS = {
  'whiteboard': ('range-whiteboard.jpg', (0,0,1,1), '#f6f6ee', '#303b31', '#8f554b', ['Whiteboard','films'], 'How Talkover works'),
  'video-studio': ('thumbnails/source-panel.png', (0,0,1,1), '#221b1a', '#f8f0e9', '#e38665', ['video-studio'], 'Two film styles. One product.'),
  'mad-balls': ('mad-balls.jpg', (0,.10,1,.98), '#16343c', '#edf6e7', '#f49b60', ['Mad Balls'], 'Inside Brainrot Brawl'),
+ 'hook-wars': ('hook-wars.jpg', (0,0,1,1), '#173b43', '#f4edd8', '#efc16b', ['Hook Wars'], 'Pull. Reposition. Survive.'),
  'buildwhatever': ('buildwhatever.jpg', (.45,.05,.98,.96), '#11271e', '#e2f1db', '#9bd9ac', ['BuildWhatever'], 'Public-source architecture'),
  'asset-pipeline': ('asset-pipeline.jpg', (0,.08,1,1), '#25282d', '#f4eee3', '#eaa65a', ['3D asset','pipeline'], 'Material repair in Blender'),
 }
@@ -88,7 +89,8 @@ for p in PROJECTS:
             second,_=image_data(ROOT/'media/range-whiteboard.jpg',(0,0,1,1))
             art=f'<image x="{ix}" y="{iy}" width="{iw}" height="{ih*.31}" preserveAspectRatio="xMidYMid meet" href="{data}"/><image x="{ix}" y="{iy+ih*.36}" width="{iw}" height="{ih*.64}" preserveAspectRatio="xMidYMid meet" href="{second}"/>'
         svg=f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img"><title>{html.escape(p["name"])} portfolio poster</title><rect width="{w}" height="{h}" fill="{bg}"/><path d="M {tx} {h-38} h {70 if compact else 100}" stroke="{accent}" stroke-width="5"/>{label}{art}</svg>'
-        filename=f'{key}-{variant}.svg';(OUT/filename).write_text(svg)
+        stem=key+'-current' if key=='brainrot-brawl' else key
+        filename=f'{stem}-{variant}.svg';(OUT/filename).write_text(svg)
         entry['outputs'][variant]='thumbnails/'+filename
     p['thumbnail']={**entry['outputs'],'background':bg}
     p['playerPoster']=entry['outputs']['player']

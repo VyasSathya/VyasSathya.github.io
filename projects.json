@@ -101,12 +101,12 @@
     "type": "Own product",
     "accent": "#edbd47",
     "tagline": "A cast of characters. One chaotic arena.",
-    "summary": "A mobile party brawler built in Unity. The portfolio footage shows existing bot matches in the Mad Balls arena.",
+    "summary": "A mobile party brawler built in Unity. This film follows the Ricochet Riot dodgeball mode in a current development capture.",
     "contribution": "Game and mobile development, arena interaction, character integration, and the build and content pipeline.",
     "state": "Development build. The footage shows bots, rather than a public multiplayer session.",
-    "poster": "brainrot-wide.jpg",
-    "film": "brainrot-brawl.mp4",
-    "filmNote": "Existing bot gameplay in a development build. Two source-continuous character sequences, composed for landscape with an original local score.",
+    "poster": "brainrot-current.jpg",
+    "film": "brainrot-current.mp4",
+    "filmNote": "Real six-bot gameplay captured from the current local source on2026-10-19. One continuous source sequence; original instrumental score. Camera presentation only, with no gameplay changes.",
     "links": [],
     "details": [
       [
@@ -123,13 +123,14 @@
       ]
     ],
     "thumbnail": {
-      "wide": "thumbnails/brainrot-brawl-wide.svg",
-      "medium": "thumbnails/brainrot-brawl-medium.svg",
-      "compact": "thumbnails/brainrot-brawl-compact.svg",
-      "player": "thumbnails/brainrot-brawl-player.svg",
+      "wide": "thumbnails/brainrot-brawl-current-wide.svg",
+      "medium": "thumbnails/brainrot-brawl-current-medium.svg",
+      "compact": "thumbnails/brainrot-brawl-current-compact.svg",
+      "player": "thumbnails/brainrot-brawl-current-player.svg",
       "background": "#30215b"
     },
-    "playerPoster": "thumbnails/brainrot-brawl-player.svg"
+    "playerPoster": "thumbnails/brainrot-brawl-current-player.svg",
+    "imageRevision": "current-proof-1"
   },
   {
     "id": "punchpad",
@@ -269,7 +270,7 @@
     "tagline": "A creative studio, from first look to inquiry.",
     "summary": "A studio website with space galleries and a path from browsing the work to making an inquiry. Behind it, an owner workspace keeps customer conversations and follow-up organized.",
     "contribution": "The public website, galleries, inquiry intake, customer conversation flows, and owner workspace.",
-    "state": "New local site implementation for John Williams. The existing studio domain currently serves the previous website.",
+    "state": "Client website and owner workspace in progress for John Williams. The existing studio domain currently serves the previous website.",
     "poster": "marquee.jpg",
     "film": "marquee.mp4",
     "filmNote": "The new local J Will Media website: portfolio, two studio galleries and inquiry form. Photography belongs to John and his studio. The public studio domain still shows the previous website.",
@@ -446,8 +447,8 @@
     "contribution": "The writing and live performance.",
     "state": "Landscape highlight reel made from the original performance. Original speech, pauses and room response are retained.",
     "poster": "standup.jpg",
-    "film": "standup-after-zipper.mp4",
-    "filmNote": "Two uninterrupted excerpts from my own public set. Original speech, pauses and room response, reframed for landscape with audio mastering. The full original performance is also linked.",
+    "film": "standup-varied.mp4",
+    "filmNote": "Two uninterrupted excerpts from one original performance, starting after the zipper joke. Wide, upper-body and face/mic reframing; original speech timing and room audio, with no added audience response.",
     "youtube": "o2yYGrDhbDE",
     "links": [
       [
@@ -476,7 +477,8 @@
       "player": "thumbnails/standup-player.svg",
       "background": "#171a20"
     },
-    "playerPoster": "thumbnails/standup-player.svg"
+    "playerPoster": "thumbnails/standup-player.svg",
+    "imageRevision": "current-proof-1"
   },
   {
     "id": "whiteboard",
@@ -577,42 +579,43 @@
     "playerPoster": "thumbnails/video-studio-player.svg"
   },
   {
-    "id": "mad-balls",
-    "name": "Mad Balls",
+    "id": "hook-wars",
+    "name": "Hook Wars",
     "group": "games",
-    "kind": "Arena gameplay case study",
+    "kind": "Hook combat game mode",
     "type": "Part of Brainrot Brawl",
-    "accent": "#f2774f",
-    "tagline": "Pick up. Throw. Stay in the game.",
-    "summary": "The dodgeball arena within Brainrot Brawl, presented as a focused gameplay case study. Existing captures follow the bots through pickups, throws, impacts, and the match result.",
-    "contribution": "Arena gameplay and its integration into the Brainrot Brawl suite.",
-    "state": "A minigame inside Brainrot Brawl, not a separate released product.",
-    "poster": "mad-balls.jpg",
-    "film": "mad-balls.mp4",
-    "filmNote": "Existing bot gameplay: a continuous pickup-to-impact sequence and the recorded match result. Landscape composition and original local score; no game changes.",
+    "accent": "#efc16b",
+    "tagline": "Land a hook. Change the fight.",
+    "summary": "A different combat loop: hook opponents across a raised wooden arena, manage distance and stay in the fight. Built as a playable mode within Brainrot Brawl.",
+    "contribution": "Hook-combat mode integration, arena presentation, characters and the mobile-game pipeline.",
+    "state": "Playable mode within Brainrot Brawl. The footage is a development match with bots.",
+    "poster": "hook-wars.jpg",
+    "film": "hook-wars.mp4",
+    "filmNote": "Real six-bot Hook Wars gameplay captured from the current local source on2026-10-19. One continuous30-second source sequence with an original instrumental score. Camera presentation only; no gameplay changes.",
     "links": [],
     "details": [
       [
+        "Hooks",
+        "Line up a shot and pull opponents out of position."
+      ],
+      [
         "Arena",
-        "One of the experiences inside the Brainrot Brawl suite."
+        "A raised wooden battleground above the river."
       ],
       [
-        "Interaction",
-        "Pickups, throws, hits, and knockouts."
-      ],
-      [
-        "Footage",
-        "Bot matches from an existing development build."
+        "Development",
+        "Current game source, captured as a six-bot match."
       ]
     ],
+    "imageRevision": "current-proof-1",
     "thumbnail": {
-      "wide": "thumbnails/mad-balls-wide.svg",
-      "medium": "thumbnails/mad-balls-medium.svg",
-      "compact": "thumbnails/mad-balls-compact.svg",
-      "player": "thumbnails/mad-balls-player.svg",
-      "background": "#16343c"
+      "wide": "thumbnails/hook-wars-wide.svg",
+      "medium": "thumbnails/hook-wars-medium.svg",
+      "compact": "thumbnails/hook-wars-compact.svg",
+      "player": "thumbnails/hook-wars-player.svg",
+      "background": "#173b43"
     },
-    "playerPoster": "thumbnails/mad-balls-player.svg"
+    "playerPoster": "thumbnails/hook-wars-player.svg"
   },
   {
     "id": "buildwhatever",

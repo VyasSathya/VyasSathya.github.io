@@ -1,4 +1,5 @@
 /* Project identity follows the real product's palette and material. */
+.identity-hook-wars .product-name { color: var(--fg); }
 .identity-crewboard.case-shell {
   --brand: #8d74c2;
   --bg: #faf8fd;
