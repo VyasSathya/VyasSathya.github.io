@@ -1,0 +1,290 @@
+[
+  {
+    "output": "media/cases/talkover-hero.jpg",
+    "source": "media/talkover.mp4",
+    "seconds": 2,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/talkover-1.jpg",
+    "source": "media/talkover.mp4",
+    "seconds": 9,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/talkover-2.jpg",
+    "source": "media/talkover.mp4",
+    "seconds": 14,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/kpop-sing-hero.jpg",
+    "source": "media/kpop-sing.mp4",
+    "seconds": 1.2,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/kpop-sing-1.jpg",
+    "source": "media/kpop-sing.mp4",
+    "seconds": 5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/kpop-sing-2.jpg",
+    "source": "media/kpop-sing.mp4",
+    "seconds": 10.5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/brainrot-brawl-hero.jpg",
+    "source": "media/brainrot-brawl.mp4",
+    "seconds": 2,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/brainrot-brawl-1.jpg",
+    "source": "media/brainrot-brawl.mp4",
+    "seconds": 4.9,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/brainrot-brawl-2.jpg",
+    "source": "media/brainrot-brawl.mp4",
+    "seconds": 8,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/punchpad-hero.jpg",
+    "source": "media/punchpad.mp4",
+    "seconds": 3,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/punchpad-1.jpg",
+    "source": "media/punchpad.mp4",
+    "seconds": 8,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/punchpad-2.jpg",
+    "source": "media/punchpad.mp4",
+    "seconds": 13,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/crewboard-hero.jpg",
+    "source": "media/crewboard.mp4",
+    "seconds": 4,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/crewboard-1.jpg",
+    "source": "media/crewboard.mp4",
+    "seconds": 9,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/crewboard-2.jpg",
+    "source": "media/crewboard.mp4",
+    "seconds": 15,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/agent-brain-hero.jpg",
+    "source": "media/agent-brain.mp4",
+    "seconds": 5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/agent-brain-1.jpg",
+    "source": "media/agent-brain.mp4",
+    "seconds": 14,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/agent-brain-2.jpg",
+    "source": "media/agent-brain.mp4",
+    "seconds": 19,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/marquee-hero.jpg",
+    "source": "media/marquee.mp4",
+    "seconds": 4,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/marquee-1.jpg",
+    "source": "media/marquee.mp4",
+    "seconds": 8.9,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/marquee-2.jpg",
+    "source": "media/marquee.mp4",
+    "seconds": 13,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/front-of-line-hero.jpg",
+    "source": "media/front-of-line.mp4",
+    "seconds": 3,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/front-of-line-1.jpg",
+    "source": "media/front-of-line.mp4",
+    "seconds": 7,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/front-of-line-2.jpg",
+    "source": "media/front-of-line.mp4",
+    "seconds": 12,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/flower-girls-hero.jpg",
+    "source": "media/flower-girls.mp4",
+    "seconds": 4,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/flower-girls-1.jpg",
+    "source": "media/flower-girls.mp4",
+    "seconds": 8.5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/flower-girls-2.jpg",
+    "source": "media/flower-girls.mp4",
+    "seconds": 12.5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/puzzle-people-hero.jpg",
+    "source": "media/puzzle-people.mp4",
+    "seconds": 2,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/puzzle-people-1.jpg",
+    "source": "media/puzzle-people.mp4",
+    "seconds": 5.5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/puzzle-people-2.jpg",
+    "source": "media/puzzle-people.mp4",
+    "seconds": 9,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/standup-hero.jpg",
+    "source": "media/standup-highlights.mp4",
+    "seconds": 108.2,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/standup-1.jpg",
+    "source": "media/standup-highlights.mp4",
+    "seconds": 110,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/standup-2.jpg",
+    "source": "media/standup-highlights.mp4",
+    "seconds": 114,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/whiteboard-hero.jpg",
+    "source": "media/range-whiteboard.mp4",
+    "seconds": 5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/whiteboard-1.jpg",
+    "source": "media/range-whiteboard.mp4",
+    "seconds": 13,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/whiteboard-2.jpg",
+    "source": "media/range-whiteboard.mp4",
+    "seconds": 20,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/video-studio-hero.jpg",
+    "source": "media/video-studio.mp4",
+    "seconds": 3.5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/video-studio-1.jpg",
+    "source": "media/video-studio.mp4",
+    "seconds": 7,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/video-studio-2.jpg",
+    "source": "media/video-studio.mp4",
+    "seconds": 11.5,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/mad-balls-hero.jpg",
+    "source": "media/mad-balls.mp4",
+    "seconds": 2,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/mad-balls-1.jpg",
+    "source": "media/mad-balls.mp4",
+    "seconds": 6,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/mad-balls-2.jpg",
+    "source": "media/mad-balls.mp4",
+    "seconds": 10,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/buildwhatever-hero.jpg",
+    "source": "media/buildwhatever.mp4",
+    "seconds": 2,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/buildwhatever-1.jpg",
+    "source": "media/buildwhatever.mp4",
+    "seconds": 6,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/buildwhatever-2.jpg",
+    "source": "media/buildwhatever.mp4",
+    "seconds": 10,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/asset-pipeline-hero.jpg",
+    "source": "media/asset-pipeline.mp4",
+    "seconds": 3,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/asset-pipeline-1.jpg",
+    "source": "media/asset-pipeline.mp4",
+    "seconds": 6,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/asset-pipeline-2.jpg",
+    "source": "media/asset-pipeline.mp4",
+    "seconds": 8,
+    "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  }
+]

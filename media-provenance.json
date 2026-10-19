@@ -139,21 +139,243 @@
     "review": "Both fresh swapped R6 comparisons selected this film. Encoded technical and HyperFrames gates passed; local transcription found no speech."
   },
   "portfolio-overview.mp4": {
-    "producer": "Existing video-studio ffmpeg composition and studio.music score",
-    "source_films": [
-      "talkover.mp4",
-      "kpop-sing.mp4",
-      "punchpad.mp4",
-      "front-of-line.mp4",
-      "crewboard.mp4",
-      "agent-brain.mp4",
-      "mad-balls.mp4",
-      "asset-pipeline.mp4",
-      "range-whiteboard.mp4"
+    "producer": "video-studio projects/portfolio-landscape/render-overview.py",
+    "width": 1920,
+    "height": 1080,
+    "duration": 103.4,
+    "shots": [
+      {
+        "project": "Talkover",
+        "source_file": "talkover.mp4",
+        "source_start": 2,
+        "duration": 6,
+        "timeline_start": 0,
+        "source_ranges": [
+          [
+            2,
+            8
+          ]
+        ],
+        "sha256": "fbfb44aec36f678bdb301ecf7c4c2efd7d69056f0386177856af56a77d8bf7e8"
+      },
+      {
+        "project": "Kpop Sing",
+        "source_file": "kpop-sing.mp4",
+        "source_start": 0.8,
+        "duration": 6,
+        "timeline_start": 6,
+        "source_ranges": [
+          [
+            0.8,
+            6.8
+          ]
+        ],
+        "sha256": "366561742b6d7c260c69cb4c77695e08ecd0f95f5af48f24311e8e6bc5991b5b"
+      },
+      {
+        "project": "Brainrot Brawl",
+        "source_file": "brainrot-brawl.mp4",
+        "source_start": 0,
+        "duration": 6,
+        "timeline_start": 12,
+        "source_ranges": [
+          [
+            0,
+            6
+          ]
+        ],
+        "sha256": "1fc72aef2b9bd003b64da412ec1ce97e31d482e7df5967a0acb5609405e737f4"
+      },
+      {
+        "project": "Punchpad",
+        "source_file": "punchpad.mp4",
+        "source_start": 3,
+        "duration": 6,
+        "timeline_start": 18,
+        "source_ranges": [
+          [
+            3,
+            9
+          ]
+        ],
+        "sha256": "ec971788c86d6e796cd5512601fb0ee91c745252a6fd729d67961368fe7dd7e3"
+      },
+      {
+        "project": "crewboard",
+        "source_file": "crewboard.mp4",
+        "source_start": 4,
+        "duration": 6,
+        "timeline_start": 24,
+        "source_ranges": [
+          [
+            4,
+            10
+          ]
+        ],
+        "sha256": "69054b75ffbd3dbc5406103e35d7f8c9d4d1fdf7979dd96ef5ca9ed048fac1b1"
+      },
+      {
+        "project": "agent-brain",
+        "source_file": "agent-brain.mp4",
+        "source_start": 14,
+        "duration": 6,
+        "timeline_start": 30,
+        "source_ranges": [
+          [
+            14,
+            20
+          ]
+        ],
+        "sha256": "9488db5eb71a04423627e31b821de0f238481116cfb9aff8aa516c12e52895cb"
+      },
+      {
+        "project": "J Will Media / Marquee",
+        "source_file": "marquee.mp4",
+        "source_start": 3.2,
+        "duration": 6,
+        "timeline_start": 36,
+        "source_ranges": [
+          [
+            3.2,
+            9.2
+          ]
+        ],
+        "sha256": "079d2ab1b9f33f0aa01061425ad544e4646c6a7133059049cbacb1216930a80e"
+      },
+      {
+        "project": "Front of Line",
+        "source_file": "front-of-line.mp4",
+        "source_start": 2,
+        "duration": 6,
+        "timeline_start": 42,
+        "source_ranges": [
+          [
+            2,
+            8
+          ]
+        ],
+        "sha256": "b5d5f222156af6f10e73f79df3958fbec0fe8cafe53c7d0873e371b323b40d0d"
+      },
+      {
+        "project": "Flower Girls",
+        "source_file": "flower-girls.mp4",
+        "source_start": 3.5,
+        "duration": 6,
+        "timeline_start": 48,
+        "source_ranges": [
+          [
+            3.5,
+            9.5
+          ]
+        ],
+        "sha256": "a3f596ea15db8b8e9e7c91b06a48447fea4c3105a45bcd7b6ad4f9223070b3b9"
+      },
+      {
+        "project": "Puzzle People",
+        "source_file": "puzzle-people.mp4",
+        "source_start": 3,
+        "duration": 6,
+        "timeline_start": 54,
+        "source_ranges": [
+          [
+            3,
+            9
+          ]
+        ],
+        "sha256": "2b8b3d4c9b8d41c4ac96f45d1737e2543708759620943fcf821cd4bc5754b5c6"
+      },
+      {
+        "project": "Stand-up / Vyas Sathya",
+        "source_file": "standup-highlights.mp4",
+        "source_start": 13,
+        "duration": 5.5,
+        "timeline_start": 60,
+        "source_ranges": [
+          [
+            13,
+            18.5
+          ]
+        ],
+        "sha256": "eade257de8e63ce9e49d19ae1c237a8b5e0512d736a5dd0054babd4390b8d740"
+      },
+      {
+        "project": "Whiteboard films",
+        "source_file": "range-whiteboard.mp4",
+        "source_start": 15,
+        "duration": 6,
+        "timeline_start": 65.5,
+        "source_ranges": [
+          [
+            15,
+            21
+          ]
+        ],
+        "sha256": "a9f8cf5e738ed4cf5615b532edab33324d6e110130756fddba830db119e32ce6"
+      },
+      {
+        "project": "video-studio",
+        "source_file": "video-studio.mp4",
+        "source_start": 0,
+        "duration": 7,
+        "timeline_start": 71.5,
+        "source_ranges": [
+          [
+            0,
+            3
+          ],
+          [
+            9,
+            13
+          ]
+        ],
+        "sha256": "fa322003ef3e9fff47117feac3157431bf107c482a81105ac57a5fb9ea26587b"
+      },
+      {
+        "project": "Mad Balls",
+        "source_file": "mad-balls.mp4",
+        "source_start": 0,
+        "duration": 9.4,
+        "timeline_start": 78.5,
+        "source_ranges": [
+          [
+            0,
+            9.4
+          ]
+        ],
+        "sha256": "475a8470b56fd05a0f6435897f4ca8e37b43cb47341f0fe7b56ee5663d0533a9"
+      },
+      {
+        "project": "BuildWhatever",
+        "source_file": "buildwhatever.mp4",
+        "source_start": 2.5,
+        "duration": 6,
+        "timeline_start": 87.9,
+        "source_ranges": [
+          [
+            2.5,
+            8.5
+          ]
+        ],
+        "sha256": "19c1dd24d573989325047ba4287207caef8c43955351f4b32206ecad36d91501"
+      },
+      {
+        "project": "3D asset pipeline",
+        "source_file": "asset-pipeline.mp4",
+        "source_start": 2,
+        "duration": 6,
+        "timeline_start": 93.9,
+        "source_ranges": [
+          [
+            2,
+            8
+          ]
+        ],
+        "sha256": "89b656e914994a21824e34d1eed300a96dbb33eff7c71e67db0da49c265f77a2"
+      }
     ],
-    "content": "Nine selected cases, normally six seconds per case; gameplay has 9.4 seconds. Full landscape sources retain their own visual systems. Kpop footage is generated promotional performance, not a live karaoke test. No performance speech is cut into the overview.",
-    "sha256": "5c87262e0e511eef6837e3adb2b8590d1763bb661b6aca7d0ad741d553a9dfba",
-    "review": "Both fresh swapped R3 reviews preferred this readable overview to the previous fast showreel. Technical checks passed; deliberate source diagram reading holds are documented."
+    "audio": "Original locally synthesized electric-piano score, projects/portfolio-landscape/score-overview.py. Every source film is picture only; no stand-up speech, punchline audio or audience sound is chopped into the montage. Full uninterrupted performance reel remains separate.",
+    "coverage": "All sixteen selected cases. Kpop is generated marketing footage, gameplay is an existing bot development capture, BuildWhatever is historical public-source architecture. No runtime or outcome claims added.",
+    "review": "Final expanded cut won both fresh swapped comparisons. Encoded technical and local no-speech audits passed. Full diagram payoff checked at78.3s. Contact sheets assess sampled composition; owner editorial approval is separate."
   },
   "flower-girls.mp4": {
     "producer": "video-studio HyperFrames",
@@ -214,5 +436,15 @@
     "producer": "scripts/build-thumbnails.py, native SVG with Geist glyph paths and approved imagery",
     "manifest": "media/thumbnails/provenance.json",
     "content": "Four art-directed variants for every project; separate 16:9 overview cover. Existing images and app-drawn panel only, no generated substitute UI. Films unchanged."
+  },
+  "standup-stage-portrait.png": {
+    "producer": "ffmpeg unchanged frame extraction from original owner-downloaded public performance",
+    "source": "https://www.youtube.com/watch?v=o2yYGrDhbDE",
+    "source_seconds": 435,
+    "source_dimensions": [
+      720,
+      1280
+    ],
+    "content": "Vyas Sathya holding the microphone in his own original performance; no generated likeness. Thumbnail crop recorded in media/thumbnails/provenance.json."
   }
 }

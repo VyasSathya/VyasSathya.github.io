@@ -1,0 +1,16 @@
+.contact { grid-template-columns: .85fr 1.3fr; gap: 90px; }
+.contact h2 { font-size: 44px; max-width: 330px; }
+.contact-intro { max-width: 300px; line-height: 1.7; }
+.inquiry-form { display: grid; gap: 22px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.inquiry-form label { display: grid; gap: 8px; font-size: 12px; color: var(--fg); }
+.inquiry-form input,.inquiry-form textarea,.inquiry-form select { display:block; width:100%; min-width:0; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg); padding:12px 13px; font:inherit; font-size:14px; outline-offset:3px; }
+.inquiry-form textarea { resize:vertical; min-height:145px; line-height:1.6; }
+.inquiry-form input::placeholder,.inquiry-form textarea::placeholder { color:var(--muted); }
+.inquiry-form .trap { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.form-actions { display:flex; gap:24px; align-items:center; }
+.form-actions button { border:1px solid var(--fg); background:var(--fg); color:var(--bg); padding:13px 21px; border-radius:8px; font-size:13px; }
+.form-actions span { color:var(--muted); font-size:11px; }
+.form-status { min-height:22px; font-size:13px; line-height:1.5; }
+.form-status.error { color:#b54438; }.form-status.success { color:var(--accent); }
+@media(max-width:700px){.contact{grid-template-columns:1fr;gap:32px}.contact h2{font-size:35px}.form-row{gap:14px}.inquiry-form{gap:18px}.form-actions{align-items:flex-start;flex-direction:column;gap:12px}}
