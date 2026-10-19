@@ -82,3 +82,19 @@ label.f{display:block;font-size:13px;font-weight:500;margin:12px 0 5px}
 .tabs button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
 .tabs button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 @media (max-width:560px){main{padding:20px 16px 64px}h1{font-size:24px}.bar{padding:12px 16px}.card{padding:16px}}
+.since{margin-top:20px;background:var(--accent-soft);border-color:transparent}
+.since .block-title{color:var(--accent)}
+.since ul.plain li{padding:4px 0}
+.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.choice{min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);cursor:pointer;font-size:14px;font-weight:500;text-align:left}
+.choice:hover{border-color:var(--accent);color:var(--accent)}
+.budget{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.budget .fig{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.phone h3{font-size:15px}
+.steps{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.7}
+details.edit{margin-top:12px}
+details.edit summary{cursor:pointer;font-size:13px;color:var(--muted);list-style:none}
+details.edit summary::-webkit-details-marker{display:none}
+.paste{display:flex;gap:8px;margin-top:18px}
+.paste input{flex:1}
+@media (display-mode:standalone){.bar{padding-top:max(14px,env(safe-area-inset-top))}}
