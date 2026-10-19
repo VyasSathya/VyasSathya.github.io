@@ -304,12 +304,17 @@
   function freshBox() {
     const url = `${location.origin}${fresh.role === 'owner' ? '/studio/' : '/portal/'}#k=${fresh.token}`;
     return `<div class="linkbox"><div class="sub" style="margin-bottom:6px">${fresh.role === 'owner' ? 'Owner link for a new device' : 'Client link'}. Copy it now; it is not shown again.</div>
-      <div>${esc(url)}</div><div class="actions"><button class="btn small primary" data-copy="${esc(url)}">Copy link</button><button class="btn small ghost" data-dismiss>Done</button></div></div>`;
+      <div class="qr">${qrSvg(url)}<div><div class="sub">${fresh.role === 'owner' ? 'Point your phone camera at the code, open the link, then Share > Add to Home Screen.' : 'Scan to open on a phone, or copy the link.'}</div>
+      <div class="actions"><button class="btn small primary" data-copy="${esc(url)}">Copy link</button><button class="btn small ghost" data-dismiss>Done</button></div></div></div></div>`;
+  }
+
+  function qrSvg(text) {
+    try { const q = qrcode(0, 'M'); q.addData(text); q.make(); return q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); } catch (e) { return ''; }
   }
 
   function accessList(pid) {
     const rows = data.links.filter(l => pid ? l.role === 'client' && l.project_ids.includes(pid) : true);
-    const name = l => l.role === 'owner' ? 'Owner' : l.role === 'sync' ? 'Sync' : 'Client';
+    const name = l => ({ owner: 'Owner device', sync: 'PC feed', cron: 'Reminder schedule', client: 'Client' })[l.role] || l.role;
     return `<div class="list">${rows.length ? rows.map(l => `<div class="prow" style="cursor:default"><div class="t"><span>${esc(l.label || name(l))}</span>
         ${l.revoked_at ? '<span class="chip">Off</span>' : `<button class="btn small ghost" data-revoke="${l.id}">Turn off</button>`}</div>
         <div class="m">${name(l)}${l.role === 'client' && !pid ? ' &middot; ' + l.project_ids.map(esc).join(', ') : ''} &middot; made ${day(l.created_at)} &middot; last used ${ago(l.last_used_at)}${l.expires_at ? ' &middot; ends ' + day(l.expires_at) : ''}</div></div>`).join('') : '<p class="empty">No links yet.</p>'}</div>
