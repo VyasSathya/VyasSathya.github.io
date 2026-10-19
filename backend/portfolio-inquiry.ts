@@ -1,5 +1,5 @@
 // New isolated endpoint; existing Sparktory functions and credentials remain unchanged.
-const allowed = new Set(['https://vyassathya.github.io','http://localhost:8791','http://127.0.0.1:8791']);
+const allowed = new Set(['https://vyassathya.github.io','https://vyasapps.dev','https://www.vyasapps.dev','http://localhost:8791','http://127.0.0.1:8791']);
 const types = new Set(['Product or website','Workflow automation','Game or 3D tooling','Product film','Collection launch','Something else']);
 Deno.serve(async (req:Request) => {
  const origin=req.headers.get('origin')||'';

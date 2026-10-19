@@ -23,9 +23,9 @@ Project pages work without JavaScript; video controls and public links remain av
 
 Responsive project posters have separate wide, medium, phone and 16:9 player compositions.
 See `docs/poster-art-direction.md` for dimensions, the source manifest and regeneration.
-The 103.4-second hero overview introduces all sixteen selected cases. It autoplays muted, with an explicit sound toggle and native controls. Reduced motion keeps manual playback. Individual project pages lead with real actions and a film, then features, two real film stills and collapsible project details.
+The 103.4-second hero overview introduces all sixteen selected cases. It autoplays muted with native player controls for sound, pause and seeking. Reduced motion keeps manual playback. Individual project pages lead with real actions and a film, then features, two real film stills and collapsible project details.
 
-The overview action sits in a fixed-size control row below the complete 16:9 image. About is one continuous introduction with inline project evidence; engagement terms sit with Contact.
+The overview has no separate title, duration or custom sound/play buttons. Its stand-up chapter uses a closer face/microphone crop from the original performance at435-440.5s. The separate 126.2-second stand-up reel starts after the zipper joke: original source16-81.2s, then408-469s, with unchanged internal timing and room audio. Original edits remain as history at their old media URLs. About is one continuous introduction with inline project evidence; engagement terms sit with Contact.
 
 Contact uses a project inquiry form. Its existing Supabase deployment stores submissions in a private portfolio schema; see `backend/README.md` for owner retrieval and notification status.
 

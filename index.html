@@ -25,7 +25,7 @@
       crossorigin
     />
     <link rel="stylesheet" href="site.css" />
-    <link rel="stylesheet" href="layout-refinements.css?v=about-controls-1" /><link rel="stylesheet" href="contact.css" />
+    <link rel="stylesheet" href="layout-refinements.css?v=native-player-1" /><link rel="stylesheet" href="contact.css" />
     <script>
       try {
         const t = localStorage.getItem("theme");
@@ -81,18 +81,10 @@
         </div>
         <div class="hero-reel" id="overview">
           <div class="hero-frame">
-          <video playsinline preload="none" poster="media/thumbnails/overview-player.svg" aria-label="Portfolio overview: sixteen selected projects">
-            <source src="media/portfolio-overview.mp4" type="video/mp4" />
-            <a href="media/portfolio-overview.mp4">Watch the portfolio overview</a>
+          <video controls muted playsinline preload="none" poster="media/thumbnails/overview-player.svg" aria-label="Portfolio overview: sixteen selected projects">
+            <source src="media/portfolio-overview-mic.mp4" type="video/mp4" />
+            <a href="media/portfolio-overview-mic.mp4">Watch the portfolio overview</a>
           </video>
-          </div>
-          <div class="hero-controls">
-          <p>Portfolio overview <span class="reel-time">1:43</span></p>
-          <button class="hero-play" type="button" data-state="paused" data-muted="true" aria-label="Play portfolio overview">
-            <svg class="icon-play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 4l13 8-13 8z" fill="currentColor"/></svg>
-            <svg class="icon-sound" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path class="sound-cross" d="m17 9 5 6m0-6-5 6" fill="none" stroke="currentColor" stroke-width="1.6"/><path class="sound-waves" d="M16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-            <span>Play overview</span>
-          </button>
           </div>
         </div>
       </section>
@@ -174,6 +166,6 @@
     </footer>
     <script src="catalog.js"></script>
     <script src="films.js"></script>
-    <script src="portfolio.js?v=about-controls-1"></script><script src="contact.js"></script>
+    <script src="portfolio.js?v=native-player-1"></script><script src="contact.js"></script>
   </body>
 </html>
