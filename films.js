@@ -178,13 +178,20 @@
         b.setAttribute("aria-pressed", String(b.dataset.service === s.id)),
       );
   }
+  let initialized = false;
   function view() {
     const parts = location.hash.slice(1).split('/');
-    if (deck) {
-      if (groups.some(([id]) => id === parts[1])) collection = parts[1];
+    if (deck && (!initialized || (parts[0] === 'work' && parts[1] && collection !== parts[1]))) {
+      if (parts[0] === 'work' && groups.some(([id]) => id === parts[1])) collection = parts[1];
       work();
     }
-    if (document.querySelector('#service-options')) service(parts[1] || 'products');
+    if (document.querySelector('#service-options') && (!initialized || (parts[0] === 'services' && parts[1]))) service(parts[0] === 'services' ? parts[1] : 'products');
+    if (!initialized && parts[0]) requestAnimationFrame(() => document.getElementById(parts[0])?.scrollIntoView({behavior:'instant'}));
+    initialized = true;
+    document.querySelectorAll('.bar nav a').forEach(a => {
+      if (a.hash === '#' + (parts[0] || 'work')) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
   }
   if (deck) for (const [id, label] of groups) {
     const b = document.createElement("button");

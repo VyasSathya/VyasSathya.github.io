@@ -7,8 +7,8 @@ Films in `media/` are h264 with faststart and load only when played; posters are
 
 ## Layout
 
-- `index.html`: Work and Services explorer
-- `site.css`, `layout-refinements.css`, `identities.css`: responsive layouts and project identities, with light and dark appearance
+- `index.html`: Work, Services, About and Contact on one page, with anchor navigation
+- `site.css`, `layout-refinements.css`, `identities.css`, `case-pages.css`: responsive layouts and project identities, with light and dark appearance
 - `projects.json`: the source catalog, including product state and real actions
 - `films.js`: four-card paging and service buying paths
 - `catalog.js`, `work/<project>/index.html`: static outputs generated from the catalog
@@ -19,7 +19,8 @@ step to host. Serve the directory with any static HTTP server for local review.
 
 All and every Work collection use the same two-column, two-row page. Arrows advance an entire page;
 touch scrolling snaps to pages. Services describe deliverables and link to four relevant examples each.
-Project pages work without JavaScript; video controls and public links remain available.
+Project pages put the description, actions and real demo beside each other, with film stills below and additional contribution/status details in a disclosure. They work without JavaScript; video controls and public links remain available.
+The old `/services/`, `/about/` and `/contact/` URLs redirect to their sections on the main page.
 
 Responsive project posters have separate wide, medium, phone and 16:9 player compositions.
 See `docs/poster-art-direction.md` for dimensions, the source manifest and regeneration.

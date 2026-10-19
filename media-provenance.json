@@ -230,5 +230,11 @@
     "source_url": "https://puzzle-people.netlify.app",
     "sha256": "757aa41a5d4fc37eea15d21a78d836ac4e20bc46eb207100a89d7bebcbae5ca2",
     "credit": "All Puzzle People artwork by Vyas Sathya, drawn in Procreate with layers before AI. Artwork attribution supplied directly by the artist on 2026-10-18."
+  },
+  "cases/": {
+    "producer": "Existing portfolio-production ffmpeg frame extraction; unchanged approved film picture",
+    "source_file": "portfolio-production/work/site-release/media/cases/",
+    "manifest": "media/cases/provenance.json",
+    "content": "Integrated the existing prepared case-page stills and layout. Each still retains its exact source movie and timestamp in the accompanying manifest. No films changed."
   }
 }

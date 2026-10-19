@@ -18,6 +18,7 @@
 .project-image picture { display: block; width: 100%; height: 100%; }
 .project-image img { display: block; object-fit: contain; }
 .project-card:hover img { transform: none; }
+.bar nav a[aria-current="location"] { color: var(--fg); }
 .hero { display: grid; grid-template-columns: .95fr 1.15fr; gap: 44px; align-items: center; padding: 65px 0 84px; }
 .hero h1 { font-size: clamp(40px, 4.1vw, 56px); }
 .hero .intro { max-width: 380px; font-size: 15px; }
@@ -86,6 +87,13 @@
 .services-page { padding-top: 50px; padding-bottom: 80px; }
 .services-page .section-head h1 { font-size: 20px; font-weight: 500; letter-spacing: -.03em; }
 .services-page #services { display: block; }
+.view#services { border-top: 1px solid var(--line); margin-top: 80px; padding-top: 56px; }
+#about.about-page { border-top: 1px solid var(--line); margin-top: 76px; }
+#about .about-intro h2 { font-size: clamp(38px, 4.5vw, 60px); line-height: 1.08; font-weight: 500; letter-spacing: -.05em; }
+#about .about-story { margin-top: 40px; }
+#contact.contact-page { min-height: 0; border-top: 1px solid var(--line); max-width: none; padding: 64px 0 80px; }
+#contact h2 { font-size: clamp(42px, 6vw, 76px); line-height: 1.04; font-weight: 500; letter-spacing: -.055em; }
+#contact .contact-direct { max-width: 900px; }
 @media (max-width: 700px) {
  .about-page, .contact-page { padding-top: 42px; padding-bottom: 58px; }
  .contact-page h1 { font-size: clamp(42px, 11.2vw, 56px); }
@@ -98,4 +106,8 @@
  .contact-direct { font-size: 20px; }
  .contact-other { flex-direction: column; gap: 18px; }
  .services-page { padding-top: 32px; }
+ .view#services { margin-top: 48px; padding-top: 33px; }
+ #about.about-page { margin-top: 48px; }
+ #contact.contact-page { padding: 42px 0 58px; }
+ #contact h2 { font-size: clamp(38px, 10vw, 56px); }
 }

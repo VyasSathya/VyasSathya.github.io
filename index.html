@@ -25,7 +25,7 @@
       crossorigin
     />
     <link rel="stylesheet" href="site.css" />
-    <link rel="stylesheet" href="layout-refinements.css?v=pages-20261018-2" />
+    <link rel="stylesheet" href="layout-refinements.css?v=onepage-4" />
     <script>
       try {
         const t = localStorage.getItem("theme");
@@ -41,10 +41,10 @@
         >VS<span>Vyas Sathya</span></a
       >
       <nav aria-label="Main navigation">
-        <a href="./" aria-current="page">Work</a
-        ><a href="services/">Services</a
-        ><a href="about/">About</a
-        ><a href="contact/">Contact</a
+        <a href="#work" aria-current="page">Work</a
+        ><a href="#services">Services</a
+        ><a href="#about">About</a
+        ><a href="#contact">Contact</a
         ><button
           class="theme"
           type="button"
@@ -118,6 +118,57 @@
         ></div>
         <span id="page-status" class="sr-only" aria-live="polite"></span>
       </section>
+<section id="services" class="view" aria-labelledby="services-h">
+        <div class="section-head"><h2 id="services-h">Services</h2></div>
+        <div class="filters" id="service-options" aria-label="Services"></div>
+        <div class="service-copy">
+          <div>
+            <h3 id="service-title"></h3>
+            <p id="service-description"></p>
+          </div>
+          <ul id="service-deliverables"></ul>
+        </div>
+        <div
+          class="project-grid"
+          id="service-proof"
+          aria-label="Related work"
+        ></div>
+        <a class="text-link" href="#contact"
+          >Discuss a project <span aria-hidden="true">&#8599;</span></a
+        >
+      </section>
+      <section id="process" class="support-section" aria-labelledby="process-h">
+        <div class="support-heading"><p class="eyebrow">Working together</p><h2 id="process-h">A clear path<br />to something real.</h2></div>
+        <div class="support-content disclosure-list">
+          <details><summary><span>01</span>Define the outcome</summary><p>Start with the people using it, the problem to solve, and what already exists. Agree the scope, deliverables and pricing before the build.</p></details>
+          <details><summary><span>02</span>Build and review</summary><p>Review a working version, make the important decisions in context, and refine the result against the agreed scope.</p></details>
+          <details><summary><span>03</span>Hand over the work</summary><p>Receive the agreed source, assets and operating notes, with the checks and any remaining release steps made clear.</p></details>
+        </div>
+      </section>
+
+<section id="about" class="about-page" aria-label="About">
+  <section class="about-intro"><p class="eyebrow">About</p><h2>I'm Vyas.<br>I make things.</h2>
+    <p class="about-lead">Software, drawings, games, and stand-up.</p></section>
+  <section class="about-story">
+    <div class="about-art"><img src="media/puzzle-people-art.png" alt="Puzzle People artwork drawn by Vyas Sathya" width="1280" height="790"><p>Puzzle People. My art, made in Procreate.</p></div>
+    <div class="about-copy"><p>I'm building toward an independent life around the things I make. Software, art, and comedy are all part of that.</p>
+    <p>A lot of my tools start with something I want to use myself. Talkover is how I talk to my coding tools. Punchpad is where my comedy recordings and preparation come together.</p>
+    <p>I drew all of Puzzle People's artwork myself in Procreate, using layers, before AI. I built the website and code too.</p>
+    <p>Before Sparktory, I worked on product features and integrations at Unwrap.ai. Now I'm building my own products and working with people who have something they want to make.</p>
+    <a class="text-link" href="#work">Explore the work &#8594;</a></div>
+  </section>
+  <section class="about-trails" aria-label="A few parts of my work">
+    <a href="work/talkover/"><span>Open Source</span><strong>Talkover</strong><span>Hands-free voice for coding tools &#8599;</span></a>
+    <a href="work/puzzle-people/"><span>Art</span><strong>Puzzle People</strong><span>Illustration, layers, and code &#8599;</span></a>
+    <a href="work/standup/"><span>Comedy</span><strong>Stand-up</strong><span>On stage &#8599;</span></a>
+  </section>
+</section>
+<section id="contact" class="contact-page" aria-label="Contact">
+  <p class="eyebrow">Contact</p><h2>Start a<br>conversation.</h2>
+  <p class="contact-line">Tell me what you're making.</p>
+  <a class="contact-direct" href="https://www.linkedin.com/in/vyas-sathya-4b7b38351/">Message me on LinkedIn <span aria-hidden="true">&#8599;</span></a>
+  <div class="contact-other"><a href="https://www.linkedin.com/services/page/714a94347b37190647/">Services on LinkedIn &#8599;</a><a href="https://github.com/VyasSathya">GitHub &#8599;</a></div>
+</section>
       <noscript
         ><p class="notice">
           Explore <a href="work/talkover/">Talkover</a>,
@@ -135,7 +186,7 @@
     </footer>
     <script src="theme.js?v=pages-20261018-2"></script>
     <script src="catalog.js?v=names-20261018-3"></script>
-    <script src="films.js?v=pages-20261018-2"></script>
+    <script src="films.js?v=onepage-4"></script>
     <script src="portfolio.js"></script>
   </body>
 </html>
