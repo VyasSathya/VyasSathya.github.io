@@ -25,7 +25,11 @@ Responsive project posters have separate wide, medium, phone and 16:9 player com
 See `docs/poster-art-direction.md` for dimensions, the source manifest and regeneration.
 The 103.4-second hero overview introduces all sixteen selected cases. It autoplays muted with native player controls for sound, pause and seeking. Reduced motion keeps manual playback. Individual project pages lead with real actions and a film, then features, two real film stills and collapsible project details.
 
-The overview has no separate title, duration or custom sound/play buttons. Its stand-up chapter uses a closer face/microphone crop from the original performance at435-440.5s. The separate 126.2-second stand-up reel starts after the zipper joke: original source16-81.2s, then408-469s, with unchanged internal timing and room audio. Original edits remain as history at their old media URLs. About is one continuous introduction with inline project evidence; engagement terms sit with Contact.
+The overview has no separate title, duration or custom sound/play buttons. Its stand-up chapter uses three distinct face/microphone clips from the original performance at22-23.8s,54-55.8s and450-451.9s. The separate126.2-second stand-up reel starts after the zipper joke: original source16-81.2s, then408-469s. Picture framing alternates wide, upper-body and face/microphone views; decoded final audio is identical to the prior verified reel. These are moments from one performance, not separate gigs. Original edits remain as history at their old media URLs.
+
+Brainrot Brawl now shows current-source Ricochet Riot gameplay. The redundant Mad Balls card/chapter is replaced with Hook Wars, a different hook-combat mode within the same game suite. Both moving captures were recorded from the current local Unity source on2026-10-19, with six bots and camera-only presentation changes. The old Mad Balls page and films remain available as history.
+
+At desktop widths, the opening fills one viewport below the88px navigation bar and Work starts below that view. The content expands up to2400px with larger type, video, project cards and supporting sections. Phone layouts keep their stacked composition. About is one continuous introduction; engagement terms sit with Contact. J Will Media is an in-progress client engagement; the other app cases are independent products.
 
 Contact uses a project inquiry form. Its existing Supabase deployment stores submissions in a private portfolio schema; see `backend/README.md` for owner retrieval and notification status.
 

@@ -60,22 +60,22 @@
     },
     {
       "id": "brainrot-brawl",
-      "source": "media/brainrot-wide.jpg",
-      "sha256": "e820d9c088d8166269e775b3b58be427d97251b8aa77a2b560bdf0ff8f09b688",
+      "source": "media/brainrot-current.jpg",
+      "sha256": "e0db39183b56cae0c85777045dab48af30f22195808454e9a81c4fce362a7d9a",
       "source_crop_pixels": [
         0,
-        114,
-        1280,
-        1115
+        0,
+        1920,
+        1080
       ],
       "background": "#30215b",
       "outputs": {
-        "wide": "thumbnails/brainrot-brawl-wide.svg",
-        "medium": "thumbnails/brainrot-brawl-medium.svg",
-        "compact": "thumbnails/brainrot-brawl-compact.svg",
-        "player": "thumbnails/brainrot-brawl-player.svg"
+        "wide": "thumbnails/brainrot-brawl-current-wide.svg",
+        "medium": "thumbnails/brainrot-brawl-current-medium.svg",
+        "compact": "thumbnails/brainrot-brawl-current-compact.svg",
+        "player": "thumbnails/brainrot-brawl-current-player.svg"
       },
-      "source_note": "Existing bot gameplay in a development build. Two source-continuous character sequences, composed for landscape with an original local score."
+      "source_note": "Real six-bot gameplay captured from the current local source on2026-10-19. One continuous source sequence; original instrumental score. Camera presentation only, with no gameplay changes."
     },
     {
       "id": "punchpad",
@@ -227,7 +227,7 @@
         "compact": "thumbnails/standup-compact.svg",
         "player": "thumbnails/standup-player.svg"
       },
-      "source_note": "Two uninterrupted excerpts from my own public set. Original speech, pauses and room response, reframed for landscape with audio mastering. The full original performance is also linked."
+      "source_note": "Two uninterrupted excerpts from one original performance, starting after the zipper joke. Wide, upper-body and face/mic reframing; original speech timing and room audio, with no added audience response."
     },
     {
       "id": "whiteboard",
@@ -270,23 +270,23 @@
       "additional_source": "media/range-whiteboard.jpg, complete Talkover workflow diagram"
     },
     {
-      "id": "mad-balls",
-      "source": "media/mad-balls.jpg",
-      "sha256": "5535de1ec7876e3d55bcfa818bfa2f10a5922046f65f3cb6892f88c916da3545",
+      "id": "hook-wars",
+      "source": "media/hook-wars.jpg",
+      "sha256": "265f310155d26a474ef78cb76c5c0852497f4baf49c4d43aa257d73c15f85949",
       "source_crop_pixels": [
         0,
-        114,
-        1280,
-        1115
+        0,
+        1920,
+        1080
       ],
-      "background": "#16343c",
+      "background": "#173b43",
       "outputs": {
-        "wide": "thumbnails/mad-balls-wide.svg",
-        "medium": "thumbnails/mad-balls-medium.svg",
-        "compact": "thumbnails/mad-balls-compact.svg",
-        "player": "thumbnails/mad-balls-player.svg"
+        "wide": "thumbnails/hook-wars-wide.svg",
+        "medium": "thumbnails/hook-wars-medium.svg",
+        "compact": "thumbnails/hook-wars-compact.svg",
+        "player": "thumbnails/hook-wars-player.svg"
       },
-      "source_note": "Existing bot gameplay: a continuous pickup-to-impact sequence and the recorded match result. Landscape composition and original local score; no game changes."
+      "source_note": "Real six-bot Hook Wars gameplay captured from the current local source on2026-10-19. One continuous30-second source sequence with an original instrumental score. Camera presentation only; no gameplay changes."
     },
     {
       "id": "buildwhatever",

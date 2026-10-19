@@ -36,24 +36,6 @@
     "producer": "ffmpeg frame extraction; unchanged approved film picture"
   },
   {
-    "output": "media/cases/brainrot-brawl-hero.jpg",
-    "source": "media/brainrot-brawl.mp4",
-    "seconds": 2,
-    "producer": "ffmpeg frame extraction; unchanged approved film picture"
-  },
-  {
-    "output": "media/cases/brainrot-brawl-1.jpg",
-    "source": "media/brainrot-brawl.mp4",
-    "seconds": 4.9,
-    "producer": "ffmpeg frame extraction; unchanged approved film picture"
-  },
-  {
-    "output": "media/cases/brainrot-brawl-2.jpg",
-    "source": "media/brainrot-brawl.mp4",
-    "seconds": 8,
-    "producer": "ffmpeg frame extraction; unchanged approved film picture"
-  },
-  {
     "output": "media/cases/punchpad-hero.jpg",
     "source": "media/punchpad.mp4",
     "seconds": 3,
@@ -180,24 +162,6 @@
     "producer": "ffmpeg frame extraction; unchanged approved film picture"
   },
   {
-    "output": "media/cases/standup-hero.jpg",
-    "source": "media/standup-after-zipper.mp4",
-    "seconds": 92.2,
-    "producer": "ffmpeg frame extraction; unchanged approved film picture"
-  },
-  {
-    "output": "media/cases/standup-1.jpg",
-    "source": "media/standup-after-zipper.mp4",
-    "seconds": 94,
-    "producer": "ffmpeg frame extraction; unchanged approved film picture"
-  },
-  {
-    "output": "media/cases/standup-2.jpg",
-    "source": "media/standup-after-zipper.mp4",
-    "seconds": 98,
-    "producer": "ffmpeg frame extraction; unchanged approved film picture"
-  },
-  {
     "output": "media/cases/whiteboard-hero.jpg",
     "source": "media/range-whiteboard.mp4",
     "seconds": 5,
@@ -286,5 +250,59 @@
     "source": "media/asset-pipeline.mp4",
     "seconds": 8,
     "producer": "ffmpeg frame extraction; unchanged approved film picture"
+  },
+  {
+    "output": "media/cases/brainrot-brawl-hero.jpg",
+    "source": "media/brainrot-current.mp4",
+    "seconds": 6,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
+  },
+  {
+    "output": "media/cases/brainrot-brawl-1.jpg",
+    "source": "media/brainrot-current.mp4",
+    "seconds": 11,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
+  },
+  {
+    "output": "media/cases/brainrot-brawl-2.jpg",
+    "source": "media/brainrot-current.mp4",
+    "seconds": 18,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
+  },
+  {
+    "output": "media/cases/hook-wars-hero.jpg",
+    "source": "media/hook-wars.mp4",
+    "seconds": 8,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
+  },
+  {
+    "output": "media/cases/hook-wars-1.jpg",
+    "source": "media/hook-wars.mp4",
+    "seconds": 15,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
+  },
+  {
+    "output": "media/cases/hook-wars-2.jpg",
+    "source": "media/hook-wars.mp4",
+    "seconds": 24,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
+  },
+  {
+    "output": "media/cases/standup-hero.jpg",
+    "source": "media/standup-varied.mp4",
+    "seconds": 98,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
+  },
+  {
+    "output": "media/cases/standup-1.jpg",
+    "source": "media/standup-varied.mp4",
+    "seconds": 14,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
+  },
+  {
+    "output": "media/cases/standup-2.jpg",
+    "source": "media/standup-varied.mp4",
+    "seconds": 100,
+    "producer": "video-studio ffmpeg original moving-film frame extraction"
   }
 ]
