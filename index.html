@@ -25,7 +25,7 @@
       crossorigin
     />
     <link rel="stylesheet" href="site.css" />
-    <link rel="stylesheet" href="layout-refinements.css" /><link rel="stylesheet" href="contact.css" />
+    <link rel="stylesheet" href="layout-refinements.css?v=about-controls-1" /><link rel="stylesheet" href="contact.css" />
     <script>
       try {
         const t = localStorage.getItem("theme");
@@ -80,14 +80,20 @@
         >
         </div>
         <div class="hero-reel" id="overview">
+          <div class="hero-frame">
           <video playsinline preload="none" poster="media/thumbnails/overview-player.svg" aria-label="Portfolio overview: sixteen selected projects">
             <source src="media/portfolio-overview.mp4" type="video/mp4" />
             <a href="media/portfolio-overview.mp4">Watch the portfolio overview</a>
           </video>
-          <button class="hero-play" type="button" aria-label="Play portfolio overview">
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 4l13 8-13 8z" fill="currentColor"/></svg>
-            <span>Play overview</span><span class="reel-time">1:43</span>
+          </div>
+          <div class="hero-controls">
+          <p>Portfolio overview <span class="reel-time">1:43</span></p>
+          <button class="hero-play" type="button" data-state="paused" data-muted="true" aria-label="Play portfolio overview">
+            <svg class="icon-play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 4l13 8-13 8z" fill="currentColor"/></svg>
+            <svg class="icon-sound" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path class="sound-cross" d="m17 9 5 6m0-6-5 6" fill="none" stroke="currentColor" stroke-width="1.6"/><path class="sound-waves" d="M16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            <span>Play overview</span>
           </button>
+          </div>
         </div>
       </section>
       <section id="work" class="view" aria-labelledby="work-h">
@@ -137,27 +143,13 @@
           >Discuss a project <span aria-hidden="true">&#8599;</span></a
         >
       </section>
-      <section id="about" class="support-section" aria-labelledby="about-h">
-        <div class="support-heading"><p class="eyebrow">About</p><h2 id="about-h">The product.<br />And the story around it.</h2></div>
-        <div class="support-content"><p>I build apps, games and useful tools, then make the films that explain them. My work spans product interfaces, agent workflows, game tooling and collection launches.</p>
-          <div class="experience-links">
-            <a href="work/marquee/"><span>Client work</span><strong>J Will Media / Marquee</strong><span aria-hidden="true">&#8599;</span></a>
-            <a href="work/agent-brain/"><span>Open source</span><strong>agent-brain</strong><span aria-hidden="true">&#8599;</span></a>
-            <a href="work/flower-girls/"><span>Collection development</span><strong>Flower Girls</strong><span aria-hidden="true">&#8599;</span></a>
-            <a href="work/puzzle-people/"><span>Collection development</span><strong>Puzzle People</strong><span aria-hidden="true">&#8599;</span></a>
-          </div>
-        </div>
-      </section>
-      <section id="process" class="support-section" aria-labelledby="process-h">
-        <div class="support-heading"><p class="eyebrow">Working together</p><h2 id="process-h">A clear path<br />to something real.</h2></div>
-        <div class="support-content disclosure-list">
-          <details><summary><span>01</span>Define the outcome</summary><p>Start with the people using it, the problem to solve, and what already exists. Agree the scope, deliverables and pricing before the build.</p></details>
-          <details><summary><span>02</span>Build and review</summary><p>Review a working version, make the important decisions in context, and refine the result against the agreed scope.</p></details>
-          <details><summary><span>03</span>Hand over the work</summary><p>Receive the agreed source, assets and operating notes, with the checks and any remaining release steps made clear.</p></details>
-        </div>
+      <section id="about" class="about-section" aria-labelledby="about-h">
+        <p class="eyebrow">About</p>
+        <h2 id="about-h">I'm Vyas.</h2>
+        <p class="about-copy">I'm a developer, artist and stand-up comic. After building product features and integrations at Unwrap.ai, I started Sparktory to build my own products and work directly with clients. My open-source tool <a href="work/talkover/">Talkover</a> began as something I wanted to use myself; <a href="work/puzzle-people/">Puzzle People</a> began with artwork I drew in Procreate, layer by layer, before AI. I'm building an independent life around the things I make.</p>
       </section>
       <section id="contact" class="contact" aria-labelledby="contact-h">
-<div><p class="eyebrow">Start a project</p><h2 id="contact-h">What are you making?</h2><p class="contact-intro">Tell me about the idea, what you need, and where you want to get to.</p><p class="pricing">Contact for pricing.</p></div>
+<div><p class="eyebrow">Start a project</p><h2 id="contact-h">What are you making?</h2><p class="contact-intro">Tell me about the idea, what you need, and where you want to get to.</p><p class="pricing">Contact for pricing.</p><p class="contact-terms">Scope, deliverables and pricing are agreed before work starts.</p></div>
 <form id="inquiry-form" class="inquiry-form">
 <div class="form-row"><label>Your name<input name="name" autocomplete="name" required minlength="2" maxlength="100"></label><label>Email<input name="email" type="email" autocomplete="email" required maxlength="254"></label></div>
 <label>What do you need?<select name="project" required><option value="">Choose a project type</option><option>Product or website</option><option>Workflow automation</option><option>Game or 3D tooling</option><option>Product film</option><option>Collection launch</option><option>Something else</option></select></label>
@@ -182,6 +174,6 @@
     </footer>
     <script src="catalog.js"></script>
     <script src="films.js"></script>
-    <script src="portfolio.js"></script><script src="contact.js"></script>
+    <script src="portfolio.js?v=about-controls-1"></script><script src="contact.js"></script>
   </body>
 </html>

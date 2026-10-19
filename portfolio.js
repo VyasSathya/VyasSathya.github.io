@@ -10,8 +10,12 @@
   const sync = () => {
     const playing = !video.paused;
     play.hidden = false;
+    play.dataset.state = playing ? 'playing' : 'paused';
+    play.dataset.muted = String(video.muted);
     play.querySelector('span').textContent = playing ? (video.muted ? 'Sound on' : 'Sound off') : 'Play overview';
     play.setAttribute('aria-label', playing ? (video.muted ? 'Turn overview sound on' : 'Turn overview sound off') : 'Play portfolio overview');
+    if (playing) play.setAttribute('aria-pressed', String(!video.muted));
+    else play.removeAttribute('aria-pressed');
   };
   const start = () => {
     video.controls = true;

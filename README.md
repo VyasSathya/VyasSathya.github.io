@@ -25,6 +25,8 @@ Responsive project posters have separate wide, medium, phone and 16:9 player com
 See `docs/poster-art-direction.md` for dimensions, the source manifest and regeneration.
 The 103.4-second hero overview introduces all sixteen selected cases. It autoplays muted, with an explicit sound toggle and native controls. Reduced motion keeps manual playback. Individual project pages lead with real actions and a film, then features, two real film stills and collapsible project details.
 
+The overview action sits in a fixed-size control row below the complete 16:9 image. About is one continuous introduction with inline project evidence; engagement terms sit with Contact.
+
 Contact uses a project inquiry form. Its existing Supabase deployment stores submissions in a private portfolio schema; see `backend/README.md` for owner retrieval and notification status.
 
 Film status is explicit. A missing film is not replaced with a fake demo, and a prototype is not labeled
