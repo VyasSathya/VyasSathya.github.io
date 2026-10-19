@@ -181,20 +181,20 @@
   },
   {
     "output": "media/cases/standup-hero.jpg",
-    "source": "media/standup-highlights.mp4",
-    "seconds": 108.2,
+    "source": "media/standup-after-zipper.mp4",
+    "seconds": 92.2,
     "producer": "ffmpeg frame extraction; unchanged approved film picture"
   },
   {
     "output": "media/cases/standup-1.jpg",
-    "source": "media/standup-highlights.mp4",
-    "seconds": 110,
+    "source": "media/standup-after-zipper.mp4",
+    "seconds": 94,
     "producer": "ffmpeg frame extraction; unchanged approved film picture"
   },
   {
     "output": "media/cases/standup-2.jpg",
-    "source": "media/standup-highlights.mp4",
-    "seconds": 114,
+    "source": "media/standup-after-zipper.mp4",
+    "seconds": 98,
     "producer": "ffmpeg frame extraction; unchanged approved film picture"
   },
   {
