@@ -1,0 +1,366 @@
+{
+  "producer": "scripts/build-thumbnails.py; native SVG composition with approved image crops and Geist glyph paths",
+  "variants": {
+    "wide": [
+      1611,
+      504
+    ],
+    "medium": [
+      1200,
+      504
+    ],
+    "compact": [
+      996,
+      672
+    ],
+    "player": [
+      1920,
+      1080
+    ]
+  },
+  "entries": [
+    {
+      "id": "talkover",
+      "source": "media/thumbnails/source-panel.png",
+      "sha256": "25b4de371d15ad0f231a21fd651c1d748a9e0a8c0d597ddb476cb66991141fb8",
+      "source_crop_pixels": [
+        0,
+        0,
+        4240,
+        1200
+      ],
+      "background": "#101215",
+      "outputs": {
+        "wide": "thumbnails/talkover-wide.svg",
+        "medium": "thumbnails/talkover-medium.svg",
+        "compact": "thumbnails/talkover-compact.svg",
+        "player": "thumbnails/talkover-player.svg"
+      },
+      "source_note": "The panel is drawn by the app's own code. Original score; no voiceover.",
+      "upstream_source": "Original app-drawn panel: video-studio projects/talkover-launch/build/panel.webm, frame at 1.3 seconds, preserved alpha. Existing approved capture; no UI recreation."
+    },
+    {
+      "id": "kpop-sing",
+      "source": "media/kpop-sing.jpg",
+      "sha256": "4fadc68110161a07a7a5f9cc9de25d9c0860debf7f4cf39e251beceae88862a8",
+      "source_crop_pixels": [
+        589,
+        0,
+        1280,
+        720
+      ],
+      "background": "#160c25",
+      "outputs": {
+        "wide": "thumbnails/kpop-sing-wide.svg",
+        "medium": "thumbnails/kpop-sing-medium.svg",
+        "compact": "thumbnails/kpop-sing-compact.svg",
+        "player": "thumbnails/kpop-sing-player.svg"
+      },
+      "source_note": "Landscape marketing film composed from existing generated performers, the real app catalog and an original local score. Performance footage is promotional, not a live karaoke or device test."
+    },
+    {
+      "id": "brainrot-brawl",
+      "source": "media/brainrot-wide.jpg",
+      "sha256": "e820d9c088d8166269e775b3b58be427d97251b8aa77a2b560bdf0ff8f09b688",
+      "source_crop_pixels": [
+        0,
+        114,
+        1280,
+        1115
+      ],
+      "background": "#30215b",
+      "outputs": {
+        "wide": "thumbnails/brainrot-brawl-wide.svg",
+        "medium": "thumbnails/brainrot-brawl-medium.svg",
+        "compact": "thumbnails/brainrot-brawl-compact.svg",
+        "player": "thumbnails/brainrot-brawl-player.svg"
+      },
+      "source_note": "Existing bot gameplay in a development build. Two source-continuous character sequences, composed for landscape with an original local score."
+    },
+    {
+      "id": "punchpad",
+      "source": "media/punchpad.jpg",
+      "sha256": "6a156ed55bd1a3c9c075dd755b4bd9b90c76b4d6ce3986283aef0663e057bbe1",
+      "source_crop_pixels": [
+        685,
+        43,
+        1242,
+        677
+      ],
+      "background": "#f3efe7",
+      "outputs": {
+        "wide": "thumbnails/punchpad-wide.svg",
+        "medium": "thumbnails/punchpad-medium.svg",
+        "compact": "thumbnails/punchpad-compact.svg",
+        "player": "thumbnails/punchpad-player.svg"
+      },
+      "source_note": "Launch film from the real app using a fictional demo workspace. Original score."
+    },
+    {
+      "id": "crewboard",
+      "source": "media/crewboard.jpg",
+      "sha256": "b9b7e3bd49a9bb06dcb8a1a959c6a67dc5140c15c19230442b9d101936979389",
+      "source_crop_pixels": [
+        614,
+        94,
+        1254,
+        677
+      ],
+      "background": "#ede7f6",
+      "outputs": {
+        "wide": "thumbnails/crewboard-wide.svg",
+        "medium": "thumbnails/crewboard-medium.svg",
+        "compact": "thumbnails/crewboard-compact.svg",
+        "player": "thumbnails/crewboard-player.svg"
+      },
+      "source_note": "Editorial film captured from the real app."
+    },
+    {
+      "id": "agent-brain",
+      "source": "media/agent-brain.jpg",
+      "sha256": "d8f7b0189d684cde7c605f2e7b669413b908af116b79c72e23e7db30f86e0b40",
+      "source_crop_pixels": [
+        51,
+        108,
+        1254,
+        677
+      ],
+      "background": "#e4ebe1",
+      "outputs": {
+        "wide": "thumbnails/agent-brain-wide.svg",
+        "medium": "thumbnails/agent-brain-medium.svg",
+        "compact": "thumbnails/agent-brain-compact.svg",
+        "player": "thumbnails/agent-brain-player.svg"
+      },
+      "source_note": "Diagram film using the tool's real command output."
+    },
+    {
+      "id": "marquee",
+      "source": "media/marquee.jpg",
+      "sha256": "ed19ae43185d8d831836aa7798ed68c876f18482ae31e9f43ebc4768808c2999",
+      "source_crop_pixels": [
+        0,
+        64,
+        1280,
+        784
+      ],
+      "background": "#191917",
+      "outputs": {
+        "wide": "thumbnails/marquee-wide.svg",
+        "medium": "thumbnails/marquee-medium.svg",
+        "compact": "thumbnails/marquee-compact.svg",
+        "player": "thumbnails/marquee-player.svg"
+      },
+      "source_note": "The new local J Will Media website: portfolio, two studio galleries and inquiry form. Photography belongs to John and his studio. The public studio domain still shows the previous website."
+    },
+    {
+      "id": "front-of-line",
+      "source": "media/front-of-line.jpg",
+      "sha256": "56bddad187f1f8c2e91e37e898091645bc334851e4282fd73b74f7f4655cb07d",
+      "source_crop_pixels": [
+        512,
+        144,
+        1254,
+        598
+      ],
+      "background": "#0d1421",
+      "outputs": {
+        "wide": "thumbnails/front-of-line-wide.svg",
+        "medium": "thumbnails/front-of-line-medium.svg",
+        "compact": "thumbnails/front-of-line-compact.svg",
+        "player": "thumbnails/front-of-line-player.svg"
+      },
+      "source_note": "Real app, fictional practice workspace. Landscape cut made with video-studio; no private source or customer material."
+    },
+    {
+      "id": "flower-girls",
+      "source": "media/flower-girls.jpg",
+      "sha256": "ca5e867218d8b9e24592ad27b14894eb8f8d57aa1f04f1497bd8490ace2142b5",
+      "source_crop_pixels": [
+        0,
+        0,
+        1280,
+        1280
+      ],
+      "background": "#e9dfe0",
+      "outputs": {
+        "wide": "thumbnails/flower-girls-wide.svg",
+        "medium": "thumbnails/flower-girls-medium.svg",
+        "compact": "thumbnails/flower-girls-compact.svg",
+        "player": "thumbnails/flower-girls-player.svg"
+      },
+      "source_note": "Original collection website and original artwork by Varvara Alay. Website development case, composed for landscape with an original local score."
+    },
+    {
+      "id": "puzzle-people",
+      "source": "media/puzzle-people.jpg",
+      "sha256": "70e2bc7c3d47f30774bdcf0742e9bf903523ad5c46fb16fb9db33939452db7b8",
+      "source_crop_pixels": [
+        691,
+        192,
+        1229,
+        632
+      ],
+      "background": "#0e2523",
+      "outputs": {
+        "wide": "thumbnails/puzzle-people-wide.svg",
+        "medium": "thumbnails/puzzle-people-medium.svg",
+        "compact": "thumbnails/puzzle-people-compact.svg",
+        "player": "thumbnails/puzzle-people-player.svg"
+      },
+      "source_note": "Historical collection website, original artwork, and the original V4nimal (Vyas) Art and Code credit. Historical minting text belongs to the original website."
+    },
+    {
+      "id": "standup",
+      "source": "media/standup.jpg",
+      "sha256": "952a8c1af9f3901dbf1efafd02db657a4aa4eba5b513856d11297a47fa8529cd",
+      "source_crop_pixels": [
+        461,
+        14,
+        896,
+        691
+      ],
+      "background": "#171a20",
+      "outputs": {
+        "wide": "thumbnails/standup-wide.svg",
+        "medium": "thumbnails/standup-medium.svg",
+        "compact": "thumbnails/standup-compact.svg",
+        "player": "thumbnails/standup-player.svg"
+      },
+      "source_note": "Two uninterrupted excerpts from my own public set. Original speech, pauses and room response, reframed for landscape with audio mastering. The full original performance is also linked."
+    },
+    {
+      "id": "whiteboard",
+      "source": "media/range-whiteboard.jpg",
+      "sha256": "20197c062219dd713fcd8ba7898337ddcfb68c9a1447de7abb05c3309074d617",
+      "source_crop_pixels": [
+        0,
+        0,
+        1280,
+        720
+      ],
+      "background": "#f6f6ee",
+      "outputs": {
+        "wide": "thumbnails/whiteboard-wide.svg",
+        "medium": "thumbnails/whiteboard-medium.svg",
+        "compact": "thumbnails/whiteboard-compact.svg",
+        "player": "thumbnails/whiteboard-player.svg"
+      },
+      "source_note": "Every step comes from the Talkover README. Original score."
+    },
+    {
+      "id": "video-studio",
+      "source": "media/thumbnails/source-panel.png",
+      "sha256": "25b4de371d15ad0f231a21fd651c1d748a9e0a8c0d597ddb476cb66991141fb8",
+      "source_crop_pixels": [
+        0,
+        0,
+        4240,
+        1200
+      ],
+      "background": "#221b1a",
+      "outputs": {
+        "wide": "thumbnails/video-studio-wide.svg",
+        "medium": "thumbnails/video-studio-medium.svg",
+        "compact": "thumbnails/video-studio-compact.svg",
+        "player": "thumbnails/video-studio-player.svg"
+      },
+      "source_note": "Talkover, made with video-studio: an original app-drawn input frame, its product film, and a complete whiteboard explanation. Original local score.",
+      "upstream_source": "Original app-drawn panel: video-studio projects/talkover-launch/build/panel.webm, frame at 1.3 seconds, preserved alpha. Existing approved capture; no UI recreation.",
+      "additional_source": "media/range-whiteboard.jpg, complete Talkover workflow diagram"
+    },
+    {
+      "id": "mad-balls",
+      "source": "media/mad-balls.jpg",
+      "sha256": "5535de1ec7876e3d55bcfa818bfa2f10a5922046f65f3cb6892f88c916da3545",
+      "source_crop_pixels": [
+        0,
+        114,
+        1280,
+        1115
+      ],
+      "background": "#16343c",
+      "outputs": {
+        "wide": "thumbnails/mad-balls-wide.svg",
+        "medium": "thumbnails/mad-balls-medium.svg",
+        "compact": "thumbnails/mad-balls-compact.svg",
+        "player": "thumbnails/mad-balls-player.svg"
+      },
+      "source_note": "Existing bot gameplay: a continuous pickup-to-impact sequence and the recorded match result. Landscape composition and original local score; no game changes."
+    },
+    {
+      "id": "buildwhatever",
+      "source": "media/buildwhatever.jpg",
+      "sha256": "39ea967277da49d7fc5259ce3176fe7fa57304429c886fe7a53dc0e549017767",
+      "source_crop_pixels": [
+        576,
+        36,
+        1254,
+        691
+      ],
+      "background": "#11271e",
+      "outputs": {
+        "wide": "thumbnails/buildwhatever-wide.svg",
+        "medium": "thumbnails/buildwhatever-medium.svg",
+        "compact": "thumbnails/buildwhatever-compact.svg",
+        "player": "thumbnails/buildwhatever-player.svg"
+      },
+      "source_note": "Historical public-source study. Architecture maps of editor chat, scene context and the event bridge, drawn from pinned public C++ headers."
+    },
+    {
+      "id": "asset-pipeline",
+      "source": "media/asset-pipeline.jpg",
+      "sha256": "892ea5273a07536874747ca5b871dc6b54e99476c7ad265cf684c6b2a184cec7",
+      "source_crop_pixels": [
+        0,
+        54,
+        1280,
+        676
+      ],
+      "background": "#25282d",
+      "outputs": {
+        "wide": "thumbnails/asset-pipeline-wide.svg",
+        "medium": "thumbnails/asset-pipeline-medium.svg",
+        "compact": "thumbnails/asset-pipeline-compact.svg",
+        "player": "thumbnails/asset-pipeline-player.svg"
+      },
+      "source_note": "Original and repaired material compared in Blender, followed by a turntable of the original repaired asset. Original local score."
+    }
+  ],
+  "overview": {
+    "sources": [
+      {
+        "source": "media/thumbnails/source-panel.png",
+        "source_crop_pixels": [
+          0,
+          0,
+          4240,
+          1200
+        ]
+      },
+      {
+        "source": "media/asset-pipeline.jpg",
+        "source_crop_pixels": [
+          0,
+          54,
+          1280,
+          676
+        ]
+      },
+      {
+        "source": "media/kpop-sing.jpg",
+        "source_crop_pixels": [
+          589,
+          0,
+          1280,
+          720
+        ]
+      }
+    ],
+    "output": "thumbnails/overview-player.svg",
+    "dimensions": [
+      1920,
+      1080
+    ]
+  }
+}
