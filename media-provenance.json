@@ -10,9 +10,10 @@
     "source_seconds": 5
   },
   "kpop-sing.jpg": {
-    "producer": "video-studio capture/flow.mjs",
-    "source_file": "singstan-ads/capture/shots/tab-home2.png",
-    "content": "Real signed-out Expo web app. It is a browse screen, not proof of karaoke playback."
+    "producer": "ffmpeg frame extraction",
+    "source_file": "kpop-sing.mp4",
+    "source_seconds": 1.2,
+    "content": "Actual frame of the final reviewed landscape marketing film. Existing generated fictional performer, not a live device or karaoke test."
   },
   "marquee.jpg": {
     "producer": "Headless browser capture",
@@ -31,9 +32,10 @@
     "credit": "Artwork by Varvara Alay. Vyas's role is collection development."
   },
   "standup.jpg": {
-    "producer": "yt-dlp thumbnail retrieval and ffmpeg conversion",
-    "source": "https://www.youtube.com/watch?v=o2yYGrDhbDE",
-    "content": "Thumbnail from the public source performance. The full owned recording was subsequently recovered through the normal YouTube Studio download control."
+    "producer": "ffmpeg frame extraction",
+    "source_file": "standup-highlights.mp4",
+    "source_seconds": 17,
+    "content": "Owned performance reframed from the original 720x1280 recording to a landscape crop; 1920x1080 export. No synthesized performance or added audience."
   },
   "asset-pipeline.jpg": {
     "producer": "Existing Blender comparison, resized with ffmpeg",
@@ -54,9 +56,9 @@
   },
   "video-studio.jpg": {
     "producer": "ffmpeg frame extraction",
-    "source_file": "talkover.mp4",
-    "source_seconds": 11.9,
-    "content": "An example of video-studio output: the Talkover film."
+    "source_file": "video-studio.mp4",
+    "source_seconds": 0.8,
+    "content": "Actual frame from the video-studio case film."
   },
   "asset-pipeline.mp4": {
     "producer": "video-studio HyperFrames and background Blender",
@@ -112,5 +114,100 @@
     "sha256": "eade257de8e63ce9e49d19ae1c237a8b5e0512d736a5dd0054babd4390b8d740",
     "audio": "Original performance and room audio in the same uninterrupted source spans. Two-pass loudness normalization includes dynamic range and true peak control, with 30/100ms edge fades. No music, synthetic speech, substituted response or internal time edits.",
     "review": "Technical gates passed. Fresh blind visual review passed sampled framing. Eight five-second windows match pre-master source audio exactly and final timing at zero offset. Continuous motion and comedy selection remain owner review, not inferred from contact sheets."
+  },
+  "brainrot-brawl.mp4": {
+    "producer": "video-studio HyperFrames",
+    "sha256": "1fc72aef2b9bd003b64da412ec1ce97e31d482e7df5967a0acb5609405e737f4",
+    "content": "Existing bot gameplay in a development build. Two source-continuous character sequences, composed for landscape with an original local score.",
+    "audio": "Original local studio.music score.",
+    "sources": [
+      "brainrot-ads/capture/raw/tralalero-hero.mp4",
+      "brainrot-ads/capture/raw/bombardiro-hero.mp4"
+    ],
+    "review": "Both fresh swapped R6 comparisons selected this film. Encoded technical and HyperFrames gates passed; local transcription found no speech."
+  },
+  "marquee.mp4": {
+    "producer": "video-studio HyperFrames",
+    "sha256": "079d2ab1b9f33f0aa01061425ad544e4646c6a7133059049cbacb1216930a80e",
+    "content": "The new local J Will Media website: portfolio, two studio galleries and inquiry form. Photography belongs to John and his studio. The public studio domain still shows the previous website.",
+    "audio": "Original local studio.music score.",
+    "sources": [
+      "Real local website capture",
+      "Original gallery states, including Loft photo 2/11",
+      "Lossless native screenshot crops; no website or customer data modified"
+    ],
+    "review": "Both fresh swapped R6 comparisons selected this film. Encoded technical and HyperFrames gates passed; local transcription found no speech."
+  },
+  "portfolio-overview.mp4": {
+    "producer": "Existing video-studio ffmpeg composition and studio.music score",
+    "source_films": [
+      "talkover.mp4",
+      "kpop-sing.mp4",
+      "punchpad.mp4",
+      "front-of-line.mp4",
+      "crewboard.mp4",
+      "agent-brain.mp4",
+      "mad-balls.mp4",
+      "asset-pipeline.mp4",
+      "range-whiteboard.mp4"
+    ],
+    "content": "Nine selected cases, normally six seconds per case; gameplay has 9.4 seconds. Full landscape sources retain their own visual systems. Kpop footage is generated promotional performance, not a live karaoke test. No performance speech is cut into the overview.",
+    "sha256": "5c87262e0e511eef6837e3adb2b8590d1763bb661b6aca7d0ad741d553a9dfba",
+    "review": "Both fresh swapped R3 reviews preferred this readable overview to the previous fast showreel. Technical checks passed; deliberate source diagram reading holds are documented."
+  },
+  "flower-girls.mp4": {
+    "producer": "video-studio HyperFrames",
+    "source": "https://www.flowergirlsnft.com",
+    "content": "Original collection website and original artwork by Varvara Alay. Website development case, composed for landscape with an original local score.",
+    "sha256": "a3f596ea15db8b8e9e7c91b06a48447fea4c3105a45bcd7b6ad4f9223070b3b9",
+    "source_assets": [
+      "Original collection site screenshots and exact lossless crops",
+      "Original artist images"
+    ],
+    "review": "Both fresh swapped R7 reviews selected the revised case. HyperFrames, encoded technical and local no-speech audit checks passed.",
+    "audio": "Original local studio.music score."
+  },
+  "puzzle-people.mp4": {
+    "producer": "video-studio HyperFrames",
+    "source": "https://puzzle-people.netlify.app",
+    "content": "Historical collection website, original artwork, and the original V4nimal (Vyas) Art and Code credit. Historical minting text belongs to the original website.",
+    "sha256": "2b8b3d4c9b8d41c4ac96f45d1737e2543708759620943fcf821cd4bc5754b5c6",
+    "source_assets": [
+      "Original website and collection art",
+      "Original V4nimal (Vyas) Art and Code card"
+    ],
+    "review": "Both fresh swapped R7 reviews selected the revised case. HyperFrames, encoded technical and local no-speech audit checks passed.",
+    "audio": "Original local studio.music score."
+  },
+  "video-studio.mp4": {
+    "producer": "video-studio HyperFrames",
+    "content": "Talkover, made with video-studio: an original app-drawn input frame, its product film, and a complete whiteboard explanation. Original local score.",
+    "sha256": "fa322003ef3e9fff47117feac3157431bf107c482a81105ac57a5fb9ea26587b",
+    "sources": [
+      "Original Talkover app-code panel render",
+      "Original Talkover product film",
+      "Original Talkover workflow explanation"
+    ],
+    "review": "Both fresh swapped final comparisons selected this film. HyperFrames, encoded technical and local no-speech audits passed. Visual review covers sampled composition, not continuous motion, runtime behavior or source correctness.",
+    "audio": "Original local studio.music instrumental score."
+  },
+  "buildwhatever.mp4": {
+    "producer": "video-studio HyperFrames",
+    "content": "Historical public-source study. Architecture maps of editor chat, scene context and the event bridge, drawn from pinned public C++ headers.",
+    "sha256": "19c1dd24d573989325047ba4287207caef8c43955351f4b32206ecad36d91501",
+    "sources": [
+      "Public buildwhatever-public commit d19c3055b2d07abd397f7ca640653e881332a0e2",
+      "editor/ai/ai_chat_engine.h:217-218",
+      "editor/controls/bw_chat_bar.h:16-19,28",
+      "editor/ai/ai_chat_bridge.h:41-49,64"
+    ],
+    "review": "Both fresh swapped final comparisons selected this film. HyperFrames, encoded technical and local no-speech audits passed. Visual review covers sampled composition, not continuous motion, runtime behavior or source correctness.",
+    "audio": "Original local studio.music instrumental score."
+  },
+  "buildwhatever.jpg": {
+    "producer": "ffmpeg frame extraction",
+    "source_file": "buildwhatever.mp4",
+    "source_seconds": 0.8,
+    "content": "Actual frame of the final reviewed film; architecture maps are labeled public source rather than runtime screenshots."
   }
 }

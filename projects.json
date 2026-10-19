@@ -89,8 +89,8 @@
     "contribution": "Game and mobile development, arena interaction, character integration, and the build and content pipeline.",
     "state": "Development build. The footage shows bots, rather than a public multiplayer session.",
     "poster": "brainrot-wide.jpg",
-    "film": null,
-    "filmNote": "Existing bot-only development capture. Mad Balls has its own gameplay film below.",
+    "film": "brainrot-brawl.mp4",
+    "filmNote": "Existing bot gameplay in a development build. Two source-continuous character sequences, composed for landscape with an original local score.",
     "links": [],
     "details": [
       [
@@ -223,8 +223,8 @@
     "contribution": "The public website, galleries, inquiry intake, customer conversation flows, and owner workspace.",
     "state": "New local site implementation for John Williams. The existing studio domain currently serves the previous website.",
     "poster": "marquee.jpg",
-    "film": null,
-    "filmNote": "New J Will Media website implementation for John Williams and his studio. The public studio link still shows the previous site.",
+    "film": "marquee.mp4",
+    "filmNote": "The new local J Will Media website: portfolio, two studio galleries and inquiry form. Photography belongs to John and his studio. The public studio domain still shows the previous website.",
     "links": [
       [
         "Visit studio",
@@ -294,8 +294,8 @@
     "contribution": "Collection launch and sales web experiences, smart-contract integration, and collection tooling.",
     "state": "Historical collection development. Original artwork by Varvara Alay.",
     "poster": "flower-girls.jpg",
-    "film": null,
-    "filmNote": "Original collection website and artwork. Artwork by Varvara Alay.",
+    "film": "flower-girls.mp4",
+    "filmNote": "Original collection website and original artwork by Varvara Alay. Website development case, composed for landscape with an original local score.",
     "links": [
       [
         "Collection",
@@ -330,8 +330,8 @@
     "contribution": "Launch and sales web experiences, wallet-related flows, and collection tooling.",
     "state": "Historical project with public source. No current minting or wallet operation is represented as working.",
     "poster": "puzzle-people.jpg",
-    "film": null,
-    "filmNote": "Original historical collection website, artwork and Art and Code credit.",
+    "film": "puzzle-people.mp4",
+    "filmNote": "Historical collection website, original artwork, and the original V4nimal (Vyas) Art and Code credit. Historical minting text belongs to the original website.",
     "links": [
       [
         "Code archive",
@@ -441,12 +441,16 @@
     "contribution": "The capture-to-render pipeline, reusable film styles, and review and verification tools.",
     "state": "Public toolchain with rendered examples. Individual films have their own source and review records.",
     "poster": "video-studio.jpg",
-    "film": null,
-    "filmNote": "The Talkover film is an existing example of this toolchain's output.",
+    "film": "video-studio.mp4",
+    "filmNote": "Talkover, made with video-studio: an original app-drawn input frame, its product film, and a complete whiteboard explanation. Original local score.",
     "links": [
       [
         "Code",
         "https://github.com/VyasSathya/video-studio"
+      ],
+      [
+        "Production recipes",
+        "https://github.com/VyasSathya/video-studio/pull/1"
       ],
       [
         "Example film",
@@ -509,10 +513,10 @@
     "tagline": "Game creation, inside the editor.",
     "summary": "An AI-native game editor built on a Godot fork, bringing AI-assisted creative workflows into the engine's editing environment.",
     "contribution": "AI integration and editor tooling in the Godot-based engine.",
-    "state": "Historical engine work. The public source is no longer maintained.",
-    "poster": null,
-    "film": null,
-    "filmNote": "Editor film pending a verified product capture.",
+    "state": "Historical AI-native Godot fork. The public repository is no longer maintained. The film presents source architecture; an editor runtime recording has not been verified.",
+    "poster": "buildwhatever.jpg",
+    "film": "buildwhatever.mp4",
+    "filmNote": "Historical public-source study. Architecture maps of editor chat, scene context and the event bridge, drawn from pinned public C++ headers.",
     "links": [
       [
         "Code archive",

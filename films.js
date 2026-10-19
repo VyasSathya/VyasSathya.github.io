@@ -101,6 +101,20 @@
     a.innerHTML = `<div class="project-image">${art}<span class="explore" aria-hidden="true">&#8599;</span></div><div class="caption"><h3>${esc(p.name)}</h3><p>${esc(p.kind)}</p></div>`;
     return a;
   }
+  let accessTimer;
+  let swiping = false;
+  let touchStart;
+  function settledAccess() {
+    if (swiping || !deck.clientWidth) return;
+    const index = Math.round(deck.scrollLeft / deck.clientWidth);
+    if (Math.abs(deck.scrollLeft - index * deck.clientWidth) > 1) return;
+    [...deck.children].forEach((page, i) => {
+      page.setAttribute("aria-hidden", String(i !== index));
+      page.querySelectorAll("a").forEach((link) => {
+        link.tabIndex = i === index ? 0 : -1;
+      });
+    });
+  }
   function position() {
     if (!deck.clientWidth) return;
     const index = Math.round(deck.scrollLeft / deck.clientWidth);
@@ -108,10 +122,8 @@
     next.disabled = index >= deck.children.length - 1;
     document.querySelector("#page-status").textContent =
       `Page ${index + 1} of ${deck.children.length}`;
-    [...deck.children].forEach((page, i) => {
-      page.inert = i !== index;
-      page.setAttribute("aria-hidden", String(i !== index));
-    });
+    clearTimeout(accessTimer);
+    accessTimer = setTimeout(settledAccess, 150);
   }
   function work() {
     const shown = PROJECTS.filter(
@@ -139,6 +151,7 @@
         ),
       );
     position();
+    settledAccess();
   }
   function service(id) {
     const s = services.find((s) => s.id === id) || services[0];
@@ -220,6 +233,37 @@
   prev.addEventListener("click", () => advance(-1));
   next.addEventListener("click", () => advance(1));
   deck.addEventListener("scroll", position, { passive: true });
+  deck.addEventListener("touchstart", (event) => {
+    swiping = true;
+    const touch = event.touches[0];
+    touchStart = {
+      x: touch.clientX,
+      y: touch.clientY,
+      page: Math.round(deck.scrollLeft / deck.clientWidth),
+    };
+    clearTimeout(accessTimer);
+  }, { passive: true });
+  for (const eventName of ["touchend", "touchcancel"]) {
+    deck.addEventListener(eventName, (event) => {
+      swiping = false;
+      const touch = event.changedTouches[0];
+      if (touchStart && touch) {
+        const dx = touch.clientX - touchStart.x;
+        const dy = touch.clientY - touchStart.y;
+        if (Math.abs(dx) > 5 && Math.abs(dx) > Math.abs(dy)) {
+          const direction = Math.abs(dx) >= 40 ? (dx < 0 ? 1 : -1) : 0;
+          const page = Math.max(0, Math.min(deck.children.length - 1, touchStart.page + direction));
+          requestAnimationFrame(() => deck.scrollTo({
+            left: page * deck.clientWidth,
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          }));
+        }
+      }
+      touchStart = null;
+      clearTimeout(accessTimer);
+      accessTimer = setTimeout(settledAccess, 150);
+    }, { passive: true });
+  }
   deck.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
       e.preventDefault();
