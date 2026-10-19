@@ -212,13 +212,13 @@
     },
     {
       "id": "standup",
-      "source": "media/standup.jpg",
-      "sha256": "952a8c1af9f3901dbf1efafd02db657a4aa4eba5b513856d11297a47fa8529cd",
+      "source": "media/standup-stage-portrait.png",
+      "sha256": "d147734e01f57d7bc28868a7991c9224b7957f6d8f11c012e02fd6e4fb40b181",
       "source_crop_pixels": [
-        461,
-        14,
-        896,
-        691
+        220,
+        555,
+        510,
+        1030
       ],
       "background": "#171a20",
       "outputs": {

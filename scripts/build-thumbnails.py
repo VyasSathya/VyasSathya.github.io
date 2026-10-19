@@ -29,7 +29,7 @@ DESIGNS = {
  'front-of-line': ('front-of-line.jpg', (.40,.20,.98,.83), '#0d1421', '#f2f4ff', '#91a7fa', ['Front of Line'], 'Interview preparation'),
  'flower-girls': ('flower-girls.jpg', (0,0,1,1), '#e9dfe0', '#553946', '#946078', ['Flower Girls'], 'Art by Varvara Alay'),
  'puzzle-people': ('puzzle-people.jpg', (.54,.24,.96,.79), '#0e2523', '#f6cf57', '#dba940', ['Puzzle','People'], 'Art & collection launch'),
- 'standup': ('standup.jpg', (.36,.02,.70,.96), '#171a20', '#f7e9d5', '#d2ae75', ['Vyas Sathya'], 'Stand-up'),
+ 'standup': ('standup-stage-portrait.png', (.3056,.4336,.7083,.8047), '#171a20', '#f7e9d5', '#d2ae75', ['Vyas Sathya'], 'Stand-up'),
  'whiteboard': ('range-whiteboard.jpg', (0,0,1,1), '#f6f6ee', '#303b31', '#8f554b', ['Whiteboard','films'], 'How Talkover works'),
  'video-studio': ('thumbnails/source-panel.png', (0,0,1,1), '#221b1a', '#f8f0e9', '#e38665', ['video-studio'], 'Two film styles. One product.'),
  'mad-balls': ('mad-balls.jpg', (0,.10,1,.98), '#16343c', '#edf6e7', '#f49b60', ['Mad Balls'], 'Inside Brainrot Brawl'),
