@@ -1,6 +1,6 @@
 # vyassathya.github.io
 
-Source of https://vyassathya.github.io: project evidence, services and contact.
+Source of https://vyasapps.dev: project evidence, services and contact.
 
 Plain HTML, CSS and a little JavaScript. No build step. Fonts are Geist (SIL Open Font License, in `fonts/`).
 Films in `media/` are h264 with faststart. The overview autoplays muted unless reduced motion is requested; case films load on play.
@@ -36,13 +36,8 @@ No personal mailbox is published. The stand-up mic portrait is an unchanged orig
 
 ## Custom domain
 
-`vyass.dev` has no DNS records yet. To serve this site there:
+The existing owned domain `vyasapps.dev` is verified for the GitHub account and bound to this repository's Pages site. Keep the root `CNAME` file and the registrar's GitHub verification TXT record.
 
-1. At the registrar for `vyass.dev`, add four `A` records on the apex (`@`): `185.199.108.153`, `185.199.109.153`,
-   `185.199.110.153`, `185.199.111.153` (and optionally the `AAAA` records `2606:50c0:8000::153` to `8003::153`).
-   For `www`, add a `CNAME` to `vyassathya.github.io`.
-2. Verify the domain for the account first (GitHub Settings, Pages, Add a domain) so no one else can claim it.
-3. In this repository's Settings, Pages, set the custom domain to `vyass.dev` (this commits a `CNAME` file) and
-   tick Enforce HTTPS once the certificate is issued.
+GoDaddy DNS uses four apex `A` records: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`. The `www` CNAME points to `vyassathya.github.io`. Existing nameservers, domain-connect and DMARC records are retained.
 
-`.dev` is on the HSTS preload list, so the site only works over HTTPS; GitHub issues the certificate after DNS resolves.
+GitHub Pages supplies the HTTPS certificate. The inquiry endpoint permits both `https://vyasapps.dev` and `https://www.vyasapps.dev`, along with the original Pages and local development origins.
