@@ -179,33 +179,14 @@
       );
   }
   function view() {
-    const hash = location.hash.slice(1),
-      parts = hash.split("/"),
-      active = parts[0] === "services" ? "services" : "work";
-    ["work", "services"].forEach(
-      (id) => (document.getElementById(id).hidden = id !== active),
-    );
-    document
-      .querySelectorAll("[data-view]")
-      .forEach((a) =>
-        a.setAttribute(
-          "aria-current",
-          a.dataset.view === active ? "page" : "false",
-        ),
-      );
-    if (active === "services") service(parts[1]);
-    else if (groups.some(([id]) => id === parts[1])) {
-      collection = parts[1];
+    const parts = location.hash.slice(1).split('/');
+    if (deck) {
+      if (groups.some(([id]) => id === parts[1])) collection = parts[1];
       work();
-    } else position();
-    const aliases = { singstan: "kpop-sing", "range-whiteboard": "whiteboard" };
-    const project = PROJECTS.find((p) => p.id === (aliases[hash] || hash));
-    if (project) location.replace(`work/${project.id}/`);
-    if (['work','services','about','process','contact'].includes(parts[0])) {
-      requestAnimationFrame(() => document.getElementById(parts[0]).scrollIntoView({block:'start',behavior:'instant'}));
     }
+    if (document.querySelector('#service-options')) service(parts[1] || 'products');
   }
-  for (const [id, label] of groups) {
+  if (deck) for (const [id, label] of groups) {
     const b = document.createElement("button");
     b.type = "button";
     b.textContent = label;
@@ -213,18 +194,18 @@
     b.addEventListener("click", () => {
       collection = id;
       work();
-      history.replaceState(null, "", `#work/${id}`);
+      history.replaceState(null, "", `${location.pathname}#work/${id}`);
     });
     document.querySelector("#collections").append(b);
   }
-  for (const s of services) {
+  if (document.querySelector('#service-options')) for (const s of services) {
     const b = document.createElement("button");
     b.type = "button";
     b.textContent = s.name;
     b.dataset.service = s.id;
     b.addEventListener("click", () => {
       service(s.id);
-      history.replaceState(null, "", `#services/${s.id}`);
+      history.replaceState(null, "", `${location.pathname}#services/${s.id}`);
     });
     document.querySelector("#service-options").append(b);
   }
@@ -236,6 +217,7 @@
         : "smooth",
     });
   }
+  if (deck) {
   prev.addEventListener("click", () => advance(-1));
   next.addEventListener("click", () => advance(1));
   deck.addEventListener("scroll", position, { passive: true });
@@ -277,18 +259,7 @@
     }
   });
   new ResizeObserver(position).observe(deck);
-  document.querySelector(".theme").addEventListener("click", () => {
-    const root = document.documentElement,
-      dark = root.dataset.theme
-        ? root.dataset.theme === "dark"
-        : matchMedia("(prefers-color-scheme: dark)").matches;
-    root.dataset.theme = dark ? "light" : "dark";
-    try {
-      localStorage.setItem("theme", root.dataset.theme);
-    } catch (e) {}
-  });
-  work();
-  service("products");
+  }
   view();
   window.addEventListener("hashchange", view);
 })();

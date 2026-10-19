@@ -350,7 +350,7 @@
     "name": "Flower Girls",
     "group": "art",
     "kind": "Art & blockchain launch",
-    "type": "Collection development",
+    "type": "Web development",
     "accent": "#77634b",
     "wordmark": "Flower Girls",
     "tagline": "Art, with a launch experience around it.",
@@ -393,17 +393,17 @@
     "id": "puzzle-people",
     "name": "Puzzle People",
     "group": "art",
-    "kind": "Art & blockchain launch",
-    "type": "Collection development",
+    "kind": "Illustration & web development",
+    "type": "Art",
     "accent": "#e8c64a",
     "wordmark": "Puzzle People",
-    "tagline": "A collection with its own character.",
-    "summary": "A separate art collection and launch, with a React landing and wallet client and an Express minting backend.",
-    "contribution": "Launch and sales web experiences, wallet-related flows, and collection tooling.",
+    "tagline": "Drawn by hand. Built into a collection.",
+    "summary": "I drew all the Puzzle People artwork in Procreate, using layers, before AI. I also built its website, wallet client, and minting backend.",
+    "contribution": "All original artwork, drawn by me in Procreate, plus the collection website, wallet flows, and code.",
     "state": "Historical project with public source. No current minting or wallet operation is represented as working.",
     "poster": "puzzle-people.jpg",
     "film": "puzzle-people.mp4",
-    "filmNote": "Historical collection website, original artwork, and the original V4nimal (Vyas) Art and Code credit. Historical minting text belongs to the original website.",
+    "filmNote": "My original pre-AI artwork, drawn in Procreate using layers, alongside the historical collection website and original V4nimal (Vyas) Art and Code credit.",
     "links": [
       [
         "Code archive",
@@ -411,6 +411,10 @@
       ]
     ],
     "details": [
+      [
+        "Art",
+        "All artwork by Vyas Sathya. Drawn in Procreate using layers, before AI."
+      ],
       [
         "Web",
         "Collection landing and sale-state interfaces."

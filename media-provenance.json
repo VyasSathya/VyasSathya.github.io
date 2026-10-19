@@ -29,7 +29,7 @@
     "producer": "Headless browser capture",
     "source": "https://www.flowergirlsnft.com",
     "source_image": "https://www.flowergirlsnft.com/wp-content/uploads/2021/11/FG-Blue-Venus.jpg",
-    "credit": "Artwork by Varvara Alay. Vyas's role is collection development."
+    "credit": "Artwork by Varvara Alay. Vyas built the website and collection integrations."
   },
   "standup.jpg": {
     "producer": "ffmpeg frame extraction",
@@ -139,7 +139,7 @@
     "review": "Both fresh swapped R6 comparisons selected this film. Encoded technical and HyperFrames gates passed; local transcription found no speech."
   },
   "portfolio-overview.mp4": {
-    "producer": "Existing video-studio ffmpeg composition and studio.music score",
+    "producer": "video-studio composition; original local electric-piano score via projects/portfolio-landscape/score-overview.py",
     "source_films": [
       "talkover.mp4",
       "kpop-sing.mp4",
@@ -152,8 +152,17 @@
       "range-whiteboard.mp4"
     ],
     "content": "Nine selected cases, normally six seconds per case; gameplay has 9.4 seconds. Full landscape sources retain their own visual systems. Kpop footage is generated promotional performance, not a live karaoke test. No performance speech is cut into the overview.",
-    "sha256": "5c87262e0e511eef6837e3adb2b8590d1763bb661b6aca7d0ad741d553a9dfba",
-    "review": "Both fresh swapped R3 reviews preferred this readable overview to the previous fast showreel. Technical checks passed; deliberate source diagram reading holds are documented."
+    "sha256": "860e4860ac6745114d7e8a494732dd45738b48fe8e75b81d908186872bc3104a",
+    "review": "User approved the video pictures and rejected the previous soundtrack. Picture stream remains byte-identical. New soundtrack has passed loudness and peak checks; subjective music acceptance remains with Vyas.",
+    "audio": "Original locally synthesized 100 BPM electric-piano arrangement with bass and restrained drums. New soundtrack awaiting owner listening review.",
+    "audio_revision": {
+      "recipe": "projects/portfolio-landscape/replace-overview-score.py",
+      "original_sha256": "5c87262e0e511eef6837e3adb2b8590d1763bb661b6aca7d0ad741d553a9dfba",
+      "picture_unchanged": true,
+      "encoded_picture_sha256": "SHA256=d01ed4b0b81262188616146df018b14c9cb2b7fdd2d287afb129069b8e31dade",
+      "lufs": -14.07,
+      "true_peak": -1.38
+    }
   },
   "flower-girls.mp4": {
     "producer": "video-studio HyperFrames",
@@ -214,5 +223,12 @@
     "producer": "scripts/build-thumbnails.py, native SVG with Geist glyph paths and approved imagery",
     "manifest": "media/thumbnails/provenance.json",
     "content": "Four art-directed variants for every project; separate 16:9 overview cover. Existing images and app-drawn panel only, no generated substitute UI. Films unchanged."
+  },
+  "puzzle-people-art.png": {
+    "producer": "Existing portfolio-production browser capture of original Puzzle People artwork",
+    "source_file": "portfolio-landscape/captures/details/puzzle-art.png",
+    "source_url": "https://puzzle-people.netlify.app",
+    "sha256": "757aa41a5d4fc37eea15d21a78d836ac4e20bc46eb207100a89d7bebcbae5ca2",
+    "credit": "All Puzzle People artwork by Vyas Sathya, drawn in Procreate with layers before AI. Artwork attribution supplied directly by the artist on 2026-10-18."
   }
 }
