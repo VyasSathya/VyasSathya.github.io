@@ -1,0 +1,1689 @@
+[
+ {
+  "key": "kitchen-bath-remodel",
+  "label": "Remodeler / General contractor",
+  "group": "Home and property",
+  "match": [
+   "general contractor",
+   "remodel",
+   "kitchen remodel",
+   "bathroom remodel",
+   "bath remodel",
+   "renovation",
+   "home renovation",
+   "gc",
+   "design build",
+   "addition"
+  ],
+  "biz": "Harbor Line Remodeling",
+  "person": "Megan and Chris Albright",
+  "project": "Kitchen remodel - 1960s ranch, open to dining room",
+  "summary": "Full gut kitchen with a wall removed, new cabinets, quartz tops and a relocated sink.",
+  "billing": "Small deposit at signing (California caps it at 10% or $1,000, whichever is less), then progress payments tied to completed phases (demo/rough-in, drywall, cabinets and tops), final payment at punch list sign-off. CSLB: no payment ahead of work done or materials delivered.",
+  "ms": [
+   [
+    "Demo and rough-in",
+    "Done means demo is complete, the beam for the wall removal is in, and rough plumbing and electrical passed city inspection.",
+    2850000,
+    [
+     "Permit pulled and posted",
+     "Kitchen demoed, dust walls up",
+     "Header beam installed",
+     "Rough plumbing and electrical in",
+     "Rough inspection passed"
+    ]
+   ],
+   [
+    "Insulation, drywall and flooring",
+    "Done means insulation inspection passed, drywall is taped and textured, and tile floor is set and grouted.",
+    1900000,
+    [
+     "Insulation inspection passed",
+     "Drywall hung, taped, textured",
+     "Primer coat on walls",
+     "Tile floor set",
+     "Grout sealed"
+    ]
+   ],
+   [
+    "Cabinets and countertops",
+    "Done means all cabinets are installed and level, quartz is templated, fabricated and installed, and the sink is set.",
+    3400000,
+    [
+     "Cabinet delivery checked for damage",
+     "Cabinets installed and leveled",
+     "Countertop template appointment",
+     "Quartz installed with sink cutout",
+     "Backsplash tile set"
+    ]
+   ],
+   [
+    "Finish, final inspection and punch list",
+    "Done means appliances and fixtures are working, final inspection passed, and every punch item on the walkthrough list is closed.",
+    1350000,
+    [
+     "Appliances installed and tested",
+     "Lighting and outlets trimmed out",
+     "Final building inspection passed",
+     "Walkthrough punch list created",
+     "Punch items closed and signed off"
+    ]
+   ]
+  ],
+  "waiting": "Final selections: the backsplash tile and cabinet hardware so they can be ordered before the cabinet install date.",
+  "ask": [
+   "Which backsplash tile?",
+   [
+    "3x12 white zellige",
+    "2x8 matte handmade subway",
+    "Full-height quartz slab"
+   ],
+   "Zellige adds 2 weeks lead time; full slab adds about $2,400."
+  ],
+  "answered": [
+   "Keep the window over the sink or move the sink to the island?",
+   "Keep the sink at the window; island gets a prep zone only."
+  ],
+  "checkin": [
+   "- Done: rough electrical and plumbing passed inspection Tuesday",
+   "- Done: header beam in, wall to dining room is open",
+   "- Next: insulation inspection Thursday, drywall starts Monday",
+   "- Next: cabinet delivery confirmed for the 18th",
+   "- Needs from you: backsplash pick by Friday",
+   "- Needs from you: sign change order #2 (two extra recessed lights)"
+  ],
+  "talk": [
+   "Rough inspection passed this morning. Drywall crew starts Monday. Can you pick the backsplash by Friday so it lands before cabinets?",
+   "Great news. We are torn between the zellige and the subway. Can we see both against the cabinet sample?",
+   "Yes. I will bring both samples Thursday at 4 and leave them on the counter for the weekend."
+  ],
+  "anxieties": [
+   "Is the schedule slipping and when can we use the kitchen again?",
+   "Will there be more change orders and what will the final total be?",
+   "Are the inspections passing and is the work hidden in the walls done right?"
+  ],
+  "tools": [
+   "Buildertrend",
+   "JobTread",
+   "CoConstruct",
+   "Houzz Pro",
+   "Procore (larger firms)",
+   "QuickBooks"
+  ],
+  "notes": "Highly variable scope. Portal must handle permits and inspections as gates, change orders with client signature and price impact, selections with deadlines tied to lead times, daily logs with photos, and deliveries (cabinets, appliances). Deposit caps vary by state.",
+  "sources": [
+   "https://cslb.ca.gov/Resources/PressReleases/2024/ADU-payments.FINAL.pdf",
+   "https://cinderblock.com/blog/california-contractor-down-payment-limits/",
+   "https://buildertrend.com/remodelers/",
+   "https://buildertrend.com/help-article/project-management-settings/",
+   "https://buildertrend.com/?p=110342"
+  ]
+ },
+ {
+  "key": "roofing",
+  "label": "Roofing contractor",
+  "group": "Home and property",
+  "match": [
+   "roofing",
+   "roofer",
+   "roof replacement",
+   "new roof",
+   "reroof",
+   "shingles",
+   "roof repair",
+   "storm damage",
+   "hail damage",
+   "metal roof"
+  ],
+  "biz": "Summit Ridge Roofing",
+  "person": "Daniel Ortiz",
+  "project": "Full tear-off and architectural shingle replacement - 28 squares",
+  "summary": "Hail-damaged roof replaced through homeowner insurance, with new underlayment, flashing and ridge vent.",
+  "billing": "Retail: deposit at signing for materials, balance at completion. Insurance jobs: homeowner pays deductible plus first ACV check to start, recoverable depreciation is released by the carrier after the roofer sends completion photos and final invoice.",
+  "ms": [
+   [
+    "Contract and insurance approval",
+    "Done means the claim is approved, scope matches the adjuster's estimate, and deductible plus ACV check are received.",
+    1210000,
+    [
+     "Adjuster meeting attended",
+     "Scope of loss reviewed",
+     "Supplement filed for missing items",
+     "Deductible collected",
+     "ACV check endorsed and deposited"
+    ]
+   ],
+   [
+    "Material delivery and permit",
+    "Done means the reroof permit is issued and shingles, underlayment and flashing are delivered to the driveway.",
+    0,
+    [
+     "Color confirmed in writing",
+     "Permit issued",
+     "Dumpster placed",
+     "Materials delivered",
+     "Neighbors notified"
+    ]
+   ],
+   [
+    "Tear-off and install",
+    "Done means old roof is removed, decking repaired, new underlayment, flashing, shingles and ridge vent are installed, and the yard is magnet-swept.",
+    0,
+    [
+     "Tear-off to deck",
+     "Rotted decking replaced (per sheet)",
+     "Ice and water shield at valleys",
+     "Shingles and ridge vent installed",
+     "Magnet sweep for nails"
+    ]
+   ],
+   [
+    "Final inspection and depreciation release",
+    "Done means the final inspection passed, completion docs went to the carrier, and the depreciation check is paid.",
+    690000,
+    [
+     "Final inspection passed",
+     "Completion photos sent to carrier",
+     "Certificate of completion signed",
+     "Depreciation check received",
+     "Warranty registered"
+    ]
+   ]
+  ],
+  "waiting": "Endorsing the insurance check (often co-payable to the mortgage company) and choosing the shingle color.",
+  "ask": [
+   "Which shingle color?",
+   [
+    "Weathered Wood",
+    "Charcoal",
+    "Driftwood",
+    "Pewter Gray"
+   ],
+   "Same price; HOA approval may be required for darker colors."
+  ],
+  "answered": [
+   "Replace the gutters at the same time?",
+   "No, keep existing gutters; reattach after install."
+  ],
+  "checkin": [
+   "- Done: adjuster approved the supplement for drip edge and ridge vent",
+   "- Done: permit issued",
+   "- Next: materials drop Wednesday, tear-off Thursday weather permitting",
+   "- Needs from you: endorse the ACV check and mortgage company sign-off",
+   "- Needs from you: move cars out of the driveway Thursday 7am"
+  ],
+  "talk": [
+   "Materials arrive Wednesday. Forecast is clear so tear-off is Thursday at 7. Please move cars out of the driveway.",
+   "Will do. Will someone check the attic for nails coming through?",
+   "Yes, the crew lead covers attic items with tarps and does a walkthrough with you at the end of day."
+  ],
+  "anxieties": [
+   "What if it rains while the roof is open?",
+   "How much extra will rotted decking cost?",
+   "When will insurance release the rest of the money?"
+  ],
+  "tools": [
+   "AccuLynx",
+   "JobNimbus",
+   "Roofr",
+   "CompanyCam",
+   "EagleView / Hover for measurements"
+  ],
+  "notes": "Two very different flows: retail cash jobs (2-3 day install) and insurance claims (weeks to months of adjuster, supplement and depreciation steps). Portal should show weather-dependent dates, the insurance money trail (ACV, deductible, depreciation, supplements), photos and permit/inspection status.",
+  "sources": [
+   "https://schedulingkit.com/payments/roofing",
+   "https://beancount.io/blog/2026/05/23/roofing-contractor-storm-restoration-insurance-claims-bookkeeping-acv-rcv-recoverable-depreciation-mortgage-endorsed-checks-supplements-aob-section-179-job-costing-workmanship-warranty-reserves-guide",
+   "https://my.duda.co/site/dcfadf00/insurance-claims"
+  ]
+ },
+ {
+  "key": "hvac-install",
+  "label": "HVAC installer",
+  "group": "Home and property",
+  "match": [
+   "hvac",
+   "heat pump",
+   "ac install",
+   "air conditioning",
+   "furnace replacement",
+   "mini split",
+   "ductwork",
+   "new ac",
+   "hvac replacement"
+  ],
+  "biz": "Canyon Air Heating and Cooling",
+  "person": "Priya Raman",
+  "project": "Heat pump and air handler replacement - 3 ton, with duct sealing",
+  "summary": "Replace 20-year-old gas furnace and AC with a ducted heat pump, sized from a Manual J load calculation.",
+  "billing": "Deposit of roughly 10-30% at signing to order equipment, balance due at completion; many tie final payment to passing the mechanical permit inspection. Rebates and tax credits paperwork follow.",
+  "ms": [
+   [
+    "Load calc and proposal approved",
+    "Done means the Manual J is complete, equipment model numbers are in writing, and the deposit is paid.",
+    450000,
+    [
+     "Home walkthrough and measurements",
+     "Manual J load calculation",
+     "Equipment and SEER2/HSPF2 ratings confirmed",
+     "Rebate eligibility checked",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Permit and equipment ordered",
+    "Done means the mechanical permit is issued and equipment is in the warehouse.",
+    0,
+    [
+     "Permit application filed",
+     "Electrical panel capacity checked",
+     "Equipment ordered",
+     "Install date booked",
+     "Thermostat choice confirmed"
+    ]
+   ],
+   [
+    "Install day",
+    "Done means old equipment is removed, new heat pump and air handler are set, line set charged, and system commissioned.",
+    1350000,
+    [
+     "Old furnace and condenser removed",
+     "Pad and disconnect set",
+     "Air handler and coil installed",
+     "Refrigerant charged and pressure tested",
+     "Startup readings recorded"
+    ]
+   ],
+   [
+    "Inspection and rebate paperwork",
+    "Done means the city inspection passed and rebate and tax credit forms are submitted.",
+    0,
+    [
+     "Mechanical inspection passed",
+     "Homeowner walkthrough of thermostat",
+     "AHRI certificate provided",
+     "Utility rebate submitted",
+     "Warranty registered"
+    ]
+   ]
+  ],
+  "waiting": "Being home for the inspection window and signing the utility rebate form.",
+  "ask": [
+   "Which thermostat?",
+   [
+    "Brand smart communicating thermostat",
+    "Ecobee",
+    "Basic programmable"
+   ],
+   "Communicating thermostat unlocks variable-speed features."
+  ],
+  "answered": [
+   "Keep gas furnace as backup (dual fuel)?",
+   "No, all-electric heat pump with electric heat strips."
+  ],
+  "checkin": [
+   "- Done: install complete, system running and charged",
+   "- Next: city inspection window Tuesday 8-12",
+   "- Needs from you: someone home for inspector access",
+   "- Needs from you: sign rebate form"
+  ],
+  "talk": [
+   "Your system is running. Inspector is scheduled Tuesday between 8 and noon. Can someone be home?",
+   "I can work from home Tuesday. Is it normal that the outdoor unit is louder at startup?",
+   "Yes for the first minutes of defrost. We logged startup readings; I will check it on the inspection visit."
+  ],
+  "anxieties": [
+   "Is it sized right and will it actually keep the house comfortable?",
+   "When do I get my rebate money?",
+   "How long will we be without heat or AC?"
+  ],
+  "tools": [
+   "ServiceTitan",
+   "Housecall Pro",
+   "Jobber",
+   "FieldEdge"
+  ],
+  "notes": "Short install (1-2 days) but long tail: permit inspection, rebates, tax credit docs, warranty registration, maintenance plan. Portal should treat rebates as tracked items with their own status.",
+  "sources": [
+   "https://hvacprojectcost.com/hvac-contract-questions/",
+   "https://www.pima.gov/1005/A-C-Water-Heater-Replacements",
+   "https://howardcountymd.gov/resource/hvacpermitssubmittal-12092015-web1",
+   "https://daikincomfort.com/blog-detail/11-must-ask-questions-before-hiring-an-hvac-contractor"
+  ]
+ },
+ {
+  "key": "solar-install",
+  "label": "Solar installer",
+  "group": "Home and property",
+  "match": [
+   "solar",
+   "solar panels",
+   "solar install",
+   "pv system",
+   "battery backup",
+   "powerwall",
+   "solar installation",
+   "net metering"
+  ],
+  "biz": "Brightfield Solar",
+  "person": "Tom and Lisa Nakamura",
+  "project": "8.4 kW rooftop solar with 13.5 kWh battery",
+  "summary": "21-panel rooftop system with battery backup, cash purchase, net metering interconnection.",
+  "billing": "Cash deals: small deposit at signing (e.g. $1,000), most of the balance at installation, final 10% after building department approval. Loans disburse in stages (closing, approval, completion and PTO).",
+  "ms": [
+   [
+    "Site survey and design",
+    "Done means the site survey is done, the panel layout and production estimate are approved, and the deposit is paid.",
+    100000,
+    [
+     "Roof and electrical panel survey",
+     "Shade and production analysis",
+     "Panel layout approved",
+     "Main panel upgrade decision",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Permits and utility application",
+    "Done means the building permit is issued and the utility interconnection application is submitted.",
+    0,
+    [
+     "Engineering plan set stamped",
+     "Building permit issued",
+     "HOA approval (if any)",
+     "Interconnection application filed",
+     "Install date booked"
+    ]
+   ],
+   [
+    "Installation",
+    "Done means panels, inverter and battery are installed and the system passes the installer's commissioning check.",
+    3150000,
+    [
+     "Racking and panels installed",
+     "Inverter and battery mounted",
+     "Conduit and wiring complete",
+     "Commissioning test",
+     "Monitoring app set up"
+    ]
+   ],
+   [
+    "Inspection and permission to operate",
+    "Done means the city inspection passed and the utility granted permission to operate (PTO); system is turned on.",
+    350000,
+    [
+     "City final inspection passed",
+     "Utility meter swap",
+     "PTO letter received",
+     "System turned on",
+     "Tax credit documents sent"
+    ]
+   ]
+  ],
+  "waiting": "Signing the utility interconnection agreement and HOA approval where required.",
+  "ask": [
+   "Add a main panel upgrade?",
+   [
+    "Upgrade to 200A now",
+    "Use a derate breaker (no upgrade)",
+    "Decide after utility review"
+   ],
+   "Upgrade adds about $2,500 and 2-4 weeks."
+  ],
+  "answered": [
+   "Battery: whole-home or essentials backup?",
+   "Essentials panel: fridge, internet, lights, garage door."
+  ],
+  "checkin": [
+   "- Done: permit issued, interconnection submitted",
+   "- Next: install Monday-Tuesday",
+   "- Next: city inspection after install, then utility PTO (1-6 weeks)",
+   "- Needs from you: e-sign utility interconnection agreement",
+   "- Needs from you: clear the garage wall for the battery"
+  ],
+  "talk": [
+   "Install is set for Monday. Please clear about 4 feet of garage wall for the battery.",
+   "Done. Once it is installed can we start using it right away?",
+   "Not until the utility grants PTO, usually 1-6 weeks after inspection. We will post it here the day it arrives."
+  ],
+  "anxieties": [
+   "When can I turn it on (PTO)?",
+   "Is the roof going to leak?",
+   "Will it produce what was promised and when do I get the tax credit paperwork?"
+  ],
+  "tools": [
+   "Enerflo",
+   "Aurora Solar",
+   "OpenSolar",
+   "Solargraf",
+   "Sighten",
+   "Salesforce"
+  ],
+  "notes": "The longest wait is out of the installer's control: permit, utility interconnection and PTO. Portal must show third-party gates (city, utility, HOA, lender) clearly separate from installer work.",
+  "sources": [
+   "https://intercom.help/better-earth/en/articles/10198474-about-cash-payments",
+   "https://www.ctgreenbank.com/smart-e-disbursement-schedule-by-project-type/",
+   "https://www.tesla.com/support/energy/solar-roof/after-installation/what-to-expect-after-installation"
+  ]
+ },
+ {
+  "key": "pool-build",
+  "label": "Pool builder",
+  "group": "Home and property",
+  "match": [
+   "pool",
+   "pool builder",
+   "swimming pool",
+   "gunite pool",
+   "pool construction",
+   "inground pool",
+   "spa",
+   "fiberglass pool",
+   "pool remodel"
+  ],
+  "biz": "Blue Cove Pools",
+  "person": "Jason and Amy Whitaker",
+  "project": "Gunite pool and spa - 15x32 with travertine deck",
+  "summary": "Inground gunite pool with attached spa, tanning ledge, travertine decking and automation.",
+  "billing": "Tiny deposit (California caps pool down payments at $200 or 2%), then payments tied to excavation, gunite, deck and plaster; final after plaster and final inspection. Nevada law caps each stage share.",
+  "ms": [
+   [
+    "Design, permit and excavation",
+    "Done means the design is approved, permit issued, layout painted and the hole dug to plan.",
+    2200000,
+    [
+     "3D design approved",
+     "Permit and HOA approval",
+     "Layout and dig day",
+     "Excavation complete",
+     "Soil haul-off"
+    ]
+   ],
+   [
+    "Steel, plumbing and gunite",
+    "Done means steel and plumbing pass inspection and the gunite shell is shot and curing.",
+    2400000,
+    [
+     "Steel rebar set",
+     "Plumbing and pressure test",
+     "Pre-gunite inspection passed",
+     "Gunite shot",
+     "Shell watered during cure"
+    ]
+   ],
+   [
+    "Tile, coping, equipment and deck",
+    "Done means waterline tile and coping are set, equipment pad is plumbed and wired, and the deck is poured or laid.",
+    2000000,
+    [
+     "Waterline tile set",
+     "Coping installed",
+     "Equipment pad and electrical",
+     "Pre-deck inspection",
+     "Travertine deck laid"
+    ]
+   ],
+   [
+    "Plaster, startup and final",
+    "Done means interior finish is applied, pool is filled and chemically started, and final inspection passed.",
+    900000,
+    [
+     "Barrier/fence inspection",
+     "Plaster or pebble finish applied",
+     "Fill and startup chemistry",
+     "Final inspection passed",
+     "Pool school walkthrough"
+    ]
+   ]
+  ],
+  "waiting": "Finish selections (tile, coping, plaster color) and the safety barrier/fence required before final inspection.",
+  "ask": [
+   "Which interior finish?",
+   [
+    "White plaster",
+    "Blue pebble",
+    "Midnight quartz"
+   ],
+   "Pebble adds about $4,800 and lasts longer."
+  ],
+  "answered": [
+   "Spa: attached or raised spillover?",
+   "Raised spillover spa, 18 inches above water line."
+  ],
+  "checkin": [
+   "- Done: gunite shot Friday",
+   "- Next: water the shell twice daily for 7 days",
+   "- Next: tile and coping start the 22nd",
+   "- Needs from you: waterline tile pick",
+   "- Needs from you: payment 2 (gunite) due"
+  ],
+  "talk": [
+   "Gunite is shot. Please water the shell morning and evening for the next 7 days. Payment 2 is now due.",
+   "Got it. How long until we can swim?",
+   "About 4-6 weeks if tile and deck stay on schedule; plaster is the last step."
+  ],
+  "anxieties": [
+   "Why has nothing happened for two weeks?",
+   "How long until we can swim?",
+   "Surprise costs like rock or extra dirt haul-off"
+  ],
+  "tools": [
+   "Pool Studio / Structure Studios",
+   "Buildertrend",
+   "JobTread",
+   "Skimmer",
+   "QuickBooks"
+  ],
+  "notes": "Long gaps between trades cause most anxiety. Many inspections (pre-gunite, pre-deck, barrier, final). Rock excavation and soil haul-off are classic change orders. Weather and cure times matter.",
+  "sources": [
+   "https://www.troublefreepool.com/goto/post?id=1888082",
+   "https://articles.bluehaven.com/paying-for-your-new-gunite-pool",
+   "https://leg.state.nv.us/Session/69th1997/97bills/AB/AB512_EN.HTM",
+   "https://cinderblock.com/blog/california-contractor-down-payment-limits/"
+  ]
+ },
+ {
+  "key": "custom-home",
+  "label": "Custom home builder",
+  "group": "Home and property",
+  "match": [
+   "custom home",
+   "home builder",
+   "new construction",
+   "build a house",
+   "new home build",
+   "spec home",
+   "builder",
+   "construction loan"
+  ],
+  "biz": "Oak Hollow Custom Homes",
+  "person": "Ryan and Sofia Mendez",
+  "project": "New 3,200 sq ft custom home - Lot 14, Ridgeview",
+  "summary": "Ground-up 4-bed custom home on an owner's lot, financed with a construction loan.",
+  "billing": "Bank draw schedule: typically 5-7 draws tied to verified stages (foundation, framing, dry-in, rough-ins, drywall/trim, completion), each released after a lender inspection, with retainage held to the end.",
+  "ms": [
+   [
+    "Foundation",
+    "Done means the slab is poured and the foundation inspection passed.",
+    15000000,
+    [
+     "Site cleared and staked",
+     "Footing inspection",
+     "Underslab plumbing",
+     "Slab poured",
+     "Lender draw inspection"
+    ]
+   ],
+   [
+    "Framing and dry-in",
+    "Done means framing is complete, roof is on, windows are in and the house is weather-tight.",
+    25000000,
+    [
+     "Wall framing",
+     "Roof trusses set",
+     "Roof sheathing and underlayment",
+     "Windows and exterior doors",
+     "Framing inspection"
+    ]
+   ],
+   [
+    "Rough-ins and drywall",
+    "Done means plumbing, electrical and HVAC rough-ins passed and drywall is finished.",
+    22000000,
+    [
+     "Rough plumbing, electrical, HVAC",
+     "Rough inspections passed",
+     "Insulation inspection",
+     "Drywall hung and finished",
+     "Lender draw inspection"
+    ]
+   ],
+   [
+    "Finishes and certificate of occupancy",
+    "Done means finishes are installed, final inspections passed, CO issued and the walkthrough punch list is closed.",
+    18000000,
+    [
+     "Cabinets, counters, flooring",
+     "Fixtures and trim",
+     "Final inspections",
+     "Certificate of occupancy",
+     "Orientation walkthrough and punch list"
+    ]
+   ]
+  ],
+  "waiting": "Selections on deadline (flooring, plumbing fixtures, lighting) and draw approvals from the lender.",
+  "ask": [
+   "Which exterior siding color?",
+   [
+    "Iron Gray",
+    "Arctic White",
+    "Evening Blue"
+   ],
+   "Needed before siding order; 3 week lead time."
+  ],
+  "answered": [
+   "Upgrade to 10 ft ceilings on the main floor?",
+   "Yes, approved via change order #3."
+  ],
+  "checkin": [
+   "- Done: framing inspection passed",
+   "- Done: windows installed, house is dried in",
+   "- Next: rough-ins start Monday",
+   "- Needs from you: plumbing fixture selections by the 30th",
+   "- Needs from you: approve draw 2 with the bank"
+  ],
+  "talk": [
+   "House is dried in and framing passed. Draw 2 request went to the bank today. Fixture selections are due the 30th.",
+   "Exciting. Can we walk the framing this weekend to check outlet placement?",
+   "Yes, Saturday at 10. Bring your list; it is the cheapest time to move outlets."
+  ],
+  "anxieties": [
+   "Are we on budget, and what do allowance overages add?",
+   "When is move-in, really?",
+   "Is the bank releasing draws and are subs getting paid (liens)?"
+  ],
+  "tools": [
+   "Buildertrend",
+   "CoConstruct",
+   "BuilderPrime",
+   "JobTread",
+   "Procore"
+  ],
+  "notes": "Longest timeline (8-18 months). Portal must handle selections with deadlines, allowances vs actuals, change orders, lender draws and inspections, lien waivers, and a big photo log.",
+  "sources": [
+   "https://buildingadvisor.com/welcome-to-the-building-advisor/project-management/finance/draw-schedules/",
+   "https://www.finehomebuilding.com/forum/bank-draw-schedule",
+   "https://legalclarity.org/construction-draw-inspections-process-and-requirements/",
+   "https://buildertrend.com/remodelers/"
+  ]
+ },
+ {
+  "key": "adu-builder",
+  "label": "ADU / garage conversion builder",
+  "group": "Home and property",
+  "match": [
+   "adu",
+   "accessory dwelling unit",
+   "granny flat",
+   "garage conversion",
+   "backyard cottage",
+   "in-law unit",
+   "casita",
+   "jadu"
+  ],
+  "biz": "Backyard Homes Co.",
+  "person": "Helen Park",
+  "project": "Detached 600 sq ft ADU - 1 bed, 1 bath",
+  "summary": "Detached backyard ADU with separate utilities, from plans through certificate of occupancy.",
+  "billing": "California: down payment capped at $1,000 or 10%; progress payments tied to completed stages; CSLB issued a 2024 warning about ADU builders taking payments ahead of work. Design and permitting often billed separately.",
+  "ms": [
+   [
+    "Plans and permit",
+    "Done means plans are approved by the city and the building permit is issued.",
+    1200000,
+    [
+     "Site survey",
+     "Plan set drawn",
+     "Title 24 energy calcs",
+     "City plan check corrections",
+     "Permit issued"
+    ]
+   ],
+   [
+    "Foundation and utilities",
+    "Done means utility trenches are dug, lines run, and the foundation is poured and inspected.",
+    4500000,
+    [
+     "Utility trenching",
+     "Sewer lateral connection",
+     "Foundation forms and steel",
+     "Foundation inspection",
+     "Slab poured"
+    ]
+   ],
+   [
+    "Framing to drywall",
+    "Done means framing, rough-ins and insulation passed and drywall is up.",
+    6800000,
+    [
+     "Framing",
+     "Roof and windows",
+     "Rough-ins",
+     "Inspections passed",
+     "Drywall"
+    ]
+   ],
+   [
+    "Finishes and final",
+    "Done means finishes are in, final inspection passed and certificate of occupancy issued.",
+    5500000,
+    [
+     "Kitchenette and bath finishes",
+     "Flooring and paint",
+     "Utility meters set",
+     "Final inspection",
+     "Certificate of occupancy"
+    ]
+   ]
+  ],
+  "waiting": "Responses to city plan-check questions and utility (electric meter) applications.",
+  "ask": [
+   "Separate electric meter?",
+   [
+    "Separate meter",
+    "Sub-panel off main house"
+   ],
+   "Separate meter adds cost and utility wait but is better for renting."
+  ],
+  "answered": [
+   "Kitchenette or full kitchen?",
+   "Full kitchen with 24 inch range."
+  ],
+  "checkin": [
+   "- Done: plan check corrections resubmitted",
+   "- Next: permit expected in 2-3 weeks",
+   "- Needs from you: sign utility application"
+  ],
+  "talk": [
+   "City sent second-round corrections; we resubmitted today. Expect permit in 2-3 weeks.",
+   "Is that normal? We hoped to break ground this month.",
+   "Yes, two rounds is typical. We will schedule trenching the day the permit issues."
+  ],
+  "anxieties": [
+   "How long will the city take?",
+   "Total cost including utility hookups and impact fees",
+   "Am I paying ahead of work?"
+  ],
+  "tools": [
+   "Buildertrend",
+   "JobTread",
+   "Houzz Pro",
+   "Procore"
+  ],
+  "notes": "Permitting and utility hookups dominate the timeline; portal should show city plan-check rounds as visible steps.",
+  "sources": [
+   "https://cslb.ca.gov/Resources/PressReleases/2024/ADU-payments.FINAL.pdf",
+   "https://cinderblock.com/blog/california-contractor-down-payment-limits/"
+  ]
+ },
+ {
+  "key": "landscape-hardscape",
+  "label": "Landscaping / Hardscape",
+  "group": "Home and property",
+  "match": [
+   "landscaping",
+   "landscaper",
+   "hardscape",
+   "pavers",
+   "patio",
+   "retaining wall",
+   "backyard makeover",
+   "outdoor kitchen",
+   "landscape design",
+   "irrigation"
+  ],
+  "biz": "Greenstone Landscape and Hardscape",
+  "person": "Kevin and Rachel Doyle",
+  "project": "Backyard paver patio, fire pit and planting",
+  "summary": "600 sq ft paver patio with seat wall, gas fire pit, drip irrigation and new planting beds.",
+  "billing": "Design fee often credited toward the build; deposit at signing (ranges from 10% to 40-50%), a payment before work starts or after base compaction, then after pavers are laid, balance at final walkthrough.",
+  "ms": [
+   [
+    "Design and deposit",
+    "Done means the plan and material selections are approved and the deposit is paid.",
+    950000,
+    [
+     "Site measure",
+     "Design plan",
+     "Paver and wall block picked",
+     "811 utility locate ordered",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Excavation and base",
+    "Done means area is excavated, base gravel installed and compacted to spec.",
+    1250000,
+    [
+     "Sod and soil removed",
+     "Base gravel delivered",
+     "Compacted in lifts",
+     "Drainage installed",
+     "Gas line stubbed for fire pit"
+    ]
+   ],
+   [
+    "Pavers, walls and fire pit",
+    "Done means pavers, seat wall and fire pit are installed, cut and jointed with polymeric sand.",
+    850000,
+    [
+     "Pavers laid",
+     "Edge restraint",
+     "Seat wall built",
+     "Fire pit set",
+     "Polymeric sand"
+    ]
+   ],
+   [
+    "Planting, irrigation and walkthrough",
+    "Done means planting and irrigation are in, timer programmed, and final walkthrough done.",
+    450000,
+    [
+     "Drip irrigation",
+     "Plants installed",
+     "Mulch",
+     "Controller programmed",
+     "Walkthrough and care guide"
+    ]
+   ]
+  ],
+  "waiting": "Choosing plants and paver color, and HOA approval for visible changes.",
+  "ask": [
+   "Which paver color?",
+   [
+    "Charcoal blend",
+    "Sand blend",
+    "Gray tumbled"
+   ],
+   "Tumbled adds about $1.50 per sq ft."
+  ],
+  "answered": [
+   "Gas or wood fire pit?",
+   "Gas, with a stub from the existing meter."
+  ],
+  "checkin": [
+   "- Done: excavation and base compaction",
+   "- Next: pavers start Wednesday",
+   "- Needs from you: confirm plant list"
+  ],
+  "talk": [
+   "Base passed compaction. Pavers arrive Tuesday, install starts Wednesday.",
+   "Great. Can we see the plant list again?",
+   "Posted it here with photos of each plant; please confirm by Friday."
+  ],
+  "anxieties": [
+   "Rain delays",
+   "Damage to lawn and sprinklers from equipment",
+   "Will plants survive / warranty"
+  ],
+  "tools": [
+   "LMN",
+   "Aspire",
+   "Jobber",
+   "Arborgold",
+   "SynkedUP",
+   "Pro Landscape (design)"
+  ],
+  "notes": "Weather dependent; utility locates, HOA approval and material deliveries are key gates. Plant warranty and maintenance upsell after completion.",
+  "sources": [
+   "https://schedulingkit.com/payments/landscaping",
+   "https://webflow.invoicequick.com/invoice-templates/hardscaping-invoice-template",
+   "https://www.landscapemanagement.net/?p=28216"
+  ]
+ },
+ {
+  "key": "interior-design",
+  "label": "Interior designer",
+  "group": "Home and property",
+  "match": [
+   "interior design",
+   "interior designer",
+   "decorator",
+   "furnishing",
+   "home design",
+   "living room design",
+   "e-design",
+   "furniture sourcing"
+  ],
+  "biz": "Willow and Ash Interiors",
+  "person": "Natalie Brooks",
+  "project": "Living and dining room design - full furnish",
+  "summary": "Full-service design for living and dining rooms: concept, furniture sourcing, procurement and install day.",
+  "billing": "Design retainer at start (often 25-50% of estimated design fee), phase-based design fees, procurement paid up front by the client before orders (often cost plus 20-35% markup), install billed separately with balance before install day.",
+  "ms": [
+   [
+    "Discovery and concept",
+    "Done means the concept board, layout and budget are approved.",
+    350000,
+    [
+     "Site measure and photos",
+     "Style questionnaire",
+     "Concept board",
+     "Furniture layout",
+     "Budget approved"
+    ]
+   ],
+   [
+    "Design presentation and selections",
+    "Done means every item on the furnishing plan has an approved selection.",
+    350000,
+    [
+     "Furniture proposal",
+     "Fabric and finish samples",
+     "Lighting plan",
+     "Rug and art selections",
+     "Client approvals collected"
+    ]
+   ],
+   [
+    "Procurement",
+    "Done means all approved items are paid, ordered and tracked to the receiving warehouse.",
+    2800000,
+    [
+     "Proposals invoiced",
+     "Orders placed",
+     "Lead times confirmed",
+     "Backorders tracked",
+     "Items received and inspected"
+    ]
+   ],
+   [
+    "Install day and reveal",
+    "Done means furniture is delivered, placed and styled, and punch items are logged.",
+    300000,
+    [
+     "White-glove delivery",
+     "Art hung",
+     "Styling",
+     "Reveal walkthrough",
+     "Punch list (damages, backorders)"
+    ]
+   ]
+  ],
+  "waiting": "Approving and paying procurement proposals so items can be ordered.",
+  "ask": [
+   "Sofa fabric?",
+   [
+    "Performance boucle",
+    "Linen blend",
+    "Leather"
+   ],
+   "Leather adds 4 weeks lead time."
+  ],
+  "answered": [
+   "Keep the existing dining table?",
+   "No, replace with an 84 inch walnut table."
+  ],
+  "checkin": [
+   "- Done: 14 of 18 items ordered",
+   "- Next: sofa ships week of the 12th",
+   "- Needs from you: approve rug proposal"
+  ],
+  "talk": [
+   "The rug proposal is ready. Approving today keeps install on the 3rd.",
+   "Approved. Is the sofa still on backorder?",
+   "Sofa ships the week of the 12th; we will update tracking here."
+  ],
+  "anxieties": [
+   "Where is my furniture / backorders",
+   "Budget creep",
+   "Will it look like the renderings"
+  ],
+  "tools": [
+   "Studio Designer",
+   "Houzz Pro",
+   "Programa",
+   "Mydoma",
+   "DesignFiles",
+   "Dubsado"
+  ],
+  "notes": "Procurement tracking (dozens of items with vendors, lead times, damage claims) is the core portal need; approvals per item.",
+  "sources": [
+   "https://schedulingkit.com/payments/interior-designers",
+   "https://beancount.io/blog/2026/05/18/bookkeeping-interior-designers-client-retainers-liability-product-markup-procurement-orders-revenue-recognition-stop-double-counting-income-guide",
+   "https://sprintlaw.co.uk/articles/interior-design-payment-terms-essential-uk-legal-guide/"
+  ]
+ },
+ {
+  "key": "residential-architect",
+  "label": "Residential architect",
+  "group": "Home and property",
+  "match": [
+   "architect",
+   "architecture",
+   "residential architect",
+   "house plans",
+   "addition plans",
+   "permit drawings",
+   "home design plans"
+  ],
+  "biz": "Northlight Architecture",
+  "person": "Andrew and Kim Feld",
+  "project": "Second-story addition - plans through construction",
+  "summary": "Design and permit drawings for a 900 sq ft second-story addition, plus construction administration.",
+  "billing": "Fee as percent of construction cost or fixed fee, billed by AIA phase; a common illustrative split is 15% schematic design, 20% design development, 40% construction documents, 5% bidding, 20% construction administration (AIA does not set these).",
+  "ms": [
+   [
+    "Schematic design",
+    "Done means the client approves a floor plan and massing concept.",
+    600000,
+    [
+     "Existing conditions survey",
+     "Program and zoning review",
+     "2-3 layout options",
+     "Massing sketches",
+     "Option approved"
+    ]
+   ],
+   [
+    "Design development",
+    "Done means plans, elevations and key materials are fixed and engineer is engaged.",
+    800000,
+    [
+     "Refined plans and elevations",
+     "Structural engineer engaged",
+     "Window and door schedule",
+     "Material palette",
+     "Cost check with contractor"
+    ]
+   ],
+   [
+    "Construction documents and permit",
+    "Done means the permit set is complete and the city issues the permit.",
+    1600000,
+    [
+     "Permit drawing set",
+     "Structural calcs",
+     "Energy compliance",
+     "Plan check submittal",
+     "Corrections and permit issued"
+    ]
+   ],
+   [
+    "Bidding and construction administration",
+    "Done means a contractor is selected and site visits and RFIs are handled through completion.",
+    1000000,
+    [
+     "Bid review",
+     "Contractor selected",
+     "Site visits",
+     "RFIs and submittals",
+     "Punch list"
+    ]
+   ]
+  ],
+  "waiting": "Feedback on design options and decisions that unblock drawings (window style, roof form).",
+  "ask": [
+   "Roof form for the addition?",
+   [
+    "Gable to match",
+    "Low-slope modern",
+    "Hip"
+   ],
+   "Low-slope may trigger design review."
+  ],
+  "answered": [
+   "Add a bathroom upstairs?",
+   "Yes, primary bath with walk-in shower."
+  ],
+  "checkin": [
+   "- Done: design development set issued",
+   "- Next: structural engineer calcs",
+   "- Needs from you: confirm window style"
+  ],
+  "talk": [
+   "DD set is posted. The engineer needs the window style to size headers.",
+   "We like the black frame casements.",
+   "Noted. We will reflect casements in the CD set."
+  ],
+  "anxieties": [
+   "How long until permit",
+   "Will it cost what we expect to build",
+   "Design review / neighbor objections"
+  ],
+  "tools": [
+   "ArchiOffice",
+   "Monograph",
+   "BQE Core",
+   "Houzz Pro",
+   "Bluebeam"
+  ],
+  "notes": "Deliverable is drawings, not construction. Portal should show drawing sets, versions, plan-check rounds, RFIs; construction cost estimates sit with a separate contractor.",
+  "sources": [
+   "https://open-exam-prep.com/study-guides/are-pjm/budgeting-communication/fee-allocation-project-phases",
+   "https://www.closearchitects.com/process"
+  ]
+ },
+ {
+  "key": "custom-cabinetry",
+  "label": "Custom cabinetry / furniture maker",
+  "group": "Home and property",
+  "match": [
+   "cabinetry",
+   "custom cabinets",
+   "cabinet maker",
+   "millwork",
+   "built-ins",
+   "custom furniture",
+   "woodworker",
+   "closet system"
+  ],
+  "biz": "Hollis Millwork",
+  "person": "Grace Lin",
+  "project": "Custom built-ins - family room wall and window seat",
+  "summary": "Painted maple built-ins with bookshelves, media cabinet and window seat, designed, built and installed.",
+  "billing": "Common: 50% when shop drawings are approved and order placed, 40% on delivery, 10% at substantial completion of install; larger jobs split 40/30/30.",
+  "ms": [
+   [
+    "Shop drawings approved",
+    "Done means the client signed shop drawings and finish samples.",
+    900000,
+    [
+     "Field measure",
+     "Shop drawings",
+     "Finish sample",
+     "Hardware selected",
+     "Drawings signed"
+    ]
+   ],
+   [
+    "In production",
+    "Done means boxes, doors and faces are built and sprayed.",
+    0,
+    [
+     "Material ordered",
+     "Boxes cut and assembled",
+     "Doors built",
+     "Finish sprayed",
+     "Quality check"
+    ]
+   ],
+   [
+    "Delivery",
+    "Done means pieces are delivered and checked for damage.",
+    720000,
+    [
+     "Delivery scheduled",
+     "Site ready",
+     "Pieces delivered",
+     "Damage check",
+     "Install scheduled"
+    ]
+   ],
+   [
+    "Install and completion",
+    "Done means built-ins are scribed, installed, touched up and accepted.",
+    180000,
+    [
+     "Install and scribe",
+     "Hardware",
+     "Touch-up",
+     "Walkthrough",
+     "Sign-off"
+    ]
+   ]
+  ],
+  "waiting": "Signing shop drawings and approving the finish sample.",
+  "ask": [
+   "Paint color?",
+   [
+    "Match trim white",
+    "Sage green",
+    "Deep navy"
+   ],
+   "Custom colors add a sample round."
+  ],
+  "answered": [
+   "Doors on the bookshelves?",
+   "Open shelves top, doors bottom."
+  ],
+  "checkin": [
+   "- Done: boxes built",
+   "- Next: finish spray this week",
+   "- Needs from you: confirm hardware"
+  ],
+  "talk": [
+   "Boxes are done. Spraying this week. Please confirm the brass pulls.",
+   "Confirmed brass.",
+   "Thanks, delivery stays the 20th."
+  ],
+  "anxieties": [
+   "Lead time",
+   "Will the finish match the sample",
+   "Fit against uneven walls"
+  ],
+  "tools": [
+   "Cabinet Vision",
+   "Mozaik",
+   "Microvellum",
+   "QuickBooks",
+   "Houzz Pro"
+  ],
+  "notes": "Approval of shop drawings is the key gate; production is invisible to clients so progress photos matter.",
+  "sources": [
+   "https://woodweb.com/knowledge_base/Payment_Schedules_for_Cabinetry.html",
+   "https://woodweb.com/knowledge_base/Deposits_and_Payment.html"
+  ]
+ },
+ {
+  "key": "home-inspection",
+  "label": "Home inspector",
+  "group": "Home and property",
+  "match": [
+   "home inspection",
+   "home inspector",
+   "pre-purchase inspection",
+   "buyer inspection",
+   "inspection report",
+   "sewer scope",
+   "radon test"
+  ],
+  "biz": "TrueNorth Home Inspections",
+  "person": "Ben Carter",
+  "project": "Pre-purchase inspection - 2,100 sq ft single family",
+  "summary": "Full buyer inspection with sewer scope and radon test inside a 10-day contingency.",
+  "billing": "Paid in full at time of inspection or before the report is released; add-ons (sewer scope, radon) priced separately.",
+  "ms": [
+   [
+    "Booked and agreement signed",
+    "Done means the date is booked and the inspection agreement is signed.",
+    0,
+    [
+     "Date confirmed with listing agent",
+     "Agreement signed",
+     "Add-ons chosen",
+     "Access confirmed",
+     "Utilities on"
+    ]
+   ],
+   [
+    "Inspection day",
+    "Done means the onsite inspection is complete and the fee paid.",
+    62500,
+    [
+     "Exterior and roof",
+     "Attic and crawl",
+     "Systems",
+     "Sewer scope",
+     "Radon monitor placed"
+    ]
+   ],
+   [
+    "Report delivered",
+    "Done means the report with photos is delivered within 24-48 hours.",
+    0,
+    [
+     "Report written",
+     "Photos attached",
+     "Summary of major items",
+     "Radon results",
+     "Report sent to buyer and agent"
+    ]
+   ],
+   [
+    "Follow-up questions",
+    "Done means buyer questions are answered before the contingency deadline.",
+    0,
+    [
+     "Q and A call",
+     "Clarify repair items",
+     "Contractor referrals",
+     "Re-inspect (if ordered)",
+     "File closed"
+    ]
+   ]
+  ],
+  "waiting": "Payment and signed agreement before the report is released.",
+  "ask": [
+   "Add sewer scope?",
+   [
+    "Yes",
+    "No"
+   ],
+   "Recommended for homes older than 30 years."
+  ],
+  "answered": [
+   "Radon test?",
+   "Yes, 48-hour monitor."
+  ],
+  "checkin": [
+   "- Done: inspection complete",
+   "- Next: report by tomorrow evening",
+   "- Needs from you: payment"
+  ],
+  "talk": [
+   "Inspection done; report tomorrow evening.",
+   "Anything major?",
+   "Roof is near end of life; details in the report."
+  ],
+  "anxieties": [
+   "Deal-breakers",
+   "Report timing vs contingency",
+   "Repair costs"
+  ],
+  "tools": [
+   "Spectora",
+   "HomeGauge",
+   "ISN",
+   "Palm-Tech"
+  ],
+  "notes": "Single-day job; the portal value is report delivery and contingency deadline. Weak fit for multi-milestone portal.",
+  "sources": [
+   "https://www.slideshare.net/slideshow/2011-argeement-waldo/7050250",
+   "https://forum.nachi.org/t/payments/99509",
+   "https://www.chase.com/personal/mortgage/education/buying-a-home/how-to-negotiate-after-a-home-inspection"
+  ]
+ },
+ {
+  "key": "moving-company",
+  "label": "Moving company",
+  "group": "Home and property",
+  "match": [
+   "moving",
+   "movers",
+   "moving company",
+   "relocation",
+   "long distance move",
+   "packing service",
+   "household move"
+  ],
+  "biz": "Steadfast Movers",
+  "person": "Laura Kim",
+  "project": "3-bedroom interstate move - Denver to Austin",
+  "summary": "Full pack, load, transport and unload with valuation coverage.",
+  "billing": "Deposit to reserve, balance at delivery; interstate moves follow FMCSA rules (binding vs non-binding estimates; non-binding cannot exceed 110% at delivery).",
+  "ms": [
+   [
+    "Estimate and booking",
+    "Done means the in-home or virtual survey is done and the estimate signed.",
+    50000,
+    [
+     "Virtual survey",
+     "Inventory list",
+     "Binding estimate",
+     "Valuation choice",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Packing day",
+    "Done means all items are packed and labeled.",
+    0,
+    [
+     "Pack kitchen",
+     "Wrap furniture",
+     "Label boxes",
+     "Crate art",
+     "Inventory tags"
+    ]
+   ],
+   [
+    "Load and transport",
+    "Done means truck is loaded and in transit with ETA.",
+    0,
+    [
+     "Inventory check",
+     "Load truck",
+     "Bill of lading signed",
+     "Departure",
+     "ETA shared"
+    ]
+   ],
+   [
+    "Delivery and unload",
+    "Done means items are delivered, placed, balance paid.",
+    680000,
+    [
+     "Delivery window",
+     "Unload",
+     "Reassembly",
+     "Inventory check",
+     "Balance paid"
+    ]
+   ]
+  ],
+  "waiting": "Final inventory changes and access details (elevator reservation, parking).",
+  "ask": [
+   "Valuation coverage?",
+   [
+    "Released value (60 cents/lb)",
+    "Full value protection"
+   ],
+   "Full value costs more."
+  ],
+  "answered": [
+   "Packing?",
+   "Full packing service."
+  ],
+  "checkin": [
+   "- Done: truck loaded",
+   "- Next: delivery window Thursday",
+   "- Needs from you: confirm parking"
+  ],
+  "talk": [
+   "Truck departed; delivery window Thursday 8-12.",
+   "Can you call an hour ahead?",
+   "Yes, driver will call."
+  ],
+  "anxieties": [
+   "Where is my stuff",
+   "Final price vs estimate",
+   "Damage claims"
+  ],
+  "tools": [
+   "SmartMoving",
+   "MoveitPro",
+   "Supermove",
+   "Elromco"
+  ],
+  "notes": "Short projects; key is delivery window and inventory/claims.",
+  "sources": [
+   "https://www.fmcsa.dot.gov/protect-your-move/faq",
+   "https://www.fmcsa.dot.gov/sites/fmcsa.dot.gov/files/docs/Rights-and-Responsibilities-2013.pdf"
+  ]
+ },
+ {
+  "key": "post-construction-cleaning",
+  "label": "Cleaning (post-construction / deep clean)",
+  "group": "Home and property",
+  "match": [
+   "cleaning",
+   "post construction cleaning",
+   "deep clean",
+   "move out cleaning",
+   "construction cleanup",
+   "final clean"
+  ],
+  "biz": "Spotless Finish Cleaning",
+  "person": "Mark Delgado (GC)",
+  "project": "Post-construction clean - 3,000 sq ft remodel",
+  "summary": "Rough clean, final clean and touch-up clean before owner move-in.",
+  "billing": "Priced per sq ft per phase (rough, final, touch-up); invoice per phase or on completion; GCs often net 30.",
+  "ms": [
+   [
+    "Rough clean",
+    "Done means debris and heavy dust removed before finishes.",
+    90000,
+    [
+     "Debris removal",
+     "Sweep",
+     "Vacuum",
+     "Wipe surfaces",
+     "Photos"
+    ]
+   ],
+   [
+    "Final clean",
+    "Done means all surfaces, fixtures and windows cleaned.",
+    120000,
+    [
+     "Dust ceilings",
+     "Windows",
+     "Cabinets inside",
+     "Floors",
+     "Fixtures"
+    ]
+   ],
+   [
+    "Touch-up clean",
+    "Done means post-punch dust cleaned before move-in.",
+    60000,
+    [
+     "Recheck",
+     "Spot clean",
+     "Floors",
+     "Glass",
+     "Photos"
+    ]
+   ],
+   [
+    "Walkthrough sign-off",
+    "Done means client approves.",
+    0,
+    [
+     "Walkthrough",
+     "Notes",
+     "Fix items",
+     "Sign-off",
+     "Invoice"
+    ]
+   ]
+  ],
+  "waiting": "Site access and confirmation that trades are finished.",
+  "ask": [
+   "Window cleaning included?",
+   [
+    "Interior only",
+    "Interior and exterior"
+   ],
+   "Exterior adds cost."
+  ],
+  "answered": [
+   "Floor type?",
+   "Hardwood; no wet mop."
+  ],
+  "checkin": [
+   "- Done: rough clean",
+   "- Next: final clean Monday",
+   "- Needs from you: lockbox code"
+  ],
+  "talk": [
+   "Rough clean is done; photos are posted. When do painters wrap so we can book the final clean?",
+   "Painters finish Friday. Owner walkthrough is Wednesday.",
+   "Then final clean Monday and touch-up Tuesday afternoon, ready for Wednesday."
+  ],
+  "anxieties": [
+   "Dust remains",
+   "Timing vs move-in",
+   "Damage to finishes"
+  ],
+  "tools": [
+   "Jobber",
+   "Housecall Pro",
+   "ZenMaid",
+   "Swept"
+  ],
+  "notes": "Depends on GC schedule; photo proof matters.",
+  "sources": [
+   "https://fixr.com/costs/post-construction-cleaning",
+   "https://www.servicemasterclean.com/clean-blog/post-construction-cleaning/post-construction-cleaning-cost-factors/"
+  ]
+ },
+ {
+  "key": "home-staging",
+  "label": "Home stager",
+  "group": "Home and property",
+  "match": [
+   "home staging",
+   "stager",
+   "staging",
+   "real estate staging",
+   "vacant staging",
+   "listing prep"
+  ],
+  "biz": "Showready Staging",
+  "person": "Erin Walsh (listing agent) and seller Paul Grant",
+  "project": "Vacant staging - 4-bed listing",
+  "summary": "Vacant home staged for listing photos with a 60-day rental term.",
+  "billing": "Consultation fee (often credited), staging fee covering design, delivery and first 30-90 days rental, then monthly extensions; destage at sale or term end.",
+  "ms": [
+   [
+    "Consultation and proposal",
+    "Done means walkthrough and proposal accepted.",
+    30000,
+    [
+     "Walkthrough",
+     "Room list",
+     "Proposal",
+     "Contract signed",
+     "Deposit"
+    ]
+   ],
+   [
+    "Staging install",
+    "Done means furniture and decor installed before photos.",
+    420000,
+    [
+     "Pull inventory",
+     "Delivery",
+     "Placement",
+     "Styling",
+     "Photo-ready check"
+    ]
+   ],
+   [
+    "Listing period",
+    "Done means term running; extension billed monthly.",
+    0,
+    [
+     "Photos",
+     "Open house refresh",
+     "Monthly check",
+     "Extension notice",
+     "Damage check"
+    ]
+   ],
+   [
+    "Destage",
+    "Done means items removed after sale.",
+    0,
+    [
+     "Schedule pickup",
+     "Remove items",
+     "Damage check",
+     "Final invoice",
+     "Close"
+    ]
+   ]
+  ],
+  "waiting": "Listing date and access for install; notice of sale for destage.",
+  "ask": [
+   "Which rooms?",
+   [
+    "Main living only",
+    "Main plus primary bedroom",
+    "Whole house"
+   ],
+   "More rooms raises the fee."
+  ],
+  "answered": [
+   "Photos date?",
+   "Friday after install."
+  ],
+  "checkin": [
+   "- Done: install complete",
+   "- Next: photos Friday",
+   "- Needs from you: listing date"
+  ],
+  "talk": [
+   "Staging is installed and photo-ready. Your 60-day term starts today.",
+   "Looks great. If we go under contract early, when do you pick up?",
+   "We destage within 3 business days of your notice, usually right before the final walkthrough."
+  ],
+  "anxieties": [
+   "Ready for photos",
+   "Extension costs",
+   "Damage"
+  ],
+  "tools": [
+   "StagingPro",
+   "Dubsado",
+   "HoneyBook",
+   "QuickBooks"
+  ],
+  "notes": "Client is often the agent; term and extension dates matter.",
+  "sources": [
+   "https://fixr.com/costs/home-staging",
+   "https://www.hunker.com/13768346/what-a-home-stager-costs-and-how-to-hire-one"
+  ]
+ }
+]

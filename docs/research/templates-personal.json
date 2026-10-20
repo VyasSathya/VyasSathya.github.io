@@ -1,0 +1,1777 @@
+[
+ {
+  "key": "business-coaching",
+  "label": "Business / life coaching",
+  "group": "Personal and other",
+  "match": [
+   "coach",
+   "coaching",
+   "life coach",
+   "business coach",
+   "executive coach",
+   "career coach",
+   "leadership coaching",
+   "accountability coach",
+   "mindset coach"
+  ],
+  "biz": "Northpoint Coaching",
+  "person": "Dana Whitfield",
+  "project": "90-Day Founder Clarity Program",
+  "summary": "12 weekly 1:1 sessions to set quarterly goals, fix the weekly operating rhythm and make the hire-or-not decision.",
+  "billing": "3-month package sold paid in full (about $1,250-$1,500) or as 3 monthly payments ($425-$500); client signs an agreement and completes intake before session 1. Sources: Paperbell package checkouts, Bonsai coaching fee guide.",
+  "ms": [
+   [
+    "Kickoff and intake",
+    "Done means the agreement is signed, the intake questionnaire is in and the 90-day goals are written and agreed in session 1.",
+    50000,
+    [
+     "Coaching agreement signed",
+     "Intake questionnaire completed",
+     "Assessment (values or strengths) taken",
+     "Session 1 held",
+     "3 quarterly goals written"
+    ]
+   ],
+   [
+    "Month 1: baseline and plan",
+    "Done means sessions 2-4 are held and a weekly scorecard is in use for two straight weeks.",
+    50000,
+    [
+     "Weekly scorecard set up",
+     "Time audit reviewed",
+     "First action plan agreed",
+     "Sessions 2-4 held"
+    ]
+   ],
+   [
+    "Month 2: build the habits",
+    "Done means sessions 5-8 are held and the hiring decision has a written yes or no with a date.",
+    50000,
+    [
+     "Delegation list made",
+     "Hiring scorecard drafted",
+     "Mid-point review held",
+     "Sessions 5-8 held"
+    ]
+   ],
+   [
+    "Month 3: integrate and review",
+    "Done means sessions 9-12 are held and the client has a written 90-day review and a next-quarter plan.",
+    null,
+    [
+     "Sessions 9-12 held",
+     "90-day review written",
+     "Next-quarter goals set",
+     "Renewal or close-out decided"
+    ]
+   ]
+  ],
+  "waiting": "Between-session homework: the weekly scorecard or worksheet before the next call.",
+  "ask": [
+   "How do you want to continue after the 90 days?",
+   [
+    "Renew for 3 months",
+    "Monthly maintenance calls",
+    "Wrap up after session 12"
+   ],
+   "Renewal pricing is held if decided before session 12."
+  ],
+  "answered": [
+   "Session day and time",
+   "Tuesdays at 8am Pacific, Zoom"
+  ],
+  "checkin": [
+   "- Done: session 6 held, delegation list finished",
+   "- Next: draft the hiring scorecard together on Tuesday",
+   "- Needs from you: this week's scorecard numbers by Monday night"
+  ],
+  "talk": [
+   "Quick nudge: send this week's scorecard before Tuesday so we can spend the call on the hire decision.",
+   "Will do. Revenue was down but I hit 4 of 5 habits.",
+   "Good, that's the conversation. Bring the two candidate names too."
+  ],
+  "anxieties": [
+   "Am I actually making progress or just talking?",
+   "What did we agree last session and what is my homework?",
+   "When do my payments run and how many sessions are left?"
+  ],
+  "tools": [
+   "Practice Better",
+   "Paperbell",
+   "Kajabi",
+   "Satori",
+   "Simplero",
+   "Calendly",
+   "Zoom",
+   "Dubsado"
+  ],
+  "notes": "Highly variable content but a fixed shape (N sessions over M months). Portal should show sessions used vs remaining, homework due, session notes shared by the coach, payment-plan schedule. Coaching is not therapy; if the business is a licensed therapist or counselor it needs PHI handling and is out of scope.",
+  "sources": [
+   "https://app.paperbell.com/checkout/packages/91321",
+   "https://www.hellobonsai.com/blog/life-coaching-fees-packages",
+   "https://pabau.com/templates/coaching-package/",
+   "https://practicebetter.io/"
+  ]
+ },
+ {
+  "key": "fitness-coaching",
+  "label": "Fitness or nutrition coaching program",
+  "group": "Personal and other",
+  "match": [
+   "personal trainer",
+   "online coach",
+   "fitness coach",
+   "nutrition coach",
+   "meal plan",
+   "weight loss program",
+   "strength program",
+   "transformation program",
+   "macro coach"
+  ],
+  "biz": "Ironline Coaching",
+  "person": "Marcus Bell",
+  "project": "12-Week Strength and Cut Program",
+  "summary": "Custom training block plus macro targets with weekly check-ins and a re-plan every 4 weeks.",
+  "billing": "Monthly subscription for online coaching (commonly $150-$300/mo) or a 12-week program paid up front; in-person trainers sell session packs (10 or 20 sessions) paid in advance. Sources: Practice Better and Trainerize program docs.",
+  "ms": [
+   [
+    "Onboarding and assessment",
+    "Done means intake, goals, starting photos and measurements are in and the first 4-week block is delivered in the app.",
+    25000,
+    [
+     "Intake questionnaire",
+     "Starting weight and measurements",
+     "Starting photos uploaded",
+     "Goal and timeline agreed",
+     "Block 1 program delivered"
+    ]
+   ],
+   [
+    "Block 1 (weeks 1-4)",
+    "Done means 4 weekly check-ins are submitted and reviewed and macros are adjusted once.",
+    25000,
+    [
+     "Weekly check-in 1",
+     "Weekly check-in 2",
+     "Weekly check-in 3",
+     "Weekly check-in 4",
+     "Macro adjustment"
+    ]
+   ],
+   [
+    "Block 2 (weeks 5-8)",
+    "Done means the progress review is held and block 2 lifts and targets are updated from block 1 results.",
+    25000,
+    [
+     "Progress photos compared",
+     "Lifts reviewed",
+     "Block 2 program delivered",
+     "4 weekly check-ins reviewed"
+    ]
+   ],
+   [
+    "Block 3 and final review (weeks 9-12)",
+    "Done means final photos and measurements are compared against day 1 and a maintenance or next-phase plan is delivered.",
+    null,
+    [
+     "Block 3 delivered",
+     "Final photos and measurements",
+     "Before/after review call",
+     "Next-phase plan"
+    ]
+   ]
+  ],
+  "waiting": "The weekly check-in form (weight trend, photos, adherence, how training felt).",
+  "ask": [
+   "What happens after week 12?",
+   [
+    "Reverse diet to maintenance",
+    "Build phase",
+    "Continue the cut 4 more weeks"
+   ],
+   "Decide by week 11 so block 4 is ready."
+  ],
+  "answered": [
+   "Training days per week",
+   "4 days, upper/lower split"
+  ],
+  "checkin": [
+   "- Done: week 6 check-in reviewed, calories lowered by 150",
+   "- Next: block 2 deload in week 8",
+   "- Needs from you: Sunday check-in with front and side photos"
+  ],
+  "talk": [
+   "Your week 6 numbers look good. I dropped carbs slightly; new targets are in the app.",
+   "Thanks. Bench stalled at 185 though.",
+   "Expected on a cut. We hold it and push reps; that's in block 2."
+  ],
+  "anxieties": [
+   "Am I on track or is the scale lying?",
+   "Did my coach see my check-in and what changed?",
+   "What am I supposed to eat and lift this week?"
+  ],
+  "tools": [
+   "Trainerize",
+   "TrueCoach",
+   "Practice Better",
+   "Everfit",
+   "MyFitnessPal",
+   "Kajabi",
+   "PT Distinction"
+  ],
+  "notes": "Recurring weekly loop more than a one-off job. Progress photos are sensitive and must be private to client and coach. If a registered dietitian handles medical nutrition therapy, that is PHI (HIPAA) and out of scope; general fitness coaching is fine.",
+  "sources": [
+   "https://practicebetter.io/",
+   "https://www.trainerize.com/",
+   "https://www.truecoach.co/"
+  ]
+ },
+ {
+  "key": "tutoring-test-prep",
+  "label": "Tutoring / test prep",
+  "group": "Personal and other",
+  "match": [
+   "tutor",
+   "tutoring",
+   "SAT prep",
+   "ACT prep",
+   "test prep",
+   "math tutor",
+   "LSAT",
+   "GRE",
+   "MCAT tutor",
+   "homework help"
+  ],
+  "biz": "Summit Test Prep",
+  "person": "Priya Shah (parent of Arjun)",
+  "project": "SAT Prep, 20 Hours, March Test",
+  "summary": "Diagnostic, 20 hours of 1:1 tutoring and 4 full-length practice tests aimed at the March SAT.",
+  "billing": "Hour packages paid up front (e.g. 16 hours about $1,029, 24 hours about $1,449; typical 20-40 hour program $900-$3,200), starting from a full-length diagnostic. Sources: Leland SAT packages, IvyStrides 2026 pricing guide, PrepScholar.",
+  "ms": [
+   [
+    "Diagnostic and plan",
+    "Done means a full-length diagnostic is scored and a study plan with a target score and test date is shared with the parent.",
+    12500,
+    [
+     "Diagnostic test taken",
+     "Score report reviewed",
+     "Target score set",
+     "Study plan shared",
+     "Session schedule booked"
+    ]
+   ],
+   [
+    "Core skills (sessions 1-8)",
+    "Done means 8 sessions are held and practice test 1 shows the weakest section improving.",
+    70000,
+    [
+     "Algebra and functions",
+     "Reading and writing grammar",
+     "Homework sets assigned",
+     "Practice test 1"
+    ]
+   ],
+   [
+    "Strategy and timing (sessions 9-16)",
+    "Done means 8 more sessions are held and practice tests 2 and 3 are taken under timed conditions.",
+    50000,
+    [
+     "Pacing strategy",
+     "Hard-question drills",
+     "Practice test 2",
+     "Practice test 3"
+    ]
+   ],
+   [
+    "Final review and test day",
+    "Done means the last practice test is reviewed, test-day plan is set and the official score is recorded after the test.",
+    null,
+    [
+     "Practice test 4",
+     "Error log review",
+     "Test-day checklist",
+     "Official score recorded"
+    ]
+   ]
+  ],
+  "waiting": "The student finishing the timed practice test and homework before the next session.",
+  "ask": [
+   "Which test date should we target?",
+   [
+    "March SAT",
+    "May SAT",
+    "Take both"
+   ],
+   "A second sitting usually needs 6 more hours."
+  ],
+  "answered": [
+   "Session format",
+   "Online, Mondays and Thursdays 6pm"
+  ],
+  "checkin": [
+   "- Done: practice test 2 scored 1340 (+90 from diagnostic)",
+   "- Next: reading pacing drills in sessions 11-12",
+   "- Needs from you: Arjun to take practice test 3 this Saturday, timed"
+  ],
+  "talk": [
+   "Practice test 2 came in at 1340, up 90. Math is strong; reading timing is the gap.",
+   "Great. Should he do extra reading at home?",
+   "Yes, two timed passages a night. I'll send the set."
+  ],
+  "anxieties": [
+   "Is the score actually going up?",
+   "How many hours are left in the package?",
+   "Is the student doing the homework and showing up?"
+  ],
+  "tools": [
+   "TutorBird",
+   "Teachworks",
+   "Wise",
+   "Google Classroom",
+   "Bluebook (College Board)",
+   "Zoom",
+   "Calendly"
+  ],
+  "notes": "Client is usually a parent paying for a minor; portal needs parent and student views and must not expose more student data than needed (FERPA applies to schools, not private tutors, but privacy still matters). Hours used vs remaining and score trend are the core status.",
+  "sources": [
+   "https://www.ivystrides.com/blog/sat-act-tutoring-cost/",
+   "https://www.prepscholar.com/sat/s/tutoring",
+   "https://aws.joinleland.com/coach/nabil-a/p/sat-prep-packages",
+   "https://www.edisonos.com/blog/top-questions-parents-ask-sat-act-tutors"
+  ]
+ },
+ {
+  "key": "admissions-consulting",
+  "label": "College admissions consulting",
+  "group": "Personal and other",
+  "match": [
+   "college admissions",
+   "admissions consultant",
+   "college counselor",
+   "college essay",
+   "application help",
+   "IEC",
+   "common app",
+   "grad school admissions",
+   "MBA admissions"
+  ],
+  "biz": "Keystone College Advising",
+  "person": "The Romero family (student: Sofia)",
+  "project": "Senior Comprehensive Package, Fall Applications",
+  "summary": "College list, Common App personal statement, supplements for 10 schools and a deadline tracker through Regular Decision.",
+  "billing": "Flat comprehensive package (most families about $6,500; junior/senior packages $5,000 and up), usually a deposit at signing and the balance in installments; essay-only packages $1,500+. Sources: Private Prep 2026 cost report, Paperbell senior package, Varsity Tutors.",
+  "ms": [
+   [
+    "College list finalized",
+    "Done means a balanced list (reach, target, likely) of 10 schools is agreed by student and parents with ED/EA choices decided.",
+    250000,
+    [
+     "Interest survey",
+     "Transcript and test scores reviewed",
+     "Draft list",
+     "Family meeting",
+     "ED/EA decision"
+    ]
+   ],
+   [
+    "Personal statement final",
+    "Done means the Common App essay is through up to 4 drafts and the student marks it final.",
+    150000,
+    [
+     "Topic brainstorm",
+     "Draft 1",
+     "Drafts 2-3",
+     "Final proofread"
+    ]
+   ],
+   [
+    "Supplements and activities",
+    "Done means every supplement for all 10 schools is final and the activities list and honors are entered.",
+    150000,
+    [
+     "Supplement tracker built",
+     "Why-us essays",
+     "Activities list",
+     "Recommender brag sheet"
+    ]
+   ],
+   [
+    "Applications submitted",
+    "Done means each application is submitted by its deadline and confirmation pages are saved.",
+    100000,
+    [
+     "ED/EA submitted Nov 1",
+     "Portal logins tracked",
+     "RD submitted Jan 1",
+     "Interview prep"
+    ]
+   ]
+  ],
+  "waiting": "The student's next essay draft by the agreed date.",
+  "ask": [
+   "Apply Early Decision to which school?",
+   [
+    "Northwestern ED",
+    "Boston College ED",
+    "No ED, EA only"
+   ],
+   "ED is binding; we discuss aid first."
+  ],
+  "answered": [
+   "Personal statement topic",
+   "Running her grandmother's food stall"
+  ],
+  "checkin": [
+   "- Done: personal statement final, 6 of 14 supplements final",
+   "- Next: Boston College and Tufts supplements",
+   "- Needs from you: Sofia's Tufts draft by Friday; parents confirm the ED choice"
+  ],
+  "talk": [
+   "The personal statement is final. Sofia's Tufts supplement is next; can she get me a draft by Friday?",
+   "She has a soccer tournament, can it be Sunday?",
+   "Sunday works. That keeps us on track for November 1."
+  ],
+  "anxieties": [
+   "Are we going to make the November 1 deadline?",
+   "Which essays are done and which are left?",
+   "Is the list too reachy?"
+  ],
+  "tools": [
+   "CollegePlannerPro",
+   "Cialfo",
+   "Google Docs",
+   "Common App",
+   "Naviance",
+   "Calendly"
+  ],
+  "notes": "Deadline-driven with many parallel items (one per school). Portal should show a per-school tracker and essay draft count; parents and student are separate viewers. Student data privacy matters; no PHI unless disability accommodations are discussed (keep out).",
+  "sources": [
+   "https://privateprep.com/cost-of-college-admissions-consultants-2025-report/",
+   "https://app.paperbell.com/checkout/packages/149200",
+   "https://www.varsitytutors.com/ca/admissions-consulting",
+   "https://www.collegeplannerpro.com/"
+  ]
+ },
+ {
+  "key": "auto-repair",
+  "label": "Auto repair (mechanical)",
+  "group": "Personal and other",
+  "match": [
+   "auto repair",
+   "mechanic",
+   "car repair",
+   "brake job",
+   "check engine light",
+   "transmission",
+   "repair shop",
+   "oil change",
+   "diagnostic",
+   "garage"
+  ],
+  "biz": "Eastside Auto Care",
+  "person": "Kevin Tran",
+  "project": "2017 Honda Accord: Check Engine Light and Brakes",
+  "summary": "Diagnose the check engine light, replace front pads and rotors, and inspect the rest of the car.",
+  "billing": "Diagnostic fee up front (often credited to the repair), then a repair order estimate the customer approves by text; paid in full at pickup. Sources: Tekmetric digital authorization and DVI guides.",
+  "ms": [
+   [
+    "Vehicle checked in and diagnosed",
+    "Done means the code is read, the cause is confirmed and a digital inspection with photos is sent.",
+    15000,
+    [
+     "Customer concern recorded",
+     "Codes scanned",
+     "Digital vehicle inspection with photos",
+     "Estimate built"
+    ]
+   ],
+   [
+    "Estimate approved",
+    "Done means the customer has approved or declined each line on the estimate by digital signature.",
+    null,
+    [
+     "Estimate sent by text",
+     "Customer approves lines",
+     "Declined items recorded",
+     "Parts ordered"
+    ]
+   ],
+   [
+    "Repairs completed",
+    "Done means approved work is done and the car passes a road test with no light.",
+    84000,
+    [
+     "Front pads and rotors",
+     "Purge valve replaced",
+     "Codes cleared",
+     "Road test"
+    ]
+   ],
+   [
+    "Ready for pickup",
+    "Done means the invoice is paid and the keys are handed over with notes on deferred work.",
+    null,
+    [
+     "Final invoice",
+     "Payment taken",
+     "Deferred items noted",
+     "Next service reminder set"
+    ]
+   ]
+  ],
+  "waiting": "Approval of the estimate (the car sits on the lift until they answer).",
+  "ask": [
+   "Rear brakes are at 3mm. Do them now?",
+   [
+    "Yes, do it today",
+    "Next visit"
+   ],
+   "Adds $320 and about an hour."
+  ],
+  "answered": [
+   "Parts grade",
+   "OEM pads, aftermarket rotors"
+  ],
+  "checkin": [
+   "- Done: diagnosed, purge valve failed, front brakes at 2mm",
+   "- Next: install once you approve",
+   "- Needs from you: approve or decline each line on the estimate"
+  ],
+  "talk": [
+   "Inspection is in your texts with photos. Purge valve is the light; front brakes are metal-close. Approve what you want and we start.",
+   "Do the brakes and the valve. Skip the cabin filter.",
+   "Done, parts are here at 2. Ready by 5."
+  ],
+  "anxieties": [
+   "How much is this going to cost and is it all necessary?",
+   "When will my car be ready?",
+   "Did you find anything else?"
+  ],
+  "tools": [
+   "Tekmetric",
+   "Shopmonkey",
+   "Shop-Ware",
+   "Mitchell 1",
+   "AutoVitals",
+   "Steer CRM"
+  ],
+  "notes": "Approval of an estimate with line-by-line accept/decline and photos/videos is the central portal action. Parts on order and waiting-on-customer are distinct statuses. Signed authorization records matter legally in many states.",
+  "sources": [
+   "https://support.tekmetric.com/hc/en-us/articles/4421125978391-Digital-Signature-Authorization-Process",
+   "https://tours.tekmetric.com/answers/digital-vehicle-inspection-guide",
+   "https://www.shopmonkey.io/"
+  ]
+ },
+ {
+  "key": "auto-body",
+  "label": "Auto body / collision repair",
+  "group": "Personal and other",
+  "match": [
+   "body shop",
+   "collision repair",
+   "auto body",
+   "dent repair",
+   "bumper",
+   "insurance claim car",
+   "paint shop",
+   "fender bender",
+   "hail damage"
+  ],
+  "biz": "Precision Collision Center",
+  "person": "Laura Kim",
+  "project": "2021 RAV4: Rear-End Collision Repair (Insurance Claim)",
+  "summary": "Insurance-paid repair of the rear bumper, liftgate and sensors, including a supplement for hidden damage.",
+  "billing": "Insurer pays the approved estimate plus supplements directly to the shop; customer pays the deductible at pickup. Sources: Central Insurance and ER Lawyers on supplements, BodyShop Business.",
+  "ms": [
+   [
+    "Estimate and claim set up",
+    "Done means the shop estimate is written and the insurer has the claim number, photos and estimate.",
+    null,
+    [
+     "Claim number recorded",
+     "Initial photos",
+     "Estimate written",
+     "Rental arranged"
+    ]
+   ],
+   [
+    "Teardown and supplement approved",
+    "Done means hidden damage found at teardown is documented and the insurer approves the supplement.",
+    null,
+    [
+     "Teardown",
+     "Hidden damage photographed",
+     "Supplement sent",
+     "Supplement approved",
+     "Parts ordered"
+    ]
+   ],
+   [
+    "Body, paint and calibration",
+    "Done means structural and body work is done, paint is matched and the rear sensors are calibrated.",
+    null,
+    [
+     "Body work",
+     "Paint and blend",
+     "Reassembly",
+     "Sensor calibration"
+    ]
+   ],
+   [
+    "Delivered",
+    "Done means quality check, wash and delivery are done and the deductible is paid.",
+    50000,
+    [
+     "Final QC",
+     "Detail and wash",
+     "Deductible paid",
+     "Warranty paperwork"
+    ]
+   ]
+  ],
+  "waiting": "Sign-off on the repair authorization and the deductible; often the insurer, not the client, is the bottleneck.",
+  "ask": [
+   "The liftgate is on backorder 2 weeks. What do you want to do?",
+   [
+    "Wait for OEM part",
+    "Use a certified aftermarket part"
+   ],
+   "Aftermarket may need your insurer's okay."
+  ],
+  "answered": [
+   "Rental car",
+   "Through the insurer, Enterprise, until delivery"
+  ],
+  "checkin": [
+   "- Done: teardown, supplement for the bumper reinforcement approved",
+   "- Next: paint once the liftgate arrives",
+   "- Needs from you: decide OEM vs aftermarket liftgate"
+  ],
+  "talk": [
+   "Supplement approved. The OEM liftgate is backordered until the 14th.",
+   "Ugh. Does my rental cover that long?",
+   "We asked your adjuster to extend it; I'll confirm today."
+  ],
+  "anxieties": [
+   "When will my car be done?",
+   "Is insurance paying for this and what do I owe?",
+   "Will the paint match and is it safe?"
+  ],
+  "tools": [
+   "CCC ONE",
+   "Mitchell Cloud Estimating",
+   "Audatex",
+   "Shopmonkey",
+   "Tekmetric"
+  ],
+  "notes": "Third party (insurer/adjuster) drives approvals; portal needs an insurance status line separate from client tasks. Parts backorders cause most delays. Many photos.",
+  "sources": [
+   "https://www.erlawyers.com/what-is-a-supplement-in-auto-body-repairs/",
+   "https://blog.central-insurance.com/why-is-my-auto-damage-estimate-not-what-i-anticipated/",
+   "https://www.bodyshopbusiness.com/a-supplement-free-world-just-a-dream/"
+  ]
+ },
+ {
+  "key": "custom-fabrication",
+  "label": "Custom manufacturing / fabrication",
+  "group": "Personal and other",
+  "match": [
+   "fabrication",
+   "metal fabrication",
+   "welding shop",
+   "machine shop",
+   "CNC",
+   "custom parts",
+   "sheet metal",
+   "job shop",
+   "weldment"
+  ],
+  "biz": "Granite Metalworks",
+  "person": "Oscar Delgado (Delgado Brewing)",
+  "project": "Stainless Platform and Railings, 24 ft",
+  "summary": "Design, fabricate and install a stainless work platform with railings for a brewery cellar.",
+  "billing": "Quote tied to a drawing revision; deposit at acceptance (often 30-50%), progress payment at shop-drawing approval or mid-fabrication, balance on delivery/install; change orders billed separately. Sources: WOODWEB payment schedule thread, InvoiceQuick fabrication invoice guide.",
+  "ms": [
+   [
+    "Quote accepted and deposit",
+    "Done means the quote referencing drawing rev A is signed and the deposit is received.",
+    740000,
+    [
+     "Site measurements",
+     "Quote rev A",
+     "PO received",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Shop drawings approved",
+    "Done means the client signs off the shop drawings; changes after this are change orders.",
+    370000,
+    [
+     "Shop drawings sent",
+     "Client markups",
+     "Revision B",
+     "Signed approval"
+    ]
+   ],
+   [
+    "Fabrication complete",
+    "Done means all parts are cut, welded and finished and pass the in-shop inspection with photos.",
+    370000,
+    [
+     "Material received with heat numbers",
+     "Cutting and welding",
+     "Passivation/finish",
+     "In-shop inspection photos"
+    ]
+   ],
+   [
+    "Delivered and installed",
+    "Done means the platform is installed, anchored and walked by the client.",
+    370000,
+    [
+     "Delivery scheduled",
+     "Install",
+     "Client walkthrough",
+     "Final invoice"
+    ]
+   ]
+  ],
+  "waiting": "Signed approval of the shop drawings (fabrication cannot start until then).",
+  "ask": [
+   "Railing infill style?",
+   [
+    "Horizontal cable",
+    "Vertical pickets",
+    "Solid panels"
+   ],
+   "Cable adds a week and about $1,800."
+  ],
+  "answered": [
+   "Finish",
+   "#4 brushed stainless"
+  ],
+  "checkin": [
+   "- Done: material arrived, deck frame welded",
+   "- Next: railings and stair stringers",
+   "- Needs from you: confirm the install date and that the floor is clear"
+  ],
+  "talk": [
+   "Frame is welded, photos attached. We can install the 18th if the floor is clear.",
+   "18th works but the tank delivery is the 17th.",
+   "Then we'll come the 19th. Locking it in."
+  ],
+  "anxieties": [
+   "Is it on schedule?",
+   "Will it fit and match what we approved?",
+   "What will change orders cost?"
+  ],
+  "tools": [
+   "JobBOSS",
+   "ProShop ERP",
+   "Fulcrum",
+   "Paperless Parts",
+   "FabHQ",
+   "QuickBooks"
+  ],
+  "notes": "Every job is unique; drawings and revisions must be versioned and tied to approvals. Change orders and progress billing are core. Photos of work in progress reduce anxiety.",
+  "sources": [
+   "https://woodweb.com/knowledge_base/Deposits_and_Payment.html",
+   "https://invoicequick.com/invoice-templates/fabrication-invoice-template",
+   "https://us.caddi.com/resources/insights/job-shop-cost-estimation",
+   "https://www.paperlessparts.com/"
+  ]
+ },
+ {
+  "key": "screen-printing",
+  "label": "Screen printing / custom apparel order",
+  "group": "Personal and other",
+  "match": [
+   "screen printing",
+   "custom t-shirts",
+   "embroidery",
+   "custom apparel",
+   "merch",
+   "team shirts",
+   "print shop",
+   "DTF",
+   "company shirts",
+   "hoodies"
+  ],
+  "biz": "Inkwell Print Co.",
+  "person": "Jasmine Ortiz (Riverside 5K)",
+  "project": "Riverside 5K Shirts: 250 Tees, 2-Color Front",
+  "summary": "250 tri-blend tees, 2-color front print, sizes S-3XL, delivered a week before race day.",
+  "billing": "Quote approved, then deposit (commonly 50%) before ordering blanks; mockup/proof must be approved before production; balance due on pickup or delivery. Sources: Printavo approvals docs and status-message templates.",
+  "ms": [
+   [
+    "Quote approved and deposit",
+    "Done means quantities, garment and price are approved and the deposit is paid.",
+    112500,
+    [
+     "Garment and color chosen",
+     "Quote sent",
+     "Quote approved",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Mockup approved",
+    "Done means the client approves the final mockup with print size, placement and ink colors.",
+    null,
+    [
+     "Art received",
+     "Mockup sent",
+     "Revision",
+     "Mockup approved"
+    ]
+   ],
+   [
+    "Printed",
+    "Done means blanks arrived, screens burned and all 250 printed and counted by size.",
+    null,
+    [
+     "Blanks ordered",
+     "Size breakdown confirmed",
+     "Screens burned",
+     "Print run",
+     "Count and fold"
+    ]
+   ],
+   [
+    "Picked up",
+    "Done means the balance is paid and the order is picked up or delivered.",
+    112500,
+    [
+     "Boxed by size",
+     "Pickup notice sent",
+     "Balance paid",
+     "Picked up"
+    ]
+   ]
+  ],
+  "waiting": "Mockup approval and the final size breakdown.",
+  "ask": [
+   "Ink color on the heather grey tee?",
+   [
+    "Navy and white",
+    "Black and orange"
+   ],
+   "White underbase not needed for navy."
+  ],
+  "answered": [
+   "Garment",
+   "Bella+Canvas 3413 tri-blend, heather grey"
+  ],
+  "checkin": [
+   "- Done: deposit in, blanks ordered",
+   "- Next: print Thursday once mockup is approved",
+   "- Needs from you: approve the mockup and final sizes by Tuesday"
+  ],
+  "talk": [
+   "Mockup is attached. Approve it and send final sizes by Tuesday to make Thursday's press.",
+   "Logo looks small, can it be bigger?",
+   "Bumped to 11 inches wide; new mockup sent."
+  ],
+  "anxieties": [
+   "Will it be ready before the event?",
+   "Will the colors and size look like the mockup?",
+   "Are the size counts right?"
+  ],
+  "tools": [
+   "Printavo",
+   "ShopVOX",
+   "DecoNetwork",
+   "InkSoft",
+   "YoPrint",
+   "OnSite"
+  ],
+  "notes": "Two separate approvals (quote and artwork) plus a size breakdown; Printavo now handles quote and art approvals separately. Hard deadlines tied to events. Blanks out of stock is a common delay.",
+  "sources": [
+   "https://support.printavo.com/hc/en-us/articles/46723925107611-Requesting-Approval",
+   "https://www.printavo.com/blog/new-handle-quote-artwork-approvals-separately-in-printavo",
+   "https://printavo.com/blog/use-proofs-save-money-in-your-screen-printing-business"
+  ]
+ },
+ {
+  "key": "custom-jewelry",
+  "label": "Custom jewelry",
+  "group": "Personal and other",
+  "match": [
+   "custom jewelry",
+   "engagement ring",
+   "custom ring",
+   "jeweler",
+   "wedding band",
+   "CAD ring",
+   "redesign ring",
+   "custom necklace"
+  ],
+  "biz": "Halden Fine Jewelry",
+  "person": "Ethan Brooks",
+  "project": "Custom Oval Engagement Ring, Hidden Halo",
+  "summary": "1.5 ct oval lab diamond in a platinum hidden-halo setting, ready before a June proposal.",
+  "billing": "50% deposit (often non-refundable) to start stone sourcing and CAD, balance on completion; some take a small fixed deposit and invoice after the client approves finished-piece photos. 4-10 weeks. Sources: Revolution Jewelry Works, I Hate Steven Singer, 25 Karats.",
+  "ms": [
+   [
+    "Design consult and deposit",
+    "Done means style, budget and stone spec are agreed and the 50% deposit is paid.",
+    380000,
+    [
+     "Consult",
+     "Ring size confirmed",
+     "Stone options sent",
+     "Stone chosen",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "CAD approved",
+    "Done means the client approves the CAD renders (up to 3 revisions included).",
+    null,
+    [
+     "CAD v1",
+     "Client feedback",
+     "CAD v2",
+     "CAD approved"
+    ]
+   ],
+   [
+    "Cast and set",
+    "Done means the piece is cast in platinum, the stone is set and finished.",
+    null,
+    [
+     "Wax/resin printed",
+     "Cast",
+     "Stone set",
+     "Polish"
+    ]
+   ],
+   [
+    "Ready for pickup",
+    "Done means the client approves final photos, pays the balance and picks up with the appraisal.",
+    380000,
+    [
+     "Final photos",
+     "Balance paid",
+     "Appraisal and certificate",
+     "Pickup"
+    ]
+   ]
+  ],
+  "waiting": "Approval of the CAD render (changes are cheap before casting and impossible after).",
+  "ask": [
+   "Band width?",
+   [
+    "1.8 mm",
+    "2.0 mm",
+    "2.2 mm"
+   ],
+   "Thinner looks daintier; 2.0 is the most common."
+  ],
+  "answered": [
+   "Metal",
+   "Platinum"
+  ],
+  "checkin": [
+   "- Done: stone in hand, CAD v2 sent",
+   "- Next: cast once CAD is approved",
+   "- Needs from you: approve CAD v2 or send changes"
+  ],
+  "talk": [
+   "CAD v2 is attached with the thinner band you asked for. Once you approve, we cast.",
+   "Can the halo sit a bit lower?",
+   "Yes, 0.3 mm lower in v3 tomorrow. Still on track for May 20."
+  ],
+  "anxieties": [
+   "Will it be ready before the proposal date?",
+   "Will it look like the render?",
+   "Is the stone the one I picked and is it real?"
+  ],
+  "tools": [
+   "Jewel360",
+   "The Edge (ABS)",
+   "Matrix/RhinoGold for CAD",
+   "Instagram DMs",
+   "Square",
+   "Shopify"
+  ],
+  "notes": "High-trust, secrecy matters (surprise proposals: don't message a partner). Render images and stone certificates must be viewable. Approval gate before casting is critical.",
+  "sources": [
+   "https://revolutionjewelryworks.com/custom-process/",
+   "https://www.ihatestevensinger.com/blogs/blog/what-is-the-process-to-custom-make-jewelry",
+   "https://www.25karats.com/custom-design-jewelry",
+   "https://thediamondprice.com/learn/engagement-rings/custom-design/"
+  ]
+ },
+ {
+  "key": "bridal-alterations",
+  "label": "Tailoring / bridal alterations",
+  "group": "Personal and other",
+  "match": [
+   "alterations",
+   "tailor",
+   "bridal alterations",
+   "wedding dress alterations",
+   "seamstress",
+   "hemming",
+   "bustle",
+   "suit tailoring",
+   "gown fitting"
+  ],
+  "biz": "Stitch and Veil Alterations",
+  "person": "Mia Castillo",
+  "project": "Wedding Gown Alterations, June 14 Wedding",
+  "summary": "Take in bodice, hem with shoes, add a French bustle; 3 fittings starting 10 weeks out.",
+  "billing": "Price set at the first fitting after seeing the gown; payment or a deposit (one shop: 60%) at first fitting, balance at pickup; typical $500-$1,000; rush fee inside 3 weeks. Sources: David's Bridal alterations FAQ, The Knot, myneworleans.com.",
+  "ms": [
+   [
+    "First fitting and quote",
+    "Done means the gown is pinned, work list and price are agreed and the deposit is paid.",
+    48000,
+    [
+     "Bring shoes and undergarments",
+     "Gown pinned",
+     "Work list written",
+     "Quote agreed",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Second fitting",
+    "Done means bodice and hem are checked on the client and any tweaks are marked.",
+    null,
+    [
+     "Bodice take-in checked",
+     "Hem length with shoes",
+     "Bustle points marked",
+     "Tweaks noted"
+    ]
+   ],
+   [
+    "Final fitting",
+    "Done means the client approves the fit and the bustle is demonstrated to whoever will do it on the day.",
+    null,
+    [
+     "Final fit approved",
+     "Bustle lesson",
+     "Steam",
+     "Garment bag"
+    ]
+   ],
+   [
+    "Pickup",
+    "Done means balance is paid and the gown is picked up pressed.",
+    32000,
+    [
+     "Final press",
+     "Balance paid",
+     "Pickup",
+     "Care notes"
+    ]
+   ]
+  ],
+  "waiting": "Bringing the wedding shoes and undergarments to the fitting, and booking the next fitting.",
+  "ask": [
+   "Bustle style?",
+   [
+    "French (under)",
+    "American (over)",
+    "Ballroom"
+   ],
+   "French suits this train length."
+  ],
+  "answered": [
+   "Hem length",
+   "Floor-skimming with 3-inch heels"
+  ],
+  "checkin": [
+   "- Done: first fitting, bodice taken in 1 inch",
+   "- Next: second fitting May 10",
+   "- Needs from you: bring the actual shoes and your bustle helper to the final"
+  ],
+  "talk": [
+   "Bodice is done. Bring your shoes on the 10th so we lock the hem.",
+   "Shoes haven't arrived yet!",
+   "Bring heels the same height and we'll check again at the final."
+  ],
+  "anxieties": [
+   "Will it be ready in time for the wedding?",
+   "Will it fit if my weight changes?",
+   "What does it cost in total?"
+  ],
+  "tools": [
+   "Square Appointments",
+   "Vagaro",
+   "Acuity Scheduling",
+   "paper tickets",
+   "Instagram"
+  ],
+  "notes": "Appointment-driven milestones with a hard date. Price is only known after first fitting. Pickup and payment are tied. Photos of the client in the gown are sensitive and private.",
+  "sources": [
+   "https://davidsbridal.com/faq/alterations",
+   "https://www.theknot.com/content/things-bridal-salon-owners-want-you-to-know",
+   "https://www.myneworleans.com/dressed-to-thrill/",
+   "https://chameleonbride.co.uk/alterations"
+  ]
+ },
+ {
+  "key": "travel-planning",
+  "label": "Travel planning (custom trip)",
+  "group": "Personal and other",
+  "match": [
+   "travel agent",
+   "travel advisor",
+   "trip planning",
+   "custom itinerary",
+   "honeymoon planning",
+   "vacation planner",
+   "luxury travel",
+   "group trip"
+  ],
+  "biz": "Wayfare Travel Studio",
+  "person": "Rachel and Tom Nguyen",
+  "project": "Italy Honeymoon, 12 Nights, September",
+  "summary": "Rome, Amalfi Coast and Florence with hotels, trains, a cooking class and private transfers.",
+  "billing": "Non-refundable planning fee or retainer (e.g. $100-$400, credited or not) before itinerary work; trip costs paid to suppliers on their deposit and final-payment schedule (final often 45-90 days before travel). Travefy collects planning fees only, not bookings. Sources: Travefy planning fee docs, Expedia advisor-curated trips.",
+  "ms": [
+   [
+    "Discovery and planning fee",
+    "Done means the trip brief (dates, budget, style) is agreed and the planning fee is paid.",
+    40000,
+    [
+     "Discovery call",
+     "Questionnaire",
+     "Passports checked",
+     "Planning fee paid"
+    ]
+   ],
+   [
+    "Itinerary proposal approved",
+    "Done means the client approves the day-by-day proposal and hotel choices.",
+    null,
+    [
+     "Draft itinerary",
+     "Hotel options",
+     "Revision",
+     "Proposal approved"
+    ]
+   ],
+   [
+    "Booked and deposited",
+    "Done means hotels, trains and tours are booked with deposits paid and confirmations attached.",
+    null,
+    [
+     "Hotel deposits",
+     "Train tickets",
+     "Tours and cooking class",
+     "Travel insurance offered",
+     "Final payment dates listed"
+    ]
+   ],
+   [
+    "Final documents delivered",
+    "Done means final payments are made and the mobile itinerary with all confirmations is shared.",
+    null,
+    [
+     "Final payments",
+     "Transfers confirmed",
+     "Mobile itinerary",
+     "Pre-trip call"
+    ]
+   ]
+  ],
+  "waiting": "Approval of the itinerary proposal, then names-as-on-passport and card authorization for deposits.",
+  "ask": [
+   "Amalfi base?",
+   [
+    "Positano",
+    "Ravello",
+    "Sorrento"
+   ],
+   "Positano is liveliest; Ravello is quietest."
+  ],
+  "answered": [
+   "Travel insurance",
+   "Yes, comprehensive, quoted with the booking"
+  ],
+  "checkin": [
+   "- Done: Rome and Florence hotels booked",
+   "- Next: Amalfi hotel once you pick a town",
+   "- Needs from you: choose the Amalfi base and sign the card authorization"
+  ],
+  "talk": [
+   "Rome and Florence are confirmed. Pick your Amalfi base and I'll hold the room today.",
+   "Positano! Is the sea-view upgrade worth it?",
+   "For a honeymoon, yes. It's 140 euros a night more. Holding both."
+  ],
+  "anxieties": [
+   "Is everything actually booked and confirmed?",
+   "When are payments due and how much?",
+   "What happens if a flight or plan changes?"
+  ],
+  "tools": [
+   "Travefy",
+   "Axus",
+   "Tern",
+   "TravelJoy",
+   "ClientBase",
+   "Umapped"
+  ],
+  "notes": "Many suppliers each with their own deposit and final-payment dates; the advisor usually does not collect trip money themselves. Portal must show confirmations and a payment calendar; passport and card data must never sit in plain text.",
+  "sources": [
+   "https://intercom.help/travefy/en/articles/7045165-planning-fees-overview-stripe",
+   "https://www.expedia.com/lp/b/advisor-curated-trips",
+   "https://www.traveljoy.com/"
+  ]
+ },
+ {
+  "key": "pet-training",
+  "label": "Pet training program",
+  "group": "Personal and other",
+  "match": [
+   "dog trainer",
+   "dog training",
+   "puppy training",
+   "board and train",
+   "obedience training",
+   "reactive dog",
+   "behavior training",
+   "puppy class"
+  ],
+  "biz": "Steady Paws Training",
+  "person": "Hannah Lee (dog: Biscuit)",
+  "project": "6-Week Private Obedience Package",
+  "summary": "Six in-home lessons for a 7-month lab: loose-leash walking, place, recall and door manners.",
+  "billing": "Prepaid package (6-week basic about $400 for six sessions; in-home packages to $1,300); board-and-train 6 weeks about $2,500-$3,800 with a deposit and follow-up lessons. Sources: Cottonball Canines, Leader of the Pack, All 4 Paws.",
+  "ms": [
+   [
+    "Evaluation and plan",
+    "Done means the dog is evaluated, goals are set and the package is paid.",
+    60000,
+    [
+     "Intake form and vaccine records",
+     "Evaluation session",
+     "Goals agreed",
+     "Package paid"
+    ]
+   ],
+   [
+    "Foundations (lessons 1-2)",
+    "Done means sit, down, place and name response work at home with mild distraction.",
+    null,
+    [
+     "Marker word",
+     "Place command",
+     "Leash handling",
+     "Homework video sent"
+    ]
+   ],
+   [
+    "Real-world skills (lessons 3-5)",
+    "Done means loose-leash walk and recall work on a neighborhood walk.",
+    null,
+    [
+     "Loose-leash walk",
+     "Recall on long line",
+     "Door manners",
+     "Practice log reviewed"
+    ]
+   ],
+   [
+    "Graduation",
+    "Done means the dog performs all goals in public and the owner has a maintenance plan.",
+    null,
+    [
+     "Public outing",
+     "Skills check",
+     "Maintenance plan",
+     "Follow-up date"
+    ]
+   ]
+  ],
+  "waiting": "Daily practice at home and the practice log or short videos between lessons.",
+  "ask": [
+   "What next after graduation?",
+   [
+    "Group class",
+    "Monthly tune-up",
+    "Done for now"
+   ],
+   "Tune-ups are $90 each."
+  ],
+  "answered": [
+   "Training tools",
+   "Flat collar and front-clip harness"
+  ],
+  "checkin": [
+   "- Done: lesson 3, place is solid",
+   "- Next: loose-leash walk on your street",
+   "- Needs from you: two 5-minute sessions a day and a video of a walk"
+  ],
+  "talk": [
+   "Biscuit nailed place today. Send me a 30-second walk video before Thursday.",
+   "He pulls like crazy when he sees squirrels.",
+   "Normal. We'll work distance from squirrels Thursday."
+  ],
+  "anxieties": [
+   "Is my dog actually improving?",
+   "Am I doing the homework right?",
+   "What do I do when he reacts or regresses?"
+  ],
+  "tools": [
+   "Gingr",
+   "PetExec",
+   "Practice Better",
+   "Pocketsuite",
+   "Revelation Pets",
+   "Instagram/text video"
+  ],
+  "notes": "Outcomes depend on owner homework, so homework and videos are the core of the portal. Vaccine records are required but not PHI. Board-and-train adds daily updates and photos.",
+  "sources": [
+   "https://cottonballcanines.mypixieset.com/investment/",
+   "https://leaderofthepack.schedulista.com",
+   "https://costinsighthub.com/us/pets/how-much-does-it-cost-to-train-a-dog",
+   "https://pocketsuite.io/book/perfect-your-pack-dog-training-llc/items/pay-board-and-train-deposit"
+  ]
+ },
+ {
+  "key": "translation",
+  "label": "Translation services",
+  "group": "Personal and other",
+  "match": [
+   "translation",
+   "translator",
+   "certified translation",
+   "document translation",
+   "localization",
+   "interpreting",
+   "translate website",
+   "legal translation"
+  ],
+  "biz": "Clearword Translations",
+  "person": "Ana Ruiz (Ruiz Legal Group)",
+  "project": "Spanish to English: Contracts Bundle, 18,000 Words",
+  "summary": "Translate and certify 6 contracts for a court filing, with a client glossary and one review round.",
+  "billing": "Per source word ($0.07-$0.11 legal), certified work per page ($20-$25 per 200-250 word page) plus notarization; rush surcharge; often full prepayment for new clients or 50% on large projects. Sources: Polilingua rate guide, BeTranslated rates, Translayte.",
+  "ms": [
+   [
+    "Quote approved and files received",
+    "Done means final source files are received, word count quoted and the quote accepted with payment.",
+    90000,
+    [
+     "Source files received",
+     "Word count",
+     "Quote accepted",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Glossary agreed",
+    "Done means key legal terms and party names are agreed with the client before translation.",
+    null,
+    [
+     "Term list extracted",
+     "Client confirms names",
+     "Glossary locked",
+     "Style notes"
+    ]
+   ],
+   [
+    "Translated and edited",
+    "Done means all files are translated and independently edited (TEP).",
+    90000,
+    [
+     "Translation",
+     "Editing",
+     "Proofreading",
+     "Formatting matches source"
+    ]
+   ],
+   [
+    "Certified and delivered",
+    "Done means client review is done and signed certificates are delivered.",
+    null,
+    [
+     "Client review round",
+     "Final corrections",
+     "Certificate of accuracy",
+     "Delivery"
+    ]
+   ]
+  ],
+  "waiting": "Final source files (not drafts) and confirmation of the glossary terms.",
+  "ask": [
+   "Do you need notarization too?",
+   [
+    "Certified only",
+    "Certified and notarized"
+   ],
+   "Notarization adds $25 per document and a day."
+  ],
+  "answered": [
+   "Date format",
+   "US format, month day year"
+  ],
+  "checkin": [
+   "- Done: 4 of 6 contracts translated",
+   "- Next: editing pass and the last 2 files",
+   "- Needs from you: confirm the spelling of the two company names"
+  ],
+  "talk": [
+   "Four contracts are translated. Can you confirm the exact English names of the two companies?",
+   "Use the names from the Delaware filing, I'll send it.",
+   "Perfect, that locks the glossary. Delivery Thursday."
+  ],
+  "anxieties": [
+   "Will it be ready for my deadline?",
+   "Will the court or agency accept the certification?",
+   "Are my documents confidential?"
+  ],
+  "tools": [
+   "XTRF",
+   "Plunet",
+   "Protemos",
+   "memoQ",
+   "Trados",
+   "Smartcat"
+  ],
+  "notes": "Confidential documents (immigration, legal); medical records translation can involve PHI and should be excluded or handled under a BAA. Portal needs secure file upload and delivery and a per-file status.",
+  "sources": [
+   "https://www.polilingua.com/blog/post/translation-rates-pricing-guide.htm",
+   "https://betranslated.com/translation-rates/",
+   "https://translayte.com/blog/universal-translation-reviews",
+   "https://www.trustedtranslations.com/landing/translation-per-page"
+  ]
+ },
+ {
+  "key": "managed-it",
+  "label": "IT services / managed IT onboarding",
+  "group": "Personal and other",
+  "match": [
+   "managed IT",
+   "MSP",
+   "IT support",
+   "IT onboarding",
+   "help desk",
+   "network setup",
+   "Microsoft 365 migration",
+   "cybersecurity",
+   "IT services small business"
+  ],
+  "biz": "Bluefin IT",
+  "person": "Greg Patel (Patel Dental Lab)",
+  "project": "Managed IT Onboarding, 22 Users",
+  "summary": "Take over IT for a 22-person office: discovery, admin access, security baseline and help desk go-live in 30 days.",
+  "billing": "One-time onboarding fee scoped at signing (often one month's fee), then per-user or per-device monthly agreement. Sources: NuOptima MSP onboarding checklist, Datapath 30-60-90 plan.",
+  "ms": [
+   [
+    "Kickoff and access",
+    "Done means the agreement is signed, contacts named and admin credentials handed over from the old provider.",
+    330000,
+    [
+     "Kickoff meeting",
+     "Points of contact",
+     "Admin access transferred",
+     "Old provider offboarded"
+    ]
+   ],
+   [
+    "Discovery and documentation",
+    "Done means every device, license and account is inventoried and documented.",
+    null,
+    [
+     "Agent installed on all PCs",
+     "Network map",
+     "License inventory",
+     "Backup status checked"
+    ]
+   ],
+   [
+    "Security baseline",
+    "Done means MFA, patching, endpoint protection and working backups are in place.",
+    null,
+    [
+     "MFA for all users",
+     "Patch policy",
+     "EDR deployed",
+     "Backup restore test",
+     "Admin accounts cleaned"
+    ]
+   ],
+   [
+    "Help desk live and 30-day review",
+    "Done means users have the support process and the 30-day review is held with a roadmap.",
+    null,
+    [
+     "User welcome email",
+     "Support portal live",
+     "30-day review",
+     "Roadmap and budget"
+    ]
+   ]
+  ],
+  "waiting": "Credentials and access from the outgoing IT provider, and a list of users with roles.",
+  "ask": [
+   "Old file server: move to cloud or replace?",
+   [
+    "Move to SharePoint",
+    "Replace the server",
+    "Decide at 30-day review"
+   ],
+   "Server warranty ends in March."
+  ],
+  "answered": [
+   "MFA method",
+   "Microsoft Authenticator app"
+  ],
+  "checkin": [
+   "- Done: agents on 20 of 22 PCs, backups fixed",
+   "- Next: roll out MFA Monday",
+   "- Needs from you: tell staff about MFA and the 2 laptops still offsite"
+  ],
+  "talk": [
+   "Backups were failing for 3 weeks; fixed and tested. MFA rolls out Monday.",
+   "Glad you caught it. Will people get locked out?",
+   "No, we'll be on site 8-10 to enroll everyone."
+  ],
+  "anxieties": [
+   "Is my data safe during the switch?",
+   "Will this disrupt work?",
+   "Who do my staff call now?"
+  ],
+  "tools": [
+   "ConnectWise PSA",
+   "HaloPSA",
+   "Autotask",
+   "IT Glue",
+   "Hudu",
+   "NinjaOne"
+  ],
+  "notes": "Credentials are shared during onboarding; portal must never store passwords in plain text (link to a vault). If the client is a medical practice, the MSP may need a BAA; keep PHI out of the portal.",
+  "sources": [
+   "https://nuoptima.com/msp-onboarding-checklist",
+   "https://www.mydatapath.com/blog/30-60-90-day-msp-onboarding-plan/",
+   "https://www.process.st/templates/client-onboarding-checklist-for-a-managed-service-provider/"
+  ]
+ },
+ {
+  "key": "3d-printing",
+  "label": "3D printing / prototyping",
+  "group": "Personal and other",
+  "match": [
+   "3D printing",
+   "prototype",
+   "rapid prototyping",
+   "3D print service",
+   "SLA",
+   "SLS",
+   "FDM",
+   "product prototype",
+   "CAD to part"
+  ],
+  "biz": "Layerforge Prototyping",
+  "person": "Nina Okafor (Okafor Devices)",
+  "project": "Enclosure Prototype, 3 Iterations, SLA",
+  "summary": "Three rounds of SLA-printed enclosures for a handheld sensor, with DFM feedback each round.",
+  "billing": "Instant or manual quote from uploaded STL/STEP; most online services charge at order before printing; small shops quote per part and often take payment up front or net-30 for business clients. Lead times 1-6 business days by process. Sources: Hubs, Fictiv, 3DPrintingServices.",
+  "ms": [
+   [
+    "Files received and quoted",
+    "Done means STEP files pass the DFM check and the quote for 3 iterations is approved.",
+    45000,
+    [
+     "Files uploaded",
+     "DFM check (walls, tolerances)",
+     "Material chosen",
+     "Quote approved"
+    ]
+   ],
+   [
+    "Iteration 1 delivered",
+    "Done means rev 1 parts are printed, post-processed and fit-checked by the client.",
+    45000,
+    [
+     "Print",
+     "Support removal and cure",
+     "Photos sent",
+     "Client fit feedback"
+    ]
+   ],
+   [
+    "Iteration 2 delivered",
+    "Done means rev 2 incorporates feedback and the snap fit works.",
+    45000,
+    [
+     "Updated CAD received",
+     "Print",
+     "Snap-fit test",
+     "Client feedback"
+    ]
+   ],
+   [
+    "Final prototype",
+    "Done means rev 3 is printed, painted and approved as the looks-like/works-like prototype.",
+    45000,
+    [
+     "Print",
+     "Sand and paint",
+     "Final inspection",
+     "Shipped"
+    ]
+   ]
+  ],
+  "waiting": "Updated CAD files after each fit check.",
+  "ask": [
+   "Material for the final?",
+   [
+    "Tough resin",
+    "Clear resin",
+    "Nylon SLS"
+   ],
+   "Nylon is stronger but grainier."
+  ],
+  "answered": [
+   "Finish",
+   "Matte black paint"
+  ],
+  "checkin": [
+   "- Done: rev 1 shipped, snap clip cracked",
+   "- Next: rev 2 with thicker clip",
+   "- Needs from you: updated STEP file with 1.5 mm clip"
+  ],
+  "talk": [
+   "Rev 1 clips cracked at 1 mm. I'd go 1.5 mm in tough resin.",
+   "Makes sense. File coming tonight.",
+   "Got it, prints tomorrow, ships Friday."
+  ],
+  "anxieties": [
+   "Will it work this time?",
+   "How fast can I get it?",
+   "Is my design confidential (NDA)?"
+  ],
+  "tools": [
+   "Hubs",
+   "Xometry",
+   "Fictiv",
+   "Formlabs Dashboard",
+   "3DPrinterOS",
+   "Paperless Parts"
+  ],
+  "notes": "Iterative jobs with file versions per round; portal needs file upload/versioning and NDA-friendly privacy. Overlaps with custom fabrication; could merge as a sub-template.",
+  "sources": [
+   "https://hubs.com/rapid-prototyping-service",
+   "https://www.fictiv.com/prototyping",
+   "https://3dprintingservices.com/how-it-works"
+  ]
+ },
+ {
+  "key": "event-rentals",
+  "label": "Event rentals",
+  "group": "Personal and other",
+  "match": [
+   "event rentals",
+   "party rentals",
+   "tent rental",
+   "table and chair rental",
+   "wedding rentals",
+   "linen rental",
+   "tent",
+   "bounce house"
+  ],
+  "biz": "Canopy Event Rentals",
+  "person": "Jordan Wells",
+  "project": "Backyard Wedding: Tent, 120 Chairs, Tables and Lighting",
+  "summary": "40x60 tent, 120 chairs, 15 rounds, linens and bistro lights delivered, set up and picked up.",
+  "billing": "50% deposit when the quote is accepted (often non-refundable), balance 7-14 days before delivery; damage waiver around 10% of subtotal; delivery/setup fee by distance and site. Sources: Bella Acento and Carried Away (TapGoods) FAQs, Regina Special Event Rentals policies.",
+  "ms": [
+   [
+    "Quote accepted and deposit",
+    "Done means the item list and date are confirmed and the 50% deposit is paid.",
+    290000,
+    [
+     "Site visit or photos",
+     "Quote sent",
+     "Contract signed",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Final count and layout",
+    "Done means final quantities and the layout are locked (often 2-6 weeks out).",
+    null,
+    [
+     "Final headcount",
+     "Table layout",
+     "Tent placement",
+     "Utility locate"
+    ]
+   ],
+   [
+    "Balance paid and delivery",
+    "Done means the balance is paid and everything is delivered and set up.",
+    290000,
+    [
+     "Balance paid",
+     "Delivery window confirmed",
+     "Tent install",
+     "Tables, chairs, lighting set"
+    ]
+   ],
+   [
+    "Pickup and close-out",
+    "Done means items are picked up, counted and any damage is settled.",
+    null,
+    [
+     "Pickup",
+     "Count and inspect",
+     "Damage report",
+     "Deposit/waiver close-out"
+    ]
+   ]
+  ],
+  "waiting": "Final headcount and layout, and confirming site access for the tent.",
+  "ask": [
+   "Add sidewalls in case of rain?",
+   [
+    "Yes, all four",
+    "Two sides",
+    "No sidewalls"
+   ],
+   "Must decide 7 days out."
+  ],
+  "answered": [
+   "Chair style",
+   "White folding padded"
+  ],
+  "checkin": [
+   "- Done: contract and deposit",
+   "- Next: utility locate before staking the tent",
+   "- Needs from you: final headcount and layout by May 1"
+  ],
+  "talk": [
+   "Need your final headcount and layout by May 1 so we can load the truck.",
+   "We're at 112 but a few maybes.",
+   "Book for 120; you can drop to 112 up to 7 days out."
+  ],
+  "anxieties": [
+   "Will everything arrive on time and set up correctly?",
+   "What if it rains?",
+   "What am I charged for damage?"
+  ],
+  "tools": [
+   "Goodshuffle Pro",
+   "TapGoods",
+   "Booqable",
+   "InflatableOffice",
+   "EventRentalSystems"
+  ],
+  "notes": "Inventory-based rather than custom work, so jobs are similar; a single hard date. Portal needs item list edits up to a cutoff, payment schedule and delivery window.",
+  "sources": [
+   "https://bella-acento.tapgoods.com/faqs",
+   "https://carriedawaync.tapgoods.com/faq",
+   "https://site1-regina-specialeventrentals.webguidecms.ca/resources/policies",
+   "https://www.goodshuffle.com/"
+  ]
+ }
+]
