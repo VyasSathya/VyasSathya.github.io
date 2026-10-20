@@ -101,12 +101,13 @@
     const m = P.current(data.milestones, p.id);
     const pr = m ? progress(m, data.items) : { pct: msOf(p.id).length ? 100 : 0, done: 0, total: 0 };
     const sub = m ? esc(m.title) : msOf(p.id).length ? 'All milestones accepted' : 'No milestone yet';
+    const big = m ? `<div class="pct">${pr.pct}<small>%</small></div>` : `<div class="pct none">${sub}</div>`;
     return `<button class="ov" type="button" data-go="${esc(p.id)}">
-      <div class="t"><span>${esc(p.title)}</span>${p.kind === 'client' ? `<span class="chip">${esc(p.client_name || 'Client')}</span>` : ''}</div>
-      <div class="m">${sub}</div>
-      ${meter(pr)}
-      <div class="row"><span class="count">${m && pr.total ? `${pr.done} of ${pr.total}` : ''}</span><span class="count">${m ? pr.pct + '%' : ''}</span></div>
-      <div class="flags">${flags(p)}</div>
+      <div class="tile">${p.kind === 'client' ? `<span class="tag">${esc(p.client_name || 'Client')}</span>` : ''}${big}
+        <div>${m && pr.total ? `<div class="count" style="margin-bottom:.5rem">${pr.done} of ${pr.total}</div>` : ''}${meter(pr)}</div></div>
+      <div class="cap"><div class="t"><span>${esc(p.title)}</span></div>
+      <div class="m">${m ? sub : ''}</div>
+      <div class="flags">${flags(p)}</div></div>
     </button>`;
   }
 
@@ -115,7 +116,7 @@
     const client = live.filter(p => p.kind === 'client'), own = live.filter(p => p.kind !== 'client');
     const rest = data.projects.filter(p => p.status !== 'active');
     const section = (t, list) => list.length ? `<h2>${t}</h2><div class="overview">${list.map(card).join('')}</div>` : '';
-    return `<div class="row"><h1>Projects</h1><a class="btn" href="#/new">New project</a></div>
+    return `<div class="row" style="align-items:flex-end"><h1>Projects</h1><a class="btn primary" href="#/new">New project</a></div>
       ${data.projects.length ? '' : '<p class="note">Add your first project.</p>'}
       ${activity()}
       ${section('Client work', client)}
@@ -139,7 +140,7 @@
   function detail(p) {
     const ms = msOf(p.id);
     const sig = p.signals || {};
-    return `<a class="btn ghost small back" href="#/" style="margin-bottom:14px">Back</a>
+    return `<div class="pdetail"><a class="btn ghost small back" href="#/" style="margin-bottom:1rem">Back</a>
       <div class="detail-head"><div>
         <div class="eyebrow">${p.kind === 'client' ? esc(p.client_name || 'Client') : 'My project'} &middot; ${esc(p.status)}</div>
         <h1>${esc(p.title)}</h1></div>
@@ -170,7 +171,7 @@
 
       ${p.kind === 'client' ? `<h2>Client links</h2>${accessList(p.id)}` : ''}
       <h2>Settings</h2>
-      <details class="edit card" data-k="settings" style="margin-top:0"><summary style="color:var(--fg);font-weight:500">Project settings and feeds</summary>${projectForm(p)}</details>`;
+      <details class="edit card" data-k="settings" style="margin-top:0"><summary style="color:var(--fg);font-weight:500">Project settings and feeds</summary>${projectForm(p)}</details></div>`;
   }
 
   function clientSeen(p) {
