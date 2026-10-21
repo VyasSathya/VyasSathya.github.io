@@ -1,4 +1,4 @@
-﻿// /demo: the real client portal running on a sample project for any kind of business.
+// /demo: the real client portal running on a sample project for any kind of business.
 // ?type=<template key or free text>&biz=<business name>&embed=1. The offer page can also swap it live
 // with postMessage({demo:{type, biz}}). Everything happens in this tab; nothing is sent anywhere.
 (() => {
@@ -27,7 +27,9 @@
     const [done, next, needs] = t.checkin;
     return {
       role: 'client', label: t.person, owner_name: biz, seen_at: at(3), push_key: '', prefs: {}, devices: 0,
-      projects: [{ id: pid, title: sub(t.project), client_name: biz, summary: sub(t.summary), site_url: '', preview_url: '', status: 'active', check_in_day: 'Friday' }],
+      projects: [{ id: pid, title: sub(t.project), client_name: biz, summary: sub(t.summary), site_url: '', preview_url: '', status: 'active', check_in_day: 'Friday',
+        modules: t.modules ? datesIn(JSON.parse(JSON.stringify(t.modules)), on) : null }],
+      texts: (t.texts || []).map(x => ({ ...x, body: sub(x.body) })),
       milestones, items,
       updates: [
         { id: 'u1', project_id: pid, created_at: at(1), done, next, needs, decisions: `- ${t.ask[0]} (see Decisions)`, preview_url: '', video_url: 'https://vyasapps.dev/demo/#video' },
@@ -50,13 +52,42 @@
     };
   }
 
+  // Day offsets in screen data (due: 3) become real dates relative to today.
+  function datesIn(o, on) {
+    if (Array.isArray(o)) return o.map(x => datesIn(x, on));
+    if (o && typeof o === 'object') { for (const k of Object.keys(o)) o[k] = ['due', 'by', 'date', 'deadline'].includes(k) && typeof o[k] === 'number' ? on(o[k]) : datesIn(o[k], on); }
+    return o;
+  }
+
+  // The client's phone starts on the texts this business sends; tapping one opens the screen it is about.
+  function lockScreen() {
+    document.querySelector('.lock')?.remove();
+    if (!data.texts || !data.texts.length || q.get('nolock')) return;
+    const now = new Date();
+    const el = document.createElement('div');
+    el.className = 'lock';
+    el.innerHTML = `<div class="clock">${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).replace(/\s?[AP]M/, '')}</div>
+      <div class="date">${now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</div>
+      ${data.texts.map(x => `<button type="button" class="text" data-go="${x.go || ''}"><b>${esc(data.owner_name)}<span>${esc(x.ago || 'now')}</span></b><p>${esc(x.body)}</p></button>`).join('')}
+      <p class="hint-tap">Tap a message</p>`;
+    el.addEventListener('click', e => {
+      const b = e.target.closest('.text'); if (!b) return;
+      el.remove();
+      const target = document.querySelector('#mod-' + b.dataset.go);
+      if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+    });
+    document.body.append(el);
+  }
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
   const brand = () => { const el = document.querySelector('.mark span'); if (el && data) el.textContent = data.owner_name; };
   data = build(q.get('type') || 'kitchen-bath-remodel', q.get('biz'));
-  document.addEventListener('DOMContentLoaded', brand);
+  document.addEventListener('DOMContentLoaded', () => { brand(); lockScreen(); });
   addEventListener('message', e => {
     if (e.origin !== location.origin || !e.data || !e.data.demo) return;
     data = build(e.data.demo.type, e.data.demo.biz);
     brand();
+    lockScreen();
     document.dispatchEvent(new Event('portal:refresh'));
     scrollTo(0, 0);
   });
@@ -72,7 +103,7 @@
     await new Promise(r => setTimeout(r, 120));
     const pid = 'demo', m = b.milestone_id && data.milestones.find(x => x.id === b.milestone_id);
     switch (op) {
-      case 'view': return clone(data);
+      case 'view': { const v = clone(data); v.projects[0].modules = data.projects[0].modules; return v; }
       case 'seen': case 'prefs': return { ok: true };
       case 'approve':
         Object.assign(m, { state: 'accepted', accepted_by: 'client', accepted_at: stamp(), pay_state: m.pay_state });

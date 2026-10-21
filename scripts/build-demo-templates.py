@@ -40,7 +40,7 @@ def main():
     out, groups = {}, {g: [] for g in GROUP_ORDER}
     for name in FILES:
         path = ROOT / "docs" / "research" / f"templates-{name}.json"
-        types = json.loads(path.read_text(encoding="utf-8"))
+        types = json.loads(path.read_text(encoding="utf-8-sig"))
         for t in types:
             key = re.sub(r"[^a-z0-9-]", "-", t["key"].lower()).strip("-")
             if key in out:
@@ -62,9 +62,16 @@ def main():
                 "answered": [clean(t["answered"][0]), clean(t["answered"][1])],
                 "checkin": [clean(c) for c in t["checkin"]][:3],
                 "talk": [clean(c) for c in t["talk"]][:3],
+                "tools": [clean(x) for x in t.get("tools", [])][:6],
             }
             g = out[key]["group"] if out[key]["group"] in groups else "Personal and other"
             groups[g].append(key)
+    # Industry screens written from docs/research/flows-*.md: modules, the texts a client gets, apps.
+    for mf in sorted((ROOT / "docs" / "research").glob("modules-*.json")):
+        for key, extra in json.loads(mf.read_text(encoding="utf-8-sig")).items():
+            if key not in out:
+                fail(f"{mf.name}: unknown type {key}")
+            out[key].update({k: extra[k] for k in ("modules", "texts", "apps") if k in extra})
     missing = [k for k in FEATURED if k not in out]
     if missing:
         fail(f"featured keys not found: {missing}; available: {sorted(out)}")

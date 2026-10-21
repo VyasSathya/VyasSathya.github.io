@@ -1,0 +1,604 @@
+{
+  "business-coaching": {
+    "apps": ["Paperbell", "Practice Better", "Calendly", "Zoom"],
+    "texts": [
+      {"body": "Reminder: session 7 is Tuesday at 8 am PT on Zoom. Please send this week's scorecard by Monday night.", "go": "sessions", "ago": "now"},
+      {"body": "Your coach shared notes from session 6 and a hiring scorecard worksheet.", "go": "docs", "ago": "Yesterday"},
+      {"body": "Payment 3 of 3 ($450) runs on Nov 1 to the card on file.", "go": "schedule", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Send", "title": "This week's scorecard numbers", "due": 6, "go": "docs"},
+        {"kind": "Book", "title": "Session 8 (session 7 is booked)", "go": "sessions"},
+        {"kind": "Pay", "title": "Payment 3 of 3", "amount": 45000, "due": 12, "go": "schedule"}
+      ]},
+      {"type": "sessions", "title": "90-Day Founder Clarity Program", "total": 12, "used": 6, "unit": "sessions", "next": "Session 7, Tue 8:00 am PT, Zoom", "cta": "Book session 8", "homeworkLabel": "Before session 7", "homework": [
+        {"t": "Finish the delegation list (10 tasks you will hand off)", "done": true},
+        {"t": "Fill in this week's scorecard: revenue, pipeline, 5 habits", "done": false},
+        {"t": "Bring the two candidate names for the ops hire", "done": false},
+        {"t": "Draft the first 3 lines of the hiring scorecard", "done": false}
+      ], "notesLabel": "Notes from session 6", "notes": "You hit 4 of 5 habits; revenue dipped because two deals slipped to November, not because the plan is wrong. Agreed: the hire decision gets a written yes or no by session 8. Mid-point review is session 6 to 7: we keep goal 1 and 2, cut goal 3 to one metric."},
+      {"type": "schedule", "title": "Coming up", "items": [
+        {"when": "Mon night", "what": "Weekly scorecard due", "who": "You, in the shared sheet"},
+        {"when": "Tue 8:00 am PT", "what": "Session 7: hiring scorecard", "who": "Zoom, 60 min"},
+        {"when": "Nov 1", "what": "Payment 3 of 3, $450", "who": "Card ending 4417"},
+        {"when": "Session 12", "what": "90-day review and next-quarter plan", "who": "Renewal pricing held if you decide before this call"}
+      ]},
+      {"type": "docs", "title": "Shared between us", "items": [
+        {"t": "Coaching agreement", "state": "accepted"},
+        {"t": "Intake questionnaire", "state": "accepted"},
+        {"t": "Strengths assessment results", "state": "received"},
+        {"t": "90-day goals (3)", "state": "accepted"},
+        {"t": "Time audit, 2 weeks", "state": "accepted"},
+        {"t": "Weekly scorecard, week 6", "state": "needed", "why": "Revenue, pipeline and the 5 habits; we read it before the call"}
+      ]}
+    ]
+  },
+  "fitness-coaching": {
+    "apps": ["Trainerize", "TrueCoach", "MyFitnessPal"],
+    "texts": [
+      {"body": "Your week 6 check-in is reviewed. Calories are down 150; new macro targets are in your plan.", "go": "sessions", "ago": "2h"},
+      {"body": "Check-in day: weight average, front and side photos and how training felt.", "go": "docs", "ago": "Sun 8 am"},
+      {"body": "You missed Thursday's lower body. Want to move it to Saturday?", "go": "sessions", "ago": "Fri"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Submit", "title": "Week 7 check-in with front and side photos", "due": 5, "go": "docs"},
+        {"kind": "Log", "title": "Upper B: log your bench sets", "go": "sessions"},
+        {"kind": "Decide", "title": "After week 12: reverse diet, build or keep cutting", "due": 30, "go": "photos"}
+      ]},
+      {"type": "sessions", "title": "Week 7, block 2", "total": 4, "used": 2, "unit": "workouts this week", "next": "Upper B: bench 3x6 at 185, rows, overhead press", "cta": "Start workout", "homeworkLabel": "This week's targets", "homework": [
+        {"t": "2,150 kcal: 190 g protein, 190 g carbs, 70 g fat", "done": false},
+        {"t": "8,000 steps a day (7-day average)", "done": true},
+        {"t": "Lower A done Monday: squat 3x5 at 245", "done": true},
+        {"t": "Upper A done Tuesday", "done": true}
+      ], "notesLabel": "From your coach", "notes": "Bench stalling at 185 is expected on a cut. Hold the weight and add a rep per set before we add load. Week 8 is a deload: same lifts, 2 sets instead of 3."},
+      {"type": "docs", "title": "Weekly check-ins", "items": [
+        {"t": "Week 1: 196.4 lb average", "state": "accepted"},
+        {"t": "Week 2: 195.1 lb", "state": "accepted"},
+        {"t": "Week 3: 194.6 lb", "state": "accepted"},
+        {"t": "Week 4: 193.2 lb, macro adjustment", "state": "accepted"},
+        {"t": "Week 5: 192.8 lb", "state": "accepted"},
+        {"t": "Week 6: 191.9 lb, calories lowered 150", "state": "accepted"},
+        {"t": "Week 7 check-in", "state": "needed", "why": "7-day weight average, front and side photos, sleep, how training felt"}
+      ]},
+      {"type": "photos", "title": "Progress photos (only you and your coach)", "posts": [
+        {"who": "You", "date": "Week 6", "caption": "Front and side, morning, same light as day 1. Waist down 1.75 in.", "n": 2, "tags": ["Front", "Side"]},
+        {"who": "Coach Marcus", "date": "Week 4 review", "caption": "Side by side with day 1: shoulders and waist clearly changed. Scale is lagging; the photos are not.", "n": 4, "tags": ["Day 1 front", "Week 4 front", "Day 1 side", "Week 4 side"]},
+        {"who": "You", "date": "Day 1", "caption": "Starting photos and measurements.", "n": 3, "tags": ["Front", "Side", "Back"]}
+      ]}
+    ]
+  },
+  "tutoring-test-prep": {
+    "apps": ["TutorBird", "Teachworks", "Bluebook (College Board)", "Zoom"],
+    "texts": [
+      {"body": "Practice test 2 scored 1340, up 90 from the diagnostic. Notes from today's session are in the portal.", "go": "stages", "ago": "1h"},
+      {"body": "Reminder: Arjun's session is Thursday at 6 pm on Zoom.", "go": "schedule", "ago": "Yesterday"},
+      {"body": "Your package has 9 hours left. Practice test 3 is Saturday, timed, in Bluebook.", "go": "sessions", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Confirm", "title": "Practice test 3 this Saturday, timed", "due": 5, "go": "schedule"},
+        {"kind": "Choose", "title": "Target test date: March, May or both", "due": 14, "go": "stages"},
+        {"kind": "Check", "title": "2 timed reading passages a night", "go": "sessions"}
+      ]},
+      {"type": "sessions", "title": "SAT prep package", "total": 20, "used": 11, "unit": "hours", "next": "Thu 6:00 pm, reading pacing (session 12)", "cta": "Reschedule", "homeworkLabel": "Arjun's homework", "homework": [
+        {"t": "Error log: redo the 14 missed questions from practice test 2", "done": true},
+        {"t": "2 timed reading passages a night, 13 min each", "done": false},
+        {"t": "Desmos drill set: systems of equations", "done": false},
+        {"t": "Practice test 3 in Bluebook, Saturday, timed", "done": false}
+      ], "notesLabel": "Notes for parents, session 11", "notes": "Math is at 700 and steady. Reading and writing is 640; he finishes module 2 with 4 questions blank, so the gap is pacing, not skill. This week we practice skipping and coming back. He did all the homework this week."},
+      {"type": "schedule", "title": "Next two weeks", "items": [
+        {"when": "Thu 6 pm", "what": "Session 12: reading pacing", "who": "Online, 1 hour"},
+        {"when": "Sat 9 am", "what": "Practice test 3, full length", "who": "At home in Bluebook, timed, no breaks beyond the official 10 min"},
+        {"when": "Mon 6 pm", "what": "Session 13: practice test 3 review", "who": "Online, 1.5 hours"},
+        {"when": "Thu 6 pm", "what": "Session 14: hard-question drills", "who": "Online, 1 hour"}
+      ]},
+      {"type": "stages", "title": "Score so far", "steps": [
+        {"t": "Diagnostic: 1250", "state": "done", "date": "Sep 6"},
+        {"t": "Practice test 1: 1290", "state": "done", "date": "Sep 27"},
+        {"t": "Practice test 2: 1340", "state": "done", "date": "Oct 18"},
+        {"t": "Practice test 3", "state": "now", "note": "Saturday, timed. Target is 1400 by practice test 4."},
+        {"t": "Practice test 4", "state": "next"},
+        {"t": "March SAT", "state": "next", "who": "College Board, official score about 2 weeks after"}
+      ]}
+    ]
+  },
+  "admissions-consulting": {
+    "apps": ["CollegePlannerPro", "Cialfo", "Common App", "Google Docs"],
+    "texts": [
+      {"body": "12 days to the November 1 early deadlines. Sofia's Tufts draft is due Sunday.", "go": "countdown", "ago": "now"},
+      {"body": "Ms. Alvarez submitted her recommendation in Common App. One teacher letter to go.", "go": "docs", "ago": "3h"},
+      {"body": "Please confirm your Early Decision choice before Friday's family call.", "go": "schools", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Decide", "title": "Early Decision: Northwestern, Boston College or none", "due": 4, "go": "schools"},
+        {"kind": "Draft", "title": "Tufts supplement, draft 1", "due": 6, "go": "docs"},
+        {"kind": "Remind", "title": "Mr. Chen's teacher recommendation", "due": 8, "go": "docs"}
+      ]},
+      {"type": "schools", "title": "Sofia's list", "items": [
+        {"school": "Northwestern University", "round": "Early Decision", "deadline": 12, "status": "ED choice pending"},
+        {"school": "Boston College", "round": "Early Action", "deadline": 12, "status": "Supplement in draft 2"},
+        {"school": "University of Michigan", "round": "Early Action", "deadline": 12, "status": "Ready to submit"},
+        {"school": "Northeastern University", "round": "Early Action", "deadline": 12, "status": "Ready to submit"},
+        {"school": "University of Illinois", "round": "Early Action", "deadline": 12, "status": "Submitted"},
+        {"school": "Fordham University", "round": "Early Action", "deadline": 12, "status": "Submitted"},
+        {"school": "UCLA", "round": "UC application", "deadline": 41, "status": "PIQs 2 of 4 final"},
+        {"school": "Tufts University", "round": "Regular Decision", "deadline": 73, "status": "Draft due Sunday"},
+        {"school": "University of Southern California", "round": "Regular Decision", "deadline": 87, "status": "Not started"},
+        {"school": "Santa Clara University", "round": "Regular Decision", "deadline": 73, "status": "Not started"}
+      ]},
+      {"type": "docs", "title": "Essays and letters", "items": [
+        {"t": "Common App personal statement (draft 4, final)", "state": "accepted"},
+        {"t": "Activities list, 10 entries", "state": "accepted"},
+        {"t": "Michigan 'community' essay", "state": "accepted"},
+        {"t": "Boston College supplement", "state": "received", "why": "Draft 2 is with your counselor"},
+        {"t": "Tufts 'Why Tufts' supplement", "state": "needed", "why": "Draft 1 by Sunday keeps Nov 1 on track"},
+        {"t": "Counselor letter and school report", "state": "received"},
+        {"t": "Teacher recommendation: Ms. Alvarez, English", "state": "accepted"},
+        {"t": "Teacher recommendation: Mr. Chen, Chemistry", "state": "needed", "why": "Requested Oct 1; send him the brag sheet again"},
+        {"t": "Official SAT scores", "state": "na", "why": "Applying test-optional"}
+      ]},
+      {"type": "countdown", "to": "the November 1 early deadlines", "date": 12, "checklist": [
+        {"t": "Confirm Early Decision school", "due": 4},
+        {"t": "Tufts supplement draft 1", "due": 6},
+        {"t": "Boston College supplement final", "due": 8},
+        {"t": "Submit Michigan and Northeastern", "due": 9},
+        {"t": "Submit Early Decision application", "due": 11}
+      ]}
+    ]
+  },
+  "auto-body": {
+    "apps": ["CCC ONE", "Mitchell Cloud Estimating", "Shopmonkey"],
+    "texts": [
+      {"body": "Update on your 2021 RAV4: your insurer approved the supplement for the bumper reinforcement. Parts are on order.", "go": "stages", "ago": "now"},
+      {"body": "The OEM liftgate is backordered about 2 weeks. Please choose OEM or certified aftermarket.", "go": "needs", "ago": "1h"},
+      {"body": "6 new photos from teardown: hidden damage behind the bumper cover.", "go": "photos", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Choose", "title": "Liftgate: wait for OEM or certified aftermarket", "due": 2, "go": "stages"},
+        {"kind": "Pay", "title": "Deductible, due at pickup", "amount": 50000, "go": "estimate"}
+      ]},
+      {"type": "stages", "title": "Your RAV4", "steps": [
+        {"t": "Checked in", "state": "done", "date": "Oct 9"},
+        {"t": "Estimate sent to your insurer", "state": "done", "who": "Claim 0471-22-8835", "date": "Oct 9"},
+        {"t": "Estimate approved", "state": "done", "who": "Your adjuster", "date": "Oct 13"},
+        {"t": "Teardown", "state": "done", "date": "Oct 14"},
+        {"t": "Supplement 1 approved", "state": "done", "who": "Your adjuster", "date": "Oct 17"},
+        {"t": "Parts on order", "state": "now", "note": "Bumper reinforcement and absorber arrive Thursday. OEM liftgate is backordered to about Nov 3; certified aftermarket can be here Friday if your insurer agrees."},
+        {"t": "Body repair", "state": "next"},
+        {"t": "Paint and blend", "state": "next"},
+        {"t": "Reassembly and rear sensor calibration", "state": "next"},
+        {"t": "Quality check and detail", "state": "next"},
+        {"t": "Ready for pickup", "state": "next", "date": "Estimated Nov 7"}
+      ], "note": "Rental: Enterprise through your insurer. We asked your adjuster to extend it to the new completion date."},
+      {"type": "photos", "title": "Your car in the shop", "posts": [
+        {"who": "Estimator", "date": "Yesterday", "caption": "Teardown: rear bumper reinforcement bent and energy absorber cracked. Not visible before the cover came off; sent to your insurer as supplement 1.", "n": 4, "tags": ["Reinforcement", "Absorber", "Brackets", "Sensor harness"]},
+        {"who": "Estimator", "date": "Oct 9", "caption": "Check-in photos of the damage and the rest of the car.", "n": 4, "tags": ["Rear", "Liftgate", "Left quarter", "Odometer"]}
+      ]},
+      {"type": "estimate", "title": "What insurance pays and what you pay", "ref": "RO 30518", "intro": "Your insurer pays the shop directly for the approved estimate and supplement. You pay your deductible at pickup.", "redLabel": "You pay at pickup", "yellowLabel": "Optional, not part of the claim", "greenLabel": "Paid by your insurer", "totalLabel": "You owe", "items": [
+        {"t": "Collision deductible", "price": 50000, "sev": "red", "pick": true, "photo": "Claim"},
+        {"t": "Rock chips on the hood, touch up while it is in the paint booth", "note": "Not related to the accident.", "price": 18500, "sev": "yellow", "photo": "Hood"},
+        {"t": "Original estimate: bumper cover, liftgate, refinish, labor", "price": 486240, "sev": "green", "photo": "Est."},
+        {"t": "Supplement 1: reinforcement, absorber, brackets", "price": 128415, "sev": "green", "photo": "Supp. 1"},
+        {"t": "Rear sensor calibration after reassembly", "price": 32500, "sev": "green", "photo": "ADAS"}
+      ]}
+    ]
+  },
+  "custom-fabrication": {
+    "apps": ["JobBOSS", "Paperless Parts", "QuickBooks"],
+    "texts": [
+      {"body": "Shop drawings rev B are ready with your markups. Fabrication starts once you approve.", "go": "proof", "ago": "now"},
+      {"body": "Progress invoice for shop drawing approval: $3,700. Pay online.", "go": "needs", "ago": "now"},
+      {"body": "Install is set for the 19th, the day after the tank delivery. Please keep the cellar floor clear.", "go": "stages", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "Shop drawings rev B", "go": "proof"},
+        {"kind": "Choose", "title": "Railing infill: cable, pickets or panels", "go": "estimate"},
+        {"kind": "Pay", "title": "Progress payment at drawing approval", "amount": 370000, "due": 7, "go": "stages"}
+      ]},
+      {"type": "proof", "title": "Shop drawings", "version": "Rev B", "round": 2, "rounds": 3, "file": "Platform and railings, sheets S1 to S4", "specs": [
+        ["Platform", "24 ft x 6 ft, deck at 7 ft 6 in"],
+        ["Material", "304 stainless, 4 x 4 x 1/4 in tube frame"],
+        ["Decking", "Serrated bar grating, 1-1/4 in"],
+        ["Railing", "42 in top rail, 21 in mid rail, 4 in toe board"],
+        ["Stair", "9 risers at 7-1/2 in, 36 in wide"],
+        ["Anchors", "1/2 in wedge anchors into slab, 8 base plates"],
+        ["Finish", "#4 brushed, passivated"]
+      ], "comments": [
+        {"at": "S2", "t": "Move the stair to the north end, away from the glycol line", "done": true},
+        {"at": "S3", "t": "Add a gate at the top of the stair", "done": true},
+        {"at": "S4", "t": "Infill style still open: shown as vertical pickets"}
+      ], "note": "Changes after approval are change orders. Fabrication cannot start until rev B is signed."},
+      {"type": "stages", "title": "Where the job is", "steps": [
+        {"t": "Site measurements", "state": "done"},
+        {"t": "Quote rev A accepted, deposit paid", "state": "done", "date": "Sep 30"},
+        {"t": "Shop drawings", "state": "now", "note": "Rev B has your markups. Approve it and pay the progress invoice to release fabrication."},
+        {"t": "Material received with heat numbers", "state": "next"},
+        {"t": "Cut, weld and passivate", "state": "next"},
+        {"t": "In-shop inspection with photos", "state": "next"},
+        {"t": "Install", "state": "next", "who": "Crew of 2, one day", "date": "The 19th"},
+        {"t": "Walkthrough and final invoice", "state": "next"}
+      ]},
+      {"type": "estimate", "title": "Railing infill options", "intro": "Rev B shows vertical pickets, which are in the quote. Approve one change if you want something else.", "redLabel": "Change orders", "totalLabel": "Change order total", "items": [
+        {"t": "Horizontal stainless cable infill instead of pickets", "note": "Adds about a week for the cable fittings.", "price": 180000, "sev": "red", "photo": "Cable"},
+        {"t": "Solid perforated panels instead of pickets", "note": "No schedule change.", "price": 124000, "sev": "red", "photo": "Panels"},
+        {"t": "Vertical pickets, 4 in on center", "note": "Included in the quote.", "sev": "green", "photo": "Pickets"}
+      ]}
+    ]
+  },
+  "screen-printing": {
+    "apps": ["Printavo", "DecoNetwork", "Stripe"],
+    "texts": [
+      {"body": "New mockup for Riverside 5K: logo bumped to 11 in. wide. Approve it and confirm sizes by Tuesday to make Thursday's press.", "go": "proof", "ago": "now"},
+      {"body": "Your quote for 250 tees is ready to approve. 50% deposit orders the blanks.", "go": "estimate", "ago": "3d"},
+      {"body": "Blanks are ordered: Bella+Canvas 3413, heather grey, arriving Wednesday.", "go": "stages", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "Mockup v2, front print", "due": 1, "go": "proof"},
+        {"kind": "Confirm", "title": "Final size breakdown, 250 tees", "due": 1, "go": "proof"},
+        {"kind": "Pay", "title": "Balance at pickup", "amount": 112500, "go": "estimate"}
+      ]},
+      {"type": "proof", "title": "Mockup", "version": "v2", "round": 2, "rounds": 3, "file": "Riverside 5K front, on heather grey", "specs": [
+        ["Garment", "Bella+Canvas 3413 tri-blend tee, heather grey"],
+        ["Front", "2 colors: navy PMS 289 C and white"],
+        ["Print size", "11 in. wide, 3 in. below the collar"],
+        ["Back", "None"],
+        ["Ink", "Plastisol, white printed over navy, no underbase"],
+        ["Sizes", "S 30, M 70, L 75, XL 45, 2XL 20, 3XL 10 = 250"]
+      ], "comments": [
+        {"at": "Logo", "t": "Make it bigger", "done": true},
+        {"at": "Date line", "t": "Race date in white, not navy", "done": true},
+        {"at": "Sizes", "t": "Confirm the 3XL count with the race committee"}
+      ], "note": "Colors on screen are close, not exact. Approve on the size you will print, and check ink colors and placement in inches."},
+      {"type": "estimate", "title": "Quote", "ref": "Invoice 2147", "intro": "250 tees, 2-color front. Deposit of $1,125 is paid; the balance is due at pickup.", "redLabel": "Order", "yellowLabel": "Add-ons", "totalLabel": "Order total", "items": [
+        {"t": "250 Bella+Canvas 3413 tees, 2-color front", "note": "$8.30 each.", "price": 207500, "sev": "red", "pick": true, "photo": "Tee"},
+        {"t": "Screen setup, 2 screens", "price": 5000, "sev": "red", "pick": true, "photo": "Screens"},
+        {"t": "2XL and 3XL upcharge, 30 tees", "note": "$2.50 each.", "price": 7500, "sev": "red", "pick": true, "photo": "2XL+"},
+        {"t": "Fold and box by size", "price": 5000, "sev": "red", "pick": true, "photo": "Boxes"},
+        {"t": "1-color back print: sponsor logos", "note": "$2.25 each plus a $25 screen.", "price": 58750, "sev": "yellow", "photo": "Back"},
+        {"t": "Individual poly bag with size sticker", "price": 7500, "sev": "yellow", "photo": "Bag"}
+      ]},
+      {"type": "stages", "title": "Your order", "steps": [
+        {"t": "Quote approved, deposit paid", "state": "done"},
+        {"t": "Blanks ordered", "state": "done", "who": "Arriving Wednesday"},
+        {"t": "Mockup approval and final sizes", "state": "now", "note": "Approve by Tuesday to make Thursday's press."},
+        {"t": "Screens burned", "state": "next"},
+        {"t": "Print run", "state": "next", "date": "Thursday"},
+        {"t": "Count and box by size", "state": "next"},
+        {"t": "Ready for pickup", "state": "next", "date": "Next Monday, a week before race day"}
+      ]}
+    ]
+  },
+  "custom-jewelry": {
+    "apps": ["Jewel360", "RhinoGold", "Square"],
+    "texts": [
+      {"body": "CAD v2 is ready with the thinner band you asked for. Approve it or send changes.", "go": "proof", "ago": "now"},
+      {"body": "Your 1.52 ct oval is in hand and matches the IGI report. Photos are in your portal.", "go": "stages", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "CAD v2 before casting", "go": "proof"},
+        {"kind": "Choose", "title": "Band width: 1.8, 2.0 or 2.2 mm", "go": "proof"},
+        {"kind": "Pay", "title": "Balance at pickup", "amount": 380000, "go": "estimate"}
+      ]},
+      {"type": "proof", "title": "CAD render", "version": "v2", "round": 2, "rounds": 3, "file": "Oval hidden halo, top, side and 360 views", "specs": [
+        ["Metal", "Platinum 950, white"],
+        ["Center stone", "1.52 ct oval lab-grown diamond, F, VS1, IGI certified"],
+        ["Setting", "4 claw prongs, hidden halo of 28 stones"],
+        ["Band", "2.0 mm, pave on the top half, 18 stones"],
+        ["Melee", "Natural, 0.18 ctw total"],
+        ["Finger size", "6.25"],
+        ["Profile", "Low set, clears a straight wedding band"]
+      ], "comments": [
+        {"at": "Band", "t": "Thinner band, 2.2 to 2.0 mm", "done": true},
+        {"at": "Halo", "t": "Sit the halo a little lower"}
+      ], "note": "Renders can show pave stones farther apart than they look in metal. Changes are free before casting and not possible after."},
+      {"type": "stages", "title": "Your ring", "steps": [
+        {"t": "Consult and deposit", "state": "done", "date": "Sep 20"},
+        {"t": "Stone chosen", "state": "done", "who": "IGI report on file"},
+        {"t": "CAD design", "state": "now", "note": "v2 sent. Halo 0.3 mm lower comes as v3 tomorrow if you want it."},
+        {"t": "Resin print to try on", "state": "next", "who": "Optional, 2 days"},
+        {"t": "Cast in platinum", "state": "next"},
+        {"t": "Stone setting and polish", "state": "next"},
+        {"t": "Final photos and appraisal", "state": "next"},
+        {"t": "Ready for pickup", "state": "next", "date": "About 15 business days after CAD approval"}
+      ]},
+      {"type": "estimate", "title": "Ring price", "intro": "Agreed at your consult. Your $3,800 deposit is paid; the balance is due when you approve the finished photos.", "redLabel": "Your ring", "yellowLabel": "Add if you want", "totalLabel": "Ring total", "items": [
+        {"t": "1.52 ct oval lab-grown diamond, F VS1, IGI", "price": 260000, "sev": "red", "pick": true, "photo": "Stone"},
+        {"t": "Platinum hidden-halo setting with pave band", "price": 410000, "sev": "red", "pick": true, "photo": "Setting"},
+        {"t": "Hidden halo and pave melee, 0.18 ctw", "price": 90000, "sev": "red", "pick": true, "photo": "Melee"},
+        {"t": "Inside engraving, up to 20 characters", "price": 7500, "sev": "yellow", "photo": "Engrave"},
+        {"t": "Matching contoured wedding band, platinum", "price": 145000, "sev": "yellow", "photo": "Band"},
+        {"t": "Appraisal and care plan", "note": "Included.", "sev": "green", "photo": "Appraisal"}
+      ]}
+    ]
+  },
+  "bridal-alterations": {
+    "apps": ["Square Appointments", "Vagaro", "Acuity Scheduling"],
+    "texts": [
+      {"body": "Reminder: second fitting Saturday at 10 am. Bring your wedding shoes and undergarments.", "go": "schedule", "ago": "now"},
+      {"body": "Your bodice is taken in. Next we lock the hem with your shoes on.", "go": "stages", "ago": "3d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Bring", "title": "Wedding shoes (or the same heel height)", "due": 5, "go": "schedule"},
+        {"kind": "Book", "title": "Final fitting, 2 to 3 weeks before the wedding", "go": "schedule"},
+        {"kind": "Choose", "title": "Bustle style: French, American or ballroom", "go": "estimate"}
+      ]},
+      {"type": "schedule", "title": "Your fittings", "items": [
+        {"when": "10 weeks out", "what": "First fitting: gown pinned, price agreed", "who": "Done. Deposit paid"},
+        {"when": "Sat 10 am", "what": "Second fitting: bodice check, hem with shoes, bustle points", "who": "45 min. Bring shoes and undergarments"},
+        {"when": "2 to 3 weeks out", "what": "Final fitting and bustle lesson", "who": "Bring whoever will bustle you on the day"},
+        {"when": "Week of the wedding", "what": "Pickup, pressed and bagged", "who": "Balance due at pickup"}
+      ]},
+      {"type": "stages", "title": "Your gown", "steps": [
+        {"t": "First fitting and quote", "state": "done"},
+        {"t": "Bodice taken in 1 in.", "state": "done"},
+        {"t": "Second fitting", "state": "now", "note": "Hem length is set on you in your shoes; bustle points get marked."},
+        {"t": "Hem and bustle sewn", "state": "next"},
+        {"t": "Final fitting and bustle lesson", "state": "next"},
+        {"t": "Steam and press", "state": "next"},
+        {"t": "Pickup", "state": "next"}
+      ]},
+      {"type": "estimate", "title": "Work list", "ref": "Ticket 1182", "intro": "Priced at your first fitting. Deposit of $480 is paid; the rest is due at pickup.", "redLabel": "Agreed work", "yellowLabel": "Optional", "totalLabel": "Alterations total", "items": [
+        {"t": "Take in bodice 1 in. at the side seams", "price": 18500, "sev": "red", "pick": true, "photo": "Bodice"},
+        {"t": "Hem 3 layers with horsehair, floor-skimming in 3 in. heels", "price": 26500, "sev": "red", "pick": true, "photo": "Hem"},
+        {"t": "French bustle, 7 points", "price": 16500, "sev": "red", "pick": true, "photo": "Bustle"},
+        {"t": "Sew in bra cups", "price": 4500, "sev": "red", "pick": true, "photo": "Cups"},
+        {"t": "Final steam and press", "price": 14000, "sev": "red", "pick": true, "photo": "Press"},
+        {"t": "Add thin straps from the lace remnant", "price": 9500, "sev": "yellow", "photo": "Straps"},
+        {"t": "Rush fee if the final fitting falls inside 3 weeks", "price": 7500, "sev": "yellow", "photo": "Rush"}
+      ]}
+    ]
+  },
+  "travel-planning": {
+    "apps": ["Travefy", "Axus", "TravelJoy"],
+    "texts": [
+      {"body": "Rome and Florence hotels are confirmed. Pick your Amalfi base and we hold the room today.", "go": "needs", "ago": "now"},
+      {"body": "Your itinerary was updated: Rome to Naples train, Frecciarossa 9:35 am, seats 7A and 7B.", "go": "itinerary", "ago": "Yesterday"},
+      {"body": "Final payment for the Florence hotel is due in 60 days. We will remind you a week before.", "go": "countdown", "ago": "3d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Choose", "title": "Amalfi base: Positano, Ravello or Sorrento", "due": 2, "go": "itinerary"},
+        {"kind": "Sign", "title": "Card authorization for hotel deposits", "due": 2, "go": "docs"},
+        {"kind": "Upload", "title": "Passport photo page for Tom", "go": "docs"}
+      ]},
+      {"type": "itinerary", "title": "Italy honeymoon, 12 nights", "days": [
+        {"d": "Day 1: arrive Rome", "items": [["Private transfer FCO to hotel", "Driver meets you at arrivals"], ["Hotel Vilon, 3 nights", "Conf. VL-48211"]]},
+        {"d": "Day 2: Rome", "items": [["Vatican Museums early entry", "7:30 am"], ["Trastevere food walk", "5:00 pm"]]},
+        {"d": "Day 4: Rome to the Amalfi Coast", "items": [["Frecciarossa Rome to Naples", "9:35 am, seats 7A 7B"], ["Private car Naples to Amalfi base", "About 75 min"], ["Amalfi hotel, 4 nights", "Choose your town"]]},
+        {"d": "Day 6: Amalfi Coast", "items": [["Private boat to Capri", "Full day, lunch on board"]]},
+        {"d": "Day 8: to Florence", "items": [["Car to Naples, train to Florence", "About 4.5 hours total"], ["Hotel Lungarno, 5 nights", "Conf. LG-90374"]]},
+        {"d": "Day 10: Chianti", "items": [["Cooking class at a farmhouse", "10:00 am, pickup at hotel"]]},
+        {"d": "Day 13: home", "items": [["Private transfer to FLR", "3 hours before departure"]]}
+      ]},
+      {"type": "countdown", "to": "your honeymoon", "date": 140, "checklist": [
+        {"t": "Choose the Amalfi base", "due": 2},
+        {"t": "Decide on travel insurance (quoted)", "due": 14},
+        {"t": "Check passports are valid 6 months past return", "due": 30},
+        {"t": "Pre-trip call", "due": 126}
+      ], "budget": [
+        {"vendor": "Hotel Vilon, Rome", "total": 285000, "paid": 95000, "due": 50},
+        {"vendor": "Amalfi hotel", "total": 420000, "paid": 0, "due": 2},
+        {"vendor": "Hotel Lungarno, Florence", "total": 390000, "paid": 78000, "due": 80},
+        {"vendor": "Transfers and trains", "total": 118000, "paid": 0, "due": 95},
+        {"vendor": "Capri boat and cooking class", "total": 142000, "paid": 71000, "due": 110}
+      ]},
+      {"type": "docs", "title": "Travel documents", "items": [
+        {"t": "Rachel's passport photo page", "state": "accepted"},
+        {"t": "Tom's passport photo page", "state": "needed", "why": "Names on tickets must match the passport exactly"},
+        {"t": "Card authorization for supplier deposits", "state": "needed", "why": "Signed form; card details go to the hotel, not stored here"},
+        {"t": "Travel insurance policy", "state": "needed", "why": "Comprehensive plan quoted; buy within 14 days of the first deposit for full cover"},
+        {"t": "Planning fee receipt", "state": "accepted"},
+        {"t": "Rome hotel confirmation", "state": "received"},
+        {"t": "Florence hotel confirmation", "state": "received"}
+      ]}
+    ]
+  },
+  "pet-training": {
+    "apps": ["Gingr", "Pocketsuite", "Dog Homeskool"],
+    "texts": [
+      {"body": "Biscuit's lesson 3 report card is ready: place is solid. Homework for this week is inside.", "go": "photos", "ago": "1h"},
+      {"body": "Reminder: lesson 4 Thursday at 4 pm, loose-leash walk on your street. Send a 30-second walk video first.", "go": "sessions", "ago": "Yesterday"},
+      {"body": "Biscuit's bordetella vaccine expires in 3 weeks. Upload the new record before group class.", "go": "docs", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Send", "title": "30-second walk video before Thursday", "due": 3, "go": "sessions"},
+        {"kind": "Upload", "title": "Updated bordetella record", "due": 21, "go": "docs"}
+      ]},
+      {"type": "sessions", "title": "6-week private obedience", "total": 6, "used": 3, "unit": "lessons", "next": "Lesson 4, Thu 4:00 pm, at your home", "cta": "Reschedule", "homeworkLabel": "Homework, two 5-minute sessions a day", "homework": [
+        {"t": "Place: 30-second hold with the doorbell ringing", "done": true},
+        {"t": "Marker word, then treat at your left leg, 20 reps", "done": true},
+        {"t": "Loose-leash: stop when he pulls, go when the leash is loose", "done": false},
+        {"t": "Recall on the 15 ft long line in the backyard, 5 reps", "done": false},
+        {"t": "Film one walk to the corner and send it", "done": false}
+      ], "notesLabel": "Trainer notes, lesson 3", "notes": "Biscuit nailed place, even with the door opening. Pulling at squirrels is normal at 7 months; Thursday we work at a distance where he can still take a treat, then close it. Keep sessions short and stop while he is winning."},
+      {"type": "photos", "title": "Report cards", "posts": [
+        {"who": "Trainer", "date": "Lesson 3", "caption": "Place: A. Door manners: B. Leash: started. Loved the cheese, ignored the kibble; use cheese outside.", "n": 3, "tags": ["Place", "Door", "Leash"]},
+        {"who": "You", "date": "Practice log, Saturday", "caption": "Place with the doorbell, 3 tries, held on the third.", "n": 1, "tags": ["Video"]},
+        {"who": "Trainer", "date": "Lesson 1", "caption": "Evaluation: friendly, food motivated, jumps on guests. Goals agreed: leash, place, recall, door.", "n": 2, "tags": ["Intake", "Goals"]}
+      ]},
+      {"type": "docs", "title": "Records", "items": [
+        {"t": "Rabies vaccine", "state": "accepted"},
+        {"t": "DHPP vaccine", "state": "accepted"},
+        {"t": "Bordetella vaccine", "state": "needed", "why": "Current one expires in 3 weeks; required for group class"},
+        {"t": "Training agreement and liability waiver", "state": "accepted"},
+        {"t": "Intake form", "state": "accepted"}
+      ]}
+    ]
+  },
+  "translation": {
+    "apps": ["XTRF", "Smartcat", "memoQ"],
+    "texts": [
+      {"body": "Contract 3 of 6 is translated and edited. Please review it against the source.", "go": "proof", "ago": "now"},
+      {"body": "Please confirm the exact English names of the two companies so we can lock the glossary.", "go": "needs", "ago": "Yesterday"},
+      {"body": "Your quote for 18,000 words, Spanish to English, certified, is ready to approve.", "go": "estimate", "ago": "6d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Confirm", "title": "English names of the two companies", "due": 1, "go": "stages"},
+        {"kind": "Review", "title": "Contract 3: lease agreement", "due": 3, "go": "proof"},
+        {"kind": "Decide", "title": "Certified only or certified and notarized", "go": "estimate"}
+      ]},
+      {"type": "stages", "title": "Your project", "steps": [
+        {"t": "Source files received, 6 contracts", "state": "done"},
+        {"t": "Quote approved and deposit paid", "state": "done"},
+        {"t": "Glossary", "state": "now", "note": "42 terms agreed. Two company names are waiting on the names in your Delaware filing."},
+        {"t": "Translation", "state": "next", "who": "4 of 6 contracts done"},
+        {"t": "Editing by a second linguist", "state": "next"},
+        {"t": "Your review round", "state": "next"},
+        {"t": "Certificate of accuracy and delivery", "state": "next", "date": "Thursday"}
+      ]},
+      {"type": "proof", "title": "Contract 3 for review", "version": "Draft 1", "round": 1, "rounds": 1, "file": "Contrato de arrendamiento, 3,240 words", "specs": [
+        ["Languages", "Spanish (Mexico) to English (US)"],
+        ["Words", "3,240 of 18,000"],
+        ["Glossary", "42 terms, 2 names pending"],
+        ["Dates", "US format, month day year"],
+        ["Layout", "Matches the source page by page"],
+        ["Certified", "Yes, after your review"]
+      ], "comments": [
+        {"at": "Clause 7.2", "t": "Arrendatario rendered as Lessee, per glossary", "done": true},
+        {"at": "Page 4", "t": "Notary stamp described in brackets, not translated as text", "done": true},
+        {"at": "Parties", "t": "Company names held until you confirm them"}
+      ], "note": "One review round is included. Corrections after certification need a new certificate."},
+      {"type": "estimate", "title": "Quote", "ref": "Q-2026-0418", "intro": "Translation, editing and proofreading by two linguists. Your 50% deposit is paid.", "redLabel": "Approved", "yellowLabel": "Optional", "totalLabel": "Project total", "items": [
+        {"t": "Translation and editing, 18,000 source words", "note": "$0.095 per word, legal.", "price": 171000, "sev": "red", "pick": true, "photo": "18k"},
+        {"t": "Certificate of accuracy, 6 documents", "price": 9000, "sev": "red", "pick": true, "photo": "Cert."},
+        {"t": "Notarization, 6 documents", "note": "Adds 1 business day.", "price": 15000, "sev": "yellow", "photo": "Notary"},
+        {"t": "Rush: deliver Tuesday instead of Thursday", "price": 36000, "sev": "yellow", "photo": "Rush"}
+      ]}
+    ]
+  },
+  "managed-it": {
+    "apps": ["ConnectWise PSA", "HaloPSA", "IT Glue", "NinjaOne"],
+    "texts": [
+      {"body": "Ticket #48213 resolved: front desk printer scanning to email again. Reply if it is not fixed.", "go": "tickets", "ago": "1h"},
+      {"body": "MFA rollout is Monday. We will be on site 8-10 am to enroll everyone.", "go": "stages", "ago": "Yesterday"},
+      {"body": "We still need admin access to your domain registrar from your old provider.", "go": "docs", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Tell staff", "title": "MFA enrollment Monday 8-10 am", "due": 6, "go": "stages"},
+        {"kind": "Provide", "title": "Domain registrar admin access", "go": "docs"},
+        {"kind": "Bring in", "title": "2 laptops still offsite for the agent install", "due": 4, "go": "docs"},
+        {"kind": "Decide", "title": "Old file server: SharePoint, replace, or wait", "go": "tickets"}
+      ]},
+      {"type": "stages", "title": "Onboarding, 22 users", "steps": [
+        {"t": "Kickoff and agreement", "state": "done", "date": "Oct 1"},
+        {"t": "Admin access from the old provider", "state": "done", "who": "Registrar still pending"},
+        {"t": "Discovery and documentation", "state": "done", "note": "Agents on 20 of 22 PCs. Backups were failing for 3 weeks; fixed and test-restored."},
+        {"t": "Security baseline", "state": "now", "note": "Endpoint protection is on every agent. MFA for all users Monday, Microsoft Authenticator."},
+        {"t": "Help desk live for staff", "state": "next", "who": "Welcome email with how to reach us"},
+        {"t": "30-day review and roadmap", "state": "next", "date": "Oct 31"}
+      ]},
+      {"type": "tickets", "title": "Your tickets", "items": [
+        {"t": "#48213 Front desk printer will not scan to email", "who": "Resolved by Aaron", "state": "Resolved"},
+        {"t": "#48207 New hire: account and laptop for Maria, starts Nov 3", "who": "Jess, waiting on her title and start time", "state": "Waiting on you"},
+        {"t": "#48199 Lab PC 4 slow at startup", "who": "Aaron, remote session booked Wed 7 am", "state": "Scheduled"},
+        {"t": "#48190 Old file server: warranty ends in March", "who": "Recommendation for the 30-day review", "state": "Decision needed"}
+      ]},
+      {"type": "docs", "title": "What we need from you", "items": [
+        {"t": "Signed managed services agreement", "state": "accepted"},
+        {"t": "User list with roles and managers", "state": "accepted"},
+        {"t": "Microsoft 365 global admin", "state": "accepted"},
+        {"t": "Firewall and Wi-Fi admin", "state": "accepted"},
+        {"t": "Domain registrar admin access", "state": "needed", "why": "Share it through the secure vault link, never by email"},
+        {"t": "2 offsite laptops brought in", "state": "needed", "why": "We cannot protect or back up a PC without the agent"},
+        {"t": "Line-of-business app vendor contact", "state": "received"}
+      ]}
+    ]
+  },
+  "3d-printing": {
+    "apps": ["Formlabs Dashboard", "Paperless Parts", "Xometry"],
+    "texts": [
+      {"body": "Rev 1 fit check: the snap clips cracked at 1 mm. We suggest 1.5 mm in Tough resin. Photos inside.", "go": "photos", "ago": "Yesterday"},
+      {"body": "Rev 2 is ready to print as soon as your updated STEP file is uploaded.", "go": "docs", "ago": "now"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Upload", "title": "Updated STEP with 1.5 mm snap clip", "due": 1, "go": "docs"},
+        {"kind": "Approve", "title": "Rev 2 print settings", "go": "proof"},
+        {"kind": "Choose", "title": "Material for the final: Tough, Clear or Nylon SLS", "go": "proof"}
+      ]},
+      {"type": "proof", "title": "Rev 2 model", "version": "Rev 2", "round": 2, "rounds": 3, "file": "Sensor enclosure, top and bottom shells", "specs": [
+        ["Process", "SLA, Formlabs Form 4"],
+        ["Material", "Tough 2000 resin"],
+        ["Layer", "50 microns"],
+        ["Snap clip", "1.5 mm thick (rev 1: 1.0 mm)"],
+        ["Min. wall", "2.0 mm"],
+        ["Tolerance", "+/- 0.15 mm"],
+        ["Quantity", "3 sets"],
+        ["Supports", "Inside faces only, outside left clean"]
+      ], "comments": [
+        {"at": "Clip", "t": "Clips cracked at 1.0 mm; going to 1.5 mm", "done": true},
+        {"at": "Boss", "t": "Screw bosses 0.2 mm tight; opened to 2.6 mm", "done": true},
+        {"at": "Lid", "t": "Waiting on your updated STEP"}
+      ], "note": "Your files stay under the NDA and are not shared with any other customer or service."},
+      {"type": "stages", "title": "Iterations", "steps": [
+        {"t": "Files received, DFM check and quote", "state": "done"},
+        {"t": "Rev 1 printed and shipped", "state": "done"},
+        {"t": "Rev 1 fit check", "state": "done", "note": "Clips cracked"},
+        {"t": "Rev 2", "state": "now", "note": "Prints the day your STEP arrives; ships the next day."},
+        {"t": "Rev 2 snap-fit test", "state": "next"},
+        {"t": "Rev 3: sand and matte black paint", "state": "next"},
+        {"t": "Final inspection and ship", "state": "next"}
+      ]},
+      {"type": "photos", "title": "From the print shop", "posts": [
+        {"who": "Print tech", "date": "Yesterday", "caption": "Rev 1 fit check: both clips cracked on the second close. Screw bosses a little tight.", "n": 3, "tags": ["Clip crack", "Boss", "Closed"]},
+        {"who": "Print tech", "date": "Oct 13", "caption": "Rev 1 off the printer, supports removed, post-cured.", "n": 2, "tags": ["Top shell", "Bottom shell"]}
+      ]},
+      {"type": "docs", "title": "Files", "items": [
+        {"t": "Mutual NDA", "state": "accepted"},
+        {"t": "Rev 1 STEP", "state": "accepted"},
+        {"t": "Rev 2 STEP with 1.5 mm clip", "state": "needed", "why": "STEP preferred; STL only if you cannot export STEP"},
+        {"t": "Drawing with critical dimensions", "state": "received"}
+      ]}
+    ]
+  },
+  "event-rentals": {
+    "apps": ["Goodshuffle Pro", "TapGoods", "InflatableOffice"],
+    "texts": [
+      {"body": "Your quote for the backyard wedding is ready: tent, 120 chairs, tables and lighting. Accept and sign online.", "go": "estimate", "ago": "5d"},
+      {"body": "Final headcount and table layout are due in 11 days so we can load the truck.", "go": "needs", "ago": "now"},
+      {"body": "Delivery window confirmed: Friday 8 am to 12 pm. The tent crew needs gate access to the backyard.", "go": "schedule", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Confirm", "title": "Final headcount and table layout", "due": 11, "go": "estimate"},
+        {"kind": "Choose", "title": "Sidewalls in case of rain", "due": 38, "go": "estimate"},
+        {"kind": "Sign", "title": "Layout and site access addendum", "due": 11, "go": "sign"},
+        {"kind": "Pay", "title": "Balance", "amount": 275285, "due": 33, "go": "estimate"}
+      ]},
+      {"type": "estimate", "title": "Quote", "ref": "Q-1046", "intro": "Backyard wedding, 120 guests. 50% deposit paid; balance due 14 days before delivery. You can lower counts up to 7 days out.", "redLabel": "Booked", "yellowLabel": "Add-ons", "totalLabel": "Quote total", "items": [
+        {"t": "40 x 60 frame tent, installed", "price": 280000, "sev": "red", "pick": true, "photo": "Tent"},
+        {"t": "120 white padded folding chairs", "note": "$4.50 each.", "price": 54000, "sev": "red", "pick": true, "photo": "Chair"},
+        {"t": "15 round tables, 60 in.", "note": "$12 each.", "price": 18000, "sev": "red", "pick": true, "photo": "Round"},
+        {"t": "15 ivory linens, 120 in. round", "note": "$22 each.", "price": 33000, "sev": "red", "pick": true, "photo": "Linen"},
+        {"t": "Bistro string lights, 300 ft, hung in the tent", "price": 45000, "sev": "red", "pick": true, "photo": "Lights"},
+        {"t": "Delivery, setup and pickup", "price": 35000, "sev": "red", "pick": true, "photo": "Truck"},
+        {"t": "Damage waiver, 10% of rentals", "price": 43000, "sev": "red", "pick": true, "photo": "Waiver"},
+        {"t": "Sales tax", "price": 42570, "sev": "red", "pick": true, "photo": "Tax"},
+        {"t": "Sidewalls, all four sides", "note": "Decide 7 days out.", "price": 48000, "sev": "yellow", "photo": "Walls"},
+        {"t": "Dance floor, 16 x 16 ft", "price": 64000, "sev": "yellow", "photo": "Floor"}
+      ]},
+      {"type": "schedule", "title": "Delivery and pickup", "items": [
+        {"when": "2 weeks before", "what": "Utility locate before staking", "who": "811 marks the yard; we stake only after"},
+        {"when": "Fri 8 am to 12 pm", "what": "Tent install", "who": "Crew of 4, about 3 hours. Gate unlocked, cars out of the driveway"},
+        {"when": "Fri 1 pm to 4 pm", "what": "Tables, chairs, linens and lights set", "who": "Set to your layout"},
+        {"when": "Sun 9 am to 1 pm", "what": "Pickup and count", "who": "Stack chairs and leave linens in the bins provided"}
+      ]},
+      {"type": "sign", "title": "Agreements", "items": [
+        {"t": "Rental contract and cancellation policy", "signed": true},
+        {"t": "Damage waiver terms", "signed": true},
+        {"t": "Layout and site access addendum", "by": 11}
+      ]}
+    ]
+  }
+}

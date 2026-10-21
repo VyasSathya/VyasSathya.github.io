@@ -1,0 +1,493 @@
+{
+  "commercial-photography": {
+    "apps": ["Pixieset", "Capture One", "HoneyBook"],
+    "texts": [
+      {"body": "Your proofs are live: 312 frames from the fall catalog shoot. Heart up to 60 for retouching by Thursday.", "go": "gallery", "ago": "now"},
+      {"body": "Updated estimate: usage now covers web, social and email for 2 years. Approve it so we can start retouching.", "go": "estimate", "ago": "2h"},
+      {"body": "All 40 SKUs are shot and backed up. We ship the samples back once finals are delivered.", "go": "stages", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Choose", "title": "Heart your selects for retouching (60 included)", "due": 3, "go": "gallery"},
+        {"kind": "Approve", "title": "Usage license: web, social and email, 2 years", "amount": 180000, "go": "estimate"}
+      ]},
+      {"type": "gallery", "title": "Fall catalog proofs", "picked": 41, "limit": 60, "show": 24, "note": "60 retouched images are included; extras are $25 each and go on the final invoice. Finals are licensed for web, social and email in the US for 2 years from delivery. Paid ads and print are licensed separately."},
+      {"type": "estimate", "title": "Usage and extras", "ref": "Est. 2291", "intro": "Usage is priced by media, territory and how long you use the images. Approve what you need; the creative fee and expenses are already paid in your advance.", "redLabel": "Needed before delivery", "yellowLabel": "Optional", "greenLabel": "Already covered", "totalLabel": "To approve", "items": [
+        {"t": "Usage license: web, social and email, US, 2 years", "note": "Covers your site, Amazon and marketplace listings, organic social and email.", "price": 180000, "sev": "red", "pick": true, "photo": "License"},
+        {"t": "12 extra retouched images over the 60 included", "note": "$25 each. Only if you heart more than 60.", "price": 30000, "sev": "yellow", "photo": "+12"},
+        {"t": "Paid social ads, 1 year", "note": "Add if any of these images will run in Meta or TikTok ads.", "price": 95000, "sev": "yellow", "photo": "Ads"},
+        {"t": "Creative fee, assistant, stylist and props", "sev": "green", "photo": "Paid"}
+      ]},
+      {"type": "stages", "title": "Where the shoot is", "steps": [
+        {"t": "Estimate, usage and shot list approved", "state": "done"},
+        {"t": "Products received and checked in", "state": "done", "who": "40 SKUs", "date": "Oct 8"},
+        {"t": "Shoot day", "state": "done", "date": "Oct 15"},
+        {"t": "Proofs and selects", "state": "now", "note": "312 proofs are in your gallery. Retouching starts the day your selects are in."},
+        {"t": "Retouch round 1", "state": "next"},
+        {"t": "Your retouch notes applied", "state": "next"},
+        {"t": "Finals: web, Amazon spec and hi-res", "state": "next", "who": "Delivered in the gallery with your license document"},
+        {"t": "Samples shipped back", "state": "next"}
+      ]}
+    ]
+  },
+  "wedding-photo-video": {
+    "apps": ["Pixieset", "HoneyBook", "ShootProof"],
+    "texts": [
+      {"body": "Your sneak peek is up: 48 favorites from Saturday while we edit the rest.", "go": "gallery", "ago": "Oct 10"},
+      {"body": "Editing is on track. Your full gallery lands Nov 20 and the highlight film about 4 weeks after.", "go": "countdown", "ago": "now"},
+      {"body": "Pick a song for your highlight film from our licensed list by next Monday.", "go": "stages", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Choose", "title": "Song for your highlight film", "due": 7, "go": "stages"},
+        {"kind": "Choose", "title": "Album picks: 40 photos for your 10x10 album", "due": 45, "go": "gallery"},
+        {"kind": "Pay", "title": "Album add-on", "amount": 120000, "due": 45, "go": "countdown"}
+      ]},
+      {"type": "gallery", "title": "Sneak peek: start your album picks", "picked": 12, "limit": 40, "show": 24, "note": "These 48 are from the sneak peek; the full gallery adds about 700 more and your album picks carry over. Personal use: print and share freely. We keep the copyright and may show a few in our portfolio."},
+      {"type": "countdown", "to": "your full gallery", "date": 31, "checklist": [
+        {"t": "Color and skin retouch pass", "due": 20},
+        {"t": "Full gallery online, download PIN by email", "due": 31},
+        {"t": "Album picks open in the full gallery", "due": 31},
+        {"t": "Highlight film delivered", "due": 59}
+      ], "budget": [
+        {"vendor": "Photo and video package", "total": 960000, "paid": 960000},
+        {"vendor": "Album add-on", "total": 120000, "paid": 0, "due": 45}
+      ]},
+      {"type": "stages", "title": "Your photos and film", "steps": [
+        {"t": "Contract signed and retainer paid", "state": "done"},
+        {"t": "Engagement session", "state": "done", "date": "Griffith Observatory, Jun 14"},
+        {"t": "Balance paid", "state": "done", "date": "Sep 8"},
+        {"t": "Wedding day", "state": "done", "date": "Oct 8"},
+        {"t": "Sneak peek", "state": "done", "date": "Oct 10"},
+        {"t": "Culling and editing", "state": "now", "note": "About 2,900 frames down to roughly 750. Pick your film song so the editor can cut to it."},
+        {"t": "Full gallery", "state": "next", "date": "About Nov 20"},
+        {"t": "Highlight film, 5 minutes", "state": "next", "date": "About Dec 18"},
+        {"t": "Album design proof", "state": "next"}
+      ]}
+    ]
+  },
+  "corporate-events": {
+    "apps": ["Cvent", "Planning Pod", "Smartsheet"],
+    "texts": [
+      {"body": "Pick the awards dinner format in the next 12 days so we can lock the Fairmont menu. Plated adds about $28 per head.", "go": "needs", "ago": "now"},
+      {"body": "Room block pickup is 164 of 220 rooms. Attrition date is Dec 15.", "go": "countdown", "ago": "3h"},
+      {"body": "Run-of-show v2 is up: CEO Q&A at 9:45, breakouts moved 15 minutes.", "go": "schedule", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Choose", "title": "Awards dinner format: plated, stations or family style", "due": 12, "go": "countdown"},
+        {"kind": "Approve", "title": "Run-of-show v2, day 1", "go": "schedule"},
+        {"kind": "Send", "title": "Speaker list with session titles", "due": 21, "go": "docs"}
+      ]},
+      {"type": "countdown", "to": "the 2027 sales kickoff", "date": 112, "checklist": [
+        {"t": "Choose the awards dinner format", "due": 12},
+        {"t": "Speaker list with session titles", "due": 21},
+        {"t": "Room block attrition review with the Fairmont", "due": 56},
+        {"t": "Final attendee list for badges and rooming list", "due": 85},
+        {"t": "F&B guarantee to the hotel", "due": 92},
+        {"t": "Speaker slides to AV", "due": 98}
+      ], "budget": [
+        {"vendor": "Fairmont: F&B minimum and meeting space", "total": 9500000, "paid": 2850000, "due": 30},
+        {"vendor": "AV production", "total": 6200000, "paid": 3100000, "due": 60},
+        {"vendor": "Airport transfers", "total": 1150000, "paid": 0, "due": 75},
+        {"vendor": "Signage and badges", "total": 420000, "paid": 0, "due": 90},
+        {"vendor": "Planning and management fee", "total": 1800000, "paid": 900000, "due": 82}
+      ]},
+      {"type": "schedule", "title": "Run-of-show v2, Feb 9", "items": [
+        {"when": "7:30 am", "what": "Registration and breakfast", "who": "Ballroom foyer, badge pickup"},
+        {"when": "9:00 am", "what": "Opening keynote", "who": "CEO, walk-on music cue 1"},
+        {"when": "9:45 am", "what": "CEO Q&A (new)", "who": "AV adds a second handheld mic"},
+        {"when": "10:15 am", "what": "Breakouts, 4 rooms", "who": "Moved 15 minutes later"},
+        {"when": "12:30 pm", "what": "Lunch", "who": "Terrace, rain plan in Salon C"},
+        {"when": "7:00 pm", "what": "Awards dinner", "who": "Format waiting on your pick"}
+      ]},
+      {"type": "docs", "title": "Files and lists", "items": [
+        {"t": "Venue and room block contract", "state": "accepted"},
+        {"t": "Signed AV proposal", "state": "accepted"},
+        {"t": "Certificate of insurance for the Fairmont", "state": "received"},
+        {"t": "Speaker list with session titles", "state": "needed", "why": "Goes on the agenda and the registration site"},
+        {"t": "Final attendee list", "state": "needed", "why": "Feeds badges, dietary counts and the rooming list"},
+        {"t": "Speaker slide decks", "state": "needed", "why": "16:9, due Jan 26 so AV can load and test them"}
+      ]}
+    ]
+  },
+  "branding": {
+    "apps": ["Dubsado", "Figma", "Filestage"],
+    "texts": [
+      {"body": "Round 1 is up: the sun mark from A inside the badge from C. Pin your notes right on the logo.", "go": "proof", "ago": "now"},
+      {"body": "Please send one combined set of notes from you and your partner by Friday; that keeps round 2 on schedule.", "go": "proof", "ago": "Yesterday"},
+      {"body": "We need the bag dimensions from your packaging supplier for the label mockups.", "go": "docs", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "Logo refinement, round 1 of 2", "due": 4, "go": "proof"},
+        {"kind": "Send", "title": "Bag and label dimensions from your packaging supplier", "go": "docs"}
+      ]},
+      {"type": "proof", "title": "Logo refinement", "version": "R1", "round": 1, "rounds": 2, "file": "Brightside sun mark in retro badge, terracotta on cream", "comments": [
+        {"at": "Mark", "t": "Sun mark from A inside the badge shape from C", "done": true},
+        {"at": "Color", "t": "Warm terracotta with cream, drop the old navy", "done": true},
+        {"at": "Wordmark", "t": "Letters close up at cup-sleeve size; open the spacing"},
+        {"at": "Rays", "t": "Rays look thin at half an inch"}
+      ], "note": "2 refinement rounds are included; extra rounds are billed hourly. Logo source files and copyright transfer to you on final payment."},
+      {"type": "stages", "title": "Where your brand is", "steps": [
+        {"t": "Discovery and strategy", "state": "done", "date": "Signed off Sep 30"},
+        {"t": "3 logo concepts", "state": "done", "date": "Oct 14"},
+        {"t": "Direction chosen", "state": "done", "who": "A with the badge from C"},
+        {"t": "Refinement round 1", "state": "now", "note": "Combined notes by Friday keep round 2 on schedule."},
+        {"t": "Refinement round 2", "state": "next"},
+        {"t": "Palette, type and secondary marks", "state": "next"},
+        {"t": "Packaging label mockups", "state": "next"},
+        {"t": "Brand guide and logo files", "state": "next", "who": "AI, EPS, SVG, PNG, PDF; released on final payment"}
+      ]},
+      {"type": "docs", "title": "What we need from you", "items": [
+        {"t": "Current logo files", "state": "accepted"},
+        {"t": "Photos of the cafe and roastery", "state": "received"},
+        {"t": "Bag and label dimensions", "state": "needed", "why": "From your packaging supplier, so labels fit the 12 oz bag"},
+        {"t": "Fonts you already license", "state": "na"}
+      ]}
+    ]
+  },
+  "web-design": {
+    "apps": ["Basecamp", "Figma", "BugHerd"],
+    "texts": [
+      {"body": "Staging is ready, but 4 pages are waiting on your copy. Send it by Friday to keep the Nov 12 launch.", "go": "docs", "ago": "now"},
+      {"body": "Design is approved. Your design milestone invoice is ready.", "go": "needs", "ago": "Oct 9"},
+      {"body": "Please share the domain registrar login through the secure link, not email.", "go": "docs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Send", "title": "Bios and headshots for 4 dentists", "due": 4, "go": "docs"},
+        {"kind": "Send", "title": "Domain registrar login", "due": 4, "go": "docs"},
+        {"kind": "Review", "title": "Staging site, 10 pages", "go": "proof"},
+        {"kind": "Pay", "title": "Design approval milestone", "amount": 270000, "due": 7, "go": "stages"}
+      ]},
+      {"type": "stages", "title": "Where the site is", "steps": [
+        {"t": "Discovery and sitemap", "state": "done"},
+        {"t": "Design approved", "state": "done", "date": "Oct 9"},
+        {"t": "Build on staging", "state": "now", "note": "Built with your approved design. 4 pages wait on your copy, and launch waits with them."},
+        {"t": "Content loaded and booking tested", "state": "next"},
+        {"t": "QA and browser testing", "state": "next"},
+        {"t": "DNS cutover and go live", "state": "next", "date": "Target Nov 12"},
+        {"t": "Training video and 30-day support", "state": "next"}
+      ]},
+      {"type": "docs", "title": "What we are waiting on", "items": [
+        {"t": "Logo files", "state": "accepted"},
+        {"t": "Google Business Profile access", "state": "accepted"},
+        {"t": "Office photos from the shoot", "state": "received"},
+        {"t": "Copy for Implants, Invisalign, Emergency and New Patients pages", "state": "needed", "why": "Content is what holds most launches"},
+        {"t": "Bios and headshots for 4 dentists", "state": "needed", "why": "We can draft bios from LinkedIn as a 2-hour add-on"},
+        {"t": "Domain registrar login", "state": "needed", "why": "Shared through a password manager link, for the DNS cutover"}
+      ]},
+      {"type": "proof", "title": "Staging site", "version": "Staging", "round": 1, "rounds": 2, "file": "kimfamilydental staging, 10 pages", "comments": [
+        {"at": "Home, hero", "t": "Use the new office photo, not the stock smile", "done": true},
+        {"at": "Book online", "t": "Saturday hours show 8 to 5; should be 8 to 1"},
+        {"at": "Team", "t": "Placeholder bios until yours arrive"}
+      ], "note": "Click any spot on a page to pin a comment. After launch, changes are covered by a care plan or billed hourly."}
+    ]
+  },
+  "app-development": {
+    "apps": ["Linear", "Figma", "TestFlight", "Slack Connect"],
+    "texts": [
+      {"body": "Sprint 2 build 0.4.0 (112) is on TestFlight: booking works end to end. Log bugs in the feedback form.", "go": "proof", "ago": "now"},
+      {"body": "Change request: class waitlist, about 1 sprint, $9,000. Approve it for the MVP or leave it for phase 2.", "go": "estimate", "ago": "3h"},
+      {"body": "We still need Admin access to your Apple Developer account to set up the store listing.", "go": "docs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "Change request: class waitlist", "amount": 900000, "go": "estimate"},
+        {"kind": "Test", "title": "Beta build 0.4.0 (112)", "go": "proof"},
+        {"kind": "Send", "title": "Apple Developer account access (Admin)", "go": "docs"},
+        {"kind": "Pay", "title": "Sprint 3 invoice", "amount": 1200000, "due": 10, "go": "stages"}
+      ]},
+      {"type": "stages", "title": "Where the app is", "steps": [
+        {"t": "Discovery and UX", "state": "done"},
+        {"t": "UI design signed off", "state": "done"},
+        {"t": "Sprint 1: auth and profiles", "state": "done"},
+        {"t": "Sprint 2: booking", "state": "done", "date": "Demo Oct 17"},
+        {"t": "Sprint 3: workout tracking", "state": "now", "note": "Demo Oct 31. Waitlist only joins this sprint if you approve the change request."},
+        {"t": "Beta feedback and acceptance testing", "state": "next", "who": "Your studio managers"},
+        {"t": "App Store and Google Play review", "state": "next", "who": "Apple and Google, usually 1 to 3 days"},
+        {"t": "Launch and 60-day support", "state": "next"}
+      ], "note": "Code, accounts and store listings transfer to you on final payment."},
+      {"type": "estimate", "title": "Change requests", "intro": "These are outside the signed MVP scope. Approve to add them now, or decline to keep them for phase 2; the launch date moves about one sprint per item.", "redLabel": "Waiting on your decision", "greenLabel": "Already in the MVP", "totalLabel": "Added to scope", "items": [
+        {"t": "Class waitlist with auto-promote", "note": "About 1 sprint. Members join a full class and get a push when a spot opens.", "price": 900000, "sev": "red", "photo": "CR-04"},
+        {"t": "Apple Pay at checkout", "note": "About 1 sprint, mostly Apple merchant setup and review.", "price": 900000, "sev": "red", "photo": "CR-05"},
+        {"t": "Card payments through Stripe", "sev": "green", "photo": "In MVP"}
+      ]},
+      {"type": "proof", "title": "Beta build", "version": "0.4.0 (112)", "round": 2, "rounds": 3, "file": "FitPal beta, iOS TestFlight and Android internal testing", "comments": [
+        {"at": "Booking, step 3", "t": "Time slots load slowly on cellular", "done": true},
+        {"at": "Sign in", "t": "Apple sign-in fails on iOS 17.2"},
+        {"at": "Class detail", "t": "Instructor photo is cropped"}
+      ], "note": "Round = sprint demo. Install from the TestFlight invite on iPhone; Android testers use the Play internal testing link."},
+      {"type": "docs", "title": "Access and files we need", "items": [
+        {"t": "Brand assets and app icon", "state": "accepted"},
+        {"t": "Apple Developer account, Admin role", "state": "needed", "why": "Needed to create the App Store listing and submit"},
+        {"t": "Google Play Console access", "state": "needed", "why": "Release manager permission"},
+        {"t": "Approval for class schedule API access", "state": "needed", "why": "From your scheduling provider, for live class times"},
+        {"t": "Privacy policy URL", "state": "received"}
+      ]}
+    ]
+  },
+  "marketing-agency": {
+    "apps": ["Planable", "Sprout Social", "Canva"],
+    "texts": [
+      {"body": "4 posts are waiting for your approval. They start going live Monday.", "go": "tickets", "ago": "now"},
+      {"body": "Swapped the bar post to the new cocktail menu photo. Scheduled for Tuesday at 6 pm.", "go": "proof", "ago": "2h"},
+      {"body": "Please confirm your Halloween event details so we can post the announcement.", "go": "needs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "4 posts for next week", "due": 3, "go": "tickets"},
+        {"kind": "Review", "title": "Bar post with the new cocktail menu", "go": "proof"},
+        {"kind": "Confirm", "title": "Halloween event details", "due": 2, "go": "sessions"}
+      ]},
+      {"type": "tickets", "title": "This month's posts", "items": [
+        {"t": "Tue 6 pm: New cocktail menu at the bar", "who": "Instagram feed", "state": "Needs approval"},
+        {"t": "Wed 9 am: Spa shoot reel", "who": "Instagram and TikTok", "state": "Needs approval"},
+        {"t": "Thu 12 pm: Fall weekend package", "who": "Instagram carousel", "state": "Needs approval"},
+        {"t": "Fri 5 pm: Halloween party announcement", "who": "Instagram and TikTok", "state": "Needs approval"},
+        {"t": "Mon 8 am: Rooftop at sunrise", "who": "Instagram feed", "state": "Scheduled"},
+        {"t": "Oct 14: Chef's tasting reel", "who": "TikTok", "state": "Resolved"}
+      ]},
+      {"type": "proof", "title": "Bar post", "version": "v2", "round": 2, "rounds": 2, "file": "New cocktail menu, 4:5 photo and caption", "comments": [
+        {"at": "Photo", "t": "Use the new cocktail menu photo", "done": true},
+        {"at": "Caption", "t": "Name the mezcal drink, it is the bestseller", "done": true}
+      ], "note": "This is the last included round for this post."},
+      {"type": "sessions", "title": "October content", "total": 24, "used": 15, "unit": "posts and reels to go out", "next": "Monthly review call, Nov 3, 10 am", "cta": "Reschedule", "homeworkLabel": "On your side", "homework": [
+        {"t": "Approve the 4 posts in the queue"},
+        {"t": "Confirm Halloween event time, price and dress code"},
+        {"t": "Send raw photos from the chef dinner", "done": true}
+      ], "notesLabel": "From the last call", "notes": "Reels are reaching about 3x the feed posts, so November shifts 2 posts to reels. Ad spend is $400 of the $500 boost budget, billed by Meta to your card, not in the retainer."},
+      {"type": "stages", "title": "October report", "steps": [
+        {"t": "Calendar approved", "state": "done", "date": "Sep 28"},
+        {"t": "Hotel shoot and editing", "state": "done"},
+        {"t": "Publishing and community management", "state": "now", "note": "Comments and DMs answered daily. Booking link clicks are tracked for the report."},
+        {"t": "Analytics pulled", "state": "next", "date": "Oct 31"},
+        {"t": "Report and review call", "state": "next", "date": "Nov 3"},
+        {"t": "November calendar", "state": "next", "who": "Built around the campaign you pick"}
+      ]}
+    ]
+  },
+  "seo-agency": {
+    "apps": ["Semrush", "AgencyAnalytics", "Google Search Console"],
+    "texts": [
+      {"body": "Your drain cleaning page draft is ready. Check the facts and prices before we publish.", "go": "proof", "ago": "now"},
+      {"body": "'plumber Fremont' moved from 14 to 8 this month. Full report is in your portal.", "go": "stages", "ago": "2d"},
+      {"body": "Add us as a Manager on your Google Business Profile so we can post and answer reviews.", "go": "docs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "Drain cleaning page, Fremont", "due": 5, "go": "proof"},
+        {"kind": "Grant", "title": "Manager access to your Google Business Profile", "go": "docs"}
+      ]},
+      {"type": "stages", "title": "This month", "steps": [
+        {"t": "Rank tracking", "state": "done", "who": "'plumber Fremont' 14 to 8; 'water heater repair Newark' 22 to 15"},
+        {"t": "Technical fixes live", "state": "done", "who": "Mobile page speed 48 to 81"},
+        {"t": "4 service-area pages", "state": "now", "note": "Water heaters is live. Drain cleaning waits on your fact check; 2 more in drafting."},
+        {"t": "Local citations and review request texts", "state": "next", "who": "You have 31 Google reviews; the top 3 competitors average 120"},
+        {"t": "Traffic and calls report", "state": "next", "date": "Nov 1"},
+        {"t": "Review call and next month priorities", "state": "next", "date": "Nov 4"}
+      ]},
+      {"type": "proof", "title": "Drain cleaning page", "version": "Draft 1", "round": 1, "rounds": 2, "file": "Drain Cleaning in Fremont, CA: 1,150 words", "comments": [
+        {"at": "Pricing", "t": "Confirm the $189 flat rate for main line clearing"},
+        {"at": "Service area", "t": "Add Union City and Newark to the list"},
+        {"at": "Title tag", "t": "Lead with the city name", "done": true}
+      ], "note": "Your fact check is what we need: prices, guarantees and the areas you serve."},
+      {"type": "sessions", "title": "Retainer hours this month", "total": 20, "used": 13, "unit": "hours", "next": "Monthly review call, Nov 4, 10 am", "cta": "Reschedule", "notesLabel": "Where the hours went", "notes": "Audit fixes and schema markup 5 h, water heater page 4 h, drain cleaning draft 3 h, Google Business Profile updates 1 h."},
+      {"type": "docs", "title": "Access we need", "items": [
+        {"t": "Google Search Console", "state": "accepted"},
+        {"t": "Google Analytics 4", "state": "accepted"},
+        {"t": "WordPress editor login", "state": "accepted"},
+        {"t": "Google Business Profile, Manager role", "state": "needed", "why": "To post updates, add photos and reply to reviews"},
+        {"t": "Customer phone list for review requests", "state": "needed", "why": "Last 6 months of jobs, names and mobile numbers"}
+      ]}
+    ]
+  },
+  "recording-studio": {
+    "apps": ["Samply", "Dropbox", "Pibox"],
+    "texts": [
+      {"body": "Glass Hours mix v2 is up: vocals up 1.5 dB in the choruses and the snare tucked. Notes with timestamps, please.", "go": "proof", "ago": "now"},
+      {"body": "Thursday 2 pm is booked for the Song 3 bridge punch-ins. 6 studio hours left on your block.", "go": "sessions", "ago": "3h"},
+      {"body": "Masters go out once the final balance is in. Invoice is in your portal.", "go": "stages", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "Glass Hours, mix v2", "due": 3, "go": "proof"},
+        {"kind": "Choose", "title": "Bridge vocal on Song 3: take 2, take 5 or a comp", "due": 2, "go": "sessions"},
+        {"kind": "Pay", "title": "Final balance before masters", "amount": 375000, "due": 21, "go": "stages"}
+      ]},
+      {"type": "proof", "title": "Glass Hours", "version": "Mix v2", "round": 2, "rounds": 2, "file": "Song 2 of 5, 24-bit WAV", "length": "3:24", "comments": [
+        {"at": "0:48", "t": "Vocals buried in the chorus", "done": true},
+        {"at": "0:52", "t": "Snare too loud", "done": true},
+        {"at": "2:31", "t": "Delay throw on 'stay' rings too long"}
+      ], "note": "This is your last included round on this song; more revisions or recalls are $75 per song. Stems and instrumentals come with the masters after the final balance, with the credits and split sheet."},
+      {"type": "sessions", "title": "Studio time", "total": 40, "used": 34, "unit": "studio hours", "next": "Song 3 bridge punch-ins, Thu 2 pm", "cta": "Book more time", "homeworkLabel": "Before your session", "homework": [
+        {"t": "Pick the bridge take on Song 3"},
+        {"t": "Timestamped notes on Ocean Static mix v2"},
+        {"t": "Lyrics sheet for the backing vocals", "done": true}
+      ], "notesLabel": "From the last session", "notes": "All tracking is done. Bridge on Song 3 gets one more pass with the comp of takes 2 and 5 as a guide."},
+      {"type": "stages", "title": "The EP", "steps": [
+        {"t": "Pre-production and deposit", "state": "done"},
+        {"t": "Tracking, all 5 songs", "state": "done"},
+        {"t": "Mix v1, all 5 songs", "state": "done", "date": "Oct 11"},
+        {"t": "Mix v2", "state": "now", "note": "3 of 5 songs approved. Glass Hours and Song 3 are waiting on you."},
+        {"t": "Mastering", "state": "next"},
+        {"t": "Master approval", "state": "next"},
+        {"t": "Final balance and delivery", "state": "next", "who": "WAV, MP3, instrumentals and stems"}
+      ], "note": "Masters by about Nov 14 keep a Dec 5 release; distributors want the files about 3 weeks ahead."}
+    ]
+  },
+  "podcast-production": {
+    "apps": ["Riverside", "Descript", "Frame.io", "Buzzsprout"],
+    "texts": [
+      {"body": "Episode 43 edit is ready. We cut the 4-minute conference tangent; listen at 18:20.", "go": "proof", "ago": "now"},
+      {"body": "Episode 42 is live on Apple, Spotify and YouTube. 3 clips are scheduled for this week.", "go": "tickets", "ago": "Tue 6:00 am"},
+      {"body": "We still need the guest headshot and signed release for episode 44.", "go": "docs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "Episode 43 cut", "due": 2, "go": "proof"},
+        {"kind": "Send", "title": "Guest headshot and signed release, episode 44", "due": 5, "go": "docs"}
+      ]},
+      {"type": "proof", "title": "Episode 43", "version": "Cut v2", "round": 2, "rounds": 2, "file": "Leadership Lab ep. 43, video and audio", "length": "46:10", "comments": [
+        {"at": "18:20", "t": "Conference tangent cut, 4 minutes", "done": true},
+        {"at": "22:10", "t": "Keep the client story", "done": true},
+        {"at": "39:05", "t": "Guest asked to drop the revenue number"}
+      ], "note": "Approve by Thursday to publish Tuesday 6 am Pacific. Show notes and clips follow in the queue."},
+      {"type": "tickets", "title": "November episodes", "items": [
+        {"t": "Ep. 41: Hiring your first manager", "who": "Published Oct 7", "state": "Resolved"},
+        {"t": "Ep. 42: Feedback that sticks", "who": "Published Oct 14", "state": "Resolved"},
+        {"t": "Ep. 43: Pricing consulting work", "who": "Cut v2 with you", "state": "Host review"},
+        {"t": "Ep. 44: Running remote offsites", "who": "Raw files in, editing", "state": "Editing"},
+        {"t": "Ep. 45: Guest TBC", "who": "Recording Nov 4", "state": "Booking"}
+      ]},
+      {"type": "sessions", "title": "Recording time", "total": 6, "used": 3, "unit": "studio hours this month", "next": "Ep. 45 recording, Tue Nov 4, 10 am", "cta": "Book a slot", "homeworkLabel": "Before you record", "homework": [
+        {"t": "Send the guest prep brief"},
+        {"t": "Cut list notes for ep. 44", "done": true}
+      ]},
+      {"type": "docs", "title": "Files we need", "items": [
+        {"t": "Ep. 44 raw audio and video", "state": "accepted"},
+        {"t": "Ep. 44 guest headshot", "state": "needed", "why": "Square, at least 1400 px, for the episode art"},
+        {"t": "Ep. 44 guest release form", "state": "needed", "why": "Signed before we publish"},
+        {"t": "Ep. 43 guest release form", "state": "received"}
+      ]}
+    ]
+  },
+  "copywriting": {
+    "apps": ["Google Docs", "HoneyBook", "Notion"],
+    "texts": [
+      {"body": "All 6 page drafts are in the shared folder. Comment right in the docs by Monday.", "go": "proof", "ago": "now"},
+      {"body": "For a more personal About page, send me a few stories about how you started.", "go": "docs", "ago": "Yesterday"},
+      {"body": "Pick a homepage headline direction; the sub copy follows the one you choose.", "go": "needs", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "Drafts for all 6 pages", "due": 5, "go": "proof"},
+        {"kind": "Choose", "title": "Homepage headline: outcome, credibility or direct", "due": 5, "go": "proof"},
+        {"kind": "Send", "title": "2 or 3 stories about how you started", "go": "docs"}
+      ]},
+      {"type": "proof", "title": "Website copy", "version": "Draft 1", "round": 1, "rounds": 2, "file": "Home, About, Services, Portfolio, Contact and FAQ", "comments": [
+        {"at": "Home, headline", "t": "Option A: 'Gardens that grow with you'. Option B: '20 years of Bay Area landscapes'. Option C: 'Landscape design and build in the East Bay'"},
+        {"at": "Services", "t": "Love this one as is", "done": true},
+        {"at": "About", "t": "Make it more personal"}
+      ], "note": "2 revision rounds are included. A new direction after round 1 is quoted as new work."},
+      {"type": "docs", "title": "From you", "items": [
+        {"t": "Intake questionnaire", "state": "accepted"},
+        {"t": "Customer reviews export", "state": "accepted"},
+        {"t": "Stories about how you started", "state": "needed", "why": "For the About page; a voice memo is fine"},
+        {"t": "Your web designer's contact", "state": "received"}
+      ]},
+      {"type": "stages", "title": "Where the copy is", "steps": [
+        {"t": "Messaging brief approved", "state": "done"},
+        {"t": "First drafts, 6 pages", "state": "done", "date": "Oct 17"},
+        {"t": "Your comments, round 1", "state": "now", "note": "Comment in the docs by Monday and pick a headline."},
+        {"t": "Revisions round 1", "state": "next"},
+        {"t": "Round 2 and final approval", "state": "next"},
+        {"t": "Welcome email sequence, 3 emails", "state": "next"},
+        {"t": "Final copy docs to your web designer", "state": "next"}
+      ]}
+    ]
+  },
+  "print-signage": {
+    "apps": ["ShopVOX", "Printavo", "QuickBooks"],
+    "texts": [
+      {"body": "Proof v3 has the bigger phone number on the window. Please sign by Wednesday to keep the install before your opening.", "go": "proof", "ago": "now"},
+      {"body": "We need the landlord's sign approval letter to file the city permit.", "go": "docs", "ago": "Yesterday"},
+      {"body": "Halo-lit letters add $1,200 and about a week. Decide before we order the LEDs.", "go": "estimate", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Sign", "title": "Approve proof v3 for production", "due": 2, "go": "proof"},
+        {"kind": "Send", "title": "Landlord sign approval letter", "due": 5, "go": "docs"},
+        {"kind": "Choose", "title": "Front-lit or halo-lit letters", "due": 2, "go": "estimate"}
+      ]},
+      {"type": "proof", "title": "Storefront sign proof", "version": "v3", "round": 3, "rounds": 3, "file": "Nguyen Bakery channel letters, window vinyl and A-frame", "specs": [
+        ["Letter set", "14 ft x 24 in."],
+        ["Letters", "Front-lit LED channel letters, 5 in. returns"],
+        ["Faces", "Acrylic, Pantone 7621 red"],
+        ["Returns", "White"],
+        ["Mounting", "Raceway, painted to match the brick"],
+        ["Window", "Cut white vinyl, phone number 4 in. tall"],
+        ["A-frame", "24 x 36 in., double-sided, coroplast inserts"],
+        ["Quantity", "1 sign, 2 windows, 1 A-frame"]
+      ], "comments": [
+        {"at": "Logo", "t": "Make the logo larger", "done": true},
+        {"at": "Window", "t": "Phone number bigger", "done": true}
+      ], "note": "Approving signs off size, colors and spelling for production. Colors on screen are approximate; letters are made to the Pantone number."},
+      {"type": "estimate", "title": "Options before production", "ref": "Est. 1187", "intro": "Your approved estimate is front-lit letters. Add these now; changes after fabrication starts are billed as new work.", "redLabel": "Decide before we order", "yellowLabel": "Optional", "greenLabel": "In your approved estimate", "totalLabel": "Added to your order", "items": [
+        {"t": "Halo-lit (back-lit) letters instead of front-lit", "note": "Soft glow on the brick. Adds about a week.", "price": 120000, "sev": "red", "photo": "Halo"},
+        {"t": "Hours decal for the side door", "note": "White cut vinyl, 12 x 18 in.", "price": 9500, "sev": "yellow", "photo": "Hours"},
+        {"t": "Channel letters, window vinyl, A-frame, install", "sev": "green", "photo": "Quoted"}
+      ]},
+      {"type": "stages", "title": "Where your sign is", "steps": [
+        {"t": "Site survey", "state": "done", "date": "Sep 26"},
+        {"t": "Estimate approved and deposit paid", "state": "done", "date": "Oct 3"},
+        {"t": "Proof approval", "state": "now", "note": "Sign proof v3 and we file the permit the same day."},
+        {"t": "Landlord approval", "state": "next", "who": "Your landlord"},
+        {"t": "City sign permit", "state": "next", "who": "City planning, usually 2 to 3 weeks"},
+        {"t": "Fabrication", "state": "next", "who": "About 3 weeks after the permit"},
+        {"t": "Install and electrical hookup", "state": "next", "date": "Target Nov 20, before your Dec 1 opening"},
+        {"t": "Inspection and balance", "state": "next"}
+      ]},
+      {"type": "docs", "title": "What we need for the permit", "items": [
+        {"t": "Logo files", "state": "accepted"},
+        {"t": "Landlord sign criteria", "state": "accepted"},
+        {"t": "Landlord sign approval letter", "state": "needed", "why": "The city will not take the permit without it"},
+        {"t": "Business license number", "state": "received"}
+      ]}
+    ]
+  },
+  "animation-motion": {
+    "apps": ["Frame.io", "Milanote", "HoneyBook"],
+    "texts": [
+      {"body": "Storyboard v2 and the animatic are up. Changes are cheap now and expensive once we animate, so review closely.", "go": "proof", "ago": "now"},
+      {"body": "Scene 4 now shows the savings screen. Leave notes right on the frame.", "go": "proof", "ago": "3h"},
+      {"body": "Still need your brand fonts and the icon set before styleframes are final.", "go": "docs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "Storyboard v2 and animatic", "due": 3, "go": "proof"},
+        {"kind": "Send", "title": "Brand fonts and icon set", "due": 2, "go": "docs"}
+      ]},
+      {"type": "proof", "title": "Storyboard and animatic", "version": "Board v2", "round": 2, "rounds": 2, "file": "Budgeting app explainer, 18 frames with VO", "length": "1:30", "comments": [
+        {"at": "0:22", "t": "Scene 4 should show the savings screen, not the dashboard", "done": true},
+        {"at": "0:41", "t": "Logo comes in too late", "done": true},
+        {"at": "1:12", "t": "Use the new card design from the Figma file"}
+      ], "note": "Last included round on the storyboard. Once animation starts, scene changes are billed. Music licensed for web and paid ads, worldwide, no end date."},
+      {"type": "stages", "title": "What is locked", "steps": [
+        {"t": "Script", "state": "done", "who": "Locked"},
+        {"t": "Voiceover, warm female US", "state": "done", "who": "Locked; re-records are billed"},
+        {"t": "Storyboard and styleframes", "state": "now", "note": "Still free to change. After your approval this locks too."},
+        {"t": "Animation v1", "state": "next", "who": "Timing and motion notes only"},
+        {"t": "Animation v2, sound design and music", "state": "next"},
+        {"t": "Delivery: 16:9 master, 9:16 and 1:1, captions", "state": "next"}
+      ], "note": "Need a new screen later when the app UI changes? Swapping a UI screen is a small paid update."},
+      {"type": "docs", "title": "Files we need", "items": [
+        {"t": "Logo and brand colors", "state": "accepted"},
+        {"t": "Latest app UI screens (Figma link)", "state": "received"},
+        {"t": "Brand fonts", "state": "needed", "why": "OTF or TTF, with the web and video license"},
+        {"t": "Icon set", "state": "needed", "why": "SVG, so icons stay sharp at 4K"}
+      ]}
+    ]
+  }
+}

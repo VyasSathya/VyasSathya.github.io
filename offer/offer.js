@@ -26,7 +26,8 @@
   current={type,biz:(biz||'').trim()};
   const name=current.biz||(t.biz==='{biz}'?'your business':t.biz);
   document.querySelectorAll('[data-k]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===t.key&&!!DEMO_TEMPLATES[type])));
-  sub.textContent=current.biz?`Set up for ${current.biz}. Click around.`:`Set up as ${name}. Add your business name above to see yours.`;
+  const apps=(t.apps||t.tools||[]).map(a=>a.replace(/\s*\(.*?\)/,'')).slice(0,3);
+  sub.textContent=(current.biz?`Set up for ${current.biz}.`:`Set up as ${name}; add your business name above to see yours.`)+(apps.length?` Works next to ${apps.length>1?apps.slice(0,-1).join(', ')+' and '+apps.at(-1):apps[0]}.`:'');
   cta.innerHTML=`Get this for ${esc(current.biz||'your business')} <span aria-hidden="true">&#8594;</span>`;
   $('#demo-form [name=kind]').value=`${t.label}${type!==t.key&&!DEMO_TEMPLATES[type]?' ('+type+')':''}`;
   result.hidden=false;request.hidden=false;

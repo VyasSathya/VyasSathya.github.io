@@ -46,22 +46,26 @@
     const asks = data.asks.filter(a => a.project_id === pid);
     const openAsks = asks.filter(a => !a.answered_at && !a.closed);
 
-    app.innerHTML = `${tabs}
-      <div class="eyebrow">${esc(p.client_name || 'Your project')}</div>
-      <h1>${esc(p.title)}</h1>
-      ${p.summary ? `<p class="note">${esc(p.summary)}</p>` : ''}
-      ${links ? `<div class="links">${links}</div>` : ''}
-      ${sinceCard()}
-      ${nowCard(p, cur, openAsks)}
-      ${asks.length ? `<h2>Decisions</h2><div class="list">${asks.map(askRow).join('')}</div>` : ''}
+    // Projects with industry screens lead with them (what we need from you, then the screen that answers
+    // this client's real question); milestones, money, check-ins and messages sit underneath.
+    const mods = p.modules && typeof PORTAL_MODULES !== 'undefined' ? p.modules : null;
+    const rest = `${asks.length ? `<h2>Decisions</h2><div class="list">${asks.map(askRow).join('')}</div>` : ''}
       <h2>Milestones</h2>
       <div class="list">${ms.length ? ms.map(milestoneRow).join('') : '<p class="empty">Milestones will appear here.</p>'}</div>
       ${budgetBlock(ms)}
       <h2>Check-ins</h2>
       <div class="list">${checkins()}</div>
       <h2>Messages</h2>
-      ${messages()}
+      ${messages()}`;
+    app.innerHTML = `${tabs}
+      <div class="eyebrow">${esc(p.client_name || 'Your project')}</div>
+      <h1>${esc(p.title)}</h1>
+      ${p.summary ? `<p class="note">${esc(p.summary)}</p>` : ''}
+      ${links ? `<div class="links">${links}</div>` : ''}
+      ${mods ? PORTAL_MODULES.render(mods) + `<details class="more-wrap" data-k="more"><summary>Milestones, payments and messages</summary>${rest}</details>`
+        : `${sinceCard()}${nowCard(p, cur, openAsks)}${rest}`}
       <div class="card phone" id="phone" hidden style="margin-top:28px"></div>`;
+    if (mods && !app._modsBound) { app._modsBound = true; PORTAL_MODULES.bind(app, () => (data.projects.find(x => x.id === pid) || {}).modules, render, P.toast); }
     app.querySelectorAll('details[data-k]').forEach(d => { if (open.has(d.dataset.k)) d.open = true; });
     for (const [id, v] of Object.entries(drafts)) { const t = app.querySelector('#' + CSS.escape(id)); if (t && v) t.value = v; }
     P.renderPhoneCard(app.querySelector('#phone'), {

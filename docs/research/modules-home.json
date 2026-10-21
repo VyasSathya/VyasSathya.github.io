@@ -1,0 +1,2376 @@
+{
+ "roofing": {
+  "apps": [
+   "AccuLynx",
+   "CompanyCam",
+   "JobNimbus",
+   "EagleView"
+  ],
+  "texts": [
+   {
+    "body": "Your insurance carrier approved the supplement for drip edge and ridge vent. Next: endorse the ACV check so we can order materials.",
+    "go": "needs",
+    "ago": "now"
+   },
+   {
+    "body": "Tear-off is Thursday at 7 am, weather permitting. Please move cars out of the driveway by then.",
+    "go": "schedule",
+    "ago": "2h"
+   },
+   {
+    "body": "14 new photos of your roof: hail hits marked on every slope, ready for the adjuster.",
+    "go": "photos",
+    "ago": "Yesterday"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Sign",
+      "title": "Endorse the ACV check (co-payable to your mortgage company)",
+      "due": 3,
+      "go": "sign"
+     },
+     {
+      "kind": "Pay",
+      "title": "Your deductible",
+      "amount": 100000,
+      "due": 3,
+      "go": "stages"
+     },
+     {
+      "kind": "Choose",
+      "title": "Shingle color, in writing",
+      "due": 4,
+      "go": "sign"
+     },
+     {
+      "kind": "Confirm",
+      "title": "Driveway clear Thursday 7 am",
+      "go": "schedule"
+     }
+    ]
+   },
+   {
+    "type": "stages",
+    "title": "Your claim and your roof",
+    "steps": [
+     {
+      "t": "Inspection and hail photos",
+      "state": "done",
+      "date": "Sep 30"
+     },
+     {
+      "t": "Adjuster meeting",
+      "state": "done",
+      "who": "Insurance adjuster, with our project manager",
+      "date": "Oct 6"
+     },
+     {
+      "t": "Scope of loss approved",
+      "state": "done",
+      "who": "Your insurance carrier",
+      "date": "RCV $19,000 for 28 squares"
+     },
+     {
+      "t": "Supplement: drip edge and ridge vent",
+      "state": "done",
+      "who": "Your insurance carrier",
+      "date": "Approved Oct 17"
+     },
+     {
+      "t": "Deductible and ACV check",
+      "state": "now",
+      "note": "Deductible $1,000 plus ACV check $11,100 starts the job. Your lender may need to sign the check too."
+     },
+     {
+      "t": "Reroof permit",
+      "state": "done",
+      "who": "City building department",
+      "date": "Issued Oct 15"
+     },
+     {
+      "t": "Tear-off and install",
+      "state": "next",
+      "date": "Thursday, weather permitting"
+     },
+     {
+      "t": "Final inspection",
+      "state": "next",
+      "who": "City inspector"
+     },
+     {
+      "t": "Completion photos and invoice to carrier",
+      "state": "next",
+      "who": "Us"
+     },
+     {
+      "t": "Recoverable depreciation check, $6,900",
+      "state": "next",
+      "who": "Your insurance carrier, usually 2 to 4 weeks after completion docs"
+     }
+    ],
+    "note": "You only pay your deductible out of pocket. Everything else comes from the insurance checks."
+   },
+   {
+    "type": "photos",
+    "title": "Your roof",
+    "posts": [
+     {
+      "who": "Luis, project manager",
+      "date": "Yesterday 4:10 pm",
+      "caption": "Hail hits circled in chalk on all four slopes. Same set we sent the adjuster.",
+      "n": 4,
+      "tags": [
+       "North slope",
+       "South slope",
+       "Vents",
+       "Gutters"
+      ]
+     },
+     {
+      "who": "Luis, project manager",
+      "date": "Oct 6",
+      "caption": "Adjuster meeting. Test square on the west slope: 11 hits.",
+      "n": 3,
+      "tags": [
+       "Test square",
+       "Soft metal",
+       "Ridge"
+      ]
+     },
+     {
+      "who": "Luis, project manager",
+      "date": "Sep 30",
+      "caption": "First inspection. Granule loss and cracked shingles near the chimney.",
+      "n": 3,
+      "tags": [
+       "Chimney",
+       "Granules",
+       "Attic"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "sign",
+    "title": "To sign",
+    "items": [
+     {
+      "t": "ACV check endorsement, $11,100",
+      "by": 3
+     },
+     {
+      "t": "Color confirmation: Weathered Wood architectural shingle",
+      "by": 4
+     },
+     {
+      "t": "Contingency agreement and contract",
+      "signed": true
+     }
+    ]
+   },
+   {
+    "type": "schedule",
+    "title": "This week at your house",
+    "items": [
+     {
+      "when": "Wed",
+      "what": "Shingles, underlayment and flashing delivered",
+      "who": "Supplier boom truck; stays on the driveway"
+     },
+     {
+      "when": "Wed",
+      "what": "Dumpster placed",
+      "who": "Left side of the driveway"
+     },
+     {
+      "when": "Thu 7 am",
+      "what": "Tear-off and install",
+      "who": "Crew of 6, one day; attic items covered with tarps"
+     },
+     {
+      "when": "Thu 5 pm",
+      "what": "Magnet sweep and walkthrough with you",
+      "who": "Crew lead"
+     },
+     {
+      "when": "Next week",
+      "what": "Final inspection",
+      "who": "City inspector; no need to be home"
+     }
+    ]
+   }
+  ]
+ },
+ "hvac-install": {
+  "apps": [
+   "ServiceTitan",
+   "Housecall Pro",
+   "Jobber",
+   "FieldEdge"
+  ],
+  "texts": [
+   {
+    "body": "Your new heat pump is running. The city inspection is Tuesday between 8 and noon; someone needs to be home to let the inspector in.",
+    "go": "schedule",
+    "ago": "now"
+   },
+   {
+    "body": "Your utility rebate form is ready to sign. We submit it once the inspection passes.",
+    "go": "sign",
+    "ago": "3h"
+   },
+   {
+    "body": "Please upload a recent electric bill; the utility needs it for your $1,500 rebate.",
+    "go": "docs",
+    "ago": "Yesterday"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Confirm",
+      "title": "Someone home Tuesday 8 am to noon for the inspector",
+      "go": "schedule"
+     },
+     {
+      "kind": "Sign",
+      "title": "Utility rebate application",
+      "due": 5,
+      "go": "sign"
+     },
+     {
+      "kind": "Upload",
+      "title": "A recent electric bill",
+      "go": "docs"
+     },
+     {
+      "kind": "Pay",
+      "title": "Balance due after inspection",
+      "amount": 1350000,
+      "due": 7,
+      "go": "stages"
+     }
+    ]
+   },
+   {
+    "type": "schedule",
+    "title": "Next visits",
+    "items": [
+     {
+      "when": "Tue 8 am - 12 pm",
+      "what": "Mechanical permit inspection",
+      "who": "City inspector; needs access to the attic and the outdoor unit"
+     },
+     {
+      "when": "Tue, same visit",
+      "what": "Check of the startup noise during defrost",
+      "who": "Marcus, install lead"
+     },
+     {
+      "when": "Spring",
+      "what": "First maintenance visit",
+      "who": "Included with your 10-year labor warranty"
+     }
+    ]
+   },
+   {
+    "type": "stages",
+    "title": "Your install",
+    "steps": [
+     {
+      "t": "Manual J load calculation",
+      "state": "done",
+      "date": "3 ton confirmed"
+     },
+     {
+      "t": "Proposal and deposit",
+      "state": "done",
+      "date": "Sep 24"
+     },
+     {
+      "t": "Mechanical permit",
+      "state": "done",
+      "who": "City building department",
+      "date": "Issued Oct 3"
+     },
+     {
+      "t": "Install day",
+      "state": "done",
+      "date": "Oct 16: old furnace and AC out, heat pump in, startup readings logged"
+     },
+     {
+      "t": "Permit inspection",
+      "state": "now",
+      "who": "City inspector",
+      "note": "Tuesday 8 to noon. Final payment is due once it passes."
+     },
+     {
+      "t": "AHRI certificate and warranty registration",
+      "state": "next",
+      "who": "Us"
+     },
+     {
+      "t": "Utility rebate, $1,500",
+      "state": "next",
+      "who": "Your utility, usually 6 to 8 weeks after we submit"
+     },
+     {
+      "t": "Federal 25C tax credit paperwork",
+      "state": "next",
+      "who": "You file it with your taxes; we send the manufacturer certificate"
+     }
+    ]
+   },
+   {
+    "type": "sign",
+    "title": "To sign",
+    "items": [
+     {
+      "t": "Utility rebate application",
+      "by": 5
+     },
+     {
+      "t": "Install acceptance",
+      "signed": true
+     }
+    ]
+   },
+   {
+    "type": "docs",
+    "title": "For your rebate",
+    "items": [
+     {
+      "t": "Recent electric bill",
+      "state": "needed",
+      "why": "Shows the account number the rebate is paid to"
+     },
+     {
+      "t": "AHRI certificate for the matched system",
+      "state": "received"
+     },
+     {
+      "t": "Paid invoice with model and serial numbers",
+      "state": "needed",
+      "why": "We add this after your final payment"
+     }
+    ]
+   }
+  ]
+ },
+ "solar-install": {
+  "apps": [
+   "Enerflo",
+   "Aurora Solar",
+   "OpenSolar",
+   "Bodhi"
+  ],
+  "texts": [
+   {
+    "body": "Your building permit was approved and your interconnection application is filed with the utility. Install is booked for Monday.",
+    "go": "stages",
+    "ago": "now"
+   },
+   {
+    "body": "The utility sent your interconnection agreement. Please e-sign it so PTO is not held up.",
+    "go": "sign",
+    "ago": "5h"
+   },
+   {
+    "body": "Install crew arrives Monday at 8 am. Please clear about 4 feet of garage wall for the battery.",
+    "go": "schedule",
+    "ago": "Yesterday"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Sign",
+      "title": "Utility interconnection agreement",
+      "due": 3,
+      "go": "sign"
+     },
+     {
+      "kind": "Choose",
+      "title": "Main panel: upgrade to 200A or derate",
+      "due": 4,
+      "go": "estimate"
+     },
+     {
+      "kind": "Confirm",
+      "title": "Garage wall clear for the battery by Monday",
+      "go": "schedule"
+     }
+    ]
+   },
+   {
+    "type": "stages",
+    "title": "Your solar, step by step",
+    "steps": [
+     {
+      "t": "Site survey",
+      "state": "done",
+      "date": "Sep 12"
+     },
+     {
+      "t": "Design approved: 21 panels, 8.4 kW, 13.5 kWh battery",
+      "state": "done",
+      "date": "Sep 19"
+     },
+     {
+      "t": "Building permit",
+      "state": "done",
+      "who": "City building department",
+      "date": "Issued Oct 14"
+     },
+     {
+      "t": "HOA approval",
+      "state": "done",
+      "who": "Your HOA",
+      "date": "Oct 9"
+     },
+     {
+      "t": "Interconnection application",
+      "state": "now",
+      "who": "Your utility",
+      "note": "Filed Oct 15. The utility needs your signed agreement before it can approve."
+     },
+     {
+      "t": "Installation",
+      "state": "next",
+      "who": "Our crew",
+      "date": "Monday and Tuesday"
+     },
+     {
+      "t": "City final inspection",
+      "state": "next",
+      "who": "City inspector"
+     },
+     {
+      "t": "Meter swap",
+      "state": "next",
+      "who": "Your utility"
+     },
+     {
+      "t": "Permission to operate (PTO)",
+      "state": "next",
+      "who": "Your utility, usually 1 to 6 weeks after inspection"
+     },
+     {
+      "t": "System on",
+      "state": "next"
+     }
+    ],
+    "note": "Until PTO arrives, the system stays off. We post it here the day the utility grants it."
+   },
+   {
+    "type": "estimate",
+    "title": "Main panel decision",
+    "intro": "Your 125A panel can take the solar breaker only if we derate the main, or we upgrade it. The upgrade adds 2 to 4 weeks for the utility to cut power over.",
+    "redLabel": "Option 1",
+    "yellowLabel": "Option 2",
+    "greenLabel": "Checked",
+    "totalLabel": "Added to your contract",
+    "items": [
+     {
+      "t": "Upgrade main panel to 200A",
+      "note": "Room for an EV charger later. Utility disconnect adds 2 to 4 weeks.",
+      "price": 250000,
+      "sev": "red",
+      "photo": "Panel"
+     },
+     {
+      "t": "Derate main breaker to 100A",
+      "note": "No delay. Leaves less room for future loads.",
+      "price": 45000,
+      "sev": "yellow",
+      "photo": "Breaker"
+     },
+     {
+      "t": "Busbar rating and grounding",
+      "sev": "green",
+      "photo": "OK"
+     }
+    ]
+   },
+   {
+    "type": "schedule",
+    "title": "Install week",
+    "items": [
+     {
+      "when": "Mon 8 am",
+      "what": "Racking and panels",
+      "who": "Crew of 4 on the roof"
+     },
+     {
+      "when": "Tue 8 am",
+      "what": "Inverter, battery and essentials panel",
+      "who": "Electrician; power off about 2 hours"
+     },
+     {
+      "when": "Tue 3 pm",
+      "what": "Commissioning test and monitoring app setup",
+      "who": "Electrician walks you through it"
+     }
+    ]
+   },
+   {
+    "type": "sign",
+    "title": "To sign",
+    "items": [
+     {
+      "t": "Utility interconnection agreement",
+      "by": 3
+     },
+     {
+      "t": "Net metering agreement",
+      "by": 3
+     },
+     {
+      "t": "Installation contract",
+      "signed": true
+     }
+    ]
+   }
+  ]
+ },
+ "pool-build": {
+  "apps": [
+   "Buildertrend",
+   "Pool Studio",
+   "QuickBooks"
+  ],
+  "texts": [
+   {
+    "body": "Gunite is shot. Please water the shell morning and evening for the next 7 days. Payment 2 is now due.",
+    "go": "needs",
+    "ago": "now"
+   },
+   {
+    "body": "Change order #2 is ready: rock in the deep end and 4 extra loads of haul-off. Review it here.",
+    "go": "estimate",
+    "ago": "4h"
+   },
+   {
+    "body": "Pick your waterline tile by Friday so it arrives before the tile crew on the 22nd.",
+    "go": "schedule",
+    "ago": "Yesterday"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Pay",
+      "title": "Payment 2: steel, plumbing and gunite",
+      "amount": 2400000,
+      "due": 5,
+      "go": "stages"
+     },
+     {
+      "kind": "Approve",
+      "title": "Change order #2: rock and extra haul-off",
+      "amount": 405000,
+      "go": "estimate"
+     },
+     {
+      "kind": "Choose",
+      "title": "Waterline tile",
+      "due": 4,
+      "go": "schedule"
+     }
+    ]
+   },
+   {
+    "type": "stages",
+    "title": "Where your pool is",
+    "steps": [
+     {
+      "t": "3D design approved",
+      "state": "done"
+     },
+     {
+      "t": "Permit and HOA approval",
+      "state": "done",
+      "who": "City building department and HOA",
+      "date": "Sep 8"
+     },
+     {
+      "t": "Dig day",
+      "state": "done",
+      "date": "Sep 23"
+     },
+     {
+      "t": "Steel and plumbing",
+      "state": "done",
+      "date": "Pressure test held 24 hours"
+     },
+     {
+      "t": "Pre-gunite inspection",
+      "state": "done",
+      "who": "City inspector",
+      "date": "Passed Oct 10"
+     },
+     {
+      "t": "Gunite and cure",
+      "state": "now",
+      "note": "Shot Friday. Water it twice a day for 7 days; nothing else happens on site while it cures."
+     },
+     {
+      "t": "Tile, coping and equipment pad",
+      "state": "next",
+      "date": "Starts the 22nd"
+     },
+     {
+      "t": "Pre-deck inspection",
+      "state": "next",
+      "who": "City inspector"
+     },
+     {
+      "t": "Travertine deck",
+      "state": "next"
+     },
+     {
+      "t": "Barrier and fence inspection",
+      "state": "next",
+      "who": "City inspector"
+     },
+     {
+      "t": "Plaster, fill and startup",
+      "state": "next"
+     },
+     {
+      "t": "Final inspection and pool school",
+      "state": "next",
+      "who": "City inspector, then us"
+     }
+    ]
+   },
+   {
+    "type": "photos",
+    "title": "Daily log",
+    "posts": [
+     {
+      "who": "Tony, superintendent",
+      "date": "Fri 2:30 pm",
+      "caption": "Gunite shot: pool, spa and tanning ledge. Spa wall formed 18 in. above the waterline as planned.",
+      "n": 4,
+      "tags": [
+       "Shell",
+       "Spa",
+       "Ledge",
+       "Steps"
+      ]
+     },
+     {
+      "who": "City inspector",
+      "date": "Oct 10",
+      "caption": "Pre-gunite inspection passed: steel, bonding and plumbing.",
+      "n": 2,
+      "tags": [
+       "Steel",
+       "Bonding"
+      ]
+     },
+     {
+      "who": "Tony, superintendent",
+      "date": "Sep 24",
+      "caption": "Hit rock at 5 ft in the deep end. Jackhammered over 2 days; photos for change order #2.",
+      "n": 3,
+      "tags": [
+       "Rock",
+       "Deep end",
+       "Haul-off"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "estimate",
+    "title": "Change order #2 and finish",
+    "intro": "Rock in the deep end took 2 extra days and 4 more truckloads. The pebble finish is optional; decide before plaster.",
+    "redLabel": "Change order #2",
+    "yellowLabel": "Upgrade to decide",
+    "totalLabel": "Change order total",
+    "items": [
+     {
+      "t": "Rock excavation, deep end: 2 days with breaker",
+      "price": 285000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Rock"
+     },
+     {
+      "t": "Extra soil haul-off: 4 loads",
+      "price": 120000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Loads"
+     },
+     {
+      "t": "Blue pebble interior instead of white plaster",
+      "note": "Lasts longer and hides stains. Decide before plaster.",
+      "price": 480000,
+      "sev": "yellow",
+      "photo": "Pebble"
+     }
+    ]
+   },
+   {
+    "type": "schedule",
+    "title": "Coming up",
+    "items": [
+     {
+      "when": "Daily, 7 days",
+      "what": "Water the shell morning and evening",
+      "who": "You; hose on the gunite until it runs off"
+     },
+     {
+      "when": "Fri",
+      "what": "Waterline tile pick due",
+      "who": "Samples at the showroom or 3 sent home with Tony"
+     },
+     {
+      "when": "The 22nd",
+      "what": "Tile and coping start",
+      "who": "Tile crew, about 4 days"
+     },
+     {
+      "when": "After tile",
+      "what": "Equipment pad plumbed and wired",
+      "who": "Electrician"
+     }
+    ]
+   }
+  ]
+ },
+ "custom-home": {
+  "apps": [
+   "Buildertrend",
+   "JobTread",
+   "QuickBooks"
+  ],
+  "texts": [
+   {
+    "body": "Framing passed and the house is dried in. Draw 2 went to the bank today.",
+    "go": "stages",
+    "ago": "now"
+   },
+   {
+    "body": "Plumbing fixture selections are due the 30th. Two picks are over allowance; approve them here.",
+    "go": "estimate",
+    "ago": "2h"
+   },
+   {
+    "body": "New daily log with 9 photos: windows in, house wrapped.",
+    "go": "photos",
+    "ago": "Yesterday"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Approve",
+      "title": "Draw 2 with your lender: framing and dry-in",
+      "amount": 25000000,
+      "due": 3,
+      "go": "stages"
+     },
+     {
+      "kind": "Approve",
+      "title": "Plumbing fixtures over allowance",
+      "amount": 145000,
+      "due": 10,
+      "go": "estimate"
+     },
+     {
+      "kind": "Choose",
+      "title": "Exterior siding color",
+      "due": 7,
+      "go": "estimate"
+     }
+    ]
+   },
+   {
+    "type": "stages",
+    "title": "Your house",
+    "steps": [
+     {
+      "t": "Site cleared and staked",
+      "state": "done"
+     },
+     {
+      "t": "Foundation and slab",
+      "state": "done",
+      "who": "Footing inspection, city",
+      "date": "Poured Jun 20"
+     },
+     {
+      "t": "Draw 1",
+      "state": "done",
+      "who": "Lender draw inspector",
+      "date": "Released Jul 2"
+     },
+     {
+      "t": "Framing and dry-in",
+      "state": "done",
+      "who": "Framing inspection, city",
+      "date": "Passed Oct 16"
+     },
+     {
+      "t": "Draw 2",
+      "state": "now",
+      "who": "Your lender",
+      "note": "Request sent today. The bank's inspector visits this week; approve the draw when the bank emails you."
+     },
+     {
+      "t": "Rough plumbing, electrical and HVAC",
+      "state": "next",
+      "date": "Starts Monday"
+     },
+     {
+      "t": "Rough and insulation inspections",
+      "state": "next",
+      "who": "City inspector"
+     },
+     {
+      "t": "Drywall, Draw 3",
+      "state": "next",
+      "who": "Lender draw inspector"
+     },
+     {
+      "t": "Finishes and final inspections",
+      "state": "next",
+      "who": "City inspector"
+     },
+     {
+      "t": "Certificate of occupancy",
+      "state": "next",
+      "who": "City building department"
+     },
+     {
+      "t": "Orientation walkthrough and punch list",
+      "state": "next"
+     }
+    ],
+    "note": "Lien waivers from every sub paid out of a draw are posted with that draw."
+   },
+   {
+    "type": "estimate",
+    "title": "Selections over allowance",
+    "intro": "Your selections against the allowances in your contract. Overages are added by change order.",
+    "redLabel": "Over allowance",
+    "yellowLabel": "Still to choose",
+    "greenLabel": "Within allowance",
+    "totalLabel": "Added by change order",
+    "items": [
+     {
+      "t": "Plumbing fixtures: $10,450 selected, $9,000 allowance",
+      "note": "Primary bath rain head and freestanding tub filler.",
+      "price": 145000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Tub filler"
+     },
+     {
+      "t": "Kitchen lighting: $3,200 selected, $2,500 allowance",
+      "note": "Three island pendants instead of two.",
+      "price": 70000,
+      "sev": "red",
+      "photo": "Pendants"
+     },
+     {
+      "t": "Siding color: Iron Gray, Arctic White or Evening Blue",
+      "note": "Same price. Needed before the siding order; 3 week lead time.",
+      "sev": "yellow",
+      "photo": "Swatches"
+     },
+     {
+      "t": "Flooring: $17,600 selected, $18,000 allowance",
+      "sev": "green",
+      "photo": "Oak"
+     },
+     {
+      "t": "Cabinets and counters",
+      "sev": "green",
+      "photo": "OK"
+     }
+    ]
+   },
+   {
+    "type": "photos",
+    "title": "Daily log",
+    "posts": [
+     {
+      "who": "Dave, site superintendent",
+      "date": "Yesterday 4:50 pm",
+      "caption": "All windows and exterior doors in. House wrap done; the house is dried in.",
+      "n": 4,
+      "tags": [
+       "Front",
+       "Great room",
+       "Wrap",
+       "Slider"
+      ]
+     },
+     {
+      "who": "City inspector",
+      "date": "Oct 16",
+      "caption": "Framing inspection passed. 10 ft ceilings on the main floor per change order #3.",
+      "n": 2,
+      "tags": [
+       "Framing",
+       "Ceiling"
+      ]
+     },
+     {
+      "who": "Dave, site superintendent",
+      "date": "Oct 9",
+      "caption": "Roof sheathing and underlayment on. Trusses all set.",
+      "n": 3,
+      "tags": [
+       "Roof",
+       "Trusses",
+       "Garage"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "adu-builder": {
+  "apps": [
+   "Buildertrend",
+   "JobTread",
+   "Houzz Pro"
+  ],
+  "texts": [
+   {
+    "body": "The city sent second-round plan check corrections. We resubmitted today; permit expected in 2 to 3 weeks.",
+    "go": "stages",
+    "ago": "now"
+   },
+   {
+    "body": "Please sign the electric service application so the utility can start on your meter.",
+    "go": "sign",
+    "ago": "Yesterday"
+   },
+   {
+    "body": "We still need a copy of your grant deed for the permit file.",
+    "go": "docs",
+    "ago": "2d"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Sign",
+      "title": "Electric service application",
+      "due": 3,
+      "go": "sign"
+     },
+     {
+      "kind": "Choose",
+      "title": "Separate meter or sub-panel",
+      "due": 5,
+      "go": "estimate"
+     },
+     {
+      "kind": "Upload",
+      "title": "Grant deed",
+      "go": "docs"
+     },
+     {
+      "kind": "Pay",
+      "title": "School district fee, paid to the district",
+      "amount": 287400,
+      "due": 14,
+      "go": "stages"
+     }
+    ]
+   },
+   {
+    "type": "stages",
+    "title": "Plans to permit",
+    "steps": [
+     {
+      "t": "Site survey",
+      "state": "done",
+      "date": "Aug 4"
+     },
+     {
+      "t": "Plan set and Title 24 energy calcs",
+      "state": "done",
+      "date": "Aug 29"
+     },
+     {
+      "t": "Plan check, round 1",
+      "state": "done",
+      "who": "City plan check",
+      "date": "14 corrections, Sep 26"
+     },
+     {
+      "t": "Plan check, round 2",
+      "state": "now",
+      "who": "City plan check",
+      "note": "3 corrections left (sewer lateral, fire separation, a header). Resubmitted today."
+     },
+     {
+      "t": "School district fee",
+      "state": "next",
+      "who": "School district; the city needs the receipt"
+     },
+     {
+      "t": "Building permit issued",
+      "state": "next",
+      "who": "City building department"
+     },
+     {
+      "t": "Electric service and meter",
+      "state": "next",
+      "who": "Utility, often 8 to 12 weeks"
+     },
+     {
+      "t": "Trenching and foundation",
+      "state": "next",
+      "date": "We start the day the permit issues"
+     }
+    ],
+    "note": "Two plan check rounds is typical for a detached ADU."
+   },
+   {
+    "type": "estimate",
+    "title": "Electric service",
+    "intro": "A separate meter bills the ADU on its own and is better for renting. It adds cost and a longer utility wait.",
+    "redLabel": "Option 1",
+    "yellowLabel": "Option 2",
+    "totalLabel": "Added to your contract",
+    "items": [
+     {
+      "t": "Separate meter: new service and trench to the street",
+      "note": "Utility design and connection, 8 to 12 weeks.",
+      "price": 680000,
+      "sev": "red",
+      "photo": "Meter"
+     },
+     {
+      "t": "100A sub-panel fed from the main house",
+      "note": "No utility wait. One bill for both homes.",
+      "price": 240000,
+      "sev": "yellow",
+      "photo": "Sub-panel"
+     }
+    ]
+   },
+   {
+    "type": "sign",
+    "title": "To sign",
+    "items": [
+     {
+      "t": "Electric service application",
+      "by": 3
+     },
+     {
+      "t": "Owner authorization for permit",
+      "signed": true
+     },
+     {
+      "t": "Construction contract",
+      "signed": true
+     }
+    ]
+   },
+   {
+    "type": "docs",
+    "title": "For your permit file",
+    "items": [
+     {
+      "t": "Grant deed",
+      "state": "needed",
+      "why": "Proves ownership; county recorder copy is fine"
+     },
+     {
+      "t": "Recent water bill",
+      "state": "received"
+     },
+     {
+      "t": "HOA approval letter",
+      "state": "na"
+     },
+     {
+      "t": "Property tax statement",
+      "state": "accepted"
+     }
+    ]
+   }
+  ]
+ },
+ "landscape-hardscape": {
+  "apps": [
+   "Jobber",
+   "LMN",
+   "Aspire"
+  ],
+  "texts": [
+   {
+    "body": "Base passed compaction. Pavers arrive Tuesday and install starts Wednesday.",
+    "go": "photos",
+    "ago": "now"
+   },
+   {
+    "body": "Your plant list is posted with photos. Please confirm it by Friday so we can order.",
+    "go": "estimate",
+    "ago": "3h"
+   },
+   {
+    "body": "Invoice for payment 2 (excavation and base) is ready.",
+    "go": "needs",
+    "ago": "Yesterday"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Approve",
+      "title": "Plant list",
+      "amount": 284000,
+      "due": 4,
+      "go": "estimate"
+     },
+     {
+      "kind": "Pay",
+      "title": "Payment 2: excavation and base",
+      "amount": 1250000,
+      "due": 5,
+      "go": "stages"
+     },
+     {
+      "kind": "Confirm",
+      "title": "Gate unlocked and dogs in Wednesday 7 am",
+      "go": "schedule"
+     }
+    ]
+   },
+   {
+    "type": "photos",
+    "title": "From your backyard",
+    "posts": [
+     {
+      "who": "Carlos, crew lead",
+      "date": "Today 2:15 pm",
+      "caption": "Base compacted in 3 lifts. Gas line stubbed to the fire pit.",
+      "n": 4,
+      "tags": [
+       "Base",
+       "Plate",
+       "Gas stub",
+       "Drain"
+      ]
+     },
+     {
+      "who": "Carlos, crew lead",
+      "date": "Yesterday",
+      "caption": "Sod and 8 in. of soil removed. Sprinkler heads by the fence capped, not broken.",
+      "n": 3,
+      "tags": [
+       "Dig",
+       "Fence",
+       "Heads"
+      ]
+     },
+     {
+      "who": "Carlos, crew lead",
+      "date": "Oct 14",
+      "caption": "811 locate marks are in. Gas runs along the side yard.",
+      "n": 2,
+      "tags": [
+       "Marks",
+       "Side yard"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "estimate",
+    "title": "Plant list",
+    "intro": "Everything here is covered by our 1-year plant warranty when on the drip system.",
+    "redLabel": "Planting plan",
+    "yellowLabel": "Optional",
+    "totalLabel": "Planting total",
+    "items": [
+     {
+      "t": "3 crape myrtles, 15 gal, along the back fence",
+      "price": 66000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Crape"
+     },
+     {
+      "t": "24 lavender and salvia, 5 gal, by the seat wall",
+      "price": 72000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Lavender"
+     },
+     {
+      "t": "40 ornamental grasses, 1 gal, bed edges",
+      "price": 64000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Grass"
+     },
+     {
+      "t": "Mulch, 6 yards",
+      "price": 42000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Mulch"
+     },
+     {
+      "t": "Japanese maple, 24 in. box, corner bed",
+      "note": "Shade by the fire pit in about 3 years.",
+      "price": 40000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Maple"
+     },
+     {
+      "t": "Low-voltage path lights, 8 fixtures",
+      "price": 96000,
+      "sev": "yellow",
+      "photo": "Lights"
+     }
+    ]
+   },
+   {
+    "type": "schedule",
+    "title": "This week",
+    "items": [
+     {
+      "when": "Tue",
+      "what": "Pavers and seat wall block delivered",
+      "who": "Pallets on the driveway"
+     },
+     {
+      "when": "Wed 7 am",
+      "what": "Paver install starts",
+      "who": "Crew of 4, about 3 days"
+     },
+     {
+      "when": "Fri",
+      "what": "Fire pit set and polymeric sand",
+      "who": "Keep off the patio 24 hours after"
+     },
+     {
+      "when": "Next Mon",
+      "what": "Drip irrigation and planting",
+      "who": "Needs your plant list by Friday"
+     }
+    ]
+   },
+   {
+    "type": "stages",
+    "title": "Your project",
+    "steps": [
+     {
+      "t": "Design and deposit",
+      "state": "done"
+     },
+     {
+      "t": "811 utility locate",
+      "state": "done",
+      "who": "811 utility locate service"
+     },
+     {
+      "t": "Excavation and base",
+      "state": "done",
+      "date": "Passed compaction today"
+     },
+     {
+      "t": "Pavers, seat wall and fire pit",
+      "state": "now",
+      "note": "Pavers arrive Tuesday, install starts Wednesday."
+     },
+     {
+      "t": "Planting and irrigation",
+      "state": "next"
+     },
+     {
+      "t": "Walkthrough and care guide",
+      "state": "next"
+     }
+    ]
+   }
+  ]
+ },
+ "interior-design": {
+  "apps": [
+   "Studio Designer",
+   "Houzz Pro",
+   "Programa",
+   "DesignFiles"
+  ],
+  "texts": [
+   {
+    "body": "The rug proposal is ready. Approving and paying today keeps install on the 3rd.",
+    "go": "estimate",
+    "ago": "now"
+   },
+   {
+    "body": "Your sofa ships the week of the 12th. Tracking is updated.",
+    "go": "schedule",
+    "ago": "Yesterday"
+   },
+   {
+    "body": "The dining table arrived at our receiving warehouse and passed inspection. Photos posted.",
+    "go": "photos",
+    "ago": "2d"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Approve",
+      "title": "Proposal 7: rug and lamps",
+      "amount": 512000,
+      "go": "estimate"
+     },
+     {
+      "kind": "Pay",
+      "title": "Install day balance",
+      "amount": 300000,
+      "due": 10,
+      "go": "schedule"
+     }
+    ]
+   },
+   {
+    "type": "estimate",
+    "title": "Proposal 7",
+    "intro": "Approve each piece, then pay to place the orders. Prices include our procurement fee; freight to our warehouse is included.",
+    "redLabel": "For the living room",
+    "yellowLabel": "Optional",
+    "greenLabel": "Already approved",
+    "totalLabel": "Proposal total",
+    "items": [
+     {
+      "t": "Hand-knotted wool rug, 9 x 12, ivory and rust",
+      "note": "8 weeks lead time; ships to our warehouse.",
+      "price": 420000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Rug"
+     },
+     {
+      "t": "Pair of ceramic table lamps, 28 in.",
+      "note": "In stock.",
+      "price": 92000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Lamps"
+     },
+     {
+      "t": "Framed abstract print, 40 x 50 in., over the sofa",
+      "price": 145000,
+      "sev": "yellow",
+      "photo": "Art"
+     },
+     {
+      "t": "Sofa, performance boucle",
+      "sev": "green",
+      "photo": "Sofa"
+     },
+     {
+      "t": "84 in. walnut dining table and 6 chairs",
+      "sev": "green",
+      "photo": "Table"
+     }
+    ]
+   },
+   {
+    "type": "schedule",
+    "title": "Orders and install",
+    "items": [
+     {
+      "when": "Received",
+      "what": "Walnut dining table",
+      "who": "Inspected at our warehouse, no damage"
+     },
+     {
+      "when": "Received",
+      "what": "6 dining chairs, 2 accent chairs",
+      "who": "One chair leg scuffed; replacement leg ordered"
+     },
+     {
+      "when": "Week of the 12th",
+      "what": "Sofa ships",
+      "who": "Was backordered; now confirmed by the maker"
+     },
+     {
+      "when": "8 weeks after approval",
+      "what": "Rug",
+      "who": "Waiting on your approval"
+     },
+     {
+      "when": "The 3rd",
+      "what": "Install day and reveal",
+      "who": "White-glove crew 9 am to 3 pm; please be out until 3"
+     }
+    ]
+   },
+   {
+    "type": "photos",
+    "title": "At our warehouse",
+    "posts": [
+     {
+      "who": "Jess, project coordinator",
+      "date": "Oct 18",
+      "caption": "Dining table unwrapped and checked: top, edges and legs are clean.",
+      "n": 3,
+      "tags": [
+       "Top",
+       "Edge",
+       "Legs"
+      ]
+     },
+     {
+      "who": "Jess, project coordinator",
+      "date": "Oct 11",
+      "caption": "Accent chairs in. Scuff on one back leg; the maker is sending a new leg.",
+      "n": 2,
+      "tags": [
+       "Chairs",
+       "Scuff"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "residential-architect": {
+  "apps": [
+   "Monograph",
+   "Bluebeam",
+   "Houzz Pro",
+   "BQE Core"
+  ],
+  "texts": [
+   {
+    "body": "The design development set is posted. The engineer needs your window style to size the headers.",
+    "go": "proof",
+    "ago": "now"
+   },
+   {
+    "body": "The structural engineer's agreement is ready for your signature.",
+    "go": "sign",
+    "ago": "Yesterday"
+   },
+   {
+    "body": "Invoice for design development is ready.",
+    "go": "needs",
+    "ago": "3d"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Review",
+      "title": "Design development set, issue 2",
+      "due": 5,
+      "go": "proof"
+     },
+     {
+      "kind": "Sign",
+      "title": "Structural engineer agreement",
+      "due": 4,
+      "go": "sign"
+     },
+     {
+      "kind": "Pay",
+      "title": "Design development invoice",
+      "amount": 800000,
+      "due": 14,
+      "go": "stages"
+     }
+    ]
+   },
+   {
+    "type": "proof",
+    "title": "Design development set",
+    "version": "DD issue 2",
+    "round": 2,
+    "rounds": 3,
+    "file": "A-101 to A-302: plans, elevations, sections",
+    "specs": [
+     [
+      "Addition",
+      "900 sq ft, second story"
+     ],
+     [
+      "Roof",
+      "Gable to match existing"
+     ],
+     [
+      "Windows",
+      "Black frame casements"
+     ],
+     [
+      "Ceiling",
+      "9 ft upstairs"
+     ]
+    ],
+    "comments": [
+     {
+      "at": "A-102",
+      "t": "Add primary bath with walk-in shower",
+      "done": true
+     },
+     {
+      "at": "A-201",
+      "t": "Black frame casements on the north and east elevations",
+      "done": true
+     },
+     {
+      "at": "A-102",
+      "t": "Swap the closet and bath doors in bedroom 3"
+     }
+    ],
+    "note": "Approving this set lets us start construction documents and the engineer's calcs."
+   },
+   {
+    "type": "stages",
+    "title": "Plans to permit",
+    "steps": [
+     {
+      "t": "Schematic design",
+      "state": "done",
+      "date": "Option B approved Aug 12"
+     },
+     {
+      "t": "Design development",
+      "state": "now",
+      "note": "Issue 2 is posted. Your approval starts construction documents."
+     },
+     {
+      "t": "Structural calcs",
+      "state": "next",
+      "who": "Structural engineer"
+     },
+     {
+      "t": "Construction documents and energy compliance",
+      "state": "next",
+      "who": "Us"
+     },
+     {
+      "t": "Plan check submittal",
+      "state": "next",
+      "who": "City building department"
+     },
+     {
+      "t": "Plan check corrections",
+      "state": "next",
+      "who": "City plan check; usually 1 or 2 rounds"
+     },
+     {
+      "t": "Permit issued",
+      "state": "next",
+      "who": "City building department"
+     },
+     {
+      "t": "Bidding with contractors",
+      "state": "next"
+     },
+     {
+      "t": "Construction administration: site visits and RFIs",
+      "state": "next"
+     }
+    ]
+   },
+   {
+    "type": "sign",
+    "title": "To sign",
+    "items": [
+     {
+      "t": "Structural engineer agreement",
+      "by": 4
+     },
+     {
+      "t": "Owner-architect agreement",
+      "signed": true
+     }
+    ]
+   }
+  ]
+ },
+ "custom-cabinetry": {
+  "apps": [
+   "Cabinet Vision",
+   "Mozaik",
+   "QuickBooks"
+  ],
+  "texts": [
+   {
+    "body": "Finish sample 2 is ready: warmer white, satin. Approve it and we start spraying.",
+    "go": "proof",
+    "ago": "now"
+   },
+   {
+    "body": "Boxes are built. Photos from the shop are posted.",
+    "go": "photos",
+    "ago": "Yesterday"
+   },
+   {
+    "body": "Please confirm the brass pulls so we can drill the doors.",
+    "go": "proof",
+    "ago": "2d"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Approve",
+      "title": "Finish sample 2",
+      "due": 2,
+      "go": "proof"
+     },
+     {
+      "kind": "Confirm",
+      "title": "Hardware: 5 in. unlacquered brass pulls",
+      "due": 2,
+      "go": "proof"
+     },
+     {
+      "kind": "Pay",
+      "title": "Delivery payment, 40%",
+      "amount": 720000,
+      "due": 16,
+      "go": "stages"
+     }
+    ]
+   },
+   {
+    "type": "proof",
+    "title": "Finish and hardware",
+    "version": "Sample 2",
+    "round": 2,
+    "rounds": 3,
+    "file": "Painted maple door sample",
+    "specs": [
+     [
+      "Color",
+      "Matched to your trim white"
+     ],
+     [
+      "Sheen",
+      "Satin"
+     ],
+     [
+      "Pulls",
+      "5 in. unlacquered brass"
+     ],
+     [
+      "Knobs",
+      "1.25 in. brass, lower doors"
+     ]
+    ],
+    "comments": [
+     {
+      "at": "Sample 1",
+      "t": "Too yellow next to the trim",
+      "done": true
+     },
+     {
+      "at": "Sample 1",
+      "t": "Less shine",
+      "done": true
+     }
+    ]
+   },
+   {
+    "type": "photos",
+    "title": "From the shop",
+    "posts": [
+     {
+      "who": "Sam, shop lead",
+      "date": "Yesterday 3:20 pm",
+      "caption": "All boxes built: media cabinet, two bookcases, window seat base.",
+      "n": 4,
+      "tags": [
+       "Media",
+       "Bookcase L",
+       "Bookcase R",
+       "Seat"
+      ]
+     },
+     {
+      "who": "Sam, shop lead",
+      "date": "Oct 13",
+      "caption": "Doors glued up and drying. Shaker profile per drawing D-2.",
+      "n": 3,
+      "tags": [
+       "Doors",
+       "Profile",
+       "Rails"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "stages",
+    "title": "Your built-ins",
+    "steps": [
+     {
+      "t": "Field measure",
+      "state": "done"
+     },
+     {
+      "t": "Shop drawings signed",
+      "state": "done",
+      "date": "Sep 29"
+     },
+     {
+      "t": "Boxes and doors built",
+      "state": "done"
+     },
+     {
+      "t": "Finish spray",
+      "state": "now",
+      "note": "Starts as soon as you approve sample 2."
+     },
+     {
+      "t": "Delivery and damage check",
+      "state": "next",
+      "date": "The 20th"
+     },
+     {
+      "t": "Install and scribe to the walls",
+      "state": "next",
+      "date": "2 days"
+     },
+     {
+      "t": "Touch-up and walkthrough",
+      "state": "next"
+     }
+    ]
+   }
+  ]
+ },
+ "home-inspection": {
+  "apps": [
+   "Spectora",
+   "HomeGauge",
+   "ISN"
+  ],
+  "texts": [
+   {
+    "body": "Your inspection report is ready: 3 major items, 4 to watch. Your agent has a copy.",
+    "go": "estimate",
+    "ago": "now"
+   },
+   {
+    "body": "Radon results are in: 2.1 pCi/L, below the EPA action level of 4.",
+    "go": "estimate",
+    "ago": "1h"
+   },
+   {
+    "body": "Your inspection contingency ends in 6 days. Book a call if you want to go over the report.",
+    "go": "schedule",
+    "ago": "Yesterday"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Review",
+      "title": "Inspection report and repair request list",
+      "go": "estimate"
+     },
+     {
+      "kind": "Book",
+      "title": "Q and A call with your inspector",
+      "go": "schedule"
+     },
+     {
+      "kind": "Confirm",
+      "title": "Repair request to your agent before the contingency ends",
+      "due": 6,
+      "go": "schedule"
+     }
+    ]
+   },
+   {
+    "type": "estimate",
+    "title": "Report summary",
+    "ref": "1418 Alder St",
+    "intro": "Built 1978, 2,100 sq ft. Prices are typical repair costs in this area, not quotes. Pick what goes on your repair request to the seller.",
+    "redLabel": "Major or safety",
+    "yellowLabel": "Maintenance and monitor",
+    "greenLabel": "Inspected, no issues",
+    "totalLabel": "Repair request total",
+    "items": [
+     {
+      "t": "Roof near end of life: 3-tab shingles about 22 years old, lifted tabs on south slope",
+      "note": "Have a roofer evaluate. Replacement likely within 1 to 3 years.",
+      "price": 1450000,
+      "sev": "red",
+      "pick": true,
+      "photo": "South slope"
+     },
+     {
+      "t": "Sewer scope: root intrusion and offset joint at 42 ft",
+      "note": "Have a plumber evaluate; spot repair or lining.",
+      "price": 650000,
+      "sev": "red",
+      "pick": true,
+      "photo": "42 ft"
+     },
+     {
+      "t": "Double-tapped breakers and no GFCI at kitchen counters",
+      "note": "Electrician to correct. Safety item.",
+      "price": 65000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Panel"
+     },
+     {
+      "t": "Water heater 14 years old, rust at the base",
+      "note": "Budget to replace.",
+      "price": 220000,
+      "sev": "yellow",
+      "photo": "Heater"
+     },
+     {
+      "t": "Grading slopes toward the foundation, back left corner",
+      "price": 80000,
+      "sev": "yellow",
+      "photo": "Grade"
+     },
+     {
+      "t": "Caulk failing at tub and shower",
+      "price": 15000,
+      "sev": "yellow",
+      "photo": "Tub"
+     },
+     {
+      "t": "Furnace filter dirty; service due",
+      "price": 18000,
+      "sev": "yellow",
+      "photo": "Filter"
+     },
+     {
+      "t": "Radon: 2.1 pCi/L over 48 hours",
+      "sev": "green",
+      "photo": "2.1"
+     },
+     {
+      "t": "Foundation, attic and insulation",
+      "sev": "green",
+      "photo": "OK"
+     },
+     {
+      "t": "Windows, doors and plumbing supply",
+      "sev": "green",
+      "photo": "OK"
+     }
+    ],
+    "actionLabel": "Send repair request for",
+    "doneLabel": "Repair request sent"
+   },
+   {
+    "type": "schedule",
+    "title": "Your deadlines",
+    "items": [
+     {
+      "when": "Oct 17",
+      "what": "Inspection, sewer scope and radon monitor",
+      "who": "Done; paid $625"
+     },
+     {
+      "when": "Oct 19",
+      "what": "Report and radon results delivered",
+      "who": "To you and your agent"
+     },
+     {
+      "when": "Any day this week",
+      "what": "Q and A call with your inspector",
+      "who": "20 minutes, by phone"
+     },
+     {
+      "when": "Oct 26, 5 pm",
+      "what": "Inspection contingency ends",
+      "who": "Your repair request or objection goes through your agent before this"
+     },
+     {
+      "when": "After repairs",
+      "what": "Re-inspection, if you order one",
+      "who": "Us; $150"
+     }
+    ]
+   },
+   {
+    "type": "sign",
+    "title": "Agreements",
+    "items": [
+     {
+      "t": "Pre-inspection agreement",
+      "signed": true
+     },
+     {
+      "t": "Re-inspection agreement, after seller repairs",
+      "by": 9
+     }
+    ]
+   }
+  ]
+ },
+ "moving-company": {
+  "apps": [
+   "SmartMoving",
+   "Supermove",
+   "MoveitPro"
+  ],
+  "texts": [
+   {
+    "body": "Your binding estimate for Denver to Austin is ready. Review, sign and pay the $500 deposit to hold your dates.",
+    "go": "estimate",
+    "ago": "now"
+   },
+   {
+    "body": "Reminder: your packing crew arrives tomorrow between 8 and 10 am.",
+    "go": "schedule",
+    "ago": "Yesterday"
+   },
+   {
+    "body": "Please confirm your elevator reservation and truck parking at the Austin building.",
+    "go": "needs",
+    "ago": "2d"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Approve",
+      "title": "Binding estimate and $500 deposit",
+      "amount": 50000,
+      "go": "estimate"
+     },
+     {
+      "kind": "Choose",
+      "title": "Valuation coverage",
+      "go": "estimate"
+     },
+     {
+      "kind": "Sign",
+      "title": "Your Rights and Responsibilities When You Move",
+      "due": 3,
+      "go": "sign"
+     },
+     {
+      "kind": "Confirm",
+      "title": "Elevator and truck parking in Austin",
+      "due": 8,
+      "go": "schedule"
+     }
+    ]
+   },
+   {
+    "type": "estimate",
+    "title": "Binding estimate",
+    "ref": "Est 30917",
+    "intro": "3-bedroom, about 9,000 lb from your virtual survey, Denver to Austin (920 miles). Binding: the price does not change unless you add items.",
+    "redLabel": "Your move",
+    "yellowLabel": "Your choice",
+    "greenLabel": "Included",
+    "totalLabel": "Move total",
+    "items": [
+     {
+      "t": "Loading, transport and unloading: 9,000 lb, 920 miles",
+      "price": 448000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Truck"
+     },
+     {
+      "t": "Full packing: labor and materials, 3 bedrooms",
+      "price": 172000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Boxes"
+     },
+     {
+      "t": "Custom crates: mirror and framed painting",
+      "price": 26000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Crate"
+     },
+     {
+      "t": "Long carry and elevator at destination",
+      "price": 20000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Elevator"
+     },
+     {
+      "t": "Full value protection: $60,000 declared, $0 deductible",
+      "note": "We repair, replace or pay current value for anything lost or damaged.",
+      "price": 64000,
+      "sev": "yellow",
+      "photo": "Coverage"
+     },
+     {
+      "t": "Released value: 60 cents per lb per item",
+      "note": "Free, minimum coverage required by law.",
+      "sev": "green",
+      "photo": "Basic"
+     },
+     {
+      "t": "Furniture disassembly and reassembly",
+      "sev": "green",
+      "photo": "Beds"
+     }
+    ]
+   },
+   {
+    "type": "schedule",
+    "title": "Move days",
+    "items": [
+     {
+      "when": "Wed 8-10 am",
+      "what": "Packing crew arrives",
+      "who": "Crew of 3; kitchen first"
+     },
+     {
+      "when": "Thu 8-9 am",
+      "what": "Load in Denver",
+      "who": "Crew of 4; you walk the inventory and sign the bill of lading"
+     },
+     {
+      "when": "Thu - Sun",
+      "what": "In transit",
+      "who": "Driver Ray; live tracking link once he is on the road"
+     },
+     {
+      "when": "Mon 8 am - 12 pm",
+      "what": "Delivery window in Austin",
+      "who": "Driver calls an hour ahead; elevator reserved 8 to 1"
+     }
+    ]
+   },
+   {
+    "type": "sign",
+    "title": "To sign",
+    "items": [
+     {
+      "t": "Your Rights and Responsibilities When You Move (FMCSA)",
+      "by": 3
+     },
+     {
+      "t": "Binding estimate",
+      "by": 3
+     },
+     {
+      "t": "Bill of lading",
+      "by": 9
+     }
+    ]
+   }
+  ]
+ },
+ "post-construction-cleaning": {
+  "apps": [
+   "Jobber",
+   "Housecall Pro",
+   "ZenMaid",
+   "Swept"
+  ],
+  "texts": [
+   {
+    "body": "Rough clean is done at Maple Ct. 12 photos posted.",
+    "go": "photos",
+    "ago": "now"
+   },
+   {
+    "body": "Final clean is booked for Monday at 8 am and touch-up for Tuesday at 1 pm. We need the lockbox code.",
+    "go": "needs",
+    "ago": "2h"
+   },
+   {
+    "body": "Invoice for the rough clean is ready, net 30.",
+    "go": "estimate",
+    "ago": "Yesterday"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Send",
+      "title": "Lockbox code for Monday",
+      "due": 3,
+      "go": "schedule"
+     },
+     {
+      "kind": "Confirm",
+      "title": "Painters out by Friday",
+      "due": 2,
+      "go": "schedule"
+     },
+     {
+      "kind": "Approve",
+      "title": "Final and touch-up clean quote",
+      "amount": 180000,
+      "go": "estimate"
+     },
+     {
+      "kind": "Pay",
+      "title": "Rough clean invoice, net 30",
+      "amount": 90000,
+      "due": 30,
+      "go": "estimate"
+     }
+    ]
+   },
+   {
+    "type": "schedule",
+    "title": "Cleaning schedule",
+    "items": [
+     {
+      "when": "Done",
+      "what": "Rough clean",
+      "who": "Debris out, heavy dust vacuumed, surfaces wiped"
+     },
+     {
+      "when": "Mon 8 am",
+      "what": "Final clean",
+      "who": "Crew of 4, about 7 hours; needs trades off site"
+     },
+     {
+      "when": "Tue 1 pm",
+      "what": "Touch-up clean after punch list",
+      "who": "Crew of 2"
+     },
+     {
+      "when": "Wed",
+      "what": "Owner walkthrough",
+      "who": "Your walkthrough; we come back for any item noted"
+     }
+    ]
+   },
+   {
+    "type": "photos",
+    "title": "Before and after",
+    "posts": [
+     {
+      "who": "Ana, crew lead",
+      "date": "Today 4:30 pm",
+      "caption": "Rough clean done. Drywall dust off sills and floors; 3 bags of debris hauled.",
+      "n": 4,
+      "tags": [
+       "Kitchen",
+       "Living",
+       "Primary bath",
+       "Sills"
+      ]
+     },
+     {
+      "who": "Ana, crew lead",
+      "date": "Today 8:05 am",
+      "caption": "Before. Hardwood is covered; we used dry methods only on it.",
+      "n": 3,
+      "tags": [
+       "Before",
+       "Floors",
+       "Stairs"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "estimate",
+    "title": "Final and touch-up clean",
+    "ref": "Quote 2291",
+    "intro": "3,000 sq ft. Hardwood cleaned dry and with a damp microfiber only, no wet mop.",
+    "redLabel": "Scope",
+    "yellowLabel": "Add-on",
+    "totalLabel": "Quote total",
+    "items": [
+     {
+      "t": "Final clean: ceilings, vents, cabinets inside and out, glass, fixtures, floors",
+      "price": 120000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Final"
+     },
+     {
+      "t": "Touch-up clean after punch list",
+      "price": 60000,
+      "sev": "red",
+      "pick": true,
+      "photo": "Touch-up"
+     },
+     {
+      "t": "Exterior windows, 28 panes",
+      "price": 42000,
+      "sev": "yellow",
+      "photo": "Windows"
+     }
+    ]
+   }
+  ]
+ },
+ "home-staging": {
+  "apps": [
+   "StagingPro",
+   "HoneyBook",
+   "Dubsado",
+   "QuickBooks"
+  ],
+  "texts": [
+   {
+    "body": "Staging is installed and photo-ready. Your 60-day term starts today.",
+    "go": "photos",
+    "ago": "now"
+   },
+   {
+    "body": "Photographer is set for Friday at 10. Please confirm your list date.",
+    "go": "needs",
+    "ago": "3h"
+   },
+   {
+    "body": "Your term ends in 10 days. Extend month to month or schedule destage.",
+    "go": "estimate",
+    "ago": "Later"
+   }
+  ],
+  "modules": [
+   {
+    "type": "needs",
+    "items": [
+     {
+      "kind": "Confirm",
+      "title": "List date",
+      "due": 3,
+      "go": "countdown"
+     },
+     {
+      "kind": "Choose",
+      "title": "Extension or destage at day 60",
+      "due": 50,
+      "go": "estimate"
+     }
+    ]
+   },
+   {
+    "type": "countdown",
+    "to": "the end of your 60-day term",
+    "date": 60,
+    "checklist": [
+     {
+      "t": "Listing photos, Friday 10 am",
+      "due": 3
+     },
+     {
+      "t": "Open house refresh: fresh towels, flowers, fluff pillows",
+      "due": 9
+     },
+     {
+      "t": "Tell us if you go under contract",
+      "due": 30
+     },
+     {
+      "t": "Extension or destage decision",
+      "due": 50
+     }
+    ]
+   },
+   {
+    "type": "photos",
+    "title": "Staged and photo-ready",
+    "posts": [
+     {
+      "who": "Erin, stager",
+      "date": "Today 1:20 pm",
+      "caption": "Living, dining, kitchen and primary staged. Guest rooms get a bed and nightstand each.",
+      "n": 4,
+      "tags": [
+       "Living",
+       "Dining",
+       "Primary",
+       "Kitchen"
+      ]
+     },
+     {
+      "who": "Erin, stager",
+      "date": "Today 9:00 am",
+      "caption": "Walkthrough check: one scratch on the hall floor noted before delivery.",
+      "n": 2,
+      "tags": [
+       "Hall",
+       "Floor"
+      ]
+     }
+    ]
+   },
+   {
+    "type": "estimate",
+    "title": "After day 60",
+    "intro": "Most listings that need longer extend one month at a time. We destage within 3 business days of your notice.",
+    "redLabel": "Extension",
+    "yellowLabel": "Add-on",
+    "greenLabel": "Included",
+    "totalLabel": "Extension total",
+    "items": [
+     {
+      "t": "Month-to-month rental after day 60",
+      "note": "Billed on day 61 and every 30 days after.",
+      "price": 75000,
+      "sev": "red",
+      "photo": "Month"
+     },
+     {
+      "t": "Stage the 2 guest bedrooms fully",
+      "price": 60000,
+      "sev": "yellow",
+      "photo": "Guest"
+     },
+     {
+      "t": "Design, delivery, install and first 60 days",
+      "sev": "green",
+      "photo": "Paid"
+     },
+     {
+      "t": "Destage and pickup",
+      "sev": "green",
+      "photo": "Pickup"
+     }
+    ]
+   }
+  ]
+ }
+}
