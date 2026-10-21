@@ -48,7 +48,7 @@
 
     // Projects with industry screens lead with them (what we need from you, then the screen that answers
     // this client's real question); milestones, money, check-ins and messages sit underneath.
-    const mods = p.modules && typeof PORTAL_MODULES !== 'undefined' ? p.modules : null;
+    const mods = Array.isArray(p.modules) && p.modules.length && typeof PORTAL_MODULES !== 'undefined' ? p.modules : null;
     const rest = `${asks.length ? `<h2>Decisions</h2><div class="list">${asks.map(askRow).join('')}</div>` : ''}
       <h2>Milestones</h2>
       <div class="list">${ms.length ? ms.map(milestoneRow).join('') : '<p class="empty">Milestones will appear here.</p>'}</div>
@@ -62,10 +62,15 @@
       <h1>${esc(p.title)}</h1>
       ${p.summary ? `<p class="note">${esc(p.summary)}</p>` : ''}
       ${links ? `<div class="links">${links}</div>` : ''}
-      ${mods ? PORTAL_MODULES.render(mods) + `<details class="more-wrap" data-k="more"><summary>Milestones, payments and messages</summary>${rest}</details>`
+      ${mods ? (P.demo ? '' : sinceCard()) + PORTAL_MODULES.render(mods, { live: !P.demo }) + (!P.demo && (cur || openAsks.length) ? nowCard(p, cur, openAsks) : '')
+          + `<details class="more-wrap" data-k="more"><summary>Milestones, payments and messages</summary>${rest}</details>`
         : `${sinceCard()}${nowCard(p, cur, openAsks)}${rest}`}
       <div class="card phone" id="phone" hidden style="margin-top:28px"></div>`;
-    if (mods && !app._modsBound) { app._modsBound = true; PORTAL_MODULES.bind(app, () => (data.projects.find(x => x.id === pid) || {}).modules, render, P.toast); }
+    if (mods && !app._modsBound) {
+      app._modsBound = true;
+      PORTAL_MODULES.bind(app, () => (data.projects.find(x => x.id === pid) || {}).modules, render, P.toast,
+        P.demo ? null : { api: P.api, act: (op, body, done) => act(() => P.api(op, body), done), projectId: () => pid });
+    }
     app.querySelectorAll('details[data-k]').forEach(d => { if (open.has(d.dataset.k)) d.open = true; });
     for (const [id, v] of Object.entries(drafts)) { const t = app.querySelector('#' + CSS.escape(id)); if (t && v) t.value = v; }
     P.renderPhoneCard(app.querySelector('#phone'), {
@@ -195,7 +200,7 @@
 
   async function act(fn, done) {
     if (busy) return; busy = true;
-    try { await fn(); P.toast(done); data = await P.api('view'); render(); } catch (e) { P.toast(e.message); } finally { busy = false; }
+    try { await fn(); if (done) P.toast(done); data = await P.api('view'); render(); } catch (e) { P.toast(e.message); if (e.status === 409 || e.status === 404) { data = await P.api('view').catch(() => data); render(); } } finally { busy = false; }
   }
 
   app.addEventListener('click', e => {

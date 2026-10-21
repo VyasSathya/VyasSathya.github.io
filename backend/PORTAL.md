@@ -72,6 +72,26 @@ The raw owner and sync keys live in `%USERPROFILE%\.vyasapps-portal\keys.json`, 
 - **Budget.** Total, paid, due and not yet billed, from the milestone amounts.
 - **Add dates to calendar.** Downloads an .ics file with target dates, review deadlines and decision due dates.
 
+## Client screens (by kind of business)
+
+- A project can carry `modules` (`portfolio-portal-3.sql`): the industry screens from the public demo
+  (estimate, proof, docs, sign, gallery, stages, schedule, photos, countdown, sessions, tickets, itinerary,
+  schools, plus "Needs you", which the portal fills in from the others). `portal/modules.js` renders them.
+- Studio > a project > Client screens: pick the business type to start from its template
+  (`demo/templates.js`), then edit each screen (add a stage, a file request, an estimate line, hide a line or a
+  whole screen). Edits are a draft until Save. A save carries `modules_rev`, so a client action that landed in
+  between is never overwritten (the save is refused and asks for a reload).
+- What the client can do, each saved by its own op and told to Vyas with a notice: approve or decline estimate
+  lines and authorize the total (`estimate_pick`, `estimate_authorize`); send a file (`doc_upload_url` then
+  `doc_received`), a link, or say a request does not apply (`doc_na`); sign with their typed name
+  (`sign_item`); approve a version or send a note on it (`proof_approve`, `proof_note`); pick favorites up to
+  the limit and send them (`gallery_pick`, `gallery_send`).
+- Files go to the private `portal-files` bucket (50 MB each; bigger files go as a link). Studio opens them with
+  a signed link that lasts 10 minutes (`file_url`).
+- Clients never see hidden screens or lines, keys starting with `_`, or storage paths.
+- After an edit, the client hears about a new version to review, new file or signature requests, a new or
+  changed estimate, and a gallery to pick from. Setting up screens from a template is quiet.
+
 ## Feeds (`portal-sync.py`)
 
 Each project's feeds are set in Studio > Settings:
@@ -87,6 +107,8 @@ The scheduled task "vyasapps portal sync" runs `%USERPROFILE%\.vyasapps-portal\p
 
 ```
 supabase db query --linked -f backend/portfolio-portal.sql
+supabase db query --linked -f backend/portfolio-portal-2.sql
+supabase db query --linked -f backend/portfolio-portal-3.sql
 # copy portfolio-portal.ts to supabase/functions/portfolio-portal/index.ts in a temp dir, then:
 supabase functions deploy portfolio-portal --project-ref ihmayqzxqyednchbezya --use-api
 ```

@@ -94,6 +94,7 @@
 
   const clone = o => JSON.parse(JSON.stringify(o));
   const stamp = () => new Date().toISOString();
+  P.demo = true; // screens stay in the tab instead of saving to the server
   P.takeKey = () => 'demo';
   P.forget = () => {};
   P.registerWorker = async () => null;
