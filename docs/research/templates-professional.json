@@ -1,0 +1,1792 @@
+[
+ {
+  "key": "bookkeeping-cleanup",
+  "label": "Bookkeeping",
+  "group": "Professional services",
+  "match": [
+   "bookkeeper",
+   "bookkeeping",
+   "catch up books",
+   "cleanup books",
+   "quickbooks cleanup",
+   "reconcile",
+   "monthly books",
+   "xero"
+  ],
+  "biz": "Ledgerline Bookkeeping",
+  "person": "Maria Okafor (Okafor Floral Studio)",
+  "project": "2025 books catch-up and monthly close setup",
+  "summary": "Bring 9 months of behind QuickBooks Online books current, then move to a monthly close.",
+  "billing": "Flat project fee for the cleanup/catch-up (commonly $500 to $5,000+ by months behind and account count, quoted after reviewing the trial balance), then a fixed monthly fee for ongoing close. Sources: xenett.com cleanup guide, sdocpa.com monthly bookkeeping.",
+  "ms": [
+   [
+    "Scoping and access",
+    "Done means bank, card, payroll and loan feeds are connected, the trial balance is reviewed and the fixed quote is signed.",
+    50000,
+    [
+     "Engagement letter signed",
+     "Accountant user invited to QuickBooks Online",
+     "Bank and credit card feeds connected",
+     "Prior tax return and year-end balances received",
+     "Fixed cleanup quote approved"
+    ]
+   ],
+   [
+    "Catch-up categorization",
+    "Done means every transaction January to September is categorized and the uncategorized/Ask My Accountant balance is zero.",
+    100000,
+    [
+     "Duplicates and transfers matched",
+     "Uncategorized transactions list sent to client",
+     "Client answers on unknown items applied",
+     "Owner draws and loans split out",
+     "Sales tax and merchant fees booked"
+    ]
+   ],
+   [
+    "Reconciliations",
+    "Done means every bank, card and loan account reconciles to statements through September 30 with no unexplained differences.",
+    75000,
+    [
+     "Missing statements collected",
+     "Bank accounts reconciled",
+     "Credit cards reconciled",
+     "Loan balance tied to lender statement",
+     "Undeposited funds cleared"
+    ]
+   ],
+   [
+    "Clean financials and monthly close",
+    "Done means a reviewed P&L and balance sheet are delivered and the first monthly close is on the calendar.",
+    50000,
+    [
+     "P&L and balance sheet delivered",
+     "Walkthrough call held",
+     "Monthly close checklist set",
+     "Receipt capture app set up",
+     "Recurring monthly fee started"
+    ]
+   ]
+  ],
+  "waiting": "Answers on the uncategorized-transactions list (what a payment or deposit was for) and missing bank or card statements.",
+  "ask": [
+   "How should owner payments be handled going forward?",
+   [
+    "Owner draws from the business account",
+    "Set salary through payroll (S-corp)",
+    "Reimburse personal card spending monthly"
+   ],
+   "Affects how the books and the tax return treat money taken out."
+  ],
+  "answered": [
+   "Which accounting software to standardize on?",
+   "Stay on QuickBooks Online"
+  ],
+  "checkin": [
+   "- Done: January to June categorized and reconciled",
+   "- Next: July to September categorization, card reconciliations",
+   "- Needs from you: 23 unknown transactions on the list, August and September Amex statements"
+  ],
+  "talk": [
+   "Hi Maria, there are 23 transactions we can't identify, mostly Venmo and Zelle. Can you mark what each was for in the list?",
+   "Most of the Venmo ones are flower market purchases, I'll go through it tonight.",
+   "Perfect. Once those are in we can reconcile through September and send you clean statements next week."
+  ],
+  "anxieties": [
+   "When will my books actually be done?",
+   "Will this be ready in time for my tax preparer?",
+   "What do I do with the receipts I lost?"
+  ],
+  "tools": [
+   "QuickBooks Online",
+   "Xero",
+   "Karbon",
+   "Financial Cents",
+   "Dext",
+   "Hubdoc",
+   "Liscio",
+   "Keeper"
+  ],
+  "notes": "Engagements are fairly standard (cleanup then recurring), but scope varies wildly by how far behind and how many accounts. Portal must handle bank statements and financial data securely; bookkeepers are not regulated like CPAs but handle sensitive data and often bank credentials (portal should never store login credentials). Third-party deadline: tax filing deadlines drive urgency.",
+  "sources": [
+   "https://www.xenett.com/blog/how-to-do-bookkeeping-cleanup",
+   "https://www.sdocpa.com/monthly-bookkeeping/",
+   "https://botkeeper.com/en/knowledge/catch-up-and-clean-up"
+  ]
+ },
+ {
+  "key": "tax-prep-individual",
+  "label": "Tax preparation (individual)",
+  "group": "Professional services",
+  "match": [
+   "tax preparer",
+   "tax return",
+   "1040",
+   "tax prep",
+   "cpa",
+   "enrolled agent",
+   "file my taxes",
+   "extension"
+  ],
+  "biz": "Northgate Tax and Accounting",
+  "person": "James and Priya Hall",
+  "project": "2025 Form 1040 (married filing jointly)",
+  "summary": "Prepare and e-file a joint return with a Schedule C side business and a rental.",
+  "billing": "Flat fee per return, usually set by forms and schedules (base 1040 plus per-schedule add-ons), often paid before the return is released or e-filed. Source: TaxDome tax preparation process docs (returns can be locked to invoices).",
+  "ms": [
+   [
+    "Engagement and organizer",
+    "Done means the engagement letter and consent are signed and the tax organizer is submitted.",
+    null,
+    [
+     "Engagement letter e-signed",
+     "Section 7216 consent signed",
+     "Organizer questionnaire completed",
+     "ID and prior-year return on file"
+    ]
+   ],
+   [
+    "Documents received",
+    "Done means every W-2, 1099, 1098, K-1 and expense summary on the checklist is uploaded or marked not applicable.",
+    null,
+    [
+     "W-2s and 1099s uploaded",
+     "1098 mortgage interest uploaded",
+     "Schedule C income and expense summary",
+     "Rental income and expenses",
+     "Estimated payments made listed"
+    ]
+   ],
+   [
+    "Preparation and review",
+    "Done means the return is prepared, reviewed by a second preparer, and open questions are answered.",
+    null,
+    [
+     "Draft return prepared",
+     "Questions sent to client",
+     "Answers applied",
+     "Reviewer sign-off",
+     "Refund or balance due confirmed"
+    ]
+   ],
+   [
+    "Signed and e-filed",
+    "Done means Form 8879 is e-signed, the invoice is paid, and the IRS and state acceptance is received.",
+    65000,
+    [
+     "Invoice paid",
+     "Form 8879 e-signed",
+     "Return transmitted",
+     "IRS acceptance received",
+     "State acceptance received"
+    ]
+   ]
+  ],
+  "waiting": "Missing documents, most often a late K-1, a corrected 1099, or brokerage tax statements.",
+  "ask": [
+   "How should we handle the balance due?",
+   [
+    "Pay in full by April 15",
+    "Direct debit on a chosen date",
+    "Set up an IRS installment agreement",
+    "File an extension and pay an estimate"
+   ],
+   "An extension extends time to file, not time to pay."
+  ],
+  "answered": [
+   "Refund or apply to next year?",
+   "Direct deposit the refund"
+  ],
+  "checkin": [
+   "- Done: organizer and W-2s received, draft started",
+   "- Next: rental schedule and review",
+   "- Needs from you: brokerage 1099 composite, 2025 estimated payment dates"
+  ],
+  "talk": [
+   "Hi James, we're still missing the Fidelity 1099. It usually posts mid-February, can you upload it when it's out?",
+   "It says corrected forms might come in March, should I wait?",
+   "Upload what's there now. If a corrected one comes we'll update before filing."
+  ],
+  "anxieties": [
+   "Will I get a refund or owe?",
+   "Do I need an extension?",
+   "Is my upload secure?"
+  ],
+  "tools": [
+   "TaxDome",
+   "Canopy",
+   "SmartVault",
+   "Drake",
+   "UltraTax CS",
+   "CCH Axcess",
+   "Lacerte",
+   "SafeSend"
+  ],
+  "notes": "Highly standardized seasonal workflow. Compliance: IRC 7216 consent for use/disclosure of tax info, IRS Pub 4557 data security (WISP required under FTC Safeguards Rule), 8879 signatures need identity verification (KBA). Portal must not give tax advice by itself. Third-party deadlines: April 15 / October 15, IRS acceptance and rejections.",
+  "sources": [
+   "https://help.taxdome.com/article/920-tax-preparation-configure-processes-in-taxdome",
+   "https://financialgravitykb.knowledgeowl.com/home/tax-portal-guide",
+   "https://www.thomsonreuters.com/en-us/help/ultratax-cs/1040/client-documents/engagement-letter-in-web-client-organizer.html"
+  ]
+ },
+ {
+  "key": "tax-prep-business",
+  "label": "Tax preparation (small business)",
+  "group": "Professional services",
+  "match": [
+   "business tax return",
+   "1120s",
+   "s corp return",
+   "1065",
+   "partnership return",
+   "corporate tax",
+   "k-1"
+  ],
+  "biz": "Northgate Tax and Accounting",
+  "person": "Daniel Reyes (Reyes Landscaping LLC)",
+  "project": "2025 Form 1120-S and owner K-1",
+  "summary": "Prepare and file the S corporation return by March 16 and issue the owner's K-1.",
+  "billing": "Flat fee per entity return (often $1,500 to $5,000 depending on books quality), frequently with a surcharge if books need cleanup first; billed at engagement deposit plus balance on delivery. Source: TaxDome proposals and engagement letters, vendor pricing guides.",
+  "ms": [
+   [
+    "Engagement and year-end books",
+    "Done means the engagement letter is signed and the year-end trial balance and bank reconciliations are received.",
+    75000,
+    [
+     "Engagement letter and deposit",
+     "Bookkeeper access or year-end trial balance",
+     "December bank reconciliations",
+     "Fixed asset purchases list"
+    ]
+   ],
+   [
+    "Adjustments and payroll tie-out",
+    "Done means payroll (W-2s, 941s) ties to the books and year-end adjusting entries are approved.",
+    null,
+    [
+     "W-3 and 941s received",
+     "Officer compensation confirmed",
+     "Depreciation and Section 179 decisions",
+     "Loan interest and principal split",
+     "Adjusting entries approved"
+    ]
+   ],
+   [
+    "Return prepared and reviewed",
+    "Done means the 1120-S, state return and draft K-1 are reviewed and sent for client review.",
+    null,
+    [
+     "Draft 1120-S prepared",
+     "State return prepared",
+     "Draft K-1 sent",
+     "Client questions answered",
+     "Partner review complete"
+    ]
+   ],
+   [
+    "Signed, filed, K-1 delivered",
+    "Done means Form 8879-S is signed, returns are accepted, and the K-1 is in the owner's portal.",
+    175000,
+    [
+     "8879-S e-signed",
+     "Balance invoice paid",
+     "Federal acceptance",
+     "State acceptance",
+     "K-1 delivered to owner"
+    ]
+   ]
+  ],
+  "waiting": "Year-end books (trial balance and reconciliations) and the fixed asset purchases list.",
+  "ask": [
+   "Take Section 179 on the new truck this year?",
+   [
+    "Expense it fully this year",
+    "Depreciate over 5 years",
+    "Bonus depreciation"
+   ],
+   "Changes this year's tax and the owner's K-1."
+  ],
+  "answered": [
+   "File an extension (Form 7004)?",
+   "No, file by March 16"
+  ],
+  "checkin": [
+   "- Done: trial balance received, payroll tied out",
+   "- Next: depreciation, draft return",
+   "- Needs from you: truck purchase invoice, decision on Section 179"
+  ],
+  "talk": [
+   "Daniel, payroll ties out. We need the truck invoice and your call on Section 179 before we draft.",
+   "Uploaded the invoice. What saves more this year?",
+   "Full expensing saves more now but less later. We'll show both numbers on tomorrow's call."
+  ],
+  "anxieties": [
+   "Will we make the March deadline?",
+   "How much will I owe personally from the K-1?",
+   "Do I need to pay estimated taxes?"
+  ],
+  "tools": [
+   "TaxDome",
+   "Canopy",
+   "Karbon",
+   "CCH Axcess",
+   "UltraTax CS",
+   "Drake",
+   "SafeSend"
+  ],
+  "notes": "Fairly standard per entity type but quality of client books drives scope. Same 7216, WISP and 8879 rules. Third-party deadlines: March 15 (1120-S, 1065, shifted to next business day), April 15 (1120), extension via 7004. Delivering K-1s to other owners is a confidentiality boundary (each owner sees only their own).",
+  "sources": [
+   "https://taxdome.com/proposals-engagement-letters",
+   "https://help.taxdome.com/article/920-tax-preparation-configure-processes-in-taxdome"
+  ]
+ },
+ {
+  "key": "fractional-cfo",
+  "label": "Small-business accounting / fractional CFO",
+  "group": "Professional services",
+  "match": [
+   "fractional cfo",
+   "outsourced cfo",
+   "cfo services",
+   "cash flow forecast",
+   "financial planning",
+   "controller",
+   "board reporting"
+  ],
+  "biz": "Brightwater CFO Partners",
+  "person": "Alicia Tran (Tran Coffee Roasters)",
+  "project": "Fractional CFO onboarding and first 90 days",
+  "summary": "Assessment, 13-week cash forecast and monthly reporting package ahead of a bank line-of-credit ask.",
+  "billing": "Monthly retainer (roughly $3,000 to $15,000 by complexity), often preceded by a paid assessment ($5,000 to $10,000, 2 to 3 weeks); board packs often an add-on tier. Sources: sdocpa.com fractional CFO cost, beancount.io fractional CFO guide.",
+  "ms": [
+   [
+    "Financial assessment",
+    "Done means the assessment report and 90-day roadmap are delivered and walked through.",
+    750000,
+    [
+     "Books and bank access granted",
+     "Last 24 months financials reviewed",
+     "Owner interviews held",
+     "90-day roadmap delivered"
+    ]
+   ],
+   [
+    "13-week cash flow forecast",
+    "Done means the forecast ties to AR/AP and the owner reviews it weekly.",
+    500000,
+    [
+     "AR and AP aging received",
+     "Payroll and debt schedule loaded",
+     "Forecast model built",
+     "Weekly refresh cadence agreed",
+     "Variance log started"
+    ]
+   ],
+   [
+    "Budget and KPI dashboard",
+    "Done means the annual budget is approved and the KPI dashboard is live.",
+    500000,
+    [
+     "Budget assumptions agreed",
+     "Department budgets drafted",
+     "KPIs chosen",
+     "Dashboard shared",
+     "Budget approved by owner"
+    ]
+   ],
+   [
+    "Lender package",
+    "Done means the line-of-credit package (financials, forecast, narrative) is sent to the bank.",
+    500000,
+    [
+     "Reviewed financial statements",
+     "Projections and covenants modeled",
+     "Lender narrative written",
+     "Package sent to bank",
+     "Lender questions answered"
+    ]
+   ]
+  ],
+  "waiting": "AR/AP agings and answers about upcoming large purchases or hires that change the forecast.",
+  "ask": [
+   "How big a line of credit to request?",
+   [
+    "$150,000",
+    "$250,000",
+    "$400,000"
+   ],
+   "Forecast shows the low point in March; bigger lines cost more in fees."
+  ],
+  "answered": [
+   "Monthly or weekly forecast refresh?",
+   "Weekly through the busy season"
+  ],
+  "checkin": [
+   "- Done: assessment and forecast v1",
+   "- Next: budget assumptions, KPI picks",
+   "- Needs from you: hiring plan for Q1, new roaster lease terms"
+  ],
+  "talk": [
+   "Alicia, the forecast shows cash dipping to about $18k in early March. Want to walk through options Thursday?",
+   "Yes. Is that before or after the wholesale invoices come in?",
+   "Before. Pulling the wholesale terms in by 15 days fixes most of it, we'll show both cases."
+  ],
+  "anxieties": [
+   "Am I going to run out of cash?",
+   "Can I afford this hire?",
+   "Will the bank approve us?"
+  ],
+  "tools": [
+   "QuickBooks Online",
+   "Xero",
+   "Fathom",
+   "LivePlan",
+   "Jirav",
+   "Float",
+   "Karbon",
+   "Google Sheets"
+  ],
+  "notes": "Very bespoke; deliverables recur monthly rather than ending. If a CPA firm, AICPA independence and confidentiality apply; not investment advice. Third-party deadlines: lender and board meetings, covenant reporting dates.",
+  "sources": [
+   "https://sdocpa.com/fractional-cfo-cost-roi",
+   "https://beancount.io/blog/2026/08/12/fractional-cfo-services-small-business-guide",
+   "https://acuity.co/hire-fractional-cfo-services/"
+  ]
+ },
+ {
+  "key": "estate-planning",
+  "label": "Estate planning law",
+  "group": "Professional services",
+  "match": [
+   "estate planning",
+   "living trust",
+   "will",
+   "trust attorney",
+   "power of attorney",
+   "estate lawyer",
+   "revocable trust"
+  ],
+  "biz": "Cedar Grove Estate Law",
+  "person": "Robert and Linda Chen",
+  "project": "Revocable living trust plan",
+  "summary": "Joint revocable trust package with pour-over wills, powers of attorney, health care directives and deed.",
+  "billing": "Flat fee package (consumer guides put trust packages around $1,500 to $5,000), commonly 50 percent at engagement and 50 percent at signing; deed and funding sometimes extra. Sources: piercelaw.com flat fee Q&A, thehivelaw.com pricing.",
+  "ms": [
+   [
+    "Design meeting",
+    "Done means the intake questionnaire is complete and the plan design (trustees, guardians, beneficiaries) is agreed.",
+    175000,
+    [
+     "Engagement letter signed",
+     "Intake questionnaire completed",
+     "Asset list submitted",
+     "Design meeting held",
+     "Fiduciary choices confirmed"
+    ]
+   ],
+   [
+    "Draft review",
+    "Done means the clients have reviewed drafts and all requested changes are made.",
+    null,
+    [
+     "Draft trust sent",
+     "Draft wills and POAs sent",
+     "Client comments received",
+     "Revisions made"
+    ]
+   ],
+   [
+    "Signing ceremony",
+    "Done means all documents are signed, witnessed and notarized.",
+    175000,
+    [
+     "Signing appointment booked",
+     "Witnesses and notary arranged",
+     "Documents executed",
+     "Originals and binder delivered"
+    ]
+   ],
+   [
+    "Trust funding",
+    "Done means the house deed is recorded to the trust and funding instructions for accounts are complete.",
+    null,
+    [
+     "Deed to trust prepared",
+     "Deed recorded with county",
+     "Funding letters for banks",
+     "Beneficiary designations updated",
+     "Funding confirmation checklist"
+    ]
+   ]
+  ],
+  "waiting": "The completed intake questionnaire and asset list, then comments on the drafts.",
+  "ask": [
+   "Who should be successor trustee?",
+   [
+    "Adult child",
+    "Sibling",
+    "Professional fiduciary",
+    "Co-trustees"
+   ],
+   "The person who manages the trust if both of you cannot."
+  ],
+  "answered": [
+   "Who is guardian for minor children?",
+   "Linda's sister, Grace"
+  ],
+  "checkin": [
+   "- Done: design meeting, drafts sent",
+   "- Next: revisions, schedule signing",
+   "- Needs from you: comments on the trust draft, witness availability"
+  ],
+  "talk": [
+   "Hi Robert and Linda, drafts are in your portal. Please send comments by Friday so we can hold the signing on the 14th.",
+   "One question, can our son be co-trustee with my sister?",
+   "Yes. We'll revise to co-trustees and note whether they must act together."
+  ],
+  "anxieties": [
+   "Is the trust done once I sign?",
+   "Do I need to retitle my accounts?",
+   "What happens if we move states?"
+  ],
+  "tools": [
+   "Clio",
+   "Lawmatics",
+   "WealthCounsel",
+   "Wealth Docx",
+   "MyCase",
+   "Gavel"
+  ],
+  "notes": "Fairly templated packages with family-specific choices. Privileged communications; documents contain full financial picture; execution formalities (witnesses, notary) cannot be replaced by e-signature in many states. Earned-upon-receipt vs trust account handling of advance fees varies by state. Third-party deadlines: county recorder for deed.",
+  "sources": [
+   "https://piercelaw.com/news/estate-planning-qa-series/do-you-charge-a-flat-fee-or-an-hourly-rate-to-draft-a-trust-nc/",
+   "https://www.thehivelaw.com/pricing/how-much-does-a-revocable-trust-cost-in-georgia/",
+   "https://www.clio.com/features/client-portal/",
+   "https://www.massbar.org/publications/section-review/section-review-article/section-review-2007-v9-n1/hell-s-gates-adopt-effective-client-communication-methods-to-avoid-bar-discipline"
+  ]
+ },
+ {
+  "key": "immigration-law",
+  "label": "Immigration law",
+  "group": "Professional services",
+  "match": [
+   "immigration lawyer",
+   "green card",
+   "marriage green card",
+   "visa",
+   "uscis",
+   "i-130",
+   "i-485",
+   "h-1b",
+   "citizenship"
+  ],
+  "biz": "Harbor Immigration Law",
+  "person": "Elena Petrova and Mark Wilson",
+  "project": "Marriage-based adjustment of status (I-130/I-485)",
+  "summary": "Concurrent I-130, I-485, I-765 and I-131 filing for a spouse in the US.",
+  "billing": "Flat fee per case (about $2,500 to $7,000 for marriage AOS) often in installments, plus USCIS fees paid separately; RFE responses and interview prep sometimes extra. Sources: lighthousehq.com, manifestlaw.com.",
+  "ms": [
+   [
+    "Case strategy and intake",
+    "Done means the engagement is signed, eligibility screened and the document checklist issued.",
+    200000,
+    [
+     "Engagement agreement signed",
+     "Eligibility and history screening",
+     "Questionnaires completed",
+     "Document checklist issued"
+    ]
+   ],
+   [
+    "Evidence and forms package",
+    "Done means forms are prepared, reviewed by both spouses and signed, with bona fide marriage evidence assembled.",
+    200000,
+    [
+     "Passports, birth and marriage certificates",
+     "I-864 financial documents",
+     "Joint lease, bank, photos evidence",
+     "Medical exam I-693",
+     "Forms signed by both"
+    ]
+   ],
+   [
+    "Filed with USCIS",
+    "Done means USCIS receipt notices are issued and biometrics is attended.",
+    100000,
+    [
+     "Package filed",
+     "Receipt notices received",
+     "Biometrics appointment attended",
+     "Work permit and travel doc tracked"
+    ]
+   ],
+   [
+    "Interview and decision",
+    "Done means the interview is held and the green card is approved.",
+    null,
+    [
+     "Interview notice received",
+     "Interview prep session",
+     "Interview attended",
+     "RFE answered if issued",
+     "Approval and card received"
+    ]
+   ]
+  ],
+  "waiting": "Bona fide marriage evidence and the I-864 sponsor financial documents.",
+  "ask": [
+   "Who will be the financial sponsor?",
+   [
+    "Petitioning spouse alone",
+    "Add a joint sponsor",
+    "Use household member income"
+   ],
+   "Income must meet 125 percent of poverty guidelines."
+  ],
+  "answered": [
+   "File work permit and travel document with it?",
+   "Yes, file I-765 and I-131 concurrently"
+  ],
+  "checkin": [
+   "- Done: forms drafted, most evidence received",
+   "- Next: medical exam, final signing",
+   "- Needs from you: 2024 tax transcript, more joint evidence"
+  ],
+  "talk": [
+   "Elena, we have the photos and lease. Could you add any joint bank or insurance statements?",
+   "We only opened a joint account last month, is that okay?",
+   "Yes, send it. Recent is fine, we'll pair it with the lease and insurance."
+  ],
+  "anxieties": [
+   "How long will USCIS take?",
+   "Can I travel or work while it's pending?",
+   "What if we get an RFE?"
+  ],
+  "tools": [
+   "Docketwise",
+   "INSZoom",
+   "LawLogix",
+   "Clio",
+   "MyCase",
+   "eImmigration"
+  ],
+  "notes": "Moderately standard by petition type but timelines are owned entirely by USCIS and consulates and swing by months. Privileged, highly sensitive identity documents (passports, A-numbers); clients may need multilingual support. Fees and forms change (USCIS fee rule); portal must not promise processing times.",
+  "sources": [
+   "https://www.lighthousehq.com/blog/immigration-attorney-fees",
+   "https://manifestlaw.com/services/marriage-green-card-lawyer",
+   "https://ailawyer.pro/blog/how-much-does-a-green-card-lawyer-cost-attorney-vs-uscis-fees",
+   "https://www.clio.com/features/client-portal/",
+   "https://www.massbar.org/publications/section-review/section-review-article/section-review-2007-v9-n1/hell-s-gates-adopt-effective-client-communication-methods-to-avoid-bar-discipline"
+  ]
+ },
+ {
+  "key": "family-law",
+  "label": "Family law / divorce",
+  "group": "Professional services",
+  "match": [
+   "divorce lawyer",
+   "family law",
+   "custody",
+   "child support",
+   "divorce attorney",
+   "mediation",
+   "separation"
+  ],
+  "biz": "Lakeshore Family Law",
+  "person": "Sarah Mitchell",
+  "project": "Mitchell dissolution of marriage",
+  "summary": "Divorce with a shared custody plan and division of the house and retirement accounts.",
+  "billing": "Hourly against an advance retainer (often $3,000 to $10,000+) held in the client trust account (IOLTA) and replenished when low; invoices show draws. Sources: LeanLaw trust accounting for family law, Minnesota LPRB IOLTA guidance.",
+  "ms": [
+   [
+    "Petition filed and served",
+    "Done means the petition and summons are filed and proof of service is on file.",
+    null,
+    [
+     "Retainer deposited to trust",
+     "Petition drafted",
+     "Petition filed",
+     "Spouse served",
+     "Temporary orders requested if needed"
+    ]
+   ],
+   [
+    "Financial disclosures exchanged",
+    "Done means both sides have served full declarations of disclosure with schedules of assets and debts.",
+    null,
+    [
+     "Income and expense declaration",
+     "Schedule of assets and debts",
+     "Pay stubs, tax returns, statements",
+     "Disclosure served",
+     "Other side's disclosure received"
+    ]
+   ],
+   [
+    "Mediation and settlement",
+    "Done means a signed marital settlement agreement and parenting plan exist, or trial issues are narrowed.",
+    null,
+    [
+     "Mediation scheduled",
+     "Settlement proposal sent",
+     "Parenting plan negotiated",
+     "Property division agreed",
+     "Settlement agreement signed"
+    ]
+   ],
+   [
+    "Judgment entered",
+    "Done means the judgment is signed by the court and entered, after the waiting period.",
+    null,
+    [
+     "Judgment package submitted",
+     "Waiting period elapsed",
+     "Judgment entered",
+     "QDRO for retirement split",
+     "Retainer balance refunded"
+    ]
+   ]
+  ],
+  "waiting": "Financial disclosure documents (statements, pay stubs, tax returns) and retainer replenishment.",
+  "ask": [
+   "Proposed custody schedule?",
+   [
+    "2-2-3 rotation",
+    "Alternating weeks",
+    "Primary residence with weekends"
+   ],
+   "Goes into the parenting plan proposal."
+  ],
+  "answered": [
+   "Keep the house or sell it?",
+   "Sell and split proceeds"
+  ],
+  "checkin": [
+   "- Done: petition served, our disclosures drafted",
+   "- Next: serve disclosures, schedule mediation",
+   "- Needs from you: 401k statement, retainer top-up"
+  ],
+  "talk": [
+   "Sarah, we need your latest 401k statement to finish the asset schedule. Also, your retainer is below the minimum.",
+   "I'll download the statement tonight. How much do I need to add?",
+   "The agreement says back to $5,000, so $2,150. The invoice is in your portal."
+  ],
+  "anxieties": [
+   "How long until this is final?",
+   "How much is this going to cost?",
+   "What does my ex see?"
+  ],
+  "tools": [
+   "Clio",
+   "MyCase",
+   "Smokeball",
+   "LeanLaw",
+   "OurFamilyWizard",
+   "LawPay"
+  ],
+  "notes": "Highly variable by conflict level. Trust accounting rules (no commingling, earned fees only, refunds of unused retainer). Privilege and safety: opposing spouse may share devices or emails, so portal access and notifications must be discreet. Court-owned deadlines and statutory waiting periods (e.g. California six months from service).",
+  "sources": [
+   "https://www.leanlaw.co/blog/trust-accounting-for-family-law-attorneys-managing-retainer-fees-and-filing-costs-for-law-firms/",
+   "https://lprb.mncourts.gov/articles/Articles/IOLTA%20or%20Separate%20Client%20Trust%20Account.pdf",
+   "https://www.klw-law.com/california-divorce-process",
+   "https://divorce.law/guides/divorce-timeline/california/",
+   "https://www.clio.com/features/client-portal/",
+   "https://www.massbar.org/publications/section-review/section-review-article/section-review-2007-v9-n1/hell-s-gates-adopt-effective-client-communication-methods-to-avoid-bar-discipline"
+  ]
+ },
+ {
+  "key": "business-law",
+  "label": "Small-business legal",
+  "group": "Professional services",
+  "match": [
+   "business lawyer",
+   "llc formation",
+   "operating agreement",
+   "contract review",
+   "startup lawyer",
+   "incorporate",
+   "business attorney"
+  ],
+  "biz": "Keystone Business Law",
+  "person": "Tom Alvarez and Nina Brooks (Fieldstone Studio)",
+  "project": "LLC formation and client contract templates",
+  "summary": "Form a two-member LLC with an operating agreement, then draft a master services agreement.",
+  "billing": "Flat fee per package (attorney formation packages about $550 to $1,500 plus state fees; operating agreements $750 to $3,500; contract drafting $500 to $2,500), some firms on a monthly subscription. Sources: surge.law pricing, Local First Arizona fee schedule.",
+  "ms": [
+   [
+    "Entity filed",
+    "Done means articles of organization are accepted by the state and the EIN is issued.",
+    65000,
+    [
+     "Name availability checked",
+     "Registered agent chosen",
+     "Articles filed",
+     "State approval received",
+     "EIN obtained"
+    ]
+   ],
+   [
+    "Operating agreement signed",
+    "Done means both members have e-signed the operating agreement.",
+    150000,
+    [
+     "Ownership split and capital confirmed",
+     "Vesting and buyout terms agreed",
+     "Draft reviewed",
+     "Both members signed"
+    ]
+   ],
+   [
+    "Compliance setup",
+    "Done means initial state reports, BOI or local licenses and a compliance calendar are in place.",
+    35000,
+    [
+     "Initial statement filed",
+     "Business license applied",
+     "Compliance calendar created",
+     "Bank account opening letter"
+    ]
+   ],
+   [
+    "Client contract template",
+    "Done means the master services agreement and SOW template are final.",
+    150000,
+    [
+     "Deal terms questionnaire",
+     "MSA draft",
+     "SOW template",
+     "Redlines resolved",
+     "Final templates delivered"
+    ]
+   ]
+  ],
+  "waiting": "Decisions on ownership split, capital contributions and buyout terms.",
+  "ask": [
+   "How should profits be split?",
+   [
+    "Pro rata to ownership",
+    "Guaranteed payments then split",
+    "Fixed draws"
+   ],
+   "Goes into the operating agreement."
+  ],
+  "answered": [
+   "Member-managed or manager-managed?",
+   "Member-managed"
+  ],
+  "checkin": [
+   "- Done: LLC filed, EIN issued",
+   "- Next: operating agreement draft",
+   "- Needs from you: capital amounts, what happens if one of you leaves"
+  ],
+  "talk": [
+   "Tom and Nina, the LLC is approved. Before we draft, what happens to a member's share if they leave in year one?",
+   "We were thinking the other person can buy it at what they put in.",
+   "That works. We'll draft a buyout at capital contributed for the first two years."
+  ],
+  "anxieties": [
+   "Is my personal liability protected now?",
+   "What filings do I owe each year?",
+   "Can I sign client contracts yet?"
+  ],
+  "tools": [
+   "Clio",
+   "Lawmatics",
+   "DocuSign",
+   "Ironclad",
+   "PandaDoc",
+   "Gavel"
+  ],
+  "notes": "Packaged and repeatable for formation, variable for contracts. Privilege; e-signature fine for most business docs. State filing offices own processing times. Flat fees paid in advance may need trust account handling depending on state.",
+  "sources": [
+   "https://surge.law/pricing",
+   "https://localfirstaz.com/news-blog/phoenix-firm-offers-flat-fee-legal-services-for-local-first-members",
+   "https://beancount.io/blog/2026/03/14/when-do-you-need-llc-attorney-small-business-guide",
+   "https://www.clio.com/features/client-portal/"
+  ]
+ },
+ {
+  "key": "real-estate-buyer",
+  "label": "Real estate agent (buyer side)",
+  "group": "Professional services",
+  "match": [
+   "realtor",
+   "buyer agent",
+   "buying a house",
+   "home purchase",
+   "real estate agent",
+   "escrow",
+   "closing"
+  ],
+  "biz": "Summit Home Realty",
+  "person": "Kevin and Aisha Patel",
+  "project": "Purchase of 418 Maple Ave",
+  "summary": "Accepted offer on a single-family home, 30-day financed close.",
+  "billing": "Commission paid at closing (no per-stage billing). Since August 17, 2024, a signed written buyer agreement stating compensation is required before touring; seller may still offer to pay. Source: NAR settlement resource for homebuyers.",
+  "ms": [
+   [
+    "Offer accepted",
+    "Done means the contract is fully signed and earnest money is delivered to escrow.",
+    null,
+    [
+     "Buyer agreement signed",
+     "Offer accepted",
+     "Earnest money wired",
+     "Escrow opened",
+     "Contract dates calendared"
+    ]
+   ],
+   [
+    "Inspection contingency",
+    "Done means inspections are done and repairs or credits are agreed, or the contingency is removed.",
+    null,
+    [
+     "Home inspection",
+     "Sewer and roof inspection",
+     "Repair request sent",
+     "Seller response negotiated",
+     "Contingency removed"
+    ]
+   ],
+   [
+    "Appraisal and loan approval",
+    "Done means the appraisal meets the price and the lender issues clear to close.",
+    null,
+    [
+     "Appraisal ordered",
+     "Appraisal at or above price",
+     "Loan conditions met",
+     "Insurance bound",
+     "Clear to close"
+    ]
+   ],
+   [
+    "Closing and keys",
+    "Done means the final walkthrough is done, documents signed, deed recorded and keys handed over.",
+    null,
+    [
+     "Closing disclosure reviewed",
+     "Final walkthrough",
+     "Funds wired to escrow",
+     "Signing appointment",
+     "Deed recorded and keys"
+    ]
+   ]
+  ],
+  "waiting": "Documents and responses for the lender and signing contingency removals on time.",
+  "ask": [
+   "What to ask for after the inspection?",
+   [
+    "Seller repairs",
+    "Closing cost credit",
+    "Price reduction",
+    "Accept as-is"
+   ],
+   "Roof is near end of life; credit is cleanest."
+  ],
+  "answered": [
+   "Which inspector?",
+   "Full home plus sewer scope"
+  ],
+  "checkin": [
+   "- Done: earnest money in, inspection done",
+   "- Next: repair request, appraisal",
+   "- Needs from you: decision on repair ask by Wednesday"
+  ],
+  "talk": [
+   "Inspection report is in your folder. The big item is the roof. I'd ask for an $8,000 credit.",
+   "Will they say no and walk?",
+   "Unlikely, the report backs it. Contingency ends Thursday so let's send it today."
+  ],
+  "anxieties": [
+   "Are we still on track to close on time?",
+   "Did the appraisal come in?",
+   "Is it safe to wire money (wire fraud)?"
+  ],
+  "tools": [
+   "Dotloop",
+   "SkySlope",
+   "Lone Wolf Transactions",
+   "Paperless Pipeline",
+   "Follow Up Boss",
+   "DocuSign"
+  ],
+  "notes": "Milestones are standard but dates come from the contract and vary by state. Third parties own most deadlines (lender, appraiser, title, escrow). Wire fraud is the biggest risk: portal must never send wiring instructions by plain message. Agents cannot give legal advice; state license rules on disclosures and record retention.",
+  "sources": [
+   "https://www.nar.realtor/the-facts/homebuyers-what-the-nar-settlement-means",
+   "https://www.nar.realtor/the-facts/written-buyer-agreements-101",
+   "https://www.paperlesspipeline.com/blog/real-estate-transaction-process",
+   "https://www.redfin.com/guides/steps-to-closing-on-a-house"
+  ]
+ },
+ {
+  "key": "real-estate-seller",
+  "label": "Real estate agent (seller side)",
+  "group": "Professional services",
+  "match": [
+   "listing agent",
+   "sell my house",
+   "home sale",
+   "listing",
+   "seller agent",
+   "realtor",
+   "list my home"
+  ],
+  "biz": "Summit Home Realty",
+  "person": "Gloria Hernandez",
+  "project": "Sale of 27 Birch Court",
+  "summary": "Prepare, list and close the sale of a three-bedroom townhome.",
+  "billing": "Commission percentage paid from sale proceeds at closing under the listing agreement; seller may separately agree to pay buyer-agent compensation, which cannot be advertised on the MLS. Source: NAR settlement resources.",
+  "ms": [
+   [
+    "Listing prep",
+    "Done means the listing agreement and disclosures are signed and the home is staged and photographed.",
+    null,
+    [
+     "Listing agreement signed",
+     "Pricing and comps reviewed",
+     "Seller disclosures completed",
+     "Repairs and staging",
+     "Photos and floor plan"
+    ]
+   ],
+   [
+    "Live on market",
+    "Done means the listing is live, showings and open houses are running and feedback is shared.",
+    null,
+    [
+     "MLS listing live",
+     "Open house held",
+     "Showing feedback sent",
+     "Price review at day 14"
+    ]
+   ],
+   [
+    "Under contract",
+    "Done means an offer is accepted and the buyer's inspection and appraisal contingencies are resolved.",
+    null,
+    [
+     "Offers reviewed",
+     "Offer accepted",
+     "Buyer inspection response",
+     "Appraisal received",
+     "Contingencies removed"
+    ]
+   ],
+   [
+    "Closed",
+    "Done means the seller signs, the deed records and proceeds are wired.",
+    null,
+    [
+     "Payoff ordered",
+     "Seller documents signed",
+     "Moving out by possession date",
+     "Deed recorded",
+     "Proceeds received"
+    ]
+   ]
+  ],
+  "waiting": "Seller disclosure forms and access for photos, showings and repairs.",
+  "ask": [
+   "Which offer to accept?",
+   [
+    "Highest price, financed",
+    "Lower price, cash",
+    "Counter both"
+   ],
+   "Cash closes in 14 days with no appraisal."
+  ],
+  "answered": [
+   "List price?",
+   "$615,000"
+  ],
+  "checkin": [
+   "- Done: photos, disclosures signed",
+   "- Next: go live Thursday, open house Saturday",
+   "- Needs from you: HOA documents and a spare key"
+  ],
+  "talk": [
+   "Gloria, we go live Thursday. Can you leave the HOA docs and a spare key by Wednesday?",
+   "Yes. Should I be home during the open house?",
+   "Better not. I'll text you feedback right after."
+  ],
+  "anxieties": [
+   "Why haven't we had offers?",
+   "Should we drop the price?",
+   "How much will I net?"
+  ],
+  "tools": [
+   "Dotloop",
+   "SkySlope",
+   "Lone Wolf",
+   "ShowingTime",
+   "Paperless Pipeline",
+   "DocuSign"
+  ],
+  "notes": "Standard phases, variable time on market. State disclosure laws, brokerage compliance review of files, seller-paid compensation rules post-NAR settlement. Title, escrow and buyer's lender own closing dates.",
+  "sources": [
+   "https://nar.realtor/sites/default/files/2024-09/Settlement-Resource-for-Homebuyers-2024-08-09.pdf",
+   "https://www.paperlesspipeline.com/blog/real-estate-closing-process",
+   "https://www.serif.ai/guides/real-estate-transaction-coordinator-checklist"
+  ]
+ },
+ {
+  "key": "mortgage-broker",
+  "label": "Mortgage broker",
+  "group": "Professional services",
+  "match": [
+   "mortgage broker",
+   "home loan",
+   "refinance",
+   "preapproval",
+   "loan officer",
+   "mortgage"
+  ],
+  "biz": "Clearpath Mortgage",
+  "person": "Kevin and Aisha Patel",
+  "project": "30-year fixed purchase loan for 418 Maple Ave",
+  "summary": "Purchase loan from application to funding on a 30-day close.",
+  "billing": "Compensated per loan, either lender-paid or borrower-paid compensation (a percentage of the loan amount) at closing; not billed per stage. Regulated by loan originator compensation rules. Source: Guaranteed Rate loan processing guide, Bankrate conditional approval.",
+  "ms": [
+   [
+    "Application and disclosures",
+    "Done means the application is submitted, the Loan Estimate issued and intent to proceed signed.",
+    null,
+    [
+     "Application submitted",
+     "Credit authorized",
+     "Loan Estimate sent",
+     "Intent to proceed signed",
+     "Rate locked"
+    ]
+   ],
+   [
+    "Processing",
+    "Done means income, asset and employment documents are verified and the appraisal is ordered.",
+    null,
+    [
+     "Pay stubs and W-2s",
+     "Two months bank statements",
+     "Employment verification",
+     "Appraisal ordered",
+     "Title and insurance ordered"
+    ]
+   ],
+   [
+    "Conditional approval",
+    "Done means underwriting conditions are all satisfied.",
+    null,
+    [
+     "Conditions list sent",
+     "Letters of explanation",
+     "Large deposit sourced",
+     "Appraisal reviewed",
+     "Conditions cleared"
+    ]
+   ],
+   [
+    "Clear to close and funding",
+    "Done means the Closing Disclosure is delivered 3 business days ahead, docs signed and the loan funds.",
+    null,
+    [
+     "Clear to close issued",
+     "Closing Disclosure acknowledged",
+     "Final verbal employment check",
+     "Closing signed",
+     "Loan funded"
+    ]
+   ]
+  ],
+  "waiting": "Underwriting conditions: letters of explanation, updated bank statements, source of large deposits.",
+  "ask": [
+   "Lock the rate now or float?",
+   [
+    "Lock 30 days now",
+    "Float a week",
+    "Buy down the rate with points"
+   ],
+   "Locking protects against increases before closing."
+  ],
+  "answered": [
+   "Loan program?",
+   "Conventional 30-year fixed, 10 percent down"
+  ],
+  "checkin": [
+   "- Done: application, appraisal ordered",
+   "- Next: underwriting review",
+   "- Needs from you: explanation for the $6,000 deposit on Sept 3"
+  ],
+  "talk": [
+   "Underwriting needs a letter explaining the $6,000 deposit on Sept 3 and where it came from.",
+   "That was my dad, a gift for the down payment.",
+   "Then we need a signed gift letter and his bank statement showing it. Template is in your portal."
+  ],
+  "anxieties": [
+   "Will we close on time?",
+   "Did my rate lock expire?",
+   "Why do they keep asking for more documents?"
+  ],
+  "tools": [
+   "Encompass",
+   "Floify",
+   "Blend",
+   "Arive",
+   "LendingPad",
+   "Jungo"
+  ],
+  "notes": "Standard steps; underwriting conditions vary per borrower. Regulated: TILA-RESPA (TRID) disclosure timing, GLBA privacy and FTC Safeguards, ECOA, NMLS licensing. Portal must not quote rates or give approval decisions automatically. Lenders and underwriters own the timeline.",
+  "sources": [
+   "https://guaranteedrate.com/resources/mortgage-loan-processing",
+   "https://www.bankrate.com/mortgages/conditional-approval",
+   "https://www.totalmortgage.com/learn/clear-to-close-ctc-what-it-means-and-next-steps"
+  ]
+ },
+ {
+  "key": "business-consulting",
+  "label": "Business consulting",
+  "group": "Professional services",
+  "match": [
+   "business consultant",
+   "consulting",
+   "strategy consultant",
+   "operations consultant",
+   "management consulting",
+   "advisor"
+  ],
+  "biz": "Northline Advisory",
+  "person": "Greg Foster (Foster Home Services)",
+  "project": "Operations and pricing review",
+  "summary": "Eight-week engagement to fix scheduling bottlenecks and reset service pricing.",
+  "billing": "Fixed fee per phase under a statement of work, typically 50 percent upfront and the rest on deliverables; some use monthly retainers or hourly. Source: common SOW practice (vendor and consultant guides).",
+  "ms": [
+   [
+    "Discovery",
+    "Done means stakeholder interviews and data review are complete and the findings memo is delivered.",
+    600000,
+    [
+     "SOW signed",
+     "Data request fulfilled",
+     "Owner and staff interviews",
+     "Job and pricing data analyzed",
+     "Findings memo delivered"
+    ]
+   ],
+   [
+    "Recommendations",
+    "Done means the recommendations are presented and the owner picks priorities.",
+    600000,
+    [
+     "Options workshop",
+     "Pricing model drafted",
+     "Scheduling redesign",
+     "Priorities chosen"
+    ]
+   ],
+   [
+    "Implementation plan",
+    "Done means a 90-day plan with owners and dates is approved.",
+    400000,
+    [
+     "Plan drafted",
+     "Owners assigned",
+     "Metrics defined",
+     "Plan approved"
+    ]
+   ],
+   [
+    "Handoff and check-in",
+    "Done means the 30-day check-in is held and results are measured against the baseline.",
+    400000,
+    [
+     "Training session",
+     "Templates handed over",
+     "30-day check-in",
+     "Results report"
+    ]
+   ]
+  ],
+  "waiting": "The data request: job history, pricing, payroll and scheduling exports.",
+  "ask": [
+   "Which pricing model to test?",
+   [
+    "Flat-rate menu",
+    "Tiered good/better/best",
+    "Time and materials with minimum"
+   ],
+   "Pilot on one service line first."
+  ],
+  "answered": [
+   "Which crew pilots the new schedule?",
+   "North crew"
+  ],
+  "checkin": [
+   "- Done: interviews and data review",
+   "- Next: options workshop",
+   "- Needs from you: last 12 months of job export from ServiceTitan"
+  ],
+  "talk": [
+   "Greg, we still need the 12-month job export to finish the pricing analysis.",
+   "My office manager is on it, Friday ok?",
+   "Friday works. We'll move the workshop to next Wednesday."
+  ],
+  "anxieties": [
+   "What am I getting for the fee?",
+   "When will I see results?",
+   "Is my staff data confidential?"
+  ],
+  "tools": [
+   "Google Workspace",
+   "Notion",
+   "Asana",
+   "HoneyBook",
+   "Dubsado",
+   "Bonsai"
+  ],
+  "notes": "Highly bespoke; scope creep is the main risk, so change requests need approval. NDA-level confidentiality, no specific regulation. No third-party deadlines usually.",
+  "sources": [
+   "https://acuity.co/hire-fractional-cfo-services/",
+   "https://www.upwork.com/services/product/consulting-hr-project-catalog-fractional-cfo-for-startups-retainer-1970718446039444887"
+  ]
+ },
+ {
+  "key": "recruiting-search",
+  "label": "Recruiting / staffing search",
+  "group": "Professional services",
+  "match": [
+   "recruiter",
+   "executive search",
+   "headhunter",
+   "staffing agency",
+   "hiring",
+   "retained search",
+   "talent search"
+  ],
+  "biz": "Pinnacle Talent Partners",
+  "person": "Rachel Kim (Brightline Health)",
+  "project": "VP of Operations retained search",
+  "summary": "Retained search for a VP of Operations, target start in Q1.",
+  "billing": "Retained fee of about 25 to 35 percent of first-year cash compensation, paid in thirds (engagement, shortlist or 30 days, placement); contingency firms bill only on hire. Sources: pin.com commission structures, Darden retained search guide.",
+  "ms": [
+   [
+    "Search kickoff",
+    "Done means the position specification is approved and the first retainer third is paid.",
+    1500000,
+    [
+     "Engagement letter signed",
+     "Intake with hiring manager",
+     "Position spec drafted",
+     "Spec approved",
+     "Target company list agreed"
+    ]
+   ],
+   [
+    "Candidate slate",
+    "Done means a shortlist of 4 to 6 qualified, interested candidates is presented.",
+    1500000,
+    [
+     "Sourcing and outreach",
+     "Screening interviews",
+     "Candidate reports written",
+     "Slate presented",
+     "Client picks first-round candidates"
+    ]
+   ],
+   [
+    "Client interviews",
+    "Done means finalists are interviewed and references checked.",
+    null,
+    [
+     "First rounds scheduled",
+     "Interview feedback collected",
+     "Finalists chosen",
+     "References checked"
+    ]
+   ],
+   [
+    "Offer and placement",
+    "Done means the candidate accepts the offer and a start date is set.",
+    1500000,
+    [
+     "Compensation expectations confirmed",
+     "Offer extended",
+     "Offer accepted",
+     "Resignation managed",
+     "Start date confirmed"
+    ]
+   ]
+  ],
+  "waiting": "Interview feedback on presented candidates, quickly.",
+  "ask": [
+   "Which finalists move to onsite?",
+   [
+    "Candidate A and B",
+    "Candidate A only",
+    "Reopen search"
+   ],
+   "Two candidates have competing offers."
+  ],
+  "answered": [
+   "Remote or hybrid?",
+   "Hybrid, three days on site"
+  ],
+  "checkin": [
+   "- Done: slate of 5 presented",
+   "- Next: first-round interviews",
+   "- Needs from you: feedback on candidates 2 and 4 by Tuesday"
+  ],
+  "talk": [
+   "Rachel, candidate 4 has another final round next week. Can you share feedback by Tuesday?",
+   "We liked her. Can she meet the CEO Monday?",
+   "I'll check and confirm today."
+  ],
+  "anxieties": [
+   "How many candidates are in the pipeline?",
+   "Why is this taking so long?",
+   "What if the hire leaves early (guarantee)?"
+  ],
+  "tools": [
+   "Loxo",
+   "Bullhorn",
+   "Recruiterflow",
+   "Crelate",
+   "Greenhouse",
+   "LinkedIn Recruiter"
+  ],
+  "notes": "Every search differs but phases are standard. Candidate personal data is private (GDPR/CCPA, EEO); share candidate reports only with authorized client users. Replacement guarantee terms. Candidate decisions are third-party timing.",
+  "sources": [
+   "https://www.pin.com/blog/recruitment-agency-commission-structures/",
+   "https://darden.virginia.edu/alumni/career-services/job-search-toolkit/connecting/retained-search",
+   "https://recruiterflow.com/glossary/retained-search/",
+   "https://kitalent.com/executive-search-fees.md"
+  ]
+ },
+ {
+  "key": "insurance-broker-commercial",
+  "label": "Insurance broker (commercial)",
+  "group": "Professional services",
+  "match": [
+   "insurance broker",
+   "commercial insurance",
+   "business insurance",
+   "general liability",
+   "workers comp",
+   "insurance agent",
+   "policy renewal"
+  ],
+  "biz": "Anchor Risk Insurance Services",
+  "person": "Paul Novak (Novak Builders Inc.)",
+  "project": "Commercial package renewal",
+  "summary": "Remarket general liability, property, auto and workers comp ahead of the January 1 renewal.",
+  "billing": "Commission paid by the carrier as a percentage of premium; some brokers add disclosed broker or service fees. Not billed per stage. Source: commercial renewal checklists (Massachusetts agents procedures manual, Manifestly).",
+  "ms": [
+   [
+    "Renewal kickoff",
+    "Done means exposures are updated and current loss runs are in hand, about 90 days before expiration.",
+    null,
+    [
+     "Renewal meeting held",
+     "Payroll and revenue updated",
+     "Vehicle and equipment schedules",
+     "Loss runs requested",
+     "Statement of values updated"
+    ]
+   ],
+   [
+    "Submission to markets",
+    "Done means signed ACORD applications and supplementals are sent to selected carriers.",
+    null,
+    [
+     "ACORD 125/126/130/140 completed",
+     "Applications signed",
+     "Supplementals completed",
+     "Markets selected",
+     "Submission sent"
+    ]
+   ],
+   [
+    "Quotes and proposal",
+    "Done means firm quotes are compared in a proposal and reviewed with the client.",
+    null,
+    [
+     "Quotes received",
+     "Coverage comparison",
+     "Proposal presented",
+     "Client selects option"
+    ]
+   ],
+   [
+    "Bound and issued",
+    "Done means coverage is bound before expiration, certificates issued and policies delivered.",
+    null,
+    [
+     "Bind request sent",
+     "Binders received",
+     "Certificates of insurance issued",
+     "Premium financing or payment",
+     "Policies delivered and checked"
+    ]
+   ]
+  ],
+  "waiting": "Signed applications and updated payroll, revenue and vehicle schedules.",
+  "ask": [
+   "Which renewal option?",
+   [
+    "Incumbent, higher deductible",
+    "New carrier, lower premium",
+    "Incumbent with umbrella increase"
+   ],
+   "New carrier excludes one subcontractor class."
+  ],
+  "answered": [
+   "Remarket or renew as is?",
+   "Remarket, premium up 18 percent"
+  ],
+  "checkin": [
+   "- Done: loss runs, updated payroll",
+   "- Next: submissions to four markets",
+   "- Needs from you: signed ACORD applications"
+  ],
+  "talk": [
+   "Paul, applications are ready to sign. We need them back this week to get quotes before Thanksgiving.",
+   "Signed. Can you include the new excavator?",
+   "Added at $185k. Updated schedule is in your folder."
+  ],
+  "anxieties": [
+   "Will my premium go up?",
+   "Am I covered for this job/contract?",
+   "When will I get my certificate?"
+  ],
+  "tools": [
+   "Applied Epic",
+   "AMS360",
+   "EZLynx",
+   "HawkSoft",
+   "Indio",
+   "Zywave"
+  ],
+  "notes": "Same cycle every year, variable by line. State licensing, producer compensation disclosure rules in some states, privacy of claims data, OFAC screening. Carriers own quote and binding timing; policy expiration is a hard deadline. Portal must not imply coverage is bound until binder exists.",
+  "sources": [
+   "https://www.massagent.com/common/Uploaded%20files/Massagent%20PDFs/Agency%20Tools/agency_procedures_manual_cl_renewal.pdf",
+   "https://app.manifest.ly/public/checklists/renewal-checklist",
+   "https://www.process.st/templates/commercial-insurance-renewal-checklist/"
+  ]
+ },
+ {
+  "key": "grant-writing",
+  "label": "Grant writing",
+  "group": "Professional services",
+  "match": [
+   "grant writer",
+   "grant writing",
+   "grant proposal",
+   "foundation grant",
+   "federal grant",
+   "nonprofit funding"
+  ],
+  "biz": "Wellspring Grant Consulting",
+  "person": "Diane Okoro (Riverside Youth Arts)",
+  "project": "Foundation grant proposal",
+  "summary": "Research, write and submit a $75,000 program grant to a community foundation.",
+  "billing": "Flat fee per proposal or hourly, never a percentage of the award (Grant Professionals Association code treats commission/contingency pay as unethical). Commonly deposit at start, balance on submission. Sources: GPA, nonprofitmarketingguide.com, beancount.io grant writer guide.",
+  "ms": [
+   [
+    "Prospect research",
+    "Done means the funder is confirmed as a fit and the deadline and requirements are mapped.",
+    75000,
+    [
+     "Engagement letter signed",
+     "Funder guidelines reviewed",
+     "Eligibility confirmed",
+     "Submission calendar set"
+    ]
+   ],
+   [
+    "Program information gathered",
+    "Done means the program description, outcomes and budget inputs are received.",
+    null,
+    [
+     "Intake interview",
+     "Program data and outcomes",
+     "Organizational budget",
+     "Board list and 990",
+     "Letters of support requested"
+    ]
+   ],
+   [
+    "Draft and budget",
+    "Done means the narrative and budget are drafted and the client approved them.",
+    100000,
+    [
+     "Narrative draft",
+     "Program budget and justification",
+     "Client review",
+     "Revisions"
+    ]
+   ],
+   [
+    "Submitted",
+    "Done means the application is submitted in the funder portal and confirmation is received.",
+    75000,
+    [
+     "Attachments assembled",
+     "Authorized signer approval",
+     "Submitted in portal",
+     "Confirmation saved",
+     "Reporting dates noted"
+    ]
+   ]
+  ],
+  "waiting": "Program data, budget figures and attachments such as the 990 and board list.",
+  "ask": [
+   "How much to request?",
+   [
+    "$50,000",
+    "$75,000",
+    "$100,000"
+   ],
+   "Funder's typical award is $40k to $80k."
+  ],
+  "answered": [
+   "Single-year or multi-year request?",
+   "Single-year"
+  ],
+  "checkin": [
+   "- Done: funder fit, intake interview",
+   "- Next: narrative draft",
+   "- Needs from you: last year's participant numbers, signed letter of support"
+  ],
+  "talk": [
+   "Diane, I need last year's participant numbers and outcome survey results for the need statement.",
+   "We have numbers but the survey was small. Is that okay?",
+   "Yes, we'll use it with the attendance data."
+  ],
+  "anxieties": [
+   "Will we get funded?",
+   "Are we going to make the deadline?",
+   "What reporting do we owe if we win?"
+  ],
+  "tools": [
+   "Instrumentl",
+   "Candid (Foundation Directory)",
+   "Submittable",
+   "Grants.gov",
+   "Google Docs",
+   "Airtable"
+  ],
+  "notes": "Moderately standard. Ethics: no contingency fees, writer does not guarantee awards. Federal grants require SAM.gov/UEI registration. Funder and government own deadlines and decisions.",
+  "sources": [
+   "https://www.nonprofitmarketingguide.com/avoiding-unethical-pay-structures-a-guide-for-grant-writers-nonprofit-professionals/",
+   "https://beancount.io/blog/2026/10/04/grant-writer-bookkeeping-contingency-fees-retainer-billing-1099-guide",
+   "https://grantprofessionals.org/news/657998/page/nextlevel_university"
+  ]
+ },
+ {
+  "key": "personal-injury-law",
+  "label": "Personal injury law",
+  "group": "Professional services",
+  "match": [
+   "personal injury lawyer",
+   "car accident lawyer",
+   "injury attorney",
+   "slip and fall",
+   "accident claim",
+   "settlement"
+  ],
+  "biz": "Brennan Injury Law",
+  "person": "Marcus Lee",
+  "project": "Lee v. rear-end collision claim",
+  "summary": "Auto accident claim from treatment through demand and settlement.",
+  "billing": "Contingency fee, commonly about one-third of recovery (higher if litigated), plus case costs, paid only from settlement through the trust account. No per-stage billing. Source: general practice; contingency fee agreements must be in writing (ABA Model Rule 1.5(c)).",
+  "ms": [
+   [
+    "Claim opened",
+    "Done means the fee agreement is signed and insurers are notified.",
+    null,
+    [
+     "Contingency agreement signed",
+     "Letters of representation sent",
+     "Police report requested",
+     "Photos and witness info gathered"
+    ]
+   ],
+   [
+    "Treatment",
+    "Done means the client finishes medical treatment or reaches maximum medical improvement.",
+    null,
+    [
+     "Treatment providers listed",
+     "Appointments attended",
+     "Lost wage documentation",
+     "Treatment complete"
+    ]
+   ],
+   [
+    "Demand",
+    "Done means medical records and bills are collected and the demand package is sent.",
+    null,
+    [
+     "Medical records requested",
+     "Bills and liens totaled",
+     "Demand letter drafted",
+     "Demand sent to insurer"
+    ]
+   ],
+   [
+    "Settlement and disbursement",
+    "Done means the settlement is accepted, liens resolved and funds disbursed.",
+    null,
+    [
+     "Offer reviewed",
+     "Settlement accepted",
+     "Release signed",
+     "Liens negotiated",
+     "Settlement statement and disbursement"
+    ]
+   ]
+  ],
+  "waiting": "Treatment updates and records of missed work and out-of-pocket costs.",
+  "ask": [
+   "Accept the insurer's offer?",
+   [
+    "Accept",
+    "Counter",
+    "File a lawsuit"
+   ],
+   "Offer covers bills but little for pain and suffering."
+  ],
+  "answered": [
+   "Use health insurance for treatment?",
+   "Yes"
+  ],
+  "checkin": [
+   "- Done: records requested",
+   "- Next: demand letter",
+   "- Needs from you: pay stubs for missed work"
+  ],
+  "talk": [
+   "Marcus, your last physical therapy visit is done. We're requesting records and will send the demand in about 3 weeks.",
+   "How much do you think it's worth?",
+   "We'll review the numbers together before sending."
+  ],
+  "anxieties": [
+   "What is my case worth?",
+   "Why is it taking so long?",
+   "How much will I actually get after fees and liens?"
+  ],
+  "tools": [
+   "CASEpeer",
+   "Filevine",
+   "SmartAdvocate",
+   "Clio",
+   "MyCase",
+   "Litify"
+  ],
+  "notes": "Classic \"where's my case\" practice. Privilege, HIPAA-adjacent medical records, trust accounting for settlement funds, written closing statement required for contingency cases. Insurers, courts and medical providers own timing.",
+  "sources": [
+   "https://www.americanbar.org/groups/law_practice/resources/law-practice-today/2022-november/real-complaints-about-lawyers-the-legal-profession-can-do-better",
+   "https://www.kiplinger.com/personal-finance/careers/lawyers-who-dont-return-phone-calls",
+   "https://www.clio.com/features/client-portal/",
+   "https://www.massbar.org/publications/section-review/section-review-article/section-review-2007-v9-n1/hell-s-gates-adopt-effective-client-communication-methods-to-avoid-bar-discipline"
+  ]
+ }
+]

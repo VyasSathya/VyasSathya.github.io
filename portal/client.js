@@ -1,14 +1,15 @@
-// Client side of the portal: what changed since the last visit, the current milestone, decisions and
+﻿// Client side of the portal: what changed since the last visit, the current milestone, decisions and
 // anything waiting on the client, review and payment, milestones, check-ins, messages, phone updates.
 (() => {
   const P = PORTAL, { esc, safeUrl, money, day, dayLong, daysSince, ago, chip, progress, meter } = P;
   const app = document.getElementById('app');
   const SLOT = 'vp-client-key';
   let data = null, pid = null, busy = false, seenSent = false, lastSeen = null;
+  const owner = () => (data && data.owner_name) || 'Vyas';
   P.themeButton();
   P.registerWorker();
 
-  if (!P.takeKey(SLOT)) P.gate(app, 'Project portal', 'Open the link Vyas sent you, or paste it here.', load);
+  if (!P.takeKey(SLOT)) P.gate(app, 'Project portal', 'Open the link you were sent, or paste it here.', load);
   else load();
   document.addEventListener('portal:refresh', () => load());
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && data && !busy) load(); });
@@ -22,7 +23,7 @@
       if (!seenSent) { lastSeen = data.seen_at; seenSent = true; P.api('seen').catch(() => {}); P.refreshSubscription(); }
       render();
     } catch (e) {
-      if (e.status === 401) { P.forget(SLOT); return P.gate(app, 'Project portal', 'This link has been turned off. Ask Vyas for a new one, or paste a current link.', load); }
+      if (e.status === 401) { P.forget(SLOT); return P.gate(app, 'Project portal', 'This link has been turned off. Ask for a new one, or paste a current link.', load); }
       P.gate(app, 'Project portal', e.message, load);
     }
   }
@@ -45,22 +46,26 @@
     const asks = data.asks.filter(a => a.project_id === pid);
     const openAsks = asks.filter(a => !a.answered_at && !a.closed);
 
-    app.innerHTML = `${tabs}
-      <div class="eyebrow">${esc(p.client_name || 'Your project')}</div>
-      <h1>${esc(p.title)}</h1>
-      ${p.summary ? `<p class="note">${esc(p.summary)}</p>` : ''}
-      ${links ? `<div class="links">${links}</div>` : ''}
-      ${sinceCard()}
-      ${nowCard(p, cur, openAsks)}
-      ${asks.length ? `<h2>Decisions</h2><div class="list">${asks.map(askRow).join('')}</div>` : ''}
+    // Projects with industry screens lead with them (what we need from you, then the screen that answers
+    // this client's real question); milestones, money, check-ins and messages sit underneath.
+    const mods = p.modules && typeof PORTAL_MODULES !== 'undefined' ? p.modules : null;
+    const rest = `${asks.length ? `<h2>Decisions</h2><div class="list">${asks.map(askRow).join('')}</div>` : ''}
       <h2>Milestones</h2>
       <div class="list">${ms.length ? ms.map(milestoneRow).join('') : '<p class="empty">Milestones will appear here.</p>'}</div>
       ${budgetBlock(ms)}
       <h2>Check-ins</h2>
       <div class="list">${checkins()}</div>
       <h2>Messages</h2>
-      ${messages()}
+      ${messages()}`;
+    app.innerHTML = `${tabs}
+      <div class="eyebrow">${esc(p.client_name || 'Your project')}</div>
+      <h1>${esc(p.title)}</h1>
+      ${p.summary ? `<p class="note">${esc(p.summary)}</p>` : ''}
+      ${links ? `<div class="links">${links}</div>` : ''}
+      ${mods ? PORTAL_MODULES.render(mods) + `<details class="more-wrap" data-k="more"><summary>Milestones, payments and messages</summary>${rest}</details>`
+        : `${sinceCard()}${nowCard(p, cur, openAsks)}${rest}`}
       <div class="card phone" id="phone" hidden style="margin-top:28px"></div>`;
+    if (mods && !app._modsBound) { app._modsBound = true; PORTAL_MODULES.bind(app, () => (data.projects.find(x => x.id === pid) || {}).modules, render, P.toast); }
     app.querySelectorAll('details[data-k]').forEach(d => { if (open.has(d.dataset.k)) d.open = true; });
     for (const [id, v] of Object.entries(drafts)) { const t = app.querySelector('#' + CSS.escape(id)); if (t && v) t.value = v; }
     P.renderPhoneCard(app.querySelector('#phone'), {
@@ -101,7 +106,7 @@
           <div class="actions"><button class="btn primary" data-changes-send="${m.id}">Send</button></div>
         </div></div>`;
     } else if (m.state === 'changes_requested') {
-      review = `<p class="note">You asked for changes. Vyas is working on them and will send it back for review.</p>`;
+      review = `<p class="note">You asked for changes. ${esc(owner())} is working on them and will send it back for review.</p>`;
     }
     return `<div class="card now">
       <div class="row"><div><div class="eyebrow">Current milestone</div><h3>${esc(m.title)}</h3></div>${chip(m.state)}</div>
@@ -171,8 +176,8 @@
     const ms = data.messages.filter(m => m.project_id === pid).slice().reverse();
     const label = { approve: 'Approved', changes: 'Changes requested' };
     return `<div class="card">
-      ${ms.length ? `<div class="thread">${ms.map(m => `<div class="msg ${m.author === 'client' ? 'me' : ''}"><small>${m.author === 'client' ? 'You' : 'Vyas'} &middot; ${ago(m.created_at)}${label[m.kind] && m.body ? ' &middot; ' + label[m.kind] : ''}</small>${esc(m.body) || (label[m.kind] || '')}</div>`).join('')}</div>` : ''}
-      <label class="f" for="msg" ${ms.length ? '' : 'style="margin-top:0"'}>Message Vyas</label>
+      ${ms.length ? `<div class="thread">${ms.map(m => `<div class="msg ${m.author === 'client' ? 'me' : ''}"><small>${m.author === 'client' ? 'You' : esc(owner())} &middot; ${ago(m.created_at)}${label[m.kind] && m.body ? ' &middot; ' + label[m.kind] : ''}</small>${esc(m.body) || (label[m.kind] || '')}</div>`).join('')}</div>` : ''}
+      <label class="f" for="msg" ${ms.length ? '' : 'style="margin-top:0"'}>Message </label>
       <textarea id="msg" placeholder="Questions, links to files, anything else."></textarea>
       <div class="actions"><button class="btn primary" data-send>Send</button></div>
     </div>`;
@@ -203,7 +208,7 @@
       return act(() => P.api('approve', { milestone_id: d.approve }), 'Approved. Thank you.');
     }
     if (d.changesOpen) { app.querySelector(`[data-changes-form="${d.changesOpen}"]`).hidden = false; app.querySelector(`#ch-${d.changesOpen}`).focus(); return; }
-    if (d.changesSend) return act(() => P.api('request_changes', { milestone_id: d.changesSend, body: app.querySelector(`#ch-${d.changesSend}`).value }), 'Sent to Vyas.');
+    if (d.changesSend) return act(() => P.api('request_changes', { milestone_id: d.changesSend, body: app.querySelector(`#ch-${d.changesSend}`).value }), 'Sent to ' + owner() + '.');
     if (d.pick) return act(() => P.api('answer_ask', { id: d.pick, answer: d.val, note: app.querySelector(`#an-${d.pick}`)?.value || '' }), 'Answer sent.');
     if (d.answer) return act(() => P.api('answer_ask', { id: d.answer, note: app.querySelector(`#an-${d.answer}`).value }), 'Answer sent.');
     if ('send' in d) return act(() => P.api('message', { project_id: pid, body: app.querySelector('#msg').value }), 'Sent.');

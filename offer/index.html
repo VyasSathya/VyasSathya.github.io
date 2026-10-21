@@ -1,0 +1,95 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Client portal for your business - Vyas Sathya</title>
+    <meta name="description" content="Pick what you do and see your own client portal: where every project is, what clients owe you, approvals and payments, on their phone." />
+    <meta property="og:title" content="What do you do?" />
+    <meta property="og:description" content="See your own client portal in one click." />
+    <meta property="og:image" content="https://vyasapps.dev/media/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://vyasapps.dev/offer/" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="../fonts/geist-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="../site.css" />
+    <link rel="stylesheet" href="../layout-refinements.css?v=offer-1" />
+    <link rel="stylesheet" href="../contact.css?v=screen-scale-1" />
+    <link rel="stylesheet" href="offer.css?v=3" />
+    <script>
+      try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <header class="bar">
+      <a class="mark" href="../" aria-label="Vyas Sathya home">VS<span>Vyas Sathya</span></a>
+      <nav aria-label="Main navigation">
+        <a href="./" aria-current="page" class="nav-offer"><span class="long">Client </span>Portal</a
+        ><a href="../#work">Work</a
+        ><a href="../portal/" class="login">Client login</a
+        ><button class="theme" type="button" aria-label="Switch light or dark appearance">
+          <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.5" /><path d="M10 3a7 7 0 0 1 0 14z" fill="currentColor" /></svg>
+        </button>
+      </nav>
+    </header>
+    <main>
+      <section class="ask" aria-labelledby="ask-h">
+        <h1 id="ask-h">What do you do?</h1>
+        <p class="what">Your clients get a private page, and updates on their phone, showing where their project is, what they need to do and what to pay. You get one screen with every project. I set it up for you.</p>
+        <div class="chips" role="list" id="chips"></div>
+        <form class="typed" id="typed" autocomplete="off">
+          <label class="sr-only" for="t-type">What you do</label>
+          <input id="t-type" name="type" type="text" maxlength="40" placeholder="Or type it: roofing, tattoo studio, tax prep" />
+          <label class="sr-only" for="t-biz">Your business name</label>
+          <input id="t-biz" name="biz" type="text" maxlength="60" placeholder="Your business name (optional)" />
+          <button type="submit">Show me</button>
+        </form>
+      </section>
+
+      <section class="result" id="result" hidden aria-labelledby="res-h">
+        <div class="res-head">
+          <div>
+            <h2 id="res-h">This is yours.</h2>
+            <p class="sub" id="res-sub"></p>
+          </div>
+          <a class="cta" href="#request" id="cta">Get this <span aria-hidden="true">&#8594;</span></a>
+        </div>
+        <div class="sides" role="tablist" aria-label="Which side">
+          <button type="button" role="tab" aria-selected="true" data-side="client">Your client</button>
+          <button type="button" role="tab" aria-selected="false" data-side="owner">You</button>
+        </div>
+        <div class="stage" data-show="client">
+          <figure class="owner-side">
+            <figcaption>You see every project</figcaption>
+            <div class="screen"><iframe id="f-owner" title="Your dashboard, demo"></iframe></div>
+          </figure>
+          <figure class="client-side">
+            <figcaption>Your client sees theirs, on their phone</figcaption>
+            <div class="phone"><iframe id="f-client" title="Your client's portal, demo"></iframe></div>
+          </figure>
+        </div>
+        <p class="hint">Click anything: approve, answer, pay, message. Nothing is saved.</p>
+      </section>
+
+      <section id="request" class="contact offer-request" hidden aria-labelledby="req-h">
+        <div>
+          <h2 id="req-h">Get this set up.</h2>
+          <p class="contact-intro">Send your website. Within two days you get your own portal with your name, your services and a sample project. You keep your website.</p>
+          <p class="contact-terms">Recent build: <a href="../work/marquee/">The Marquee Studios</a>.</p>
+        </div>
+        <form id="demo-form" class="inquiry-form">
+          <div class="form-row"><label>Your name<input name="name" autocomplete="name" required minlength="2" maxlength="100" /></label><label>Email<input name="email" type="email" autocomplete="email" required maxlength="254" /></label></div>
+          <label>Your website<input name="site" type="text" inputmode="url" required maxlength="200" placeholder="yourbusiness.com" /></label>
+          <input type="hidden" name="kind" />
+          <label class="trap" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off" /></label>
+          <div class="form-actions"><button type="submit">Send it to me</button><span>Your email is only used for this.</span></div>
+          <p id="demo-status" class="form-status" role="status" tabindex="-1" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+    <footer class="foot"><span>Vyas Sathya, 2026</span><a href="../">vyasapps.dev</a></footer>
+    <script src="../demo/templates.js?v=5"></script>
+    <script src="offer.js?v=5"></script>
+  </body>
+</html>

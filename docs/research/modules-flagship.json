@@ -1,0 +1,175 @@
+﻿{
+  "kitchen-bath-remodel": {
+    "apps": ["Buildertrend", "CompanyCam", "QuickBooks"],
+    "texts": [
+      {"body": "Change order #3 needs your approval: move the outlet by the window, $240, no schedule change.", "go": "estimate", "ago": "2m"},
+      {"body": "8 new photos from today: upper cabinets hung, counters templated.", "go": "photos", "ago": "1h"},
+      {"body": "Reminder: pick your backsplash tile by Thursday so it arrives before the tile setter.", "go": "needs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "Change order #3: move outlet by window", "amount": 24000, "go": "estimate"},
+        {"kind": "Choose", "title": "Backsplash tile", "due": 2, "go": "schedule"},
+        {"kind": "Pay", "title": "Draw 3: cabinets and counters", "amount": 3400000, "due": 5, "go": "stages"}
+      ]},
+      {"type": "photos", "title": "From the job site", "posts": [
+        {"who": "Mike, lead carpenter", "date": "Today 3:40 pm", "caption": "Upper cabinets hung and leveled. Counter template done; quartz arrives Thursday.", "n": 4, "tags": ["Uppers", "Island", "Template", "Corner"]},
+        {"who": "Mike, lead carpenter", "date": "Yesterday", "caption": "Base cabinets set. Plumber moved the sink supply 6 in. left as discussed.", "n": 3, "tags": ["Bases", "Sink wall", "Supply"]},
+        {"who": "City inspector", "date": "Oct 1", "caption": "Rough plumbing and electrical passed.", "n": 2, "tags": ["Permit card", "Panel"]}
+      ]},
+      {"type": "estimate", "title": "Change order #3", "intro": "You asked to move the outlet by the window. Doing it now, with the backsplash, adds no time to the schedule.", "redLabel": "This change", "totalLabel": "Change order total", "items": [
+        {"t": "Move outlet 8 in. left: new box and wire", "price": 18000, "sev": "red", "pick": true, "photo": "Outlet"},
+        {"t": "Patch and paint the wall behind it", "price": 6000, "sev": "red", "pick": true, "photo": "Wall"}
+      ]},
+      {"type": "schedule", "title": "Who is coming this week", "items": [
+        {"when": "Thu 8 am", "what": "Quartz install", "who": "Stone crew of 3, about 4 hours"},
+        {"when": "Fri 9 am", "what": "Sink and faucet set", "who": "Ray, plumber"},
+        {"when": "Mon", "what": "Tile setter starts the backsplash", "who": "Needs your tile choice by Thursday"}
+      ]},
+      {"type": "stages", "title": "Where the job is", "steps": [
+        {"t": "Design and selections", "state": "done"},
+        {"t": "Permit", "state": "done", "who": "City building department", "date": "Approved Sep 22"},
+        {"t": "Demolition and rough-in", "state": "done"},
+        {"t": "Rough inspection", "state": "done", "who": "City inspector", "date": "Passed Oct 1"},
+        {"t": "Cabinets and counters", "state": "now", "note": "Cabinets are in and level. Quartz install Thursday."},
+        {"t": "Backsplash, paint, appliances", "state": "next"},
+        {"t": "Final inspection", "state": "next", "who": "City inspector"},
+        {"t": "Walkthrough and punch list", "state": "next"}
+      ]}
+    ]
+  },
+  "auto-repair": {
+    "apps": ["Tekmetric", "AutoVitals", "Stripe"],
+    "texts": [
+      {"body": "Your 2019 Honda CR-V inspection is ready. 2 items need attention now. Review and approve here.", "go": "estimate", "ago": "now"},
+      {"body": "Thanks for dropping off your CR-V. We will text you the inspection by 11 am.", "go": "stages", "ago": "8:10 am"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Approve", "title": "Estimate for your 2019 Honda CR-V", "go": "estimate"}
+      ]},
+      {"type": "estimate", "title": "Inspection and estimate", "ref": "RO 4821", "intro": "Here is what we found on your 2019 Honda CR-V EX at 62,410 miles. Approve what you want done; we start as soon as you sign.", "items": [
+        {"t": "Front brake pads at 2 mm, rotors scored", "note": "Replace front pads and rotors. Below 3 mm stopping distance gets longer.", "price": 38960, "sev": "red", "pick": true, "photo": "Pads 2 mm"},
+        {"t": "Battery weak: 380 of 550 cranking amps, terminals corroded", "note": "Replace battery and clean terminals. Likely to fail in cold weather.", "price": 21450, "sev": "red", "pick": true, "photo": "Test 380"},
+        {"t": "Engine air filter dirty", "note": "Replace now or at your next oil change.", "price": 4980, "sev": "yellow", "photo": "Filter"},
+        {"t": "Rear tires at 4/32 in.", "note": "Replace within about 3 months.", "price": 52000, "sev": "yellow", "photo": "Tread"},
+        {"t": "Steering and suspension", "sev": "green", "photo": "OK"},
+        {"t": "Fluids, lights and wipers", "sev": "green", "photo": "OK"}
+      ]},
+      {"type": "stages", "title": "Your car today", "steps": [
+        {"t": "Checked in", "state": "done", "date": "8:10 am"},
+        {"t": "Inspection", "state": "done", "date": "9:40 am"},
+        {"t": "Waiting for your approval", "state": "now", "note": "Parts are in stock. We start as soon as you approve."},
+        {"t": "Repair", "state": "next"},
+        {"t": "Road test and quality check", "state": "next"},
+        {"t": "Ready for pickup", "state": "next", "date": "Estimated 4:30 pm"}
+      ]}
+    ]
+  },
+  "immigration-law": {
+    "apps": ["Docketwise", "Clio", "LawPay"],
+    "texts": [
+      {"body": "We need 2 more documents before we can file your green card case. Upload them here.", "go": "docs", "ago": "now"},
+      {"body": "Your attorney left you a secure message. Open your portal to read it.", "go": "needs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Upload", "title": "Certified translation of your birth certificate", "go": "docs"},
+        {"kind": "Upload", "title": "Sponsor's 2023 IRS tax transcript", "go": "docs"},
+        {"kind": "Sign", "title": "Form I-864, Affidavit of Support", "due": 4, "go": "sign"}
+      ]},
+      {"type": "stages", "title": "Your case", "steps": [
+        {"t": "Questionnaire", "state": "done", "date": "Sep 18"},
+        {"t": "Gather documents", "state": "now", "note": "2 documents and 1 signature left, then we file."},
+        {"t": "File I-130 and I-485 with USCIS", "state": "next", "who": "Us"},
+        {"t": "Receipt notices", "state": "next", "who": "USCIS, usually 2 to 4 weeks after filing"},
+        {"t": "Biometrics appointment", "state": "next", "who": "USCIS Application Support Center"},
+        {"t": "Interview", "state": "next", "who": "USCIS field office"},
+        {"t": "Decision and green card", "state": "next", "who": "USCIS"}
+      ]},
+      {"type": "docs", "title": "Documents for your case", "items": [
+        {"t": "Passport, all pages", "state": "accepted"},
+        {"t": "Birth certificate", "state": "accepted"},
+        {"t": "Certified English translation of birth certificate", "state": "needed", "why": "Required for any document not in English"},
+        {"t": "Marriage certificate", "state": "accepted"},
+        {"t": "Sponsor's 2023 IRS tax transcript", "state": "needed", "why": "Download from IRS.gov; used for the I-864"},
+        {"t": "Joint lease or mortgage", "state": "received"},
+        {"t": "Photos together over time", "state": "received"},
+        {"t": "Divorce decree from a prior marriage", "state": "na"}
+      ]},
+      {"type": "sign", "title": "Forms to sign", "items": [
+        {"t": "Form I-864, Affidavit of Support", "by": 4},
+        {"t": "Form G-28, attorney representation", "signed": true}
+      ]}
+    ]
+  },
+  "wedding-planning": {
+    "apps": ["Aisle Planner", "HoneyBook"],
+    "texts": [
+      {"body": "Final guest count is due to the caterer in 9 days. Please confirm it in your portal.", "go": "countdown", "ago": "now"},
+      {"body": "The florist sent a revised proposal with more greenery. Have a look.", "go": "proof", "ago": "3h"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Confirm", "title": "Final guest count for the caterer", "due": 9, "go": "countdown"},
+        {"kind": "Approve", "title": "Revised florist proposal", "amount": 640000, "go": "proof"},
+        {"kind": "Pay", "title": "Photographer balance", "amount": 180000, "due": 12, "go": "countdown"}
+      ]},
+      {"type": "countdown", "to": "your wedding", "date": 58, "checklist": [
+        {"t": "Send the final guest count", "due": 9},
+        {"t": "Choose ceremony music", "due": 14},
+        {"t": "Final dress fitting", "due": 21},
+        {"t": "Write your vows", "due": 30}
+      ], "budget": [
+        {"vendor": "Venue", "total": 1800000, "paid": 1350000, "due": 30},
+        {"vendor": "Catering", "total": 2240000, "paid": 700000, "due": 45},
+        {"vendor": "Photography", "total": 600000, "paid": 420000, "due": 12},
+        {"vendor": "Florist", "total": 640000, "paid": 200000, "due": 20},
+        {"vendor": "Band", "total": 350000, "paid": 175000, "due": 40}
+      ]},
+      {"type": "proof", "title": "Florist proposal", "version": "v2", "round": 2, "rounds": 3, "file": "Ceremony arch, 12 centerpieces, bouquets", "comments": [
+        {"at": "Arch", "t": "More greenery, fewer roses", "done": true},
+        {"at": "Tables", "t": "Low centerpieces so guests can talk", "done": true}
+      ]},
+      {"type": "schedule", "title": "The day", "items": [
+        {"when": "3:00 pm", "what": "Hair and makeup done"},
+        {"when": "4:30 pm", "what": "Ceremony"},
+        {"when": "5:00 pm", "what": "Cocktail hour"},
+        {"when": "6:15 pm", "what": "Dinner"},
+        {"when": "7:30 pm", "what": "First dance"}
+      ]}
+    ]
+  },
+  "video-production": {
+    "apps": ["Frame.io", "Dropbox", "HoneyBook"],
+    "texts": [
+      {"body": "Cut v2 is ready: 1:30, with the shorter opening you asked for. Review it here.", "go": "proof", "ago": "now"},
+      {"body": "We still need your final logo files for the end card.", "go": "docs", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "Brand film, cut v2", "go": "proof"},
+        {"kind": "Send", "title": "Final logo files for the end card", "go": "docs"}
+      ]},
+      {"type": "proof", "title": "Brand film", "version": "v2", "round": 2, "rounds": 3, "file": "Spring launch brand film", "length": "1:30", "comments": [
+        {"at": "0:04", "t": "Start on the product; cut the first 8 seconds", "done": true},
+        {"at": "0:41", "t": "Music dips too much under the voiceover", "done": true},
+        {"at": "1:22", "t": "Use the new logo on the end card"}
+      ], "note": "Usage: web and paid social for 2 years. Music is licensed for the same."},
+      {"type": "stages", "title": "Where the film is", "steps": [
+        {"t": "Brief and script", "state": "done"},
+        {"t": "Shoot day", "state": "done", "date": "Oct 2"},
+        {"t": "First cut, v1", "state": "done"},
+        {"t": "Cut v2", "state": "now", "note": "Your v1 notes are in. Approve or add notes by Friday."},
+        {"t": "Picture lock", "state": "next"},
+        {"t": "Color and sound mix", "state": "next"},
+        {"t": "Delivery: master and 3 social cuts", "state": "next"}
+      ]},
+      {"type": "docs", "title": "Files we need from you", "items": [
+        {"t": "Final logo files", "state": "needed", "why": "SVG or PNG, for the end card"},
+        {"t": "Brand fonts", "state": "received"},
+        {"t": "Product shots", "state": "accepted"}
+      ]}
+    ]
+  }
+}

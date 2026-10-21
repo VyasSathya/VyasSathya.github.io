@@ -1,0 +1,579 @@
+{
+  "bookkeeping-cleanup": {
+    "apps": ["QuickBooks Online", "Double", "Financial Cents", "Dext"],
+    "texts": [
+      {"body": "You have 23 transaction questions waiting. Most are Venmo and Zelle payments from July to September.", "go": "tickets", "ago": "now"},
+      {"body": "We still need your August and September Amex statements to finish the card reconciliation.", "go": "docs", "ago": "Yesterday"},
+      {"body": "June is reconciled. Your updated P&L is in your portal.", "go": "stages", "ago": "Oct 14"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Answer", "title": "23 uncategorized transactions, July to September", "due": 3, "go": "tickets"},
+        {"kind": "Upload", "title": "Amex statements: August and September", "due": 3, "go": "docs"},
+        {"kind": "Upload", "title": "Kabbage loan statement as of Sep 30", "go": "docs"}
+      ]},
+      {"type": "tickets", "title": "Questions about your transactions", "items": [
+        {"t": "Venmo, $412.00, Jul 14", "who": "Paid to @sf-flower-mart", "state": "Needs your answer"},
+        {"t": "Zelle, $1,250.00, Aug 2", "who": "Paid to R. Diaz", "state": "Needs your answer"},
+        {"t": "Deposit, $3,800.00, Aug 19", "who": "Mobile check deposit, no memo", "state": "Needs your answer"},
+        {"t": "Amazon, $286.45, Sep 6", "who": "Business or personal?", "state": "Needs your answer"},
+        {"t": "Square payout gap, $96.10, Jun 30", "who": "Merchant fee, booked", "state": "Resolved"}
+      ]},
+      {"type": "docs", "title": "Statements we need", "items": [
+        {"t": "Chase business checking, Jan to Sep", "state": "accepted"},
+        {"t": "Chase savings, Jan to Sep", "state": "accepted"},
+        {"t": "Amex Business Gold, Jan to Jul", "state": "accepted"},
+        {"t": "Amex Business Gold, August", "state": "needed", "why": "Download the PDF statement, not the activity export"},
+        {"t": "Amex Business Gold, September", "state": "needed", "why": "Download the PDF statement, not the activity export"},
+        {"t": "Kabbage loan statement as of Sep 30", "state": "needed", "why": "To tie the loan balance to the lender"},
+        {"t": "2024 business tax return", "state": "received"},
+        {"t": "PayPal business account statements", "state": "na"}
+      ]},
+      {"type": "stages", "title": "Months caught up", "steps": [
+        {"t": "Access and trial balance review", "state": "done", "date": "Sep 12"},
+        {"t": "January to March", "state": "done", "date": "Categorized and reconciled"},
+        {"t": "April to June", "state": "done", "date": "Categorized and reconciled"},
+        {"t": "July to September", "state": "now", "note": "Categorized except 23 transactions. Card reconciliations wait on the Amex statements."},
+        {"t": "Loan tied to lender statement", "state": "next"},
+        {"t": "P&L and balance sheet delivered", "state": "next"},
+        {"t": "First monthly close: October", "state": "next", "who": "Then by the 15th of every month"}
+      ], "note": "Ask My Accountant balance: $6,214.88 across 23 transactions."}
+    ]
+  },
+  "tax-prep-individual": {
+    "apps": ["TaxDome", "SafeSend Returns", "Drake Tax"],
+    "texts": [
+      {"body": "Your 2025 tax return is ready for review and signature. Open your portal to see it.", "go": "sign", "ago": "now"},
+      {"body": "Your tax organizer has 3 open document requests. Upload them or mark them does not apply.", "go": "docs", "ago": "3d"},
+      {"body": "Reminder: Form 8879 still needs your spouse's signature before we can e-file.", "go": "sign", "ago": "Yesterday"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Upload", "title": "Fidelity consolidated 1099", "go": "docs"},
+        {"kind": "Answer", "title": "2025 estimated payment dates and amounts", "go": "docs"},
+        {"kind": "Pay", "title": "Return preparation fee", "amount": 65000, "go": "sign"},
+        {"kind": "Sign", "title": "Form 8879, IRS e-file signature authorization", "due": 5, "go": "sign"}
+      ]},
+      {"type": "docs", "title": "2025 tax organizer", "items": [
+        {"t": "W-2: James, Kaiser Permanente", "state": "accepted"},
+        {"t": "W-2: Priya, Oakland Unified", "state": "accepted"},
+        {"t": "Form 1098, mortgage interest", "state": "accepted"},
+        {"t": "Fidelity consolidated 1099 (1099-DIV, 1099-B)", "state": "needed", "why": "Posts mid-February; upload it as is, we update if a corrected one comes"},
+        {"t": "Schedule C: income and expense summary for the side business", "state": "received"},
+        {"t": "Rental: rents received, repairs, property tax, insurance", "state": "received"},
+        {"t": "Estimated tax payments made in 2025, with dates", "state": "needed", "why": "Federal and state, from IRS online account or bank records"},
+        {"t": "Form 1095-A, Marketplace health coverage", "state": "needed", "why": "Only if anyone in the household had a Marketplace plan"},
+        {"t": "Schedule K-1 from a partnership or S corp", "state": "na"},
+        {"t": "Form 1098-T, tuition", "state": "na"}
+      ]},
+      {"type": "sign", "title": "To sign", "items": [
+        {"t": "Form 8879, IRS e-file signature authorization (identity check first)", "by": 5},
+        {"t": "Form CA 8879, California e-file authorization", "by": 5},
+        {"t": "Engagement letter", "signed": true},
+        {"t": "Section 7216 consent to use tax return information", "signed": true}
+      ]},
+      {"type": "stages", "title": "Your 2025 return", "steps": [
+        {"t": "Engagement and organizer", "state": "done", "date": "Feb 3"},
+        {"t": "Documents received", "state": "done", "date": "Mar 4"},
+        {"t": "Prepared and reviewed", "state": "done", "who": "Second preparer review"},
+        {"t": "Your review and signature", "state": "now", "note": "Pay the invoice to unlock the full return, then both of you sign Form 8879."},
+        {"t": "E-filed", "state": "next", "who": "Us"},
+        {"t": "IRS acceptance", "state": "next", "who": "IRS, usually within 48 hours"},
+        {"t": "State acceptance", "state": "next", "who": "California Franchise Tax Board"}
+      ], "note": "Federal refund $2,184 by direct deposit. California balance due $312 by April 15."}
+    ]
+  },
+  "tax-prep-business": {
+    "apps": ["TaxDome", "UltraTax CS", "SafeSend Returns"],
+    "texts": [
+      {"body": "We need the truck purchase invoice and your December bank reconciliations to finish the 1120-S.", "go": "docs", "ago": "now"},
+      {"body": "Your draft 2025 Schedule K-1 is ready to review in your portal.", "go": "stages", "ago": "2d"},
+      {"body": "Form 8879-S is ready to sign. The return is due March 16.", "go": "sign", "ago": "Mar 9"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Upload", "title": "Invoice for the 2025 F-250 purchase", "go": "docs"},
+        {"kind": "Upload", "title": "December bank reconciliations", "go": "docs"},
+        {"kind": "Answer", "title": "Section 179 on the truck: decide before we draft", "due": 3, "go": "stages"},
+        {"kind": "Sign", "title": "Form 8879-S", "due": 10, "go": "sign"}
+      ]},
+      {"type": "docs", "title": "Year-end request list", "items": [
+        {"t": "Year-end trial balance from QuickBooks", "state": "accepted"},
+        {"t": "December bank reconciliations", "state": "needed", "why": "Operating and payroll accounts"},
+        {"t": "W-3 and all four 2025 Form 941s", "state": "accepted"},
+        {"t": "Fixed asset purchases list", "state": "received"},
+        {"t": "Invoice for the 2025 F-250", "state": "needed", "why": "Needed for depreciation and Section 179"},
+        {"t": "Equipment loan year-end statement", "state": "received", "why": "To split interest and principal"},
+        {"t": "Shareholder loan activity", "state": "na"}
+      ]},
+      {"type": "stages", "title": "2025 Form 1120-S", "steps": [
+        {"t": "Engagement and year-end books", "state": "done", "date": "Jan 21"},
+        {"t": "Payroll tie-out", "state": "done", "note": "W-2s and 941s tie to the books."},
+        {"t": "Adjustments and depreciation", "state": "now", "note": "Waiting on the truck invoice and your Section 179 choice. We will show both numbers on the call."},
+        {"t": "Draft 1120-S, state return and K-1", "state": "next"},
+        {"t": "Partner review", "state": "next"},
+        {"t": "Sign 8879-S and file", "state": "next", "date": "Due March 16"},
+        {"t": "IRS and state acceptance", "state": "next", "who": "IRS and California FTB"},
+        {"t": "K-1 delivered to your portal", "state": "next"}
+      ]},
+      {"type": "sign", "title": "To sign", "items": [
+        {"t": "Form 8879-S, S corporation e-file authorization", "by": 10},
+        {"t": "Engagement letter, 2025 business return", "signed": true}
+      ]}
+    ]
+  },
+  "fractional-cfo": {
+    "apps": ["QuickBooks Online", "Fathom", "Float", "Karbon"],
+    "texts": [
+      {"body": "This week's 13-week cash forecast is updated. Low point moved to March 6.", "go": "proof", "ago": "now"},
+      {"body": "We need your Q1 hiring plan and the new roaster lease terms to finish the budget.", "go": "docs", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "13-week cash forecast, week of Oct 20", "go": "proof"},
+        {"kind": "Upload", "title": "Q1 hiring plan", "due": 4, "go": "docs"},
+        {"kind": "Upload", "title": "New roaster lease terms", "due": 4, "go": "docs"},
+        {"kind": "Pay", "title": "October retainer", "amount": 500000, "due": 10, "go": "stages"}
+      ]},
+      {"type": "proof", "title": "13-week cash forecast", "version": "v4", "round": 4, "rounds": 13, "file": "Weekly cash forecast, Oct 20 to Jan 12", "specs": [["Opening cash", "$64,200"], ["Low point", "$18,400, week 9"], ["Wholesale AR due", "$41,700"], ["Payroll per cycle", "$22,800"]], "comments": [
+        {"at": "Week 6", "t": "Green coffee contract payment moved to net 30", "done": true},
+        {"at": "Week 9", "t": "Show the case with wholesale terms pulled in by 15 days"},
+        {"at": "Week 11", "t": "Add the roaster lease deposit once terms are final"}
+      ], "note": "Refreshed every Monday through the busy season."},
+      {"type": "docs", "title": "What the forecast and budget need", "items": [
+        {"t": "AR aging as of Oct 17", "state": "accepted"},
+        {"t": "AP aging as of Oct 17", "state": "accepted"},
+        {"t": "Equipment loan and SBA loan schedules", "state": "accepted"},
+        {"t": "Q1 hiring plan: roles, start dates, pay", "state": "needed", "why": "Changes payroll from week 12"},
+        {"t": "New roaster lease terms", "state": "needed", "why": "Deposit and rent start date"},
+        {"t": "Wholesale customer contracts", "state": "received"}
+      ]},
+      {"type": "schedule", "title": "Coming up", "items": [
+        {"when": "Thu 10 am", "what": "Forecast review: cash options for March", "who": "Video call, 45 minutes"},
+        {"when": "Nov 3", "what": "Budget assumptions workshop"},
+        {"when": "Nov 20", "what": "Line-of-credit package to the bank", "who": "Relationship manager at the bank"}
+      ]},
+      {"type": "stages", "title": "First 90 days", "steps": [
+        {"t": "Financial assessment and roadmap", "state": "done", "date": "Sep 30"},
+        {"t": "13-week cash forecast", "state": "done", "date": "Live, weekly refresh"},
+        {"t": "Budget and KPI dashboard", "state": "now", "note": "Budget assumptions next. Needs the hiring plan and lease terms."},
+        {"t": "Lender package", "state": "next", "who": "Your bank decides on the line"}
+      ]}
+    ]
+  },
+  "estate-planning": {
+    "apps": ["WealthCounsel", "Clio", "DecisionVault", "LawPay"],
+    "texts": [
+      {"body": "Your draft trust, wills and powers of attorney are ready to review. Please send comments by Friday.", "go": "docs", "ago": "now"},
+      {"body": "Your attorney left you a secure message. Open your portal to read it.", "go": "needs", "ago": "Yesterday"},
+      {"body": "Reminder: your signing appointment is in 3 days. Bring photo ID for both of you.", "go": "sign", "ago": "Nov 11"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "Comments on the draft trust", "due": 4, "go": "docs"},
+        {"kind": "Answer", "title": "Asset list: retirement accounts section", "due": 4, "go": "docs"},
+        {"kind": "Confirm", "title": "Signing appointment, Nov 14 at 10 am", "go": "sign"},
+        {"kind": "Pay", "title": "Balance due at signing", "amount": 175000, "due": 25, "go": "sign"}
+      ]},
+      {"type": "docs", "title": "Questionnaire and drafts", "items": [
+        {"t": "Family: spouse, children, prior marriages", "state": "accepted"},
+        {"t": "Fiduciaries: trustees, guardians, agents", "state": "accepted"},
+        {"t": "Assets: home and real property", "state": "accepted"},
+        {"t": "Assets: bank and brokerage accounts", "state": "received"},
+        {"t": "Assets: retirement accounts and life insurance", "state": "needed", "why": "Institution, owner and current beneficiary for each"},
+        {"t": "Current grant deed for the house", "state": "accepted"},
+        {"t": "Comments on the draft trust", "state": "needed", "why": "Mark changes in the draft or list them here"},
+        {"t": "Out-of-state real property", "state": "na"}
+      ]},
+      {"type": "sign", "title": "Signing ceremony, Nov 14 at 10 am", "items": [
+        {"t": "Revocable living trust", "by": 25},
+        {"t": "Pour-over wills (2)", "by": 25},
+        {"t": "Durable financial powers of attorney (2)", "by": 25},
+        {"t": "Advance health care directives (2)", "by": 25},
+        {"t": "Grant deed to the trust", "by": 25},
+        {"t": "Engagement letter", "signed": true}
+      ]},
+      {"type": "stages", "title": "Your plan", "steps": [
+        {"t": "Questionnaire and design meeting", "state": "done", "date": "Oct 2"},
+        {"t": "Draft review", "state": "now", "note": "Drafts are in your portal. Comments by Friday keep the Nov 14 signing."},
+        {"t": "Signing ceremony", "state": "next", "who": "In office with 2 witnesses and a notary", "date": "Nov 14"},
+        {"t": "Deed recorded to the trust", "state": "next", "who": "County recorder, usually 2 to 4 weeks"},
+        {"t": "Trust funding", "state": "next", "who": "You, with our funding letters for each bank and brokerage"},
+        {"t": "Beneficiary designations updated", "state": "next", "who": "You, with each retirement plan and insurer"}
+      ], "note": "The trust only controls what is titled in its name. Funding is the step that finishes it."}
+    ]
+  },
+  "family-law": {
+    "apps": ["Clio", "MyCase", "OurFamilyWizard", "LawPay"],
+    "texts": [
+      {"body": "You have a new secure message. Open your portal to read it.", "go": "needs", "ago": "now"},
+      {"body": "A new document request is waiting in your portal.", "go": "docs", "ago": "Yesterday"},
+      {"body": "Reminder: you have an appointment on Nov 6. Details are in your portal.", "go": "schedule", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Upload", "title": "Latest 401(k) statement", "due": 3, "go": "docs"},
+        {"kind": "Upload", "title": "Last 2 months of pay stubs", "due": 3, "go": "docs"},
+        {"kind": "Pay", "title": "Retainer replenishment to $5,000", "amount": 215000, "due": 7, "go": "stages"},
+        {"kind": "Sign", "title": "Declaration of disclosure", "due": 9, "go": "sign"}
+      ]},
+      {"type": "docs", "title": "Financial disclosure", "items": [
+        {"t": "2023 and 2024 tax returns", "state": "accepted"},
+        {"t": "Pay stubs, last 2 months", "state": "needed", "why": "For the income and expense declaration"},
+        {"t": "401(k) statement, most recent quarter", "state": "needed", "why": "To finish the schedule of assets and debts"},
+        {"t": "Joint checking and savings, last 12 months", "state": "accepted"},
+        {"t": "Mortgage statement and home insurance", "state": "received"},
+        {"t": "Credit card statements in your name", "state": "received"},
+        {"t": "Separate property records from before the marriage", "state": "na"}
+      ]},
+      {"type": "schedule", "title": "Hearings and meetings", "items": [
+        {"when": "Nov 6, 9 am", "what": "Prep call for mediation", "who": "Your attorney, 30 minutes"},
+        {"when": "Nov 13, 9:30 am", "what": "Mediation, full day", "who": "Private mediator; bring your custody calendar"},
+        {"when": "Dec 4, 8:30 am", "what": "Case management conference", "who": "Superior Court, Dept. 12"}
+      ]},
+      {"type": "sign", "title": "To sign", "items": [
+        {"t": "Declaration of disclosure (FL-140)", "by": 9},
+        {"t": "Income and expense declaration (FL-150)", "by": 9},
+        {"t": "Fee agreement", "signed": true}
+      ]},
+      {"type": "stages", "title": "Your case", "steps": [
+        {"t": "Petition filed and served", "state": "done", "date": "Served Aug 28"},
+        {"t": "Financial disclosures", "state": "now", "note": "We need your 401(k) statement and pay stubs to serve your disclosure."},
+        {"t": "Mediation and settlement", "state": "next", "date": "Mediation Nov 13"},
+        {"t": "Judgment entered", "state": "next", "who": "Court; not before 6 months from service, Feb 28"},
+        {"t": "Retirement split order (QDRO)", "state": "next", "who": "Plan administrator"}
+      ], "note": "Trust balance $2,850. Agreement minimum $5,000."}
+    ]
+  },
+  "business-law": {
+    "apps": ["Clio", "DocuSign", "Lawmatics", "LawPay"],
+    "texts": [
+      {"body": "Your LLC is approved and the EIN is issued. Both documents are in your portal.", "go": "docs", "ago": "2d"},
+      {"body": "The operating agreement is ready for both members to sign.", "go": "sign", "ago": "now"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Sign", "title": "Operating agreement: both members", "due": 5, "go": "sign"},
+        {"kind": "Answer", "title": "Deal terms questionnaire for the client contract", "due": 10, "go": "docs"},
+        {"kind": "Pay", "title": "Operating agreement package", "amount": 150000, "go": "stages"}
+      ]},
+      {"type": "stages", "title": "Fieldstone Studio LLC", "steps": [
+        {"t": "Articles of organization filed", "state": "done", "who": "Secretary of State", "date": "Approved Oct 8"},
+        {"t": "EIN issued", "state": "done", "who": "IRS", "date": "Oct 9"},
+        {"t": "Operating agreement", "state": "now", "note": "Draft has your 50/50 split and a buyout at capital contributed for the first 2 years. Both of you sign."},
+        {"t": "Statement of Information", "state": "next", "who": "Secretary of State, due within 90 days of formation"},
+        {"t": "City business license", "state": "next", "who": "City finance department"},
+        {"t": "Master services agreement and SOW template", "state": "next"}
+      ]},
+      {"type": "sign", "title": "To sign", "items": [
+        {"t": "Operating agreement, Tom Alvarez", "by": 5},
+        {"t": "Operating agreement, Nina Brooks", "by": 5},
+        {"t": "Engagement letter", "signed": true}
+      ]},
+      {"type": "docs", "title": "Company records", "items": [
+        {"t": "Articles of organization, filed", "state": "accepted"},
+        {"t": "IRS EIN confirmation letter (CP 575)", "state": "accepted"},
+        {"t": "Capital contribution amounts for each member", "state": "received"},
+        {"t": "Deal terms questionnaire: payment terms, IP, liability cap", "state": "needed", "why": "We draft the client contract from it"},
+        {"t": "Sample client proposal you send today", "state": "needed", "why": "So the SOW template matches how you sell"},
+        {"t": "Fictitious business name filing", "state": "na"}
+      ]}
+    ]
+  },
+  "real-estate-buyer": {
+    "apps": ["Dotloop", "SkySlope", "Follow Up Boss", "DocuSign"],
+    "texts": [
+      {"body": "Inspection report for 418 Maple Ave is in your folder. Inspection contingency ends Thursday.", "go": "countdown", "ago": "now"},
+      {"body": "The repair request is ready for both of you to sign.", "go": "sign", "ago": "1h"},
+      {"body": "Wire instructions will never come by text or email. Call escrow at the number on your contract before you send money.", "go": "stages", "ago": "Oct 9"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Choose", "title": "What to ask for after the inspection", "due": 2, "go": "countdown"},
+        {"kind": "Sign", "title": "Request for repair: $8,000 closing cost credit", "due": 2, "go": "sign"},
+        {"kind": "Confirm", "title": "Homeowners insurance quote sent to the lender", "due": 7, "go": "stages"}
+      ]},
+      {"type": "countdown", "to": "closing on 418 Maple Ave", "date": 21, "checklist": [
+        {"t": "Inspection contingency ends", "due": 3},
+        {"t": "Appraisal contingency ends", "due": 10},
+        {"t": "Loan contingency ends", "due": 14},
+        {"t": "Closing Disclosure in hand (3 business days before signing)", "due": 16},
+        {"t": "Final walkthrough", "due": 20}
+      ]},
+      {"type": "stages", "title": "Contract to close", "steps": [
+        {"t": "Offer accepted", "state": "done", "date": "Sep 30"},
+        {"t": "Earnest money to escrow", "state": "done", "who": "Escrow officer", "date": "Received Oct 2"},
+        {"t": "Inspections", "state": "now", "note": "Roof is near end of life. We recommend asking for an $8,000 credit; contingency ends Thursday.", "who": "Your agent and the seller's agent"},
+        {"t": "Appraisal", "state": "next", "who": "Appraiser ordered by your lender"},
+        {"t": "Loan approval and clear to close", "state": "next", "who": "Your lender"},
+        {"t": "Final walkthrough", "state": "next", "who": "You and your agent"},
+        {"t": "Signing and funding", "state": "next", "who": "Escrow and title"},
+        {"t": "Deed recorded and keys", "state": "next", "who": "County recorder"}
+      ]},
+      {"type": "sign", "title": "Documents to sign", "items": [
+        {"t": "Request for repair", "by": 2},
+        {"t": "Inspection contingency removal", "by": 3},
+        {"t": "Purchase agreement", "signed": true},
+        {"t": "Buyer representation agreement", "signed": true},
+        {"t": "Seller disclosure acknowledgment", "signed": true}
+      ]}
+    ]
+  },
+  "real-estate-seller": {
+    "apps": ["Dotloop", "ShowingTime", "SkySlope", "DocuSign"],
+    "texts": [
+      {"body": "The buyer's repair request on 27 Birch Court came in. Please review it today; we have 3 days to respond.", "go": "sign", "ago": "now"},
+      {"body": "Appraisal came in at the contract price. Loan contingency ends next week.", "go": "stages", "ago": "2d"},
+      {"body": "Please leave the HOA documents and a spare key by Wednesday.", "go": "needs", "ago": "Oct 15"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Sign", "title": "Response to the buyer's repair request", "due": 3, "go": "sign"},
+        {"kind": "Confirm", "title": "Mortgage payoff authorization for escrow", "due": 5, "go": "stages"},
+        {"kind": "Confirm", "title": "Move-out date before possession", "go": "countdown"}
+      ]},
+      {"type": "countdown", "to": "closing on 27 Birch Court", "date": 18, "checklist": [
+        {"t": "Respond to buyer repair request", "due": 3},
+        {"t": "Buyer's loan contingency ends", "due": 8},
+        {"t": "Repairs done, receipts to buyer", "due": 12},
+        {"t": "Buyer's final walkthrough", "due": 17},
+        {"t": "Move out, keys and garage remotes to your agent", "due": 18}
+      ]},
+      {"type": "stages", "title": "Under contract", "steps": [
+        {"t": "Offer accepted at $608,000", "state": "done", "date": "Oct 3"},
+        {"t": "Buyer's earnest money", "state": "done", "who": "Escrow officer", "date": "Oct 6"},
+        {"t": "Buyer inspection and repair request", "state": "now", "note": "Buyer asks for a $3,500 credit for the water heater and two GFCI outlets. You can agree, counter or refuse.", "who": "Buyer's agent"},
+        {"t": "Appraisal", "state": "done", "who": "Buyer's lender", "date": "At contract price"},
+        {"t": "Buyer loan approval", "state": "next", "who": "Buyer's lender"},
+        {"t": "Payoff ordered and seller documents signed", "state": "next", "who": "Escrow and title"},
+        {"t": "Deed recorded and proceeds sent", "state": "next", "who": "County recorder and escrow"}
+      ]},
+      {"type": "sign", "title": "Documents to sign", "items": [
+        {"t": "Seller response to request for repair", "by": 3},
+        {"t": "Listing agreement", "signed": true},
+        {"t": "Seller disclosures and HOA disclosure", "signed": true},
+        {"t": "Purchase agreement and counter offer 1", "signed": true}
+      ]}
+    ]
+  },
+  "mortgage-broker": {
+    "apps": ["Floify", "Encompass", "Arive"],
+    "texts": [
+      {"body": "Underwriting issued 3 new conditions on your loan. Upload them in your portal.", "go": "docs", "ago": "now"},
+      {"body": "Time sensitive: your Closing Disclosure is ready to review and sign.", "go": "sign", "ago": "Nov 6"},
+      {"body": "Your loan reached Conditional approval.", "go": "stages", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Upload", "title": "Signed gift letter for the $6,000 deposit on Sep 3", "due": 2, "go": "docs"},
+        {"kind": "Upload", "title": "Donor's bank statement showing the $6,000", "due": 2, "go": "docs"},
+        {"kind": "Upload", "title": "October bank statement, all pages", "due": 2, "go": "docs"}
+      ]},
+      {"type": "stages", "title": "Your loan", "steps": [
+        {"t": "Application", "state": "done", "date": "Oct 1"},
+        {"t": "Processing", "state": "done", "date": "Oct 9", "who": "Processor"},
+        {"t": "Underwriting", "state": "done", "date": "Oct 16", "who": "Lender's underwriter"},
+        {"t": "Conditional approval", "state": "now", "note": "3 conditions left, all about the $6,000 gift and your latest statement. Clear them and underwriting signs off."},
+        {"t": "Clear to close", "state": "next", "who": "Lender's underwriter"},
+        {"t": "Closing Disclosure", "state": "next", "who": "Lender; at least 3 business days before signing"},
+        {"t": "Signing and funding", "state": "next", "who": "Escrow, title and lender"}
+      ], "note": "Rate locked through Nov 14."},
+      {"type": "docs", "title": "Conditions", "items": [
+        {"t": "Pay stubs, last 30 days", "state": "accepted"},
+        {"t": "2024 and 2025 W-2s", "state": "accepted"},
+        {"t": "August and September bank statements", "state": "accepted"},
+        {"t": "Signed gift letter", "state": "needed", "why": "Donor, amount, relationship, no repayment expected; template in your portal"},
+        {"t": "Donor's bank statement showing the $6,000 leaving", "state": "needed", "why": "Sources the Sep 3 deposit"},
+        {"t": "October bank statement, all pages", "state": "needed", "why": "Blank pages too; underwriting needs every page"},
+        {"t": "Homeowners insurance binder", "state": "received"},
+        {"t": "Letter of explanation for credit inquiry", "state": "na"}
+      ]},
+      {"type": "sign", "title": "Disclosures", "items": [
+        {"t": "Intent to proceed", "signed": true},
+        {"t": "Initial disclosures and Loan Estimate", "signed": true},
+        {"t": "Credit authorization", "signed": true},
+        {"t": "Closing Disclosure", "by": 17}
+      ]}
+    ]
+  },
+  "business-consulting": {
+    "apps": ["Google Workspace", "Notion", "HoneyBook"],
+    "texts": [
+      {"body": "The findings memo is ready. Add your comments before Wednesday's options workshop.", "go": "proof", "ago": "now"},
+      {"body": "We still need the 12-month job export from ServiceTitan to finish the pricing analysis.", "go": "docs", "ago": "3d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "Findings memo, v1", "due": 2, "go": "proof"},
+        {"kind": "Upload", "title": "12-month job export from ServiceTitan", "due": 4, "go": "docs"},
+        {"kind": "Pay", "title": "Phase 2: recommendations", "amount": 600000, "due": 10, "go": "stages"}
+      ]},
+      {"type": "proof", "title": "Findings memo", "version": "v1", "round": 1, "rounds": 2, "file": "Operations and pricing review: findings", "comments": [
+        {"at": "p. 3", "t": "Dispatch double-books the north crew on Mondays; about 6 hours a week lost"},
+        {"at": "p. 5", "t": "Drain calls priced below cost on 38 percent of jobs"},
+        {"at": "p. 7", "t": "Add the after-hours call data once the export is in"}
+      ], "note": "Confidential to Foster Home Services. Staff interview notes are summarized, not quoted by name."},
+      {"type": "docs", "title": "Data request", "items": [
+        {"t": "Price book, current", "state": "accepted"},
+        {"t": "Payroll summary by tech, last 12 months", "state": "accepted"},
+        {"t": "12-month job export from ServiceTitan", "state": "needed", "why": "Job type, hours, invoice total and tech per job"},
+        {"t": "Dispatch board screenshots for 2 typical weeks", "state": "received"},
+        {"t": "Membership plan sign-ups", "state": "na"}
+      ]},
+      {"type": "stages", "title": "Engagement", "steps": [
+        {"t": "Discovery", "state": "now", "note": "Interviews done. Findings memo is out for your comments; pricing analysis waits on the job export."},
+        {"t": "Options workshop and recommendations", "state": "next", "date": "Wednesday"},
+        {"t": "90-day implementation plan", "state": "next"},
+        {"t": "Training and 30-day check-in", "state": "next"}
+      ]}
+    ]
+  },
+  "recruiting-search": {
+    "apps": ["Loxo", "LinkedIn Recruiter", "Greenhouse"],
+    "texts": [
+      {"body": "Your VP of Operations slate is ready: 5 candidates. Please send feedback by Tuesday.", "go": "proof", "ago": "now"},
+      {"body": "Candidate 4 has another final round next week. Feedback today keeps her in your process.", "go": "needs", "ago": "2h"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "Feedback on candidates 2 and 4", "due": 1, "go": "proof"},
+        {"kind": "Confirm", "title": "CEO interview slots for Monday", "due": 2, "go": "schedule"},
+        {"kind": "Pay", "title": "Retainer, second third (slate delivered)", "amount": 1500000, "due": 15, "go": "stages"}
+      ]},
+      {"type": "stages", "title": "VP of Operations search", "steps": [
+        {"t": "Kickoff and position spec", "state": "done", "date": "Sep 8"},
+        {"t": "Sourcing and screening", "state": "done", "date": "112 contacted, 14 screened"},
+        {"t": "Slate presented", "state": "now", "note": "5 candidates. Two have competing processes, so fast feedback matters."},
+        {"t": "First-round interviews", "state": "next", "who": "Your hiring team"},
+        {"t": "Finalists and references", "state": "next"},
+        {"t": "Offer and acceptance", "state": "next", "who": "The candidate"},
+        {"t": "Start date", "state": "next", "who": "Target Q1"}
+      ], "note": "Replacement guarantee: 12 months from start."},
+      {"type": "proof", "title": "Candidate slate", "version": "Slate 1", "round": 1, "rounds": 2, "file": "5 candidate reports, VP of Operations", "specs": [["Target cash comp", "$240,000 to $275,000"], ["Location", "Hybrid, 3 days on site"]], "comments": [
+        {"at": "Candidate 1", "t": "COO, 3-site outpatient group; 15 years in health ops"},
+        {"at": "Candidate 2", "t": "Director of Operations, regional hospital system; ready for first VP role"},
+        {"at": "Candidate 3", "t": "VP Ops, digital health startup; strong on systems, lighter on clinical sites"},
+        {"at": "Candidate 4", "t": "VP Ops, home health company; in final round elsewhere"},
+        {"at": "Candidate 5", "t": "Senior Director, payer operations; open to relocation"}
+      ], "note": "Candidate reports are confidential. Do not forward outside your hiring team."},
+      {"type": "schedule", "title": "Interviews", "items": [
+        {"when": "Thu 2 pm", "what": "First round: candidate 1", "who": "Rachel Kim and COO, video"},
+        {"when": "Fri 11 am", "what": "First round: candidate 4", "who": "Rachel Kim and COO, video"},
+        {"when": "Mon", "what": "CEO conversation: candidate 4", "who": "Slots to confirm"}
+      ]}
+    ]
+  },
+  "insurance-broker-commercial": {
+    "apps": ["Applied Epic", "Indio", "EZLynx"],
+    "texts": [
+      {"body": "Your renewal applications are ready to sign. We need them back this week to get quotes before Thanksgiving.", "go": "sign", "ago": "now"},
+      {"body": "Quotes are in from 3 markets. Your renewal proposal is ready to review.", "go": "stages", "ago": "Nov 21"},
+      {"body": "Certificate of insurance for the Oak Street job is in your portal.", "go": "docs", "ago": "Oct 2"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Sign", "title": "ACORD applications: GL, property, auto, workers comp", "due": 4, "go": "sign"},
+        {"kind": "Upload", "title": "Updated vehicle and equipment schedule", "due": 4, "go": "docs"},
+        {"kind": "Confirm", "title": "2026 payroll estimate by class code", "due": 4, "go": "docs"}
+      ]},
+      {"type": "stages", "title": "Jan 1 renewal", "steps": [
+        {"t": "Renewal meeting and exposures", "state": "done", "date": "Oct 1"},
+        {"t": "Loss runs from current carriers", "state": "done", "date": "5 years received"},
+        {"t": "Applications signed", "state": "now", "note": "Sign the ACORD applications so we can submit to 4 markets this week."},
+        {"t": "Submission to markets", "state": "next", "who": "Incumbent carrier, 2 regional contractor markets, 1 E&S market via wholesaler"},
+        {"t": "Quotes and proposal", "state": "next", "who": "Carriers set quote timing"},
+        {"t": "Bind request", "state": "next", "who": "You choose an option; we request binding"},
+        {"t": "Binders and certificates", "state": "next", "who": "Carrier issues the binder; coverage is bound only then"}
+      ], "note": "Current policies expire Jan 1, 12:01 am. Current premium $84,200; incumbent indicated about 18 percent higher."},
+      {"type": "docs", "title": "Renewal information", "items": [
+        {"t": "Loss runs, 5 years, all lines", "state": "accepted"},
+        {"t": "2025 payroll by class code", "state": "accepted"},
+        {"t": "2026 payroll estimate by class code", "state": "needed", "why": "Workers comp is rated on payroll"},
+        {"t": "Vehicle and equipment schedule with the new excavator", "state": "needed", "why": "Add VIN, year and value; excavator at $185,000"},
+        {"t": "Subcontractor certificates of insurance", "state": "received"},
+        {"t": "Statement of values, shop building", "state": "accepted"},
+        {"t": "Certificate of insurance, Oak Street job", "state": "accepted"}
+      ]},
+      {"type": "sign", "title": "To sign", "items": [
+        {"t": "ACORD 125, commercial insurance application", "by": 4},
+        {"t": "ACORD 126 general liability and 130 workers comp", "by": 4},
+        {"t": "ACORD 127 business auto and 140 property", "by": 4},
+        {"t": "Contractor supplemental application", "by": 4},
+        {"t": "Broker of record letter", "signed": true}
+      ]}
+    ]
+  },
+  "grant-writing": {
+    "apps": ["Instrumentl", "Candid", "Submittable", "Google Docs"],
+    "texts": [
+      {"body": "Narrative draft v2 is ready. Please send edits by Friday so we keep a week before the deadline.", "go": "proof", "ago": "now"},
+      {"body": "We still need last year's participant numbers and the signed letter of support.", "go": "docs", "ago": "2d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Review", "title": "Narrative and budget, draft v2", "due": 4, "go": "proof"},
+        {"kind": "Upload", "title": "Signed letter of support from the school district", "due": 7, "go": "docs"},
+        {"kind": "Upload", "title": "2024-25 participant numbers and outcome survey", "due": 4, "go": "docs"}
+      ]},
+      {"type": "countdown", "to": "the foundation deadline", "date": 23, "checklist": [
+        {"t": "Your edits on draft v2", "due": 4},
+        {"t": "Letter of support in hand", "due": 7},
+        {"t": "Final narrative and budget approved", "due": 12},
+        {"t": "Executive director signs off", "due": 16},
+        {"t": "Submit in the funder portal", "due": 20}
+      ]},
+      {"type": "proof", "title": "Program grant proposal", "version": "v2", "round": 2, "rounds": 3, "file": "Youth Arts After School: $75,000 request", "specs": [["Request", "$75,000, single year"], ["Funder's typical award", "$40,000 to $80,000"], ["Narrative", "4,800 of 5,000 characters"]], "comments": [
+        {"at": "Need statement", "t": "Use district data for after-school gaps in the east side schools", "done": true},
+        {"at": "Outcomes", "t": "Add the survey results once you send them"},
+        {"at": "Budget", "t": "Teaching artist hours: 1,200 at $38"}
+      ], "note": "No grant writer can promise an award. The funder decides."},
+      {"type": "docs", "title": "Attachments the funder requires", "items": [
+        {"t": "IRS determination letter, 501(c)(3)", "state": "accepted"},
+        {"t": "Most recent Form 990", "state": "accepted"},
+        {"t": "Board list with affiliations", "state": "accepted"},
+        {"t": "Organizational budget, current year", "state": "received"},
+        {"t": "2024-25 participant numbers and outcome survey", "state": "needed", "why": "For the need statement and outcomes section"},
+        {"t": "Letter of support", "state": "needed", "why": "Signed, on letterhead"},
+        {"t": "Audited financial statements", "state": "na"}
+      ]}
+    ]
+  },
+  "personal-injury-law": {
+    "apps": ["CASEpeer", "Filevine", "Case Status"],
+    "texts": [
+      {"body": "Your case moved to a new stage. Open your portal to see what happens next.", "go": "stages", "ago": "now"},
+      {"body": "You have a new secure message. Open your portal to read it.", "go": "needs", "ago": "Yesterday"},
+      {"body": "Please upload your pay stubs for the days you missed work.", "go": "docs", "ago": "3d"}
+    ],
+    "modules": [
+      {"type": "needs", "items": [
+        {"kind": "Upload", "title": "Pay stubs for missed work, March and April", "due": 5, "go": "docs"},
+        {"kind": "Upload", "title": "Receipts for out-of-pocket costs", "go": "docs"},
+        {"kind": "Confirm", "title": "List of every provider who treated you", "due": 5, "go": "docs"}
+      ]},
+      {"type": "stages", "title": "Your case", "steps": [
+        {"t": "Intake", "state": "done", "date": "Mar 18", "note": "Fee agreement signed, insurers notified."},
+        {"t": "Treatment", "state": "done", "date": "Finished Sep 26", "note": "Your doctors decide when treatment is done. We wait for that before valuing the claim."},
+        {"t": "Demand", "state": "now", "note": "We are collecting your medical records and bills. Then we send the insurer one demand package, in about 3 weeks."},
+        {"t": "Negotiation", "state": "next", "who": "The other driver's insurer; often 30 to 60 days to respond"},
+        {"t": "Settlement", "state": "next", "who": "You decide whether to accept any offer"},
+        {"t": "Liens paid and your check", "state": "next", "who": "Paid from our trust account with a written settlement statement"}
+      ], "note": "You pay no fee unless there is a recovery."},
+      {"type": "docs", "title": "Records and bills", "items": [
+        {"t": "Police report", "state": "accepted"},
+        {"t": "Photos of the vehicles and your injuries", "state": "accepted"},
+        {"t": "ER records and bill, Mercy General", "state": "received", "why": "Requested by us"},
+        {"t": "Orthopedist records and bill", "state": "received", "why": "Requested by us"},
+        {"t": "Physical therapy records and bill, 24 visits", "state": "received", "why": "Requested by us"},
+        {"t": "Health insurance explanation of benefits", "state": "received"},
+        {"t": "Pay stubs for missed work", "state": "needed", "why": "Shows your lost wages"},
+        {"t": "Receipts: prescriptions, mileage, copays", "state": "needed", "why": "Out-of-pocket costs go in the demand"},
+        {"t": "Property damage estimate", "state": "na"}
+      ]},
+      {"type": "schedule", "title": "Coming up", "items": [
+        {"when": "Nov 3", "what": "Call with your attorney: review the numbers before the demand goes out", "who": "Phone, 30 minutes"},
+        {"when": "Nov 10", "what": "Demand package sent to the insurer"}
+      ]}
+    ]
+  }
+}

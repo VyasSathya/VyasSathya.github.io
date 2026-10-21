@@ -1,0 +1,1712 @@
+[
+ {
+  "key": "video-production",
+  "label": "Video production",
+  "match": [
+   "video production",
+   "videographer",
+   "brand video",
+   "commercial video",
+   "corporate video",
+   "explainer video",
+   "promo video",
+   "film crew",
+   "production company"
+  ],
+  "biz": "Northlight Pictures",
+  "person": "Dana Whitfield",
+  "project": "Spring product launch brand film (60s + 3 cutdowns)",
+  "summary": "A 60-second hero film plus 15s and 30s social cutdowns for a skincare product launch.",
+  "billing": "50% deposit to book crew and dates, 50% on final delivery (Net 30); larger commercial jobs split 40% booking / 30% after first cut / 30% on final. 2-3 revision rounds included, extra rounds billed. Sources: liveupmedia T&Cs, filmlifestyle contract guide.",
+  "ms": [
+   [
+    "Pre-production: script, treatment and shot list",
+    "Done means the client has signed off the script, treatment, shot list, location and talent, and the shoot date is locked.",
+    720000,
+    [
+     "Creative brief and kickoff call",
+     "Script draft v1 and v2",
+     "Treatment / mood board approved",
+     "Talent casting and location scout",
+     "Call sheet issued"
+    ]
+   ],
+   [
+    "Production: shoot day",
+    "Done means all scheduled scenes are captured, footage is backed up twice and the client rep has seen playback on set.",
+    1080000,
+    [
+     "Crew and gear confirmed",
+     "Product and wardrobe on set",
+     "All shot-list setups captured",
+     "Client on-set approval of key shots",
+     "Footage offloaded and double backed up"
+    ]
+   ],
+   [
+    "Post-production: rough cut and fine cut",
+    "Done means the client has given consolidated notes on the rough cut and approved the fine cut (picture lock).",
+    540000,
+    [
+     "Selects and assembly",
+     "Rough cut v1 delivered for review",
+     "Client notes round 1 applied",
+     "Fine cut delivered",
+     "Picture lock approved"
+    ]
+   ],
+   [
+    "Finishing and delivery",
+    "Done means color, sound mix, music license and graphics are final and all masters and cutdowns are delivered in the agreed formats.",
+    360000,
+    [
+     "Color grade",
+     "Sound mix and licensed music",
+     "Titles, captions and end card",
+     "60s / 30s / 15s and vertical exports",
+     "Master files and license docs delivered"
+    ]
+   ]
+  ],
+  "waiting": "Consolidated feedback on the rough cut (one set of timestamped notes from all stakeholders).",
+  "ask": [
+   "Which music track should we license for the hero film?",
+   [
+    "Track A: upbeat electronic",
+    "Track B: warm acoustic",
+    "Track C: cinematic piano"
+   ],
+   "Both licenses cover web and paid social for 1 year; Track C costs $350 more."
+  ],
+  "answered": [
+   "Shoot location",
+   "The client's flagship studio in Pasadena, not a rented stage."
+  ],
+  "checkin": [
+   "- Done: shoot wrapped, all 22 setups captured and backed up",
+   "- Next: rough cut v1 on Friday for review",
+   "- Needs from you: final product claims copy for the end card, and pick a music track"
+  ],
+  "talk": [
+   "Rough cut v1 is up in the review link. Please leave timestamped notes and send one combined list from your team by Wednesday.",
+   "Looks great. Marketing wants the logo earlier and legal flagged the 'clinically proven' line.",
+   "Got it. We'll move the logo to 0:04 and swap the line for the approved claim. Fine cut Monday."
+  ],
+  "anxieties": [
+   "When will I see a first cut?",
+   "How many changes can we still make, and what costs extra?",
+   "Do we own the footage and can we use it in paid ads / for how long (music license)?"
+  ],
+  "tools": [
+   "Frame.io",
+   "Vimeo review",
+   "Dropbox / Google Drive",
+   "HoneyBook",
+   "StudioBinder",
+   "Wipster"
+  ],
+  "notes": "Highly variable scope (1-day shoot to multi-week campaign). Portal must handle timestamped review on video versions (v1, v2, lock), counted revision rounds, a picture-lock approval, music/usage license documents, and large-file delivery with multiple aspect ratios. Raw footage ownership is a common separate line item.",
+  "sources": [
+   "https://www.liveupmedia.co.uk/terms-and-conditions",
+   "https://filmlifestyle.com/best-video-production-contract-template-for-client-work/",
+   "https://pixflow.net/blog/freelance-video-editing-contract-template/",
+   "https://frame.io/"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "commercial-photography",
+  "label": "Commercial / brand photography",
+  "match": [
+   "commercial photographer",
+   "product photography",
+   "brand photography",
+   "headshots",
+   "ecommerce photos",
+   "lifestyle shoot",
+   "food photography",
+   "advertising photographer"
+  ],
+  "biz": "Kestrel Studio",
+  "person": "Marcus Lee",
+  "project": "Fall catalog and e-commerce product shoot (40 SKUs)",
+  "summary": "Studio product shots on white plus 8 lifestyle images for a home goods brand's fall launch.",
+  "billing": "Estimate separates creative fee, usage license, and expenses (assistants, styling, props, retouching); typical 50% advance to book, balance on delivery. Usage is priced by media, territory, duration and exclusivity. Sources: ASMP sample estimate, Fstoppers license-fee guide, Digital Photography School.",
+  "ms": [
+   [
+    "Estimate, usage and shot list approved",
+    "Done means the client signed the estimate with the usage license defined and approved the shot list and creative direction.",
+    260000,
+    [
+     "Usage terms agreed (web, social, 2 years)",
+     "Shot list of 40 SKUs plus 8 lifestyle",
+     "Mood board approved",
+     "Prop and stylist booked",
+     "Advance invoice paid"
+    ]
+   ],
+   [
+    "Shoot day",
+    "Done means every shot on the list is captured and the art director approved key frames on tether.",
+    420000,
+    [
+     "Products received and checked in",
+     "Lighting setup approved on first SKU",
+     "All SKUs shot on white",
+     "Lifestyle sets shot",
+     "Files backed up"
+    ]
+   ],
+   [
+    "Proofs and selects",
+    "Done means the client has picked their selects from the online proof gallery.",
+    90000,
+    [
+     "Proof gallery published",
+     "Client marks selects",
+     "Retouching notes collected",
+     "Final count confirmed",
+     "Any reshoots scheduled"
+    ]
+   ],
+   [
+    "Retouching and final delivery",
+    "Done means retouched finals are delivered in the agreed sizes and the license document is issued.",
+    230000,
+    [
+     "Retouch round 1",
+     "Client retouch notes applied",
+     "Exports: web, Amazon spec, hi-res",
+     "Files delivered via gallery",
+     "License and invoice issued"
+    ]
+   ]
+  ],
+  "waiting": "Selects marked in the proof gallery (and the physical products shipped to the studio before the shoot).",
+  "ask": [
+   "How long should the usage license run?",
+   [
+    "1 year web and social",
+    "2 years web, social and email",
+    "Unlimited / buyout"
+   ],
+   "Paid ads and print are priced separately."
+  ],
+  "answered": [
+   "Background for product shots",
+   "Pure white for marketplace listings, plus a warm grey set for the website."
+  ],
+  "checkin": [
+   "- Done: shoot complete, 312 proofs in your gallery",
+   "- Next: retouching starts as soon as selects are in",
+   "- Needs from you: heart your selects by Thursday, max 60 images"
+  ],
+  "talk": [
+   "Proofs are live. Please heart the frames you want retouched; 60 are included.",
+   "We loved more than 60. Can we add some?",
+   "Yes, extra retouched images are $25 each. Mark them and I'll add them to the final invoice."
+  ],
+  "anxieties": [
+   "When do we get finals?",
+   "Where we can use the images (ads, print, Amazon) and for how long",
+   "How many images and retouches are included"
+  ],
+  "tools": [
+   "Pixieset",
+   "ShootProof",
+   "Capture One (tethered)",
+   "HoneyBook",
+   "Dropbox",
+   "fotoQuote / BlinkBid"
+  ],
+  "notes": "Usage rights are a first-class object: the portal should show licensed media, territory and expiry next to the files. Proof gallery with selects and comments, included-image counts with paid overages, and product check-in/return for shipped items.",
+  "sources": [
+   "https://www.asmp.org/?p=4092",
+   "https://fstoppers.com/business/guide-pricing-commercial-photography-part-4-license-fees-8713",
+   "https://digital-photography-school.com/quote-commercial-photography-jobs/"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "wedding-photo-video",
+  "label": "Wedding photography and videography",
+  "match": [
+   "wedding photographer",
+   "wedding videographer",
+   "wedding photos",
+   "engagement shoot",
+   "elopement photographer",
+   "wedding film",
+   "bridal portraits"
+  ],
+  "biz": "Golden Hour Weddings",
+  "person": "Priya and Jordan",
+  "project": "Priya and Jordan wedding, full-day photo + highlight film",
+  "summary": "10 hours of coverage with two photographers and a videographer, engagement session and a 5-minute highlight film.",
+  "billing": "Non-refundable retainer of 25-50% to hold the date, balance due 2-4 weeks before the wedding (some take payment plans). Gallery in 4-8 weeks, sneak peek within days. Sources: Albany Capture (Pixieset blog), Bonsai wedding contract, Susan Stripling, Imagen AI.",
+  "ms": [
+   [
+    "Date booked and retainer paid",
+    "Done means the contract is signed and the retainer is paid, so the date is reserved.",
+    180000,
+    [
+     "Contract signed",
+     "Retainer paid",
+     "Engagement session scheduled",
+     "Welcome guide sent",
+     "Added to calendar"
+    ]
+   ],
+   [
+    "Engagement session and planning",
+    "Done means the engagement shoot is delivered and the wedding-day questionnaire and timeline are final.",
+    180000,
+    [
+     "Engagement session shot",
+     "Engagement gallery delivered",
+     "Wedding questionnaire completed",
+     "Family formal list submitted",
+     "Day-of timeline approved with planner"
+    ]
+   ],
+   [
+    "Wedding day coverage",
+    "Done means the balance was paid before the wedding and full-day coverage is complete.",
+    240000,
+    [
+     "Balance paid 30 days out",
+     "Second shooter confirmed",
+     "Getting ready to grand exit covered",
+     "Sneak peek posted within 72 hours",
+     "Files backed up"
+    ]
+   ],
+   [
+    "Gallery and highlight film delivered",
+    "Done means the full edited gallery and the highlight film are delivered and download links work.",
+    0,
+    [
+     "Culling and editing",
+     "Online gallery delivered",
+     "Highlight film delivered",
+     "Print store open",
+     "Album design proof (if purchased)"
+    ]
+   ]
+  ],
+  "waiting": "The wedding-day questionnaire with the family formals list and the final day-of timeline.",
+  "ask": [
+   "Do you want to add a second videographer for the ceremony?",
+   [
+    "Yes, add for $600",
+    "No, keep single shooter"
+   ],
+   "Gives a second angle on vows and the processional."
+  ],
+  "answered": [
+   "Engagement session location",
+   "Griffith Observatory at sunset."
+  ],
+  "checkin": [
+   "- Done: engagement gallery delivered",
+   "- Next: final timeline call 3 weeks before the wedding",
+   "- Needs from you: questionnaire and family formals list, balance due April 15"
+  ],
+  "talk": [
+   "Hi Priya! Can you send the family formals list and your planner's timeline by next Friday?",
+   "Will do. When will we get our photos after the wedding?",
+   "Sneak peek within 3 days, full gallery within 6 weeks, and the highlight film within 10 weeks."
+  ],
+  "anxieties": [
+   "When will we get our photos / film?",
+   "Is the balance due date and amount right?",
+   "Do you have our timeline, shot list and vendor contacts?"
+  ],
+  "tools": [
+   "HoneyBook",
+   "Dubsado",
+   "Pixieset",
+   "ShootProof",
+   "Pic-Time",
+   "Studio Ninja",
+   "17hats"
+  ],
+  "notes": "Long gaps: 6-18 months from booking to event, then 1-3 months to delivery, which is where 'where are my photos?' messages spike. Portal must show payment plan, questionnaire forms, a delivery ETA after the event, gallery links, album proof approvals. Usage is personal; photographer keeps copyright. Last milestone often has no new payment because the balance is due pre-event.",
+  "sources": [
+   "https://albanycapture.mypixieset.com/blog/wedding-photographer-payment-schedule/",
+   "https://www.hellobonsai.com/a/wedding-photography-contract-template",
+   "https://susanstripling.com/blog/how-long-until-i-get-my-wedding-photos-back/",
+   "https://imagen-ai.com/post/photo-delivery-turnaround-times-guide/"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "wedding-planning",
+  "label": "Wedding planning",
+  "match": [
+   "wedding planner",
+   "wedding coordinator",
+   "day of coordinator",
+   "full service wedding planning",
+   "destination wedding planner",
+   "month of coordination"
+  ],
+  "biz": "Willow and Vine Events",
+  "person": "Sofia Martinez",
+  "project": "Martinez-Chen wedding, full planning (150 guests)",
+  "summary": "Full-service planning for a 150-guest vineyard wedding in Sonoma next September.",
+  "billing": "Non-refundable retainer at booking, then installments tied to planning stages, final balance about 30 days before the wedding; fees are flat ($4k-12k full service) or 10-20% of event spend. Vendor money tracked separately. Sources: SchedulingKit wedding planners, eventplanning.com price list template.",
+  "ms": [
+   [
+    "Booking and vision",
+    "Done means the contract and retainer are in, budget is set and the vision deck is approved.",
+    300000,
+    [
+     "Contract signed and retainer paid",
+     "Budget worksheet set",
+     "Guest count estimate",
+     "Vision / design deck approved",
+     "Planning timeline shared"
+    ]
+   ],
+   [
+    "Venue and key vendors booked",
+    "Done means venue, caterer, photographer, florist and music are contracted.",
+    250000,
+    [
+     "Venue contract signed",
+     "Caterer booked",
+     "Photographer and videographer booked",
+     "Florist booked",
+     "Band or DJ booked"
+    ]
+   ],
+   [
+    "Design and details",
+    "Done means invitations are out, menu tasting is done and the floor plan and decor are final.",
+    250000,
+    [
+     "Save-the-dates and invitations sent",
+     "Menu tasting and selection",
+     "Rentals and decor finalized",
+     "Floor plan drafted",
+     "Hotel blocks set"
+    ]
+   ],
+   [
+    "Final details and wedding day",
+    "Done means the final balance is paid, all vendors have the run-of-show, and the day is executed.",
+    200000,
+    [
+     "Final guest count and seating chart",
+     "Vendor confirmations and final payments",
+     "Run-of-show distributed",
+     "Rehearsal coordinated",
+     "Wedding day managed"
+    ]
+   ]
+  ],
+  "waiting": "RSVP-based final guest count and the seating chart.",
+  "ask": [
+   "Which florist do you want to book?",
+   [
+    "Bloom Theory (lush, $9,800)",
+    "Petal and Stem (garden style, $7,200)",
+    "Wildflower Co (minimal, $5,500)"
+   ],
+   "Proposals are in the design board."
+  ],
+  "answered": [
+   "Ceremony location",
+   "On the vineyard lawn, with the barn as rain backup."
+  ],
+  "checkin": [
+   "- Done: caterer and band booked, tasting scheduled for May 3",
+   "- Next: invitation proofs from the stationer",
+   "- Needs from you: sign the florist proposal and send your guest address list"
+  ],
+  "talk": [
+   "We have three florist proposals in your design board. Bloom Theory has the date open only until Friday.",
+   "We love Bloom Theory but it's over budget. Can they trim it?",
+   "I asked them to swap peonies for garden roses; that brings it to $8,400. Sending the revised proposal now."
+  ],
+  "anxieties": [
+   "Are we on budget?",
+   "What decisions are due next and by when?",
+   "Which vendors are booked and paid?"
+  ],
+  "tools": [
+   "Aisle Planner",
+   "HoneyBook",
+   "Dubsado",
+   "Planning Pod",
+   "Google Sheets",
+   "AllSeated"
+  ],
+  "notes": "Many parallel tracks and many decisions; the portal is more a decision-and-checklist tracker than a deliverables tracker. Must show budget vs actual, vendor list with contracts and due payments (vendor money separate from planner fee), guest list/RSVP, and a countdown timeline.",
+  "sources": [
+   "https://www.schedulingkit.com/payments/wedding-planners",
+   "https://eventplanning.com/tools/templates/event-planner-price-list-template.docx",
+   "https://www.aisleplanner.com/"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "corporate-events",
+  "label": "Event planning (corporate)",
+  "match": [
+   "event planner",
+   "corporate event",
+   "conference planning",
+   "offsite",
+   "company retreat",
+   "product launch event",
+   "event management",
+   "trade show",
+   "gala"
+  ],
+  "biz": "Summit Events Co.",
+  "person": "Rachel Okafor",
+  "project": "2027 sales kickoff, 300 attendees, Austin",
+  "summary": "Two-day sales kickoff with a general session, breakouts, an awards dinner and room block.",
+  "billing": "Flat management fee or 10-20% of event budget (hourly $50-150 for small jobs); commonly 50% at booking, 25% at 30 days out, 25% on or within 7 days after the event. Vendor costs passed through or contracted directly. Sources: Event Smart, Chron, invoicequickly template.",
+  "ms": [
+   [
+    "Venue and contract",
+    "Done means the venue and hotel block are contracted and the budget and agenda framework are approved.",
+    900000,
+    [
+     "RFP sent to 5 venues",
+     "Site visit",
+     "Venue and room block contracted",
+     "Budget approved",
+     "Agenda framework"
+    ]
+   ],
+   [
+    "Vendors and registration",
+    "Done means AV, catering, transport and the registration site are booked and live.",
+    450000,
+    [
+     "AV production company booked",
+     "Catering menus selected",
+     "Registration site live",
+     "Airport transfers booked",
+     "Speaker list confirmed"
+    ]
+   ],
+   [
+    "Content, run-of-show and logistics",
+    "Done means the run-of-show, signage, speaker slides and rooming list are final.",
+    0,
+    [
+     "Run-of-show v1 and v2",
+     "Speaker slide deadline",
+     "Signage and badges sent to print",
+     "Rooming list to hotel",
+     "F&B guarantees submitted"
+    ]
+   ],
+   [
+    "Event delivery and wrap",
+    "Done means the event ran, final vendor invoices are reconciled and the wrap report is delivered.",
+    450000,
+    [
+     "On-site management",
+     "Daily briefing with client",
+     "Vendor invoice reconciliation",
+     "Attendee survey sent",
+     "Wrap report and final invoice"
+    ]
+   ]
+  ],
+  "waiting": "Final attendee list and speaker slides by the deadline.",
+  "ask": [
+   "Which awards dinner format should we book?",
+   [
+    "Plated three-course",
+    "Food stations",
+    "Family style"
+   ],
+   "Plated adds about $28 per head."
+  ],
+  "answered": [
+   "Event city",
+   "Austin, at the Fairmont, Feb 9-10."
+  ],
+  "checkin": [
+   "- Done: registration live, 212 of 300 registered",
+   "- Next: AV walkthrough and run-of-show v2",
+   "- Needs from you: speaker list with session titles, F&B guarantee by Jan 20"
+  ],
+  "talk": [
+   "Run-of-show v2 is in the portal. We still need slide decks from 4 speakers by Jan 26.",
+   "I'll chase them. Can we add a 15-minute CEO Q&A after the keynote?",
+   "Yes. I've added it at 9:45 and shifted breakouts by 15 minutes; AV confirmed a second handheld mic."
+  ],
+  "anxieties": [
+   "Budget vs actual (overages, F&B minimums, attrition)",
+   "Registration numbers and room block pickup",
+   "Is everything on schedule for the deadlines?"
+  ],
+  "tools": [
+   "Cvent",
+   "Bizzabo",
+   "Planning Pod",
+   "Monday.com",
+   "Asana",
+   "Smartsheet",
+   "Google Sheets"
+  ],
+  "notes": "Heavy deadline management (attrition dates, F&B guarantees). Portal should show budget, registration count, decisions and the run-of-show; files are contracts and run-of-show versions. Many stakeholders on the client side.",
+  "sources": [
+   "https://blog.eventsmart.com/2023/11/29/how-much-do-event-planners-charge/",
+   "https://work.chron.com/average-commission-charged-event-planner-21037.html",
+   "https://invoicequickly.com/templates/event-planning-invoice-template"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "branding",
+  "label": "Graphic design and branding",
+  "match": [
+   "graphic designer",
+   "branding agency",
+   "logo design",
+   "brand identity",
+   "rebrand",
+   "brand guidelines",
+   "packaging design",
+   "visual identity"
+  ],
+  "biz": "Fieldnote Studio",
+  "person": "Ethan Brooks",
+  "project": "Brightside Coffee brand identity",
+  "summary": "New logo, color, type, packaging labels and a brand guide for a coffee roaster's rebrand.",
+  "billing": "50% non-refundable deposit to start, balance on final approval (some 60/40 or thirds by phase); 2-3 logo concepts and 2 revision rounds typical, extra rounds hourly. Sources: Bonsai branding contract, Contra/Dribbble service listings.",
+  "ms": [
+   [
+    "Discovery and strategy",
+    "Done means the client approved the brand strategy summary (audience, positioning, attributes).",
+    300000,
+    [
+     "Kickoff questionnaire",
+     "Discovery workshop",
+     "Competitor audit",
+     "Positioning statement",
+     "Strategy signed off"
+    ]
+   ],
+   [
+    "Logo concepts",
+    "Done means the client picked one logo direction out of three concepts.",
+    300000,
+    [
+     "Mood boards",
+     "3 logo concepts presented",
+     "Client feedback",
+     "Direction chosen",
+     "Concept rationale shared"
+    ]
+   ],
+   [
+    "Refinement and identity system",
+    "Done means the final logo, palette, type and pattern are approved after two rounds of revisions.",
+    250000,
+    [
+     "Revision round 1",
+     "Revision round 2",
+     "Color palette and typography",
+     "Secondary marks and icons",
+     "Final identity approved"
+    ]
+   ],
+   [
+    "Brand guide and file delivery",
+    "Done means the brand guide and all logo files are delivered and ownership transferred on final payment.",
+    150000,
+    [
+     "Brand guidelines PDF",
+     "Logo files AI, EPS, SVG, PNG, PDF",
+     "Packaging label mockups",
+     "Social templates",
+     "Copyright transfer on final payment"
+    ]
+   ]
+  ],
+  "waiting": "Consolidated feedback on the logo concepts (one decision, not separate notes from each partner).",
+  "ask": [
+   "Which logo direction should we refine?",
+   [
+    "A: hand-drawn sun mark",
+    "B: bold wordmark",
+    "C: retro badge"
+   ],
+   "Two refinement rounds are included on the one you pick."
+  ],
+  "answered": [
+   "Primary color family",
+   "Warm terracotta with cream, not the old navy."
+  ],
+  "checkin": [
+   "- Done: 3 concepts presented on Tuesday",
+   "- Next: refinement round 1 on the chosen direction",
+   "- Needs from you: pick a direction and send combined feedback"
+  ],
+  "talk": [
+   "All three concepts are in the review board. Please pick one direction to move forward.",
+   "We like A but want the badge shape from C. Can you combine them?",
+   "Yes, we can merge them in round 1. That uses the first of your two included revision rounds."
+  ],
+  "anxieties": [
+   "How many revisions do we get?",
+   "When will we have final files to give the printer?",
+   "Do we own the logo / do we get the source files?"
+  ],
+  "tools": [
+   "Dubsado",
+   "HoneyBook",
+   "Figma",
+   "Milanote",
+   "Canva (handoff)",
+   "Filestage",
+   "Notion"
+  ],
+  "notes": "Revision-round counter is essential and a top dispute source. Proof/review with markup on images and PDFs, concept voting, a final approval event, and file delivery that unlocks on final payment (IP transfer).",
+  "sources": [
+   "https://www.hellobonsai.com/contract-template-new/branding",
+   "https://contra.com/s/NolZoq3Y-brand-identity",
+   "https://dribbble.com/services/2278-Logo-and-Visual-Identity",
+   "https://filestage.io/"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "web-design",
+  "label": "Web design and development",
+  "match": [
+   "web designer",
+   "web developer",
+   "website design",
+   "website redesign",
+   "wordpress",
+   "shopify site",
+   "webflow",
+   "landing page",
+   "ecommerce website"
+  ],
+  "biz": "Pinecrest Digital",
+  "person": "Laura Kim",
+  "project": "Kim Family Dental website redesign",
+  "summary": "10-page WordPress site with online booking, new photography and SEO basics.",
+  "billing": "25-50% deposit at kickoff, then milestones at design approval, development complete and launch (e.g. 40/30/30). Legal guides warn against bare 50/50. Late fee about 1.5% per month. Sources: SchedulingKit web designers, Sprintlaw AU and UK.",
+  "ms": [
+   [
+    "Discovery and sitemap",
+    "Done means the sitemap, page list and content plan are approved.",
+    360000,
+    [
+     "Kickoff call",
+     "Competitor and goals review",
+     "Sitemap approved",
+     "Content plan and who writes what",
+     "Hosting and domain access received"
+    ]
+   ],
+   [
+    "Design mockups",
+    "Done means the home page and inner page designs are approved after revisions.",
+    270000,
+    [
+     "Wireframes",
+     "Home page design",
+     "Inner page template",
+     "Revision round",
+     "Design sign-off"
+    ]
+   ],
+   [
+    "Development and content",
+    "Done means all pages are built on staging with real content and booking working.",
+    0,
+    [
+     "Theme build on staging",
+     "Content loaded",
+     "Booking integration",
+     "Mobile responsive pass",
+     "Client review of staging"
+    ]
+   ],
+   [
+    "Launch",
+    "Done means the site is live on the domain, forms tested, and training and handover done.",
+    270000,
+    [
+     "QA and browser testing",
+     "SEO basics and redirects",
+     "DNS cutover and go live",
+     "Training video",
+     "30-day support window"
+    ]
+   ]
+  ],
+  "waiting": "Website content: page copy, team bios and photos (content is the number-one launch delay).",
+  "ask": [
+   "Which booking system should the site connect to?",
+   [
+    "Keep current (Dentrix)",
+    "Switch to NexHealth",
+    "Simple request form"
+   ],
+   "NexHealth shows live availability."
+  ],
+  "answered": [
+   "Platform",
+   "WordPress, so the front desk can edit pages."
+  ],
+  "checkin": [
+   "- Done: design approved, staging site built",
+   "- Next: load content and test booking",
+   "- Needs from you: bios and headshots for 4 dentists, and domain registrar login"
+  ],
+  "talk": [
+   "Staging is ready, but 4 pages are waiting on your copy. Can you send it by Friday to keep the launch date?",
+   "The team bios are late. Can you write placeholder bios?",
+   "We can draft them from their LinkedIn profiles for you to approve; that's a 2-hour add-on."
+  ],
+  "anxieties": [
+   "When does the site go live?",
+   "What are you waiting on from us?",
+   "Can we make changes after launch, and what will that cost?"
+  ],
+  "tools": [
+   "Dubsado",
+   "HoneyBook",
+   "Basecamp",
+   "Teamwork",
+   "Figma",
+   "Markup.io / BugHerd",
+   "Google Drive"
+  ],
+  "notes": "Client-blocking content and logins are the main delays; the portal should make 'waiting on you' items explicit with due dates. Staging link reviews with comments, revision rounds on design, credentials collection (securely), and post-launch maintenance retainer upsell.",
+  "sources": [
+   "https://schedulingkit.com/payments/web-designers",
+   "https://sprintlaw.com.au/articles/web-design-payment-milestones/",
+   "https://sprintlaw.co.uk/articles/how-to-legally-protect-web-developer-payment-terms-in-your-client-contracts/"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "app-development",
+  "label": "App development",
+  "match": [
+   "app developer",
+   "mobile app",
+   "iOS app",
+   "android app",
+   "MVP",
+   "software development agency",
+   "react native",
+   "app studio"
+  ],
+  "biz": "Lantern Labs",
+  "person": "Omar Haddad",
+  "project": "FitPal MVP (iOS and Android)",
+  "summary": "A booking and workout-tracking MVP for a chain of fitness studios, built in React Native.",
+  "billing": "Payment on signature covering discovery and first sprint, then per two-week sprint, final payment on App Store approval and launch; client owns code after final payment. Sources: Bonsai app development contract, Dribbble service listings.",
+  "ms": [
+   [
+    "Discovery and UX",
+    "Done means user flows, wireframes and the feature backlog for the MVP are approved.",
+    1800000,
+    [
+     "Discovery workshops",
+     "User stories and backlog",
+     "Wireframes",
+     "Clickable prototype",
+     "Scope and estimate signed"
+    ]
+   ],
+   [
+    "UI design",
+    "Done means high-fidelity screens and the design system are approved.",
+    1200000,
+    [
+     "Design system",
+     "Key screens hi-fi",
+     "Prototype review",
+     "Revisions",
+     "Design sign-off"
+    ]
+   ],
+   [
+    "Build sprints and beta",
+    "Done means all MVP features are built and a beta is on TestFlight and Google internal testing.",
+    3600000,
+    [
+     "Sprint 1: auth and profiles",
+     "Sprint 2: booking",
+     "Sprint 3: workout tracking",
+     "Sprint demos",
+     "TestFlight beta build"
+    ]
+   ],
+   [
+    "QA, store submission and launch",
+    "Done means the client accepted the beta, the apps passed store review and are live.",
+    1000000,
+    [
+     "Bug fixing from beta feedback",
+     "Client acceptance testing",
+     "Store listings and screenshots",
+     "App Store and Play review",
+     "Launch and 60-day support"
+    ]
+   ]
+  ],
+  "waiting": "Beta feedback and acceptance sign-off (plus App Store developer account access).",
+  "ask": [
+   "Should Apple Pay be in the MVP or phase 2?",
+   [
+    "MVP (adds about 1 sprint)",
+    "Phase 2"
+   ],
+   "Card payments via Stripe already ship in the MVP."
+  ],
+  "answered": [
+   "Platform approach",
+   "React Native for both iOS and Android from one codebase."
+  ],
+  "checkin": [
+   "- Done: sprint 2 demo, booking works end to end",
+   "- Next: sprint 3 workout tracking",
+   "- Needs from you: add us to your Apple Developer account and approve the class schedule API access"
+  ],
+  "talk": [
+   "Sprint 2 demo video and a TestFlight build are up. Please log bugs in the feedback form.",
+   "The booking flow works. Can we add a waitlist?",
+   "A waitlist is new scope. I'll estimate it as a change request so you can decide on MVP or phase 2."
+  ],
+  "anxieties": [
+   "Are we on track for the launch date?",
+   "Is this new request in scope or extra?",
+   "Who owns the code and accounts?"
+  ],
+  "tools": [
+   "Jira",
+   "Linear",
+   "ClickUp",
+   "TestFlight",
+   "Figma",
+   "Productive",
+   "Teamwork",
+   "Slack Connect"
+  ],
+  "notes": "Sprint-based; progress is best shown as sprint demos and a burn-down of scope. Change requests need their own approve/decline flow with price. Portal must handle build links (TestFlight), bug reports, account access handover and IP transfer on final payment. Projects vary hugely ($20k-500k+).",
+  "sources": [
+   "https://www.hellobonsai.com/contract-template-new/freelance-app-development",
+   "https://dribbble.com/services/189495-Mobile-App-Design-Development"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "marketing-agency",
+  "label": "Marketing and social media agency",
+  "match": [
+   "marketing agency",
+   "social media agency",
+   "social media manager",
+   "content calendar",
+   "digital marketing",
+   "paid ads",
+   "facebook ads",
+   "instagram management",
+   "tiktok agency"
+  ],
+  "biz": "Brightwave Social",
+  "person": "Hannah Cole",
+  "project": "October social media management",
+  "summary": "Monthly social for a boutique hotel: 16 posts, 8 reels, community management and reporting on Instagram and TikTok.",
+  "billing": "Monthly retainer billed in advance ($1k-5k for small businesses), often 3-month minimum; ad spend, stock and production billed separately. Approval rounds drive cost. Sources: Cloud Campaign, Kontentino, Taskade SOW.",
+  "ms": [
+   [
+    "Month plan and content calendar",
+    "Done means the client approved the October content calendar and campaign themes.",
+    0,
+    [
+     "Monthly strategy call",
+     "Themes and campaign hooks",
+     "Content calendar drafted",
+     "Client approval of calendar",
+     "Retainer invoice paid"
+    ]
+   ],
+   [
+    "Content creation and approvals",
+    "Done means all posts and reels for the month are created and approved by the client.",
+    0,
+    [
+     "Photo / video shoot at hotel",
+     "Captions and hashtags",
+     "Graphics and reels edited",
+     "Client approval round",
+     "Revisions applied"
+    ]
+   ],
+   [
+    "Publishing and community management",
+    "Done means everything is scheduled and published and comments and DMs are handled daily.",
+    0,
+    [
+     "Posts scheduled",
+     "Reels published",
+     "Stories daily",
+     "Comment and DM replies",
+     "Ad boost on top post"
+    ]
+   ],
+   [
+    "Monthly report and next month",
+    "Done means the performance report is delivered and reviewed on the monthly call.",
+    350000,
+    [
+     "Analytics pulled",
+     "Report delivered",
+     "Review call",
+     "Learnings for next month",
+     "Next retainer invoice"
+    ]
+   ]
+  ],
+  "waiting": "Approval of the scheduled posts in the content calendar (plus raw photos or event info for the month).",
+  "ask": [
+   "Which campaign should lead November?",
+   [
+    "Holiday gift card promo",
+    "Fall weekend package",
+    "Local chef dinner series"
+   ],
+   "We'll build the November calendar around your pick."
+  ],
+  "answered": [
+   "Posting platforms",
+   "Instagram and TikTok only; Facebook is mirrored from Instagram."
+  ],
+  "checkin": [
+   "- Done: 12 of 16 posts approved and scheduled",
+   "- Next: reels from the spa shoot",
+   "- Needs from you: approve the 4 remaining posts and confirm Halloween event details"
+  ],
+  "talk": [
+   "4 posts are waiting for your approval in the calendar. They go live starting Monday.",
+   "Approved 3. For the bar post, can we use the new cocktail menu photo?",
+   "Swapped. It's scheduled for Tuesday at 6pm."
+  ],
+  "anxieties": [
+   "What's going out this week, and has it been approved?",
+   "Is it working (followers, reach, bookings)?",
+   "What am I paying for this month / ad spend"
+  ],
+  "tools": [
+   "Planable",
+   "Later",
+   "Sprout Social",
+   "Hootsuite",
+   "ManyRequests",
+   "ClickUp",
+   "Canva",
+   "Google Drive"
+  ],
+  "notes": "Recurring; progress resets monthly, so the portal should show 'this month' with a calendar and per-post approval status, a report at month end, and history of past months. Approvals per post with comments, ad spend tracked separately from fee. Amount only on the month-end invoice line because the retainer is billed once per month.",
+  "sources": [
+   "https://www.cloudcampaign.com/answers/cost-to-hire-social-media-agency",
+   "https://kontentino.com/blog/social-media-packages-for-small-businesses-pricing-guide/",
+   "https://www.taskade.com/templates/scope-of-work/social-media-management-sow",
+   "https://help.mymarky.ai/en/article/review-process-statuses-and-commenting-1aa51sz",
+   "https://www.moxo.com/blog/best-client-portals-for-marketing-agencies-2025",
+   "https://worklenz.com/blog/client-portal-software-complete-guide-agencies-2026/"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "seo-agency",
+  "label": "SEO agency",
+  "match": [
+   "SEO agency",
+   "SEO consultant",
+   "search engine optimization",
+   "local SEO",
+   "rank on google",
+   "technical SEO",
+   "link building",
+   "SEO audit"
+  ],
+  "biz": "Rankwell",
+  "person": "Greg Patel",
+  "project": "Q1 SEO program for Patel Plumbing",
+  "summary": "Local SEO retainer: audit fixes, 4 service-area pages a month, Google Business Profile and monthly reporting.",
+  "billing": "Monthly retainer billed in advance ($500-7,500 for small and mid businesses), often with a one-time onboarding audit fee; 3-12 month minimums common; about 78% of providers bill by retainer (Ahrefs survey, cited). Sources: The Admin Bar, DesignRush, Bonsai SEO contract.",
+  "ms": [
+   [
+    "Audit and roadmap",
+    "Done means the technical audit and keyword research are delivered and the 90-day roadmap is approved.",
+    250000,
+    [
+     "Site access (Search Console, Analytics, CMS)",
+     "Technical audit",
+     "Keyword research",
+     "Competitor gap analysis",
+     "90-day roadmap approved"
+    ]
+   ],
+   [
+    "Technical and on-page fixes",
+    "Done means the priority audit fixes are live and on-page optimizations are published.",
+    180000,
+    [
+     "Page speed fixes",
+     "Title and meta updates",
+     "Schema markup",
+     "Internal linking",
+     "Google Business Profile optimized"
+    ]
+   ],
+   [
+    "Content and links",
+    "Done means this month's service-area pages are published and citations and links are built.",
+    180000,
+    [
+     "4 location pages drafted",
+     "Client fact-check approval",
+     "Pages published",
+     "Local citations",
+     "Review request campaign"
+    ]
+   ],
+   [
+    "Monthly report",
+    "Done means the rankings and traffic report is delivered and reviewed on the call.",
+    0,
+    [
+     "Rank tracking",
+     "Traffic and calls report",
+     "Review call",
+     "Next month priorities",
+     "Invoice"
+    ]
+   ]
+  ],
+  "waiting": "CMS and Google Search Console / Analytics access, then approval of drafted page content.",
+  "ask": [
+   "Which service area pages should we write first?",
+   [
+    "Water heaters",
+    "Drain cleaning",
+    "Emergency plumbing"
+   ],
+   "Based on search volume, emergency plumbing is highest."
+  ],
+  "answered": [
+   "Target cities",
+   "Fremont, Newark and Union City."
+  ],
+  "checkin": [
+   "- Done: audit fixes live, site speed up from 48 to 81",
+   "- Next: 4 location pages this month",
+   "- Needs from you: approve the drain cleaning draft, add us as a GBP manager"
+  ],
+  "talk": [
+   "Rankings for 'plumber Fremont' moved from 14 to 8. Your next 2 pages are in review.",
+   "Why aren't we in the map pack yet?",
+   "Map pack depends heavily on reviews; you have 31 vs competitors' 120. We're launching a review request text this week."
+  ],
+  "anxieties": [
+   "When will we see results / are rankings moving?",
+   "What did you actually do this month?",
+   "Are leads and calls going up?"
+  ],
+  "tools": [
+   "Ahrefs",
+   "Semrush",
+   "Google Search Console",
+   "AgencyAnalytics",
+   "Looker Studio",
+   "ClickUp",
+   "Teamwork"
+  ],
+  "notes": "Results lag effort by months, so the portal's value is showing work done plus trend lines. Monthly cycle like the social agency; first month includes onboarding audit. Access/credentials collection and content approvals are the client's main tasks.",
+  "sources": [
+   "https://theadminbar.com/seo-weekly/pricing-models-for-seo-agreements-aka-how-to-price-an-seo-retainer/",
+   "https://www.designrush.com/agency/search-engine-optimization/pricing",
+   "https://www.hellobonsai.com/contract-template-new/seo"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "recording-studio",
+  "label": "Music production and recording studio",
+  "match": [
+   "recording studio",
+   "music producer",
+   "mixing engineer",
+   "mastering",
+   "record an EP",
+   "album production",
+   "beat production",
+   "studio time"
+  ],
+  "biz": "Low Tide Sound",
+  "person": "Jade Rivers",
+  "project": "Jade Rivers 5-song EP",
+  "summary": "Recording, production, mixing and mastering for a 5-song indie pop EP.",
+  "billing": "50% non-refundable deposit to book sessions, balance before final WAV release; mixing often per song with 2 revision rounds, extra revisions or analog recalls about $75 per song. Sources: Depot Sound mixing agreement, Classick Studios rates, Necromorbus Studio.",
+  "ms": [
+   [
+    "Pre-production",
+    "Done means the songs, arrangements, tempos and session schedule are locked.",
+    200000,
+    [
+     "Demos received",
+     "Arrangement notes",
+     "Tempo and key map",
+     "Session musicians booked",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Tracking sessions",
+    "Done means drums, bass, guitars, keys and vocals are recorded for all 5 songs.",
+    300000,
+    [
+     "Drums and bass",
+     "Guitars and keys",
+     "Lead vocals",
+     "Backing vocals",
+     "Comping and edits"
+    ]
+   ],
+   [
+    "Mixing",
+    "Done means the artist approved the mix of each song after up to 2 revision rounds.",
+    250000,
+    [
+     "Mix v1 for all songs",
+     "Artist notes round 1",
+     "Mix v2",
+     "Notes round 2",
+     "Mixes approved"
+    ]
+   ],
+   [
+    "Mastering and delivery",
+    "Done means masters, instrumentals and stems are delivered after the final balance.",
+    0,
+    [
+     "Mastering",
+     "Master approval",
+     "Final balance paid",
+     "WAV, MP3 and instrumentals delivered",
+     "Credits and split sheet"
+    ]
+   ]
+  ],
+  "waiting": "Mix notes on each song (with timestamps), then approval to send to mastering.",
+  "ask": [
+   "Which vocal take should we use on the bridge of Song 3?",
+   [
+    "Take 2 (raw)",
+    "Take 5 (polished)",
+    "Comp of both"
+   ],
+   "Both are in the session folder for comparison."
+  ],
+  "answered": [
+   "Song order",
+   "Ocean Static opens the EP."
+  ],
+  "checkin": [
+   "- Done: all tracking finished, mixes v1 for 5 songs uploaded",
+   "- Next: mix revisions once notes are in",
+   "- Needs from you: timestamped notes per song by Sunday"
+  ],
+  "talk": [
+   "Mix v1 for all 5 songs is up. Please send notes with timestamps, one list per song.",
+   "Song 2 vocals feel buried in the chorus and the snare is too loud.",
+   "Noted. Vocals up 1.5 dB in choruses and snare tucked. v2 tomorrow."
+  ],
+  "anxieties": [
+   "How many mix revisions do I have left?",
+   "When will the masters be ready for distribution / my release date?",
+   "Do I get stems and who owns the masters?"
+  ],
+  "tools": [
+   "Dropbox",
+   "Google Drive",
+   "WeTransfer",
+   "DISCO",
+   "Samply",
+   "Pibox",
+   "Vibrato"
+  ],
+  "notes": "Per-song tracking (each song has its own mix version and revision count). Portal needs audio playback with timestamp comments, version history per song, release-date targets, split sheets and file delivery gated on payment.",
+  "sources": [
+   "https://depot.org.nz/wp-content/uploads/2026/05/Depot-Sound-Mixing-Agreement-2026.pdf",
+   "https://www.classickstudios.com/rates",
+   "https://necromorbusstudio.com/wordpress/services/"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "podcast-production",
+  "label": "Podcast production",
+  "match": [
+   "podcast production",
+   "podcast editor",
+   "podcast agency",
+   "launch a podcast",
+   "video podcast",
+   "podcast editing",
+   "show notes"
+  ],
+  "biz": "Echo Room Media",
+  "person": "Nina Alvarez",
+  "project": "Leadership Lab podcast, November episodes",
+  "summary": "Weekly video podcast for a consulting firm: editing, show notes, clips and publishing for 4 episodes.",
+  "billing": "Monthly package for weekly shows ($1,500-3,000 mid-market full service) or per episode for irregular shows ($75-300 editing alone). Sources: Talks.co 2026 pricing guide, Resonate Recordings, The Podcast Consultant.",
+  "ms": [
+   [
+    "Guest booking and recording",
+    "Done means all 4 episodes for the month are recorded and raw files are received.",
+    0,
+    [
+     "Guests confirmed",
+     "Prep briefs sent",
+     "Recording sessions",
+     "Raw audio and video received",
+     "Cut list notes from host"
+    ]
+   ],
+   [
+    "Editing and mix",
+    "Done means each episode's edit is approved by the host.",
+    0,
+    [
+     "Rough edit",
+     "Audio cleanup and mix",
+     "Intro, outro and ads inserted",
+     "Host review",
+     "Edits applied"
+    ]
+   ],
+   [
+    "Show notes, clips and art",
+    "Done means show notes, transcripts, episode art and 3 clips per episode are approved.",
+    0,
+    [
+     "Show notes and timestamps",
+     "Transcript",
+     "Episode artwork",
+     "3 short clips per episode",
+     "Approval"
+    ]
+   ],
+   [
+    "Publishing and report",
+    "Done means episodes are scheduled on all platforms and the monthly stats are reported.",
+    240000,
+    [
+     "Upload to host",
+     "YouTube publish",
+     "Clips posted",
+     "Monthly downloads report",
+     "Next month invoice"
+    ]
+   ]
+  ],
+  "waiting": "Raw recordings uploaded and the host's approval of each edit.",
+  "ask": [
+   "Should guests get to review their episode before release?",
+   [
+    "Yes, 48-hour review",
+    "No, host approval only"
+   ],
+   "Guest review adds about 2 days."
+  ],
+  "answered": [
+   "Release day",
+   "Tuesdays at 6am Pacific."
+  ],
+  "checkin": [
+   "- Done: episodes 41 and 42 published",
+   "- Next: edit episode 43",
+   "- Needs from you: approve the episode 43 cut and send guest headshot"
+  ],
+  "talk": [
+   "Episode 43 edit is ready. We cut the 4-minute tangent about the conference; listen at 18:20.",
+   "Good cut, but please keep the client story at 22:10.",
+   "Restored. Show notes and clips will be in your approval queue by Thursday."
+  ],
+  "anxieties": [
+   "Is this week's episode going out on time?",
+   "Did you cut anything sensitive / that a guest asked to remove?",
+   "How are downloads trending?"
+  ],
+  "tools": [
+   "Riverside",
+   "Descript",
+   "Frame.io",
+   "Buzzsprout",
+   "Transistor",
+   "Trello",
+   "ClickUp",
+   "Google Drive"
+  ],
+  "notes": "Per-episode pipeline inside a monthly retainer; the portal should show each episode's stage. Audio/video review with timestamped comments, guest release forms, and publishing calendar.",
+  "sources": [
+   "https://talks.co/p/podcast-production-costs",
+   "https://resonaterecordings.com/podcast-production-cost-comparison/",
+   "https://thepodcastconsultant.com/blog/podcast-editing-services"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "copywriting",
+  "label": "Copywriting and content",
+  "match": [
+   "copywriter",
+   "content writer",
+   "website copy",
+   "blog writing",
+   "email copy",
+   "content marketing",
+   "ghostwriter",
+   "sales page copy"
+  ],
+  "biz": "Plainspoken Copy Co.",
+  "person": "Ben Turner",
+  "project": "Website copy for Turner Landscape Design",
+  "summary": "Messaging and copy for a 6-page website plus a welcome email sequence.",
+  "billing": "50% deposit before work, balance on delivery of approved copy; 2 revision rounds typical, new direction billed as new work; kill fee 25-50% of remaining value. Sources: FemFounded copywriter contract, Susan Greene, Writer's Digest.",
+  "ms": [
+   [
+    "Discovery and messaging brief",
+    "Done means the client approved the messaging brief (audience, voice, key messages).",
+    120000,
+    [
+     "Questionnaire completed",
+     "Discovery call",
+     "Customer review mining",
+     "Voice and messaging brief",
+     "Brief approved"
+    ]
+   ],
+   [
+    "First drafts",
+    "Done means first drafts of all 6 pages are delivered.",
+    0,
+    [
+     "Home page",
+     "About",
+     "Services",
+     "Portfolio intros",
+     "Contact and FAQ"
+    ]
+   ],
+   [
+    "Revisions",
+    "Done means two revision rounds are complete and all pages approved.",
+    0,
+    [
+     "Client comments round 1",
+     "Revisions round 1",
+     "Client comments round 2",
+     "Revisions round 2",
+     "Final approval"
+    ]
+   ],
+   [
+    "Email sequence and final delivery",
+    "Done means the welcome sequence is approved and final copy docs are delivered.",
+    120000,
+    [
+     "3-email welcome sequence",
+     "SEO titles and meta",
+     "Final copy docs",
+     "Handoff to web designer",
+     "Final invoice"
+    ]
+   ]
+  ],
+  "waiting": "Comments on the first drafts (and the completed intake questionnaire before work starts).",
+  "ask": [
+   "Which homepage headline direction?",
+   [
+    "Outcome-led: 'Gardens that grow with you'",
+    "Credibility-led: '20 years of Bay Area landscapes'",
+    "Direct: 'Landscape design and build in the East Bay'"
+   ],
+   "Sub copy adapts to the one you pick."
+  ],
+  "answered": [
+   "Tone of voice",
+   "Warm and plainspoken, no jargon."
+  ],
+  "checkin": [
+   "- Done: drafts for all 6 pages delivered in Google Docs",
+   "- Next: round 1 revisions",
+   "- Needs from you: comments in the doc by Monday, choose a headline"
+  ],
+  "talk": [
+   "All 6 page drafts are in the shared folder. Please comment directly in the docs.",
+   "Love the services page. Can the about page be more personal?",
+   "Yes. Send me a few stories about how you started and I'll weave them in for round 1."
+  ],
+  "anxieties": [
+   "How many rounds of edits do I get?",
+   "When will copy be ready for the web designer?",
+   "Will it sound like us?"
+  ],
+  "tools": [
+   "Google Docs",
+   "Notion",
+   "HoneyBook",
+   "Dubsado",
+   "Bonsai",
+   "Grammarly"
+  ],
+  "notes": "Deliverables are documents; review happens in comments. Portal should link docs, track revision rounds, and coordinate handoff to another vendor (web designer). Often part of a bigger project, so fairly standardized.",
+  "sources": [
+   "https://femfounded.org/free-resources/freelance-contracts/copywriter",
+   "https://www.susangreenecopywriter.com/?p=10570",
+   "https://writersdigest.com/getting-published/how-do-writers-get-paid-for-their-writing"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "print-signage",
+  "label": "Print and signage shop",
+  "match": [
+   "print shop",
+   "sign shop",
+   "signage",
+   "banners",
+   "vehicle wrap",
+   "business cards",
+   "large format printing",
+   "storefront sign",
+   "trade show booth"
+  ],
+  "biz": "Ironworks Sign and Print",
+  "person": "Carla Nguyen",
+  "project": "New storefront signage for Nguyen Bakery",
+  "summary": "Illuminated channel letter sign, window vinyl and an A-frame for a bakery opening.",
+  "billing": "Deposit (often 50%) or full payment at estimate approval, balance on install; proof approval and sometimes permit approval required before production. Production about 5-7 business days after proof for print, longer for fabricated signs. Sources: FASTSIGNS ordering process, 4over4, UTMB print shop.",
+  "ms": [
+   [
+    "Site survey and estimate",
+    "Done means the site is measured and the client approved the estimate and paid the deposit.",
+    310000,
+    [
+     "Site survey and photos",
+     "Landlord sign criteria received",
+     "Estimate sent",
+     "Estimate approved",
+     "Deposit paid"
+    ]
+   ],
+   [
+    "Design and proof approval",
+    "Done means the client signed the final proof (colors, size, mounting).",
+    0,
+    [
+     "Logo files received",
+     "Design proof v1",
+     "Revisions",
+     "Color match approved",
+     "Proof signed"
+    ]
+   ],
+   [
+    "Permits and production",
+    "Done means the city permit and landlord approval are in and the sign is fabricated.",
+    0,
+    [
+     "Permit application",
+     "Landlord approval",
+     "Permit approved",
+     "Fabrication",
+     "Quality check"
+    ]
+   ],
+   [
+    "Installation",
+    "Done means the sign is installed, lit and inspected, and the balance is paid.",
+    310000,
+    [
+     "Install scheduled",
+     "Electrical hookup",
+     "Window vinyl and A-frame",
+     "Inspection passed",
+     "Balance paid"
+    ]
+   ]
+  ],
+  "waiting": "Signed proof approval (and the landlord's sign approval for the permit).",
+  "ask": [
+   "Which lighting option for the channel letters?",
+   [
+    "Front-lit",
+    "Halo-lit (back-lit)",
+    "Non-illuminated"
+   ],
+   "Halo-lit adds $1,200 and about a week."
+  ],
+  "answered": [
+   "Letter color",
+   "Pantone 7621 red faces with white returns."
+  ],
+  "checkin": [
+   "- Done: proof v2 sent",
+   "- Next: submit permit once proof is signed",
+   "- Needs from you: sign the proof and send the landlord approval letter"
+  ],
+  "talk": [
+   "Proof v2 is ready with the larger logo. Production starts as soon as you sign it.",
+   "Looks good, but can the phone number be bigger on the window?",
+   "Done in v3, attached. Please sign by Wednesday to keep the install before your opening."
+  ],
+  "anxieties": [
+   "Will it be ready before the opening date?",
+   "Is the color/size right (what I approved)?",
+   "Is the permit approved yet?"
+  ],
+  "tools": [
+   "ShopVOX",
+   "Printavo",
+   "Cyrious Control",
+   "PrintSmith",
+   "QuickBooks",
+   "email proofs"
+  ],
+  "notes": "Simple, fast jobs (business cards) to permit-gated fabrication. Proof approval is a legally meaningful sign-off and should be recorded with version and timestamp. Portal needs proof versions, a hard 'approve for production' button, permit status, and install scheduling. Many jobs are repeat orders.",
+  "sources": [
+   "https://www.fastsigns.com/sub/57918/documents/fs-ordering-process.pdf",
+   "https://www.4over4.com/help/signs/can-i-get-a-proof-before-printing-rigid-signs",
+   "https://www.utmb.edu/ar/academic-resources/print-shop"
+  ],
+  "group": "Creative and media"
+ },
+ {
+  "key": "animation-motion",
+  "label": "Animation and motion graphics",
+  "match": [
+   "animation studio",
+   "motion graphics",
+   "explainer video",
+   "2D animation",
+   "3D animation",
+   "animated video",
+   "motion designer"
+  ],
+  "biz": "Paperplane Motion",
+  "person": "Kevin Shah",
+  "project": "90-second animated explainer for a fintech app",
+  "summary": "2D animated explainer with voiceover for a budgeting app's homepage and ads.",
+  "billing": "50% deposit, 50% on delivery (or thirds: start, after styleframes/storyboard, delivery); revision rounds defined per stage, changes after animation are costly. Sources: video editing contract templates, Filmlifestyle contract guide.",
+  "ms": [
+   [
+    "Script and voiceover",
+    "Done means the script is approved and the voiceover recording is approved.",
+    400000,
+    [
+     "Brief and kickoff",
+     "Script draft",
+     "Script approved",
+     "Voice talent chosen",
+     "VO recorded and approved"
+    ]
+   ],
+   [
+    "Storyboard and styleframes",
+    "Done means the storyboard and 3 styleframes are approved.",
+    300000,
+    [
+     "Storyboard",
+     "Styleframes",
+     "Revision round",
+     "Animatic",
+     "Sign-off"
+    ]
+   ],
+   [
+    "Animation",
+    "Done means the full animation is reviewed and one round of animation notes applied.",
+    300000,
+    [
+     "Animation v1",
+     "Client notes",
+     "Animation v2",
+     "Sound design",
+     "Music"
+    ]
+   ],
+   [
+    "Final delivery",
+    "Done means final files in all formats with captions are delivered.",
+    0,
+    [
+     "16:9 master",
+     "9:16 and 1:1 cutdowns",
+     "Captions",
+     "Project files (if purchased)",
+     "Final invoice"
+    ]
+   ]
+  ],
+  "waiting": "Storyboard approval, because changes after animation starts cost much more.",
+  "ask": [
+   "Which voiceover artist?",
+   [
+    "Warm female US",
+    "Energetic male US",
+    "Neutral British"
+   ],
+   "Samples are in the review link."
+  ],
+  "answered": [
+   "Style",
+   "Flat 2D with brand colors, no characters' faces."
+  ],
+  "checkin": [
+   "- Done: script and VO approved",
+   "- Next: storyboard and styleframes",
+   "- Needs from you: brand assets (fonts, icons)"
+  ],
+  "talk": [
+   "Storyboard is ready. Changes are cheap now and expensive later, so please review closely.",
+   "Scene 4 should show the savings screen, not the dashboard.",
+   "Swapping it. Updated board tomorrow."
+  ],
+  "anxieties": [
+   "When can I see something moving?",
+   "What changes are still free at this stage?",
+   "Can we update it later when the app UI changes?"
+  ],
+  "tools": [
+   "Frame.io",
+   "Vimeo review",
+   "Wipster",
+   "Milanote",
+   "Google Drive",
+   "HoneyBook"
+  ],
+  "notes": "Stage-gated approvals where late changes are expensive; the portal should state what is locked at each stage. Video review with frame comments, voiceover file approvals, music licensing.",
+  "sources": [
+   "https://www.liveupmedia.co.uk/terms-and-conditions",
+   "https://filmlifestyle.com/best-video-production-contract-template-for-client-work/",
+   "https://pixflow.net/blog/freelance-video-editing-contract-template/",
+   "https://frame.io/"
+  ],
+  "group": "Creative and media"
+ }
+]
