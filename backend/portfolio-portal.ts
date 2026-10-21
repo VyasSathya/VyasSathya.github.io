@@ -158,9 +158,10 @@ async function announceModules(pid: string, before: unknown, after: Mod[] | null
  const asks: string[] = [];
  for (const m of after) {
   if (m.hidden) continue;
-  const was = old.get(m.id);
+  const prev = old.get(m.id);
+  const was = prev && !prev.hidden ? prev : undefined; // a screen being shown again counts as new
   const fresh = (key: string, open: (r: Row) => boolean) => {
-   const seen = new Set(((was?.[key] || []) as Row[]).filter(isObj).map(r => r.id));
+   const seen = new Set(((was?.[key] || []) as Row[]).filter(isObj).filter(r => !r.hidden).map(r => r.id));
    return ((m[key] || []) as Row[]).filter(r => isObj(r) && !r.hidden && !seen.has(r.id) && open(r));
   };
   if (m.type === 'proof' && !m.approved && (!was || was.version !== m.version || was.hidden))
