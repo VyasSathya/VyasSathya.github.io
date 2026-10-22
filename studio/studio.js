@@ -6,6 +6,8 @@
   const SLOT = 'vp-owner-key';
   let data = null, busy = false, fresh = null; // fresh = a just-created link, shown once
   let seenSent = false, lastSeen = null;
+  const forceOpen = new Set(); // details to open on the next render (a screen just added)
+  const screensCtx = { act: (fn, msg) => act(fn, msg), render: () => render(), open: k => forceOpen.add(k) };
   P.themeButton();
   P.registerWorker();
 
@@ -15,7 +17,7 @@
   document.getElementById('reload').addEventListener('click', () => load(true));
   document.addEventListener('portal:refresh', () => load());
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && data && !busy && !app.contains(document.activeElement)) load(); });
-  setInterval(() => { if (document.visibilityState === 'visible' && !busy && !app.contains(document.activeElement)) load(); }, 120000);
+  setInterval(() => { if (document.visibilityState === 'visible' && !busy && !app.contains(document.activeElement) && !(typeof STUDIO_SCREENS !== 'undefined' && STUDIO_SCREENS.isDirty())) load(); }, 120000);
 
   function gate(text = 'Open your owner link on this device, or paste it here.') { P.gate(app, 'Studio', text, load); }
 
@@ -81,7 +83,8 @@
     if (!data) return;
     syncLine();
     const r = route();
-    const open = new Set([...app.querySelectorAll('details[open]')].map(d => d.dataset.k));
+    const open = new Set([...app.querySelectorAll('details[open]')].map(d => d.dataset.k).concat([...forceOpen]));
+    forceOpen.clear();
     const drafts = [...app.querySelectorAll('form textarea, form input[type=text], form input[type=url]')].filter(x => x.value && x.closest('form').dataset.keep).map(x => [x.closest('form').dataset.keep, x.name, x.value]);
     if (r === 'new') app.innerHTML = projectForm(null);
     else if (r && data.projects.some(p => p.id === r)) app.innerHTML = detail(data.projects.find(p => p.id === r));
@@ -153,6 +156,8 @@
       ${fresh && fresh.project === p.id ? freshBox() : ''}
       ${clientSeen(p)}
       ${sig.last_activity || sig.remaining ? `<p class="note">${sig.last_activity ? `Last activity ${ago(sig.last_activity)}` : ''}${sig.remaining ? ` &middot; Handoff: ${sig.remaining} remaining` : ''}${sig.last_commit ? ` &middot; Last commit ${ago(sig.last_commit)}` : ''}</p>` : ''}
+
+      ${typeof STUDIO_SCREENS !== 'undefined' ? `<h2>${p.kind === 'client' ? 'Client screens' : 'Screens'}</h2><div data-scr-host>${STUDIO_SCREENS.view(p)}</div>` : ''}
 
       <h2>Milestones</h2>
       ${ms.map(m => milestoneCard(p, m)).join('') || '<p class="note">No milestones yet.</p>'}
@@ -358,7 +363,12 @@
   const item = id => data.items.find(i => i.id === id);
   const saveItem = (i, patch) => P.api('save_item', { item: { id: i.id, done: i.done, waiting_on: i.waiting_on, client_visible: i.client_visible, ...patch } });
 
+  const curProject = () => { const r = route(); return r && r !== 'new' ? data.projects.find(p => p.id === r) : null; };
+  app.addEventListener('input', e => { if (e.target.closest('[data-scr-host]')) STUDIO_SCREENS.onChange(e); });
+  app.addEventListener('change', e => { if (e.target.closest('[data-scr-host]')) STUDIO_SCREENS.onChange(e); });
+
   app.addEventListener('click', async e => {
+    if (e.target.closest('[data-scr-host]') && curProject() && STUDIO_SCREENS.onClick(e, curProject(), screensCtx)) return;
     const t = e.target.closest('button, input[type=checkbox][data-done]'); if (!t) return;
     const d = t.dataset;
     if (d.go) { location.hash = '#/p/' + d.go; scrollTo(0, 0); return; }
@@ -402,6 +412,7 @@
 
   app.addEventListener('submit', e => {
     e.preventDefault();
+    if (e.target.closest('[data-scr-host]')) { if (curProject()) STUDIO_SCREENS.onSubmit(e, curProject(), screensCtx); return; }
     const f = e.target, v = Object.fromEntries(new FormData(f));
     if (f.dataset.pform !== undefined) {
       const sources = { hub: (v.hub || '').split(',').map(s => s.trim()).filter(Boolean), brain: v.brain.trim(), github: v.github.trim(), repo: v.repo.trim() };
