@@ -9,6 +9,36 @@
   ];
   const services = [
     {
+      id: "agents",
+      name: "Agents for your team",
+      title: "Coding agents that know your codebase.",
+      description:
+        "Claude Code or Codex set up for your team, your product exposed to agents over MCP, and evals that decide whether a change ships.",
+      price: "Team setup $4,500 · MCP server $4,000 · Eval loop $3,500",
+      deliverables: [
+        "CLAUDE.md, permissions, hooks and shared skills",
+        "An MCP server for your API with auth, tests and logging",
+        "An eval loop built from real user complaints",
+        "A session with your team and a written handover",
+      ],
+      proof: ["agent-brain", "crewboard", "talkover", "video-studio"],
+    },
+    {
+      id: "rescue",
+      name: "Fix an app",
+      title: "Finish the app your AI tool started.",
+      description:
+        "For apps built on Lovable, Bolt, Replit or Cursor. Supabase stops exposing new tables without explicit grants on October 30.",
+      price: "Triage $750 · Fix $2,500",
+      deliverables: [
+        "RLS policies, grants and key exposure",
+        "Auth, redirects and password reset",
+        "Payments and deploy",
+        "A written report of every table and fix",
+      ],
+      proof: ["punchpad", "kpop-sing", "front-of-line", "marquee"],
+    },
+    {
       id: "products",
       name: "Build a product",
       title: "An idea people can use.",
@@ -19,6 +49,7 @@
         "A working website or app",
         "Integrations, checks, and release handover",
       ],
+      price: "Feature sprint $6,000 · $150 an hour",
       proof: ["marquee", "front-of-line", "punchpad", "kpop-sing"],
     },
     {
@@ -58,6 +89,7 @@
         "Landscape and portrait compositions",
         "Music, export, and revision",
       ],
+      price: "$750 · 5 days",
       proof: ["talkover", "punchpad", "crewboard", "whiteboard"],
     },
     {
@@ -160,6 +192,9 @@
     const s = services.find((s) => s.id === id) || services[0];
     document.querySelector("#service-title").textContent = s.title;
     document.querySelector("#service-description").textContent = s.description;
+    const price = document.querySelector("#service-price");
+    price.textContent = s.price || "";
+    price.hidden = !s.price;
     document.querySelector("#service-deliverables").replaceChildren(
       ...s.deliverables.map((text) => {
         const li = document.createElement("li");
@@ -288,7 +323,7 @@
     } catch (e) {}
   });
   work();
-  service("products");
+  service("agents");
   view();
   window.addEventListener("hashchange", view);
 })();
