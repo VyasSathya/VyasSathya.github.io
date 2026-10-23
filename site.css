@@ -390,6 +390,11 @@ main,
   max-width: 440px;
   font-size: 14px;
 }
+.service-copy .service-price {
+  color: var(--fg);
+  font-weight: 500;
+  margin-top: 20px;
+}
 .service-copy ul {
   margin: 0;
   padding: 0;
