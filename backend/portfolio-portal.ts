@@ -80,6 +80,150 @@ async function notify(projectId: string | null, audience: 'client' | 'owner', ki
 const money = (c: number | null, cur = 'usd') => c == null ? '' : new Intl.NumberFormat('en-US', { style: 'currency', currency: cur.toUpperCase() }).format(c / 100);
 const isClientProject = async (pid: string) => (await sql`select 1 from portfolio.portal_projects where id = ${pid} and kind = 'client'`).length > 0;
 
+// ---- industry screens (portal/modules.js) ----
+// A project's `modules` is an ordered list of screens: {id, type, title, ...data}. Every screen and every
+// object in its lists carries a short id so client actions name what they touch. Owners hide a screen or
+// item with `hidden: true` and keep private notes in keys starting with '_'; neither reaches the client.
+type Mod = Record<string, unknown> & { id: string; type: string; title?: string };
+type Row = Record<string, unknown> & { id: string };
+const MOD_TYPES = new Set(['needs', 'stages', 'estimate', 'photos', 'proof', 'gallery', 'docs', 'sign', 'schedule', 'countdown', 'sessions', 'tickets', 'itinerary', 'schools']);
+const LIST_KEYS = ['items', 'steps', 'posts', 'comments', 'checklist', 'budget', 'homework', 'days'];
+const FILES = 'portal-files';
+const FILE_MAX = 50 * 1024 * 1024;
+const STORAGE = (Deno.env.get('SUPABASE_URL') || '') + '/storage/v1';
+const SERVICE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+const rid = () => { const b = new Uint8Array(8); crypto.getRandomValues(b); return Array.from(b, x => (x % 36).toString(36)).join(''); };
+const okId = (v: unknown) => typeof v === 'string' && /^[a-z0-9]{4,16}$/.test(v);
+const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
+
+function normalizeModules(v: unknown): Mod[] | null {
+ if (v === null) return null;
+ if (!Array.isArray(v)) throw new Fail(400, 'Screens must be a list.');
+ if (v.length > 24) throw new Fail(400, 'Use 24 screens or fewer.');
+ if (JSON.stringify(v).length > 200_000) throw new Fail(413, 'The screens are too large.');
+ const ids = new Set<string>();
+ return v.map(m => {
+  if (!isObj(m) || !MOD_TYPES.has(m.type as string)) throw new Fail(400, 'Unknown screen type.');
+  const out: Mod = { ...m, id: okId(m.id) ? m.id as string : rid(), type: m.type as string };
+  if (ids.has(out.id)) throw new Fail(400, 'Each screen needs its own id.');
+  ids.add(out.id);
+  for (const k of LIST_KEYS) if (Array.isArray(out[k])) {
+   const rows = new Set<string>();
+   out[k] = (out[k] as unknown[]).map(it => {
+    if (!isObj(it)) return it;
+    const id = okId(it.id) ? it.id as string : rid();
+    if (rows.has(id)) throw new Fail(400, 'Each line needs its own id.');
+    rows.add(id); return { ...it, id };
+   });
+  }
+  return out;
+ });
+}
+
+// What a client may see: no hidden screens or items, no '_' keys, and files by name only.
+function clientModules(mods: unknown) {
+ if (!Array.isArray(mods)) return null;
+ const clean = (o: unknown): unknown => Array.isArray(o) ? o.filter(x => !(isObj(x) && x.hidden)).map(clean)
+  : isObj(o) ? Object.fromEntries(Object.entries(o).filter(([k]) => !k.startsWith('_') && k !== 'hidden')
+   .map(([k, v]) => [k, k === 'file' && isObj(v) ? { name: v.name, size: v.size, at: v.at } : clean(v)])) : o;
+ const list = mods.filter(m => isObj(m) && !m.hidden).map(m => {
+  const safe = clean(m) as Mod;
+  if (m.type === 'gallery') {
+   const keys = galleryKeys(m);
+   safe.picks = (Array.isArray(m.picks) ? m.picks : []).filter(k => keys.has(String(k)));
+   if (Array.isArray(m.items) && m.items.length && !(safe.items as unknown[]).length) safe.show = 0;
+  }
+  return safe;
+ });
+ return list.length ? list : null;
+}
+
+// Locks the project row, hands the screen to `fn` to change in place, saves, and bumps modules_rev.
+async function onModule<T>(a: Access, b: Record<string, unknown>, type: string, fn: (m: Mod, p: { title: string; kind: string }) => T | Promise<T>) {
+ const pid = slug(b.project_id); canSee(a, pid);
+ const mid = str(b.module_id, 20);
+ return await sql.begin(async tx => {
+  const [p] = await tx`select title, kind, modules, modules_rev from portfolio.portal_projects where id = ${pid} for update`;
+  if (!p) throw new Fail(404, 'Project not found.');
+  if (!Number.isSafeInteger(b.rev) || b.rev !== p.modules_rev)
+   throw new Fail(409, 'These screens changed. Review the latest version, then try again.');
+  const mods = (Array.isArray(p.modules) ? p.modules : []) as Mod[];
+  const m = mods.find(x => isObj(x) && x.id === mid && x.type === type && !x.hidden);
+  if (!m) throw new Fail(404, 'This screen changed. Reload and try again.');
+  const res = await fn(m, p as unknown as { title: string; kind: string });
+  await tx`update portfolio.portal_projects set modules = ${tx.json(mods as never)}, modules_rev = modules_rev + 1, updated_at = now() where id = ${pid}`;
+  return { pid, m, res };
+ });
+}
+function rowOf(m: Mod, b: Record<string, unknown>, key = 'items', includeHidden = false) {
+ const id = str(b.item_id, 20);
+ const it = ((m[key] || []) as Row[]).find(x => isObj(x) && x.id === id && (includeHidden || !x.hidden));
+ if (!it) throw new Fail(404, 'This item changed. Reload and try again.');
+ return it;
+}
+const who = (a: Access) => a.role === 'client' ? (a.label || 'Client') : 'Vyas';
+function galleryKeys(m: Mod): Set<string> {
+ const items = Array.isArray(m.items) ? m.items : [];
+ if (items.length) return new Set(items.filter(isObj).filter(x => !x.hidden).map(x => String(x.id)));
+ const n = Math.min(200, Math.max(0, Math.floor(m.show === 0 ? 0 : Number(m.show) || 12)));
+ return new Set(Array.from({ length: n }, (_, i) => String(i)));
+}
+const estimateLines = (m: Mod) => JSON.stringify(((m.items || []) as Row[]).filter(isObj).filter(r => !r.hidden).map(r => [r.id, r.t, r.price, r.sev, r.note]));
+// An approval belongs to the content the client saw. Editing that content asks for approval again.
+function resetChangedApprovals(before: unknown, after: Mod[] | null) {
+ const old = new Map((Array.isArray(before) ? before : []).filter(isObj).map(m => [m.id, m]));
+ for (const m of after || []) {
+  const was = old.get(m.id) as Mod | undefined;
+  if (!was || was.type !== m.type) continue;
+  const clear = (o: Record<string, unknown>, keys: string[]) => { for (const key of keys) delete o[key]; };
+  if (m.type === 'estimate' && estimateLines(was) !== estimateLines(m))
+   clear(m, ['authorized', 'authorized_at', 'authorized_by', 'authorized_total']);
+  if (m.type === 'proof' && ['version', 'file', 'url'].some(k => was[k] !== m[k]))
+   clear(m, ['approved', 'approved_at', 'approved_by', 'approved_version']);
+  if (m.type === 'sign') {
+   const rows = new Map(((was.items || []) as Row[]).filter(isObj).map(r => [r.id, r]));
+   for (const r of (m.items || []) as Row[]) {
+    const prev = rows.get(r.id);
+    if (prev && (prev.t !== r.t || prev.url !== r.url)) clear(r, ['signed', 'signed_name', 'signed_at', 'signed_by']);
+   }
+  }
+ }
+}
+
+async function storage(path: string, body: unknown) {
+ if (!SERVICE) throw new Fail(503, 'File storage is not set up.');
+ const r = await fetch(`${STORAGE}${path}`, { method: 'POST', headers: { Authorization: `Bearer ${SERVICE}`, apikey: SERVICE, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+ const j = await r.json().catch(() => ({}));
+ if (!r.ok) { console.error('storage', r.status, JSON.stringify(j)); throw new Fail(502, 'File storage did not answer. Try again.'); }
+ return j as Record<string, string>;
+}
+
+// After an owner edit, the client hears about what newly needs them: a new cut to review, new files or
+// signatures asked for, an estimate to approve. The first setup of a project's screens is quiet.
+async function announceModules(pid: string, before: unknown, after: Mod[] | null) {
+ if (!after || !Array.isArray(before) || !before.length) return;
+ const old = new Map((before as Mod[]).filter(isObj).map(m => [m.id, m]));
+ const asks: string[] = [];
+ for (const m of after) {
+  if (m.hidden) continue;
+  const prev = old.get(m.id);
+  const was = prev && !prev.hidden ? prev : undefined; // a screen being shown again counts as new
+  const fresh = (key: string, open: (r: Row) => boolean) => {
+   const seen = new Set(((was?.[key] || []) as Row[]).filter(isObj).filter(r => !r.hidden && open(r)).map(r => r.id));
+   return ((m[key] || []) as Row[]).filter(r => isObj(r) && !r.hidden && !seen.has(r.id) && open(r));
+  };
+  if (m.type === 'proof' && !m.approved && (!was || was.version !== m.version || was.approved))
+   await notify(pid, 'client', 'proof', `Ready for your review: ${m.title || 'new version'}${m.version ? ' ' + m.version : ''}`, 'Approve it or send your notes.');
+  if (m.type === 'docs') asks.push(...fresh('items', r => (r.state || 'needed') === 'needed').map(r => String(r.t)));
+  if (m.type === 'sign') asks.push(...fresh('items', r => !r.signed).map(r => `Sign: ${r.t}`));
+  if (m.type === 'estimate' && !m.authorized && (!was || was.authorized || estimateLines(was) !== estimateLines(m)))
+   await notify(pid, 'client', 'estimate', `${was ? 'Estimate updated' : 'Estimate ready'}: ${m.title || 'estimate'}`, 'Approve or decline each line.');
+  if (m.type === 'gallery' && !m.sent && (!was || was.sent))
+   await notify(pid, 'client', 'gallery', `Pick your favorites: ${m.title || 'gallery'}`, m.limit ? `Choose up to ${m.limit}.` : '');
+ }
+ if (asks.length) await notify(pid, 'client', 'request', asks.length === 1 ? `Needed from you: ${asks[0]}` : `${asks.length} new things needed from you`, asks.slice(0, 5).join(', '));
+}
+
 // Review windows that ran out with no change request count as accepted, and both sides hear about it.
 async function settleReviews() {
  const done = await sql`update portfolio.portal_milestones set state = 'accepted', accepted_by = 'auto', accepted_at = review_due_at, updated_at = now()
@@ -123,8 +267,8 @@ function canSee(a: Access, projectId: string) { if (a.role === 'owner') return; 
 async function clientView(a: Access) {
  await settleReviews();
  const ids = a.project_ids;
- const projects = await sql`select id, title, client_name, summary, site_url, preview_url, status, check_in_day, updated_at
-  from portfolio.portal_projects where id = any(${ids}) and status <> 'archived' order by sort, title`;
+ const projects = (await sql`select id, title, client_name, summary, site_url, preview_url, status, check_in_day, updated_at, modules, modules_rev
+  from portfolio.portal_projects where id = any(${ids}) and status <> 'archived' order by sort, title`).map(p => ({ ...p, modules: clientModules(p.modules) }));
  const milestones = await sql`select id, project_id, seq, kind, title, outcome, due_on, amount_cents, currency, state, review_opened_at, review_due_at,
   accepted_at, accepted_by, pay_state, invoice_url, paid_at from portfolio.portal_milestones
   where project_id = any(${ids}) and client_visible order by project_id, seq`;
@@ -207,7 +351,177 @@ async function handle(a: Access, b: Record<string, unknown>) {
    await log(a, op, pid); return { ok: true };
   }
 
+  // ---- client actions on industry screens ----
+  case 'estimate_pick': {
+   need(a, 'client', 'owner');
+   const r = await onModule(a, b, 'estimate', m => {
+    if (m.authorized) throw new Fail(409, 'This estimate is already authorized.');
+    const it = rowOf(m, b);
+    if (b.pick === true || b.pick === false) it.pick = b.pick; else delete it.pick;
+   });
+   await log(a, op, r.m.id, { item: b.item_id, pick: b.pick }); return { ok: true };
+  }
+  case 'estimate_authorize': {
+   need(a, 'client', 'owner');
+   const r = await onModule(a, b, 'estimate', m => {
+    if (m.authorized) throw new Fail(409, 'This estimate is already authorized.');
+    const lines = ((m.items || []) as Row[]).filter(l => isObj(l) && !l.hidden && l.price && l.sev !== 'green');
+    const yes = lines.filter(l => l.pick === true), no = lines.filter(l => l.pick === false);
+    if (!yes.length) throw new Fail(400, 'Approve at least one line first.');
+    const total = yes.reduce((s, l) => s + (Number(l.price) || 0), 0);
+    Object.assign(m, { authorized: true, authorized_at: new Date().toISOString(), authorized_by: who(a), authorized_total: total });
+    return { total, yes: yes.map(l => String(l.t)), no: no.map(l => String(l.t)) };
+   });
+   if (a.role === 'client') await notify(r.pid, 'owner', 'authorized', `${who(a)} authorized ${money(r.res.total)}: ${r.m.title || 'estimate'}`,
+    [`Approved: ${r.res.yes.join(', ')}`, r.res.no.length ? `Declined: ${r.res.no.join(', ')}` : ''].filter(Boolean).join('. '));
+   await log(a, op, r.m.id, r.res); return { ok: true, total: r.res.total };
+  }
+  case 'doc_upload_url': {
+   need(a, 'client', 'owner');
+   const pid = slug(b.project_id); canSee(a, pid);
+   const size = Number(b.size);
+   if (!(size > 0)) throw new Fail(400, 'Pick a file.');
+   if (size > FILE_MAX) throw new Fail(413, 'That file is over 50 MB. Send a link to it instead.');
+   const [p] = await sql`select modules from portfolio.portal_projects where id = ${pid}`;
+   const m = ((p?.modules || []) as Mod[]).find(x => isObj(x) && x.id === str(b.module_id, 20) && x.type === 'docs' && !x.hidden);
+   if (!m) throw new Fail(404, 'This screen changed. Reload and try again.');
+   const it = rowOf(m, b);
+   const name = (str(b.name, 120).replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '') || 'file').slice(-80);
+   const path = `${pid}/${m.id}/${it.id}/${Date.now()}-${name}`;
+   const j = await storage(`/object/upload/sign/${FILES}/${path}`, {});
+   return { ok: true, path, upload_url: STORAGE + j.url };
+  }
+  case 'doc_received': {
+   need(a, 'client', 'owner');
+   const link = url(b.link);
+   const path = str(b.path, 400);
+   if (!link && !path) throw new Fail(400, 'Upload a file or paste a link.');
+   // Read storage before taking the project lock. Using the outer pool from a locked transaction
+   // can exhaust all three connections when several uploads finish together.
+   canSee(a, slug(b.project_id));
+   let uploadedSize = 0;
+   if (path) {
+    if (!path.startsWith(`${slug(b.project_id)}/${str(b.module_id, 20)}/${str(b.item_id, 20)}/`)) throw new Fail(400, 'Bad file.');
+    const [o] = await sql`select (metadata->>'size')::bigint size from storage.objects where bucket_id = ${FILES} and name = ${path}`;
+    if (!o) throw new Fail(400, 'The upload did not finish. Try again.');
+    uploadedSize = Number(o.size) || 0;
+   }
+   const r = await onModule(a, b, 'docs', m => {
+    const it = rowOf(m, b);
+    const now = new Date().toISOString();
+    if (path) {
+     if (!path.startsWith(`${slug(b.project_id)}/${m.id}/${it.id}/`)) throw new Fail(400, 'Bad file.');
+     it.file = { path, name: str(b.name, 160) || path.split('/').pop(), size: uploadedSize, at: now };
+    }
+    if (link) it.link = link;
+    Object.assign(it, { state: 'received', sent_at: now, sent_by: who(a) });
+    return String(it.t);
+   });
+   if (a.role === 'client') await notify(r.pid, 'owner', 'doc', `${who(a)} sent ${r.res}`, link || (path ? 'Open it in Studio.' : ''));
+   await log(a, op, r.m.id, { item: b.item_id, file: !!path, link: !!link }); return { ok: true };
+  }
+  case 'doc_na': {
+   need(a, 'client', 'owner');
+   const note = str(b.note, 1000);
+   const r = await onModule(a, b, 'docs', m => { const it = rowOf(m, b); Object.assign(it, { state: 'na', na_note: note, sent_at: new Date().toISOString(), sent_by: who(a) }); return String(it.t); });
+   if (a.role === 'client') await notify(r.pid, 'owner', 'doc', `${who(a)} says this does not apply: ${r.res}`, note || 'Confirm it in Studio.');
+   await log(a, op, r.m.id, { item: b.item_id }); return { ok: true };
+  }
+  case 'file_url': {
+   need(a, 'client', 'owner');
+   const pid = slug(b.project_id); canSee(a, pid);
+   const [p] = await sql`select modules from portfolio.portal_projects where id = ${pid}`;
+   const m = ((p?.modules || []) as Mod[]).find(x => isObj(x) && x.id === str(b.module_id, 20) && x.type === 'docs');
+   if (!m || (a.role === 'client' && m.hidden)) throw new Fail(404, 'Not found.');
+   const it = rowOf(m, b, 'items', a.role === 'owner'); const f = it.file as { path?: string } | undefined;
+   if (!f?.path) throw new Fail(404, 'No file on this item.');
+   const j = await storage(`/object/sign/${FILES}/${f.path}`, { expiresIn: 600 });
+   return { ok: true, url: STORAGE + j.signedURL };
+  }
+  case 'sign_item': {
+   need(a, 'client');
+   const name = str(b.name, 120);
+   if (name.length < 2) throw new Fail(400, 'Type your full name to sign.');
+   const r = await onModule(a, b, 'sign', m => {
+    const it = rowOf(m, b);
+    if (it.signed) throw new Fail(409, 'This is already signed.');
+    Object.assign(it, { signed: true, signed_name: name, signed_at: new Date().toISOString(), signed_by: who(a) });
+    return String(it.t);
+   });
+   await notify(r.pid, 'owner', 'signed', `${who(a)} signed ${r.res}`, `Signed as ${name}`);
+   await log(a, op, r.m.id, { item: b.item_id, name }); return { ok: true };
+  }
+  case 'proof_approve': {
+   need(a, 'client', 'owner');
+   const r = await onModule(a, b, 'proof', m => {
+    if (m.approved) throw new Fail(409, 'This version is already approved.');
+    Object.assign(m, { approved: true, approved_at: new Date().toISOString(), approved_by: who(a), approved_version: m.version });
+   });
+   if (a.role === 'client') await notify(r.pid, 'owner', 'approved', `${who(a)} approved ${r.m.title || 'the proof'}${r.m.version ? ' ' + r.m.version : ''}`, str(b.body, 300));
+   await log(a, op, r.m.id, { version: r.m.version }); return { ok: true };
+  }
+  case 'proof_note': {
+   need(a, 'client', 'owner');
+   const body = str(b.body, 2000); if (body.length < 2) throw new Fail(400, 'Write what should change.');
+   const at = str(b.at, 12);
+   const r = await onModule(a, b, 'proof', m => {
+    if (m.approved) throw new Fail(409, 'This version is already approved.');
+    const list = (Array.isArray(m.comments) ? m.comments : []) as Row[];
+    if (list.length >= 200) throw new Fail(400, 'Too many notes on this version.');
+    list.push({ id: rid(), at, t: body, by: a.role === 'client' ? 'client' : 'vyas', created_at: new Date().toISOString() });
+    m.comments = list;
+   });
+   if (a.role === 'client') await notify(r.pid, 'owner', 'changes', `${who(a)} noted a change on ${r.m.title || 'the proof'}${r.m.version ? ' ' + r.m.version : ''}`, `${at ? at + ' ' : ''}${body}`.slice(0, 300));
+   await log(a, op, r.m.id); return { ok: true };
+  }
+  case 'gallery_pick': {
+   need(a, 'client', 'owner');
+   const key = str(b.key, 20); if (!/^[a-z0-9]{1,16}$/.test(key)) throw new Fail(400, 'Bad pick.');
+   const r = await onModule(a, b, 'gallery', m => {
+    if (m.sent) throw new Fail(409, 'Your picks are already sent.');
+    const valid = galleryKeys(m);
+    if (!valid.has(key)) throw new Fail(404, 'This picture is not available.');
+    const picks = ((Array.isArray(m.picks) ? m.picks : []) as string[]).filter(k => valid.has(k));
+    const on = b.on === true, has = picks.includes(key);
+    if (on && !has) { if (m.limit && picks.length >= Number(m.limit)) throw new Fail(409, `You can pick ${m.limit}.`); picks.push(key); }
+    if (!on && has) picks.splice(picks.indexOf(key), 1);
+    m.picks = picks; return picks.length;
+   });
+   return { ok: true, picked: r.res };
+  }
+  case 'gallery_send': {
+   need(a, 'client', 'owner');
+   const r = await onModule(a, b, 'gallery', m => {
+    const valid = galleryKeys(m);
+    m.picks = ((Array.isArray(m.picks) ? m.picks : []) as string[]).filter(k => valid.has(k));
+    const n = Array.isArray(m.picks) ? m.picks.length : 0;
+    if (!n) throw new Fail(400, 'Pick at least one first.');
+    if (m.limit && n > Number(m.limit)) throw new Fail(409, `Choose up to ${m.limit} pictures before sending.`);
+    if (m.sent) throw new Fail(409, 'Your picks are already sent.');
+    Object.assign(m, { sent: true, sent_at: new Date().toISOString(), sent_by: who(a) }); return n;
+   });
+   if (a.role === 'client') await notify(r.pid, 'owner', 'picked', `${who(a)} sent ${r.res} pick${r.res === 1 ? '' : 's'}: ${r.m.title || 'gallery'}`);
+   await log(a, op, r.m.id, { n: r.res }); return { ok: true };
+  }
+
   // ---- owner actions ----
+  case 'save_modules': {
+   need(a, 'owner');
+   const pid = slug(b.project_id);
+   const mods = normalizeModules(b.modules);
+   const btype = typeof b.business_type === 'string' ? str(b.business_type, 80) : null;
+   const r = await sql.begin(async tx => {
+    const [p] = await tx`select modules, modules_rev from portfolio.portal_projects where id = ${pid} for update`;
+    if (!p) throw new Fail(404, 'Project not found.');
+    if (Number(b.rev) !== p.modules_rev) throw new Fail(409, 'These screens changed since you opened them (the client may have just acted). Reload, then make your edit again.');
+    resetChangedApprovals(p.modules, mods);
+    const [u] = await tx`update portfolio.portal_projects set modules = ${mods ? tx.json(mods as never) : null}, modules_rev = modules_rev + 1,
+     business_type = coalesce(${btype}, business_type), updated_at = now() where id = ${pid} returning modules_rev`;
+    return { before: p.modules, rev: u.modules_rev };
+   });
+   if (b.quiet !== true && await isClientProject(pid)) await announceModules(pid, r.before, mods);
+   await log(a, op, pid, { n: mods?.length || 0 }); return { ok: true, rev: r.rev, modules: mods };
+  }
   case 'save_project': {
    need(a, 'owner'); const p = (b.project || {}) as Record<string, unknown>;
    const id = slug(p.id);
