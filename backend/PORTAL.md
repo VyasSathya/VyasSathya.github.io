@@ -91,6 +91,16 @@ The raw owner and sync keys live in `%USERPROFILE%\.vyasapps-portal\keys.json`, 
 - Clients never see hidden screens or lines, keys starting with `_`, or storage paths.
 - After an edit, the client hears about a new version to review, new file or signature requests, a new or
   changed estimate, and a gallery to pick from. Setting up screens from a template is quiet.
+- Client actions carry the project's loaded `modules_rev` as `rev`. If an owner edit or another action
+  changed the screens, the API returns 409 before writing; the client reloads to review the latest data.
+  Release this frontend before deploying the matching function: the old function ignores `rev`, but the
+  new function refuses every action from a frontend that does not send it. Repeated screen types route by screen id.
+- Gallery choices must name available pictures (or an in-range demo tile); hidden choices are removed
+  from the client view and final submission. Owners can still open files attached to hidden doc rows.
+- Reopening a request, signature, proof or gallery, and changing estimate lines, announces it again.
+- Changing an estimate's lines, an approved proof's version/file/link, or a signed document's title/link
+  clears the old approval on save, so it cannot be carried over to content the client never approved.
+- Local regression checks: `node --test tests/portal-screens.test.cjs` (Node 22.13+).
 
 ## Feeds (`portal-sync.py`)
 

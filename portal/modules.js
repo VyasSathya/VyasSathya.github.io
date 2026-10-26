@@ -23,11 +23,13 @@ const PORTAL_MODULES = (() => {
   function derivedNeeds(mods) {
     const out = [];
     for (const m of mods) {
-      if (m.type === 'proof' && !m.approved) out.push({ kind: 'Review', title: `${m.title || 'Proof'}${m.version ? ', ' + m.version : ''}`, go: 'proof' });
-      if (m.type === 'estimate' && !m.authorized && vis(m.items).some(l => l.price && l.sev !== 'green')) out.push({ kind: 'Approve', title: m.title || 'Estimate', go: 'estimate' });
-      if (m.type === 'docs') vis(m.items).filter(d => (d.state || 'needed') === 'needed').forEach(d => out.push({ kind: 'Send', title: d.t, go: 'docs', due: d.due }));
-      if (m.type === 'sign') vis(m.items).filter(s => !s.signed).forEach(s => out.push({ kind: 'Sign', title: s.t, go: 'sign', due: s.by }));
-      if (m.type === 'gallery' && !m.sent) out.push({ kind: 'Pick', title: m.title || 'Favorites', go: 'gallery' });
+      if (m.hidden) continue;
+      const go = m.id || m.type;
+      if (m.type === 'proof' && !m.approved) out.push({ kind: 'Review', title: `${m.title || 'Proof'}${m.version ? ', ' + m.version : ''}`, go });
+      if (m.type === 'estimate' && !m.authorized && vis(m.items).some(l => l.price && l.sev !== 'green')) out.push({ kind: 'Approve', title: m.title || 'Estimate', go });
+      if (m.type === 'docs') vis(m.items).filter(d => (d.state || 'needed') === 'needed').forEach(d => out.push({ kind: 'Send', title: d.t, go, due: d.due }));
+      if (m.type === 'sign') vis(m.items).filter(s => !s.signed).forEach(s => out.push({ kind: 'Sign', title: s.t, go, due: s.by }));
+      if (m.type === 'gallery' && !m.sent) out.push({ kind: 'Pick', title: m.title || 'Favorites', go });
     }
     return out;
   }
@@ -57,7 +59,7 @@ const PORTAL_MODULES = (() => {
           <div class="est-right">${l.price ? `<span class="est-price">${money(l.price)}</span>` : ''}${sev !== 'green' && l.price ? `<span class="est-pick"><button type="button" data-est="${l.k}" data-v="1" aria-pressed="${l.pick === true}" ${lock}>Approve</button><button type="button" data-est="${l.k}" data-v="0" aria-pressed="${l.pick === false}" ${lock}>Decline</button></span>` : ''}</div></div>`).join('')}</div>` : ''; }).join('')}
       <div class="est-total"><span>${esc(m.totalLabel || 'Approved total')}</span><b>${money(total)}</b></div>
       ${m.authorized ? `<p class="done-line"><span class="chip go">${esc(m.doneLabel || 'Authorized')}</span>${m.authorized_at ? ` <span class="count">${day(m.authorized_at)}${m.authorized_by ? ' by ' + esc(m.authorized_by) : ''}</span>` : ''}</p>`
-        : `<button type="button" class="btn primary wide" data-authorize ${total ? '' : 'disabled'}>${m.actionLabel || 'Authorize'} ${money(total)}</button>`}</section>`;
+        : `<button type="button" class="btn primary wide" data-authorize ${total ? '' : 'disabled'}>${esc(m.actionLabel || 'Authorize')} ${money(total)}</button>`}</section>`;
   };
 
   R.photos = m => `<section class="mod" id="mod-photos">${head(m)}
@@ -74,19 +76,21 @@ const PORTAL_MODULES = (() => {
     <div class="comments">${notes.map(c => `<p>${c.at ? `<span class="at">${esc(c.at)}</span>` : ''}${esc(c.t)}${c.done ? ' <span class="chip go">Fixed</span>' : ''}</p>`).join('')}</div>
     <div class="actions">${m.approved ? `<span class="chip go">Approved${m.approved_version && m.approved_version !== m.version ? '' : ' ' + esc(m.version || '')}</span>${m.approved_at ? `<span class="count">${day(m.approved_at)}</span>` : ''}` : `<button type="button" class="btn accent" data-proof="approve">Approve ${esc(m.version)}</button><button type="button" class="btn" data-proof="changes">Request changes</button>`}</div>
     ${live && !m.approved ? `<div class="inline-form" data-proof-form hidden>
-      <div class="grid-at"><div><label class="f" for="pf-at">${esc(m.atLabel || 'Where (optional)')}</label><input type="text" id="pf-at" placeholder="${esc(m.atHint || '0:41')}" maxlength="12"></div>
-      <div><label class="f" for="pf-t">What should change</label><input type="text" id="pf-t" maxlength="2000"></div></div>
+      <div class="grid-at"><div><label class="f" for="pf-at-${esc(m.id || 'proof')}">${esc(m.atLabel || 'Where (optional)')}</label><input type="text" id="pf-at-${esc(m.id || 'proof')}" data-proof-at placeholder="${esc(m.atHint || '0:41')}" maxlength="12"></div>
+      <div><label class="f" for="pf-t-${esc(m.id || 'proof')}">What should change</label><input type="text" id="pf-t-${esc(m.id || 'proof')}" data-proof-body maxlength="2000"></div></div>
       <div class="actions"><button type="button" class="btn primary small" data-proof="send">Send note</button></div></div>` : ''}
     ${m.note ? `<p class="note">${esc(m.note)}</p>` : ''}</section>`;
   };
 
   R.gallery = m => {
     const items = vis(m.items);
-    const picks = live ? (m.picks || []) : null;
+    const available = new Set(items.length ? items.map((it, i) => String(it.id || i))
+      : (m.items || []).length ? [] : Array.from({ length: Math.min(200, Math.max(0, Math.floor(m.show === 0 ? 0 : Number(m.show) || 12))) }, (_, i) => String(i)));
+    const picks = live ? (m.picks || []).filter(k => available.has(k)) : null;
     const n = live ? picks.length : m.picked;
     const tiles = items.length
       ? items.map((it, k) => ({ k: key(it, k), on: picks ? picks.includes(String(it.id || k)) : k < m.picked, img: href(it.url), label: it.t || k + 1 }))
-      : Array.from({ length: m.show || 12 }, (_, k) => ({ k: String(k), on: picks ? picks.includes(String(k)) : k < m.picked, img: '', label: k + 1 }));
+      : Array.from({ length: (m.items || []).length ? 0 : available.size }, (_, k) => ({ k: String(k), on: picks ? picks.includes(String(k)) : k < m.picked, img: '', label: k + 1 }));
     return `<section class="mod" id="mod-gallery">${head(m, `<span class="count" data-picked>${n} of ${m.limit} picked</span>`)}
     <div class="gal">${tiles.map(t => `<button type="button" class="gal-ph${t.img ? ' has-img' : ''}" data-gpick="${t.k}" aria-pressed="${t.on}" ${live && m.sent ? 'disabled' : ''}>${t.img ? `<img src="${t.img}" alt="" loading="lazy">` : `<span>${esc(t.label)}</span>`}</button>`).join('')}</div>
     ${live ? (m.sent ? `<p class="done-line"><span class="chip go">Picks sent</span>${m.sent_at ? ` <span class="count">${day(m.sent_at)}</span>` : ''}</p>` : `<div class="actions"><button type="button" class="btn primary" data-gal-send ${n ? '' : 'disabled'}>Send my picks</button></div>`) : ''}
@@ -136,7 +140,11 @@ const PORTAL_MODULES = (() => {
   function render(mods, opts = {}) {
     live = !!opts.live;
     const list = vis(mods);
-    return list.map(m => (R[m.type] ? R[m.type](m, list) : '')).join('');
+    return list.map(m => {
+      const html = R[m.type] ? R[m.type](m, list) : '';
+      return html.replace(/<section\b/, `<section data-module="${esc(m.id || '')}" data-type="${esc(m.type)}"`)
+        .replace(/id="mod-[a-z]+"/, `id="mod-${esc(m.id || m.type)}"`);
+    }).join('');
   }
 
   // Demo interactions stay in the tab. With `server` ({ act(op, body, done), projectId }) every action is
@@ -146,18 +154,18 @@ const PORTAL_MODULES = (() => {
     app.addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b || !b.closest('.mod')) return;
       const mods = vis(getMods() || []);
-      const find = t => mods.find(m => m.type === t);
       const sec = b.closest('.mod');
-      if (b.dataset.go !== undefined && b.classList.contains('need')) { const el = app.querySelector('#mod-' + b.dataset.go); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+      const find = t => mods.find(m => m.type === t && (!sec.dataset.module || m.id === sec.dataset.module));
+      if (b.dataset.go !== undefined && b.classList.contains('need')) { const el = b.dataset.go && app.querySelector('#mod-' + CSS.escape(b.dataset.go)); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
 
       if (server) {
-        const send = (op, type, body, done) => server.act(op, { project_id: server.projectId(), module_id: find(type).id, ...body }, done);
+        const send = (op, type, body, done) => server.act(op, { project_id: server.projectId(), module_id: find(type).id, rev: server.revision(), ...body }, done);
         const open = sel => { const f = sec.querySelector(sel); if (f) { f.hidden = !f.hidden; const i = f.querySelector('input'); if (i && !f.hidden) i.focus(); } };
         if (b.dataset.est !== undefined) { const m = find('estimate'), it = vis(m.items)[rowIndex(m.items, b.dataset.est)]; const v = b.dataset.v === '1'; return send('estimate_pick', 'estimate', { item_id: b.dataset.est, pick: it.pick === v ? null : v }); }
         if ('authorize' in b.dataset) { const m = find('estimate'); if (!confirm(`${m.actionLabel || 'Authorize'} the approved lines?`)) return; return send('estimate_authorize', 'estimate', {}, 'Authorized. They are notified.'); }
         if (b.dataset.proof === 'approve') { const m = find('proof'); if (!confirm(`Approve ${m.version || 'this version'}?`)) return; return send('proof_approve', 'proof', {}, 'Approved. They are notified.'); }
         if (b.dataset.proof === 'changes') return open('[data-proof-form]');
-        if (b.dataset.proof === 'send') return send('proof_note', 'proof', { at: sec.querySelector('#pf-at').value, body: sec.querySelector('#pf-t').value }, 'Note sent.');
+        if (b.dataset.proof === 'send') return send('proof_note', 'proof', { at: sec.querySelector('[data-proof-at]').value, body: sec.querySelector('[data-proof-body]').value }, 'Note sent.');
         if (b.dataset.gpick !== undefined) { const on = b.getAttribute('aria-pressed') !== 'true'; return send('gallery_pick', 'gallery', { key: b.dataset.gpick, on }); }
         if ('galSend' in b.dataset) { if (!confirm('Send your picks? You cannot change them after.')) return; return send('gallery_send', 'gallery', {}, 'Picks sent.'); }
         if (b.dataset.doclink !== undefined) return open(`[data-docform="${b.dataset.doclink}"]`);
@@ -184,9 +192,10 @@ const PORTAL_MODULES = (() => {
     // record it on the request so the owner hears about it.
     app.addEventListener('change', async e => {
       const f = e.target.closest('[data-doc-file]'); if (!f || !f.files[0]) return;
-      const file = f.files[0], item = f.dataset.item, m = vis(getMods() || []).find(x => x.type === 'docs');
-      const base = { project_id: server.projectId(), module_id: m.id, item_id: item };
-      const btn = app.querySelector(`[data-doc="${CSS.escape(item)}"]`); if (btn) { btn.disabled = true; btn.textContent = 'Uploading...'; }
+      const sec = f.closest('.mod');
+      const file = f.files[0], item = f.dataset.item, m = vis(getMods() || []).find(x => x.type === 'docs' && x.id === sec.dataset.module);
+      const base = { project_id: server.projectId(), module_id: m.id, item_id: item, rev: server.revision() };
+      const btn = sec.querySelector(`[data-doc="${CSS.escape(item)}"]`); if (btn) { btn.disabled = true; btn.textContent = 'Uploading...'; }
       try {
         const up = await server.api('doc_upload_url', { ...base, name: file.name, size: file.size });
         const res = await fetch(up.upload_url, { method: 'PUT', headers: { 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'false' }, body: file });

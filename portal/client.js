@@ -69,7 +69,8 @@
     if (mods && !app._modsBound) {
       app._modsBound = true;
       PORTAL_MODULES.bind(app, () => (data.projects.find(x => x.id === pid) || {}).modules, render, P.toast,
-        P.demo ? null : { api: P.api, act: (op, body, done) => act(() => P.api(op, body), done), projectId: () => pid });
+        P.demo ? null : { api: P.api, act: (op, body, done) => act(() => P.api(op, body), done), projectId: () => pid,
+          revision: () => data.projects.find(x => x.id === pid)?.modules_rev });
     }
     app.querySelectorAll('details[data-k]').forEach(d => { if (open.has(d.dataset.k)) d.open = true; });
     for (const [id, v] of Object.entries(drafts)) { const t = app.querySelector('#' + CSS.escape(id)); if (t && v) t.value = v; }
