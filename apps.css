@@ -97,6 +97,7 @@
   }
   .app-get {
     width: 100%;
+    flex-wrap: wrap;
     padding-left: 66px;
   }
   .app-get a,
