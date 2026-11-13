@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="robots" content="noindex,nofollow">
+<title>Web Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafaf9;--panel:#ffffff;--line:#e4e4e1;--text:#1c1c1a;--dim:#8a8a85;--accent:#2f6fed}
+@media (prefers-color-scheme:dark){:root{--bg:#111112;--panel:#1a1a1c;--line:#2c2c30;--text:#ededeb;--dim:#7d7d82;--accent:#6b9bff}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none}
+#home,#play{position:fixed;inset:0;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 0}
+#list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 16px calc(24px + env(safe-area-inset-bottom));max-width:520px;width:100%;margin:0 auto}
+.day{font:500 12px Inter,system-ui,sans-serif;color:var(--dim);padding:18px 4px 8px}
+.row{display:flex;align-items:center;justify-content:space-between;width:100%;font:500 17px Inter,system-ui,sans-serif;color:var(--text);background:var(--panel);border:1px solid var(--line);border-bottom-width:0;padding:16px;text-align:left;cursor:pointer}
+.day+.row{border-radius:12px 12px 0 0}
+.row.last{border-bottom-width:1px;border-radius:0 0 12px 12px}
+.day+.row.last{border-radius:12px}
+.row:active{background:var(--bg)}
+.row i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+#play{display:none;background:var(--bg)}
+#bar{display:flex;align-items:center;height:40px;flex:none;max-width:520px;width:100%;margin:0 auto}
+#back{font:500 15px Inter,system-ui,sans-serif;color:var(--dim);background:none;border:0;padding:8px 16px;cursor:pointer}
+#name{font:500 15px Inter,system-ui,sans-serif;color:var(--text)}
+iframe{flex:1;width:100%;border:0;display:block}
+</style>
+</head>
+<body>
+<div id="home"><div id="list"></div></div>
+<div id="play"><div id="bar"><button id="back" aria-label="Back">&#8249; Back</button><span id="name"></span></div><iframe id="frame" title="game" allow="autoplay; fullscreen"></iframe></div>
+<script>
+const list=document.getElementById('list'),play=document.getElementById('play'),frame=document.getElementById('frame');
+let seen={};try{seen=JSON.parse(localStorage.getItem('seen')||'{}')}catch(e){}
+function openItem(it){document.getElementById('name').textContent=it.title;frame.src=it.url+(it.url.includes('?')?'&':'?')+'v='+encodeURIComponent(it.v||'');play.style.display='flex';seen[it.key]=it.v;try{localStorage.setItem('seen',JSON.stringify(seen))}catch(e){}render(window.ITEMS)}
+document.getElementById('back').onclick=()=>{play.style.display='none';frame.src='about:blank';load()};
+function render(items){if(!items)return;window.ITEMS=items;list.innerHTML='';let day='',prev=null;
+ for(const it of items){if(it.added!==day){day=it.added;if(prev)prev.classList.add('last');const d=document.createElement('div');d.className='day';d.textContent=new Date(day+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'});list.appendChild(d)}
+  const b=document.createElement('button');b.className='row';b.textContent=it.title;if(seen[it.key]!==it.v)b.appendChild(document.createElement('i'));b.onclick=()=>openItem(it);list.appendChild(b);prev=b}
+ if(prev)prev.classList.add('last')}
+async function load(){try{const r=await fetch('manifest.json?t='+Date.now(),{cache:'no-store'});const m=await r.json();render(m.items);try{localStorage.setItem('manifest',JSON.stringify(m.items))}catch(e){}}
+ catch(e){let m=null;try{m=JSON.parse(localStorage.getItem('manifest')||'null')}catch(_){}render(m||window.ITEMS||[])}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&play.style.display!=='flex')load()});
+load();
+</script>
+</body>
+</html>
