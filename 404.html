@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found</title>
+<script>
+  // K-Dance song links (https://vyasapps.dev/kdance-academy/song/<id>) open the app when it is installed (universal
+  // link); without the app, GitHub Pages lands here for any <id>, and the visitor goes to the App Store.
+  if (location.pathname.indexOf("/kdance-academy/song/") === 0) location.replace("https://apps.apple.com/app/id6827661381");
+</script>
+<style>
+  body { margin: 0; font: 16px/1.5 Inter, system-ui, sans-serif; background: #fafafa; color: #111; }
+  @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } a { color: #9cf; } }
+  main { max-width: 560px; margin: 0 auto; padding: 64px 16px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Page not found</h1>
+<p><a href="/">vyasapps.dev</a></p>
+</main>
+</body>
+</html>

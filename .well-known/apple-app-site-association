@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["ZTHW3V7VS6.com.sparktory.kpopdance"],
+        "components": [
+          { "/": "/kdance-academy/song/*", "comment": "K-Dance Academy: open a song lesson" }
+        ]
+      }
+    ]
+  }
+}
