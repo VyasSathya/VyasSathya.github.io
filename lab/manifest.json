@@ -1,14 +1,6 @@
 {
  "items": [
   {
-   "id": "publish-check",
-   "key": "publish-check",
-   "title": "Publish check",
-   "url": "p/publish-check/index.html",
-   "added": "2026-11-13",
-   "v": "20261113110341"
-  },
-  {
    "id": "six-base-games",
    "key": "six-base-games?g=0",
    "title": "Tower",
