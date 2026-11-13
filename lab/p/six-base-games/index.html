@@ -42,23 +42,24 @@ function fxDraw(){for(const f of fx){ctx.globalAlpha=cl(f.life*2.2,0,1);if(f.tex
 function over(s){ctx.globalAlpha=.82;ctx.fillStyle=C.panel;ctx.fillRect(0,0,W,H);ctx.globalAlpha=1;txt(s,W/2,H/2-12,26,C.text,'center',600);txt('Tap',W/2,H/2+20,14,C.dim,'center')}
 
 /* 1 Tower: one button, wall jump, rising lava */
-const Tower={name:'Tower',init(){this.p={x:W/2,y:-10,dir:1,vy:0,g:true,wall:0,air:1,cw:null};this.ws=[];this.pl=[{x:0,y:0,w:W}];this.top=0;this.cam=-H*.7;this.lava=340;this.best=0;this.dead=false;this.jb=0;this.t=0},
+const Tower={name:'Tower',init(){this.p={x:W/2,y:-10,dir:1,vy:0,g:true,wall:0,air:1,cw:null,coy:0,lw:0,sq:0};this.hold=false;this.ws=[];this.pl=[{x:0,y:0,w:W}];this.top=0;this.cam=-H*.7;this.lava=340;this.best=0;this.dead=false;this.jb=0;this.t=0},
  gen(){while(this.top>this.cam-200){this.top-=R(78,104);const w=R(64,128);this.pl.push({x:R(6,W-w-6),y:this.top,w});
    if(this.top<-260&&Math.random()<.4){const h=R(90,170),x=R(70,W-78),y0=this.top-R(20,60)-h;this.ws.push({x,y0,y1:y0+h});this.pl.push({x,y:y0,w:8})}}
   this.pl=this.pl.filter(p=>p.y<this.lava+40);this.ws=this.ws.filter(w=>w.y0<this.lava+40)},
- down(){if(this.dead){this.init();return}this.jb=.14},
- up(){const p=this.p;if(!this.dead&&!p.g&&!p.wall&&p.vy<-250)p.vy=-250},
+ down(){if(this.dead){this.init();return}this.jb=.14;this.hold=true},
+ up(){const p=this.p;this.hold=false;if(!this.dead&&!p.g&&!p.wall&&p.vy<-250)p.vy=-250},
  update(dt){if(this.dead)return;this.t+=dt;const p=this.p;this.jb-=dt;
-  if(this.jb>0&&(p.g||p.wall)){if(p.wall){p.dir=-p.wall;p.wall=0;p.cw=null}p.vy=-610;p.g=false;p.air=1;this.jb=0;pop(p.x,p.y+10,C.dim,5)}
-  else if(this.jb>0&&p.air>0){p.air--;p.vy=-560;this.jb=0;pop(p.x,p.y+10,C.accent,9)}
+  if(p.g||p.wall){p.coy=.1;p.lw=p.wall}else p.coy-=dt;p.sq*=Math.pow(.0004,dt);
+  if(this.jb>0&&p.coy>0){const w=p.wall||(p.g?0:p.lw);if(w){p.dir=-w;p.wall=0;p.cw=null}p.vy=-610;p.g=false;p.air=1;p.coy=0;p.lw=0;this.jb=0;p.sq=-.22;pop(p.x,p.y+10,C.dim,5)}
+  else if(this.jb>0&&p.air>0){p.air--;p.vy=-560;this.jb=0;p.sq=-.16;pop(p.x,p.y+10,C.accent,9)}
   if(p.cw&&(p.y-10>p.cw.y1||p.y+10<p.cw.y0)){p.wall=0;p.cw=null}
   if(!p.wall){const px=p.x,nx=px+p.dir*200*dt;let hw=null;
    for(const w of this.ws)if(p.y+10>w.y0+1&&p.y-10<w.y1){if(p.dir>0&&px+10<=w.x&&nx+10>w.x){hw=w;p.x=w.x-10}else if(p.dir<0&&px-10>=w.x+8&&nx-10<w.x+8){hw=w;p.x=w.x+18}}
    if(hw){if(p.g)p.dir=-p.dir;else{p.wall=p.dir;p.cw=hw}}else p.x=nx}
   if(p.x<12){p.x=12;if(p.g)p.dir=1;else p.wall=-1}
   if(p.x>W-12){p.x=W-12;if(p.g)p.dir=-1;else p.wall=1}
-  if(!p.g){p.vy+=1500*dt;if(p.wall&&p.vy>70)p.vy=70;const py=p.y;p.y+=p.vy*dt;
-   if(p.vy>0)for(const q of this.pl)if(py+10<=q.y&&p.y+10>=q.y&&p.x>q.x-8&&p.x<q.x+q.w+8){p.y=q.y-10;p.vy=0;p.g=true;p.air=1;if(p.wall){p.dir=-p.wall;p.wall=0;p.cw=null}break}}
+  if(!p.g){p.vy+=(p.vy>0?2000:this.hold&&p.vy>-90?800:1500)*dt;if(p.vy>900)p.vy=900;if(p.wall&&p.vy>70)p.vy=70;const py=p.y;p.y+=p.vy*dt;
+   if(p.vy>0)for(const q of this.pl)if(py+10<=q.y&&p.y+10>=q.y&&p.x>q.x-8&&p.x<q.x+q.w+8){p.y=q.y-10;p.sq=Math.min(.3,p.vy/2600);p.vy=0;p.g=true;p.air=1;if(p.wall){p.dir=-p.wall;p.wall=0;p.cw=null}break}}
   else{let on=false;for(const q of this.pl)if(Math.abs(p.y+10-q.y)<1&&p.x>q.x-8&&p.x<q.x+q.w+8)on=true;if(!on)p.g=false}
   this.cam=Math.min(this.cam,p.y-H*.55);this.best=Math.max(this.best,-p.y);
   this.lava-=(22+this.best*.01)*dt;this.lava=Math.min(this.lava,this.cam+H+50);
@@ -66,7 +67,7 @@ const Tower={name:'Tower',init(){this.p={x:W/2,y:-10,dir:1,vy:0,g:true,wall:0,ai
  draw(){const c=this.cam,p=this.p;ctx.fillStyle=C.text;for(const q of this.pl){rr(q.x,q.y-c,q.w,8,4);ctx.fill()}
   ctx.fillStyle=C.dim;for(const w of this.ws){rr(w.x,w.y0-c,8,w.y1-w.y0,4);ctx.fill()}
   ctx.fillStyle=C.line;ctx.fillRect(0,0,3,H);ctx.fillRect(W-3,0,3,H);
-  ctx.fillStyle=C.accent;rr(p.x-10,p.y-10-c,20,20,5);ctx.fill();
+  ctx.fillStyle=C.accent;{const sx=1+p.sq,sy=1-p.sq;rr(p.x-10*sx,p.y+10-20*sy-c,20*sx,20*sy,5);ctx.fill()}
   const ly=this.lava-c+Math.sin(this.t*4)*3;ctx.globalAlpha=.85;ctx.fillStyle=C.warn;ctx.fillRect(0,ly,W,H);ctx.globalAlpha=1;
   txt(Math.floor(this.best/10)+' m',16,24,15,C.dim);if(this.dead)over(Math.floor(this.best/10)+' m')}};
 
