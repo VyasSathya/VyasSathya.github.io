@@ -47,6 +47,7 @@ const Tower={name:'Tower',init(){this.p={x:W/2,y:-10,dir:1,vy:0,g:true,wall:0,ai
    if(this.top<-260&&Math.random()<.4){const h=R(90,170),x=R(70,W-78),y0=this.top-R(20,60)-h;this.ws.push({x,y0,y1:y0+h});this.pl.push({x,y:y0,w:8})}}
   this.pl=this.pl.filter(p=>p.y<this.lava+40);this.ws=this.ws.filter(w=>w.y0<this.lava+40)},
  down(){if(this.dead){this.init();return}this.jb=.14},
+ up(){const p=this.p;if(!this.dead&&!p.g&&!p.wall&&p.vy<-250)p.vy=-250},
  update(dt){if(this.dead)return;this.t+=dt;const p=this.p;this.jb-=dt;
   if(this.jb>0&&(p.g||p.wall)){if(p.wall){p.dir=-p.wall;p.wall=0;p.cw=null}p.vy=-610;p.g=false;p.air=1;this.jb=0;pop(p.x,p.y+10,C.dim,5)}
   else if(this.jb>0&&p.air>0){p.air--;p.vy=-560;this.jb=0;pop(p.x,p.y+10,C.accent,9)}
@@ -235,7 +236,8 @@ games.forEach((g,i)=>{const b=document.createElement('button');b.textContent=g.n
 function resize(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);if(game){fx=[];game.init()}}
 const pt=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
 cv.addEventListener('pointerdown',e=>{e.preventDefault();const[x,y]=pt(e);game.down&&game.down(x,y)});
-cv.addEventListener('pointermove',e=>{if(game.move&&(e.buttons||e.pointerType!='mouse')){const[x,y]=pt(e);game.move(x,y)}});
+cv.addEventListener('pointerup',()=>{if(game.up)game.up()});addEventListener('pointercancel',()=>{if(game.up)game.up()});addEventListener('keyup',e=>{if(e.key==' '&&game.up)game.up()});
+addEventListener('pointermove',e=>{if(game.move&&(e.buttons||e.pointerType!='mouse')){const[x,y]=pt(e);game.move(x,y)}});
 addEventListener('keydown',e=>{if(e.key==' '){e.preventDefault();game.down&&game.down(W/2,H/2)}else if(game.key)game.key(e.key)});
 addEventListener('resize',resize);matchMedia('(prefers-color-scheme:dark)').addEventListener('change',theme);
 let last=0;function loop(t){const dt=Math.min(.033,(t-last)/1000||0);last=t;T+=dt;game.update(dt);fxStep(dt);ctx.clearRect(0,0,W,H);game.draw();fxDraw();requestAnimationFrame(loop)}
