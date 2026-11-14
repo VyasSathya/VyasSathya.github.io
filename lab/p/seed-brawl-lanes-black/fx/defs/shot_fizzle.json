@@ -1,0 +1,4 @@
+{"id": "shot_fizzle", "about": "A hero shot ends on a wall or at its range: a small puff.", "element": "seed", "layers": [
+    {"name": "puff", "tex": "@burst", "blend": "matter", "ramp": "mid", "size": 0.45, "life": 0.16, "height": 0.5, "upright": true, "fadeOut": 0.5, "toCam": 0.3}, 
+    {"name": "dust", "tex": "@dust", "blend": "smoke", "ramp": "dust", "at": 0, "emit": {"burst": 1}, "shape": "disc", "spread": 0.3, "size": [0.4, 0.5], "life": [0.4, 0.55], "height": 0.4, "lift": [0.25, 0.45], "sizeCurve": "swell", "alpha": 0.6, "fadeIn": 0.1, "fadeOut": 0.6}
+  ]}

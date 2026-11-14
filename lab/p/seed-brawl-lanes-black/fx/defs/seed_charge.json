@@ -1,0 +1,10 @@
+{"id": "seed_charge", "about": "Thistle Seed charge: a bomb thrown over walls that sits for the delay, then blows at the real radius 150. at = hero, to = landing, travel = flight, duration = sit time.", "element": "bloom", "travel": {"time": 0.5, "arc": 2.6}, "proof": {"times": [0.25, 0.9, 1.5, 1.6, 2.2]}, "layers": [
+    {"name": "thing", "tex": "fx_p_impact_seq", "tiles": 4, "frame": 2, "anchor": "move", "follow": true, "blend": "matter", "tokens": ["bloom_l", "bloom", "bloom_dd"], "size": 0.8, "life": "travel", "spin": 400, "toCam": 0.2}, 
+    {"name": "fuse", "tex": "fx_core_dot", "anchor": "move", "blend": "glow", "ramp": "hot", "emit": {"rate": 45, "for": "travel"}, "size": [1.0, 1.3], "life": [0.2, 0.3], "sizeCurve": "shrink", "bright": 1.3}, 
+    {"name": "bomb", "tex": "fx_p_impact_seq", "tiles": 4, "frame": 3, "anchor": "to", "blend": "matter", "tokens": ["bloom_l", "bloom", "bloom_dd"], "at": "travel", "size": 0.85, "life": "duration:1:-0.5", "height": 0.35, "toCam": 0.2, "fadeIn": 0.02, "fadeOut": 0.02}, 
+    {"name": "bomb pulse", "tex": "fx_p_flash", "anchor": "to", "blend": "glow", "ramp": "hot", "at": "travel", "emit": {"every": 0.3, "until": "duration:1:0"}, "size": 0.9, "sizeCurve": "snap", "life": 0.2, "height": 0.45, "bright": 1.6, "toCam": 0.3}, 
+    {"name": "danger", "tex": "fx_p_shock_ring", "anchor": "to", "ground": true, "blend": "matter", "ramp": "team", "size": "radius:2.35", "life": "duration", "height": 0.04, "alpha": 0.8, "fadeIn": 0.1, "fadeOut": 0.02}, 
+    {"name": "danger closing", "tex": "fx_p_glow_ring", "anchor": "to", "ground": true, "blend": "matter", "ramp": "team", "size": "radius:2.9", "sizeCurve": [0, 1, 1, 0.1], "life": "duration", "height": 0.045, "alpha": 0.4, "fadeIn": 0.05, "fadeOut": 0.02}, 
+    {"use": "blast", "at": "duration", "anchor": "to"}, 
+    {"use": "blast", "at": "duration:1:0.08", "anchor": "to", "radius": "radius:0.55", "scale": 0.8}
+  ]}

@@ -1,0 +1,7 @@
+{"id": "seed_pickup", "about": "A hero picks up a seed: gold sparkles rise, a small flash and glow. x,z = the seed.", "element": "seed", "proof": {"times": [0.03, 0.1, 0.2, 0.35, 0.55]}, "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "ramp": "flash", "size": 0.7, "sizeCurve": "snap", "life": 0.1, "height": 0.35, "bright": 2, "toCam": 0.4}, 
+    {"name": "glow", "tex": "@glow", "blend": "glow", "ramp": "hot", "size": 0.9, "life": 0.3, "height": 0.3, "alpha": 0.6, "fadeOut": 0.7}, 
+    {"name": "ring", "tex": "fx_p_glow_ring", "ground": true, "blend": "glow", "ramp": "hot", "size": 0.8, "sizeCurve": "grow", "life": 0.3, "height": 0.05, "alpha": 0.8, "fadeOut": 0.6}, 
+    {"name": "stars", "tex": "fx_p_flash", "blend": "glow", "ramp": "hot", "emit": {"burst": 6}, "shape": "disc", "spread": 0.25, "size": [0.18, 0.26], "life": [0.45, 0.7], "height": 0.25, "dir": "up", "speed": [1.2, 2.2], "drag": 1.5, "spin": 200, "bright": 1.5, "fadeOut": 0.5, "toCam": 0.4}, 
+    {"name": "dots", "tex": "fx_core_dot", "blend": "glow", "ramp": "hot", "emit": {"burst": 8}, "shape": "disc", "spread": 0.3, "size": [0.7, 0.9], "life": [0.4, 0.6], "height": 0.2, "dir": "up", "speed": [1.5, 2.6], "drag": 1, "bright": 1.4, "fadeOut": 0.5}
+  ]}

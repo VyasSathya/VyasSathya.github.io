@@ -1,0 +1,5 @@
+{"id": "hero_muzzle", "about": "A hero fires a shot: muzzle flash and a short burst at the hand. x,z = hero, dir = aim.", "element": "seed", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "ramp": "flash", "size": 0.85, "sizeCurve": "snap", "life": 0.07, "height": 0.55, "bright": 2, "toCam": 0.5}, 
+    {"name": "burst", "tex": "@burst", "blend": "matter", "ramp": "mid", "size": 0.6, "life": 0.16, "height": 0.55, "upright": true, "fadeOut": 0.5, "toCam": 0.5}, 
+    {"name": "sparks", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "seed_l", "seed"], "emit": {"burst": 3}, "size": [0.16, 0.22], "life": [0.15, 0.25], "height": 0.55, "dir": "aimfan", "cone": 0.5, "speed": [2.5, 3.5], "drag": 3, "bright": 1.5, "toCam": 0.5}
+  ]}
