@@ -63,6 +63,7 @@ function instanced(geo, anim, pose) {
   return g;
 }
 
+export const OUTLINE = new URLSearchParams(location.search).get('outline') || 'team';   // 'team': team-coloured line around real models; 'black': the game's ink line, team shown by the floor disc
 const MODELS = {}, SETS = {}, procMat = creepMaterial({ vertexColors: true });
 let scene = null, MAX = 80, info = { units: {} };
 export function init(sc, max) { scene = sc; MAX = max; }
@@ -73,7 +74,7 @@ export const meta = (kind, ti) => info.units[KEYS[kind] + '_' + BODY[ti]] || nul
 export function set(kind, ti, team, teamCol) {
   const key = kind + '_' + ti + '_' + team; if (SETS[key]) return SETS[key];
   const md = model(kind, ti); let geo, hull, mat;
-  let line; if (md) { geo = md.geo; hull = md.hull; mat = md.mat; line = outlineMat(new THREE.Color(teamCol).multiplyScalar(0.85).getHex(), 1.9, md); }
+  let line; if (md) { geo = md.geo; hull = md.hull; mat = md.mat; line = OUTLINE === 'black' ? outlineMat(undefined, 1.6, md) : outlineMat(new THREE.Color(teamCol).multiplyScalar(0.85).getHex(), 1.9, md); }
   else { W.unit(W.UNIT_KINDS[kind], ti, teamCol).children[0].traverse((o) => { if (o.isMesh) { if (o.userData.isHull) hull = o.geometry; else geo = o.geometry; } }); mat = procMat; }
   const anim = new THREE.InstancedBufferAttribute(new Float32Array(MAX * 4), 4); anim.setUsage(THREE.DynamicDrawUsage);
   const pose = md && md.bones ? new THREE.InstancedBufferAttribute(new Float32Array(MAX), 1) : null; if (pose) pose.setUsage(THREE.DynamicDrawUsage);
