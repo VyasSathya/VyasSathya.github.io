@@ -3,7 +3,7 @@
 /* a page from before race.js existed can still be in a cache with this file new: load the page again, once */
 if(typeof recNew=='undefined'||typeof PAR=='undefined'){if(!/[?&]fresh=/.test(location.search))location.replace(location.pathname+'?fresh='+Date.now()+location.search.replace(/^\?/,'&'));throw new Error('reloading')}
 const Q=new URLSearchParams(location.search),PUB='https://vyasapps.dev/lab/p/wall-jump-tower/';
-let SV={done:{},ch:'gecko',mute:0};try{Object.assign(SV,JSON.parse(localStorage.getItem('wjt2')||'{}'))}catch(e){}
+let SV={done:{},ch:'gecko',mute:0};try{Object.assign(SV,JSON.parse(localStorage.getItem('wjt2')||'{}'))}catch(e){}if(SV.mute&&SV.nomus===undefined)SV.nomus=1;
 const save=()=>{try{localStorage.setItem('wjt2',JSON.stringify(SV))}catch(e){}};
 let CH=CHARS.includes(Q.get('c'))?Q.get('c'):CHARS.includes(SV.ch)?SV.ch:'gecko';
 let scr='title',LV=0,tab=0,btns=[],hold=false,press=false,release=false,frz=0,deadT=0,winT=0,intro=0,acc=0,lastSi=0,gone=false;
@@ -13,23 +13,35 @@ let REC=recNew(),GH=null,VS=null,WIN=null,pend=null,copied=0;
 const an={clip:'idle',t:0,fr:0,sx:1,sy:1,face:1,tilt:0,dist:0,dustT:0};
 
 /* ---------- sound ---------- */
-const AU={c:null,g:null,buf:{},loops:{},duck:0,soft:null},VAR={jump:3,land:3},VOL=1.3;
+const AU={c:null,g:null,m:null,buf:{},loops:{},duck:0,soft:null,lv:{},ls:{},id:0},VAR={jump:3,land:3},VOL=1.3;
 const FILES=['jump','jump_2','jump_3','air_jump','wall_kick','land','land_2','land_3','wall_slide','spring','crumble','pickup','gem','freeze','checkpoint','door','death','win','ui_tap','cling','best','lava_loop','music','menu'];
 /* music files carry .1 s of their own end before the loop and of its start after it: [start, length] in seconds, on the beat */
-const LP={music:[.1,34.905],menu:[.1,40.42]},LOOPS=['music','menu','lava_loop','wall_slide'];
-/* iPhone: a page's sound follows the ring switch unless the page says it is playback. Sound off hands the phone's own music back */
-function sessType(){try{if(navigator.audioSession)navigator.audioSession.type=SV.mute?'ambient':'playback'}catch(e){}}
-function loopS(n,vol){const b=AU.buf[n],s=AU.c.createBufferSource(),g=AU.c.createGain(),l=LP[n]||[.03,b.duration-.06];s.buffer=b;s.loop=true;s.loopStart=l[0];s.loopEnd=l[0]+l[1];g.gain.value=vol;s.connect(g);g.connect(AU.g);s.start(0,l[0]);AU.loops[n]=g}
+const LP={music:[.1,34.905],menu:[.1,40.42]},LOOPS=['music','menu','lava_loop','wall_slide'],MUS=['music','menu'];
+/* In the iPhone app the app itself plays the sounds (ios/WallJumpTower/Sound.swift) and this page only sends it the cues:
+   a web view's own sound is either quiet in silent mode or stops the player's music, never neither. window.__snd lists
+   the files the app holds; if one is missing (a newer page in an older app) the page plays everything itself. */
+const NS=(()=>{try{const h=window.webkit.messageHandlers.snd,l=window.__snd;return h&&l&&FILES.every(f=>l.includes(f))?h:null}catch(e){return null}})();
+const nat=m=>{try{NS.postMessage(m)}catch(e){}},anow=()=>NS?performance.now()/1000:AU.c.currentTime;
+/* a page's own sound on an iPhone follows the ring switch unless the page says it is playback, and playback stops the phone's own music; both switches off hands it back */
+function sessType(){try{if(!NS&&navigator.audioSession)navigator.audioSession.type=SV.mute&&SV.nomus?'ambient':'playback'}catch(e){}}
+/* the Sound and Music switches */
+function gains(){const s=SV.mute?0:VOL,m=SV.nomus?0:VOL;sessType();if(NS)nat({t:'g',s,m});else if(AU.g){AU.g.gain.value=s;AU.m.gain.value=m}}
+function loopS(n,vol){const b=AU.buf[n],s=AU.c.createBufferSource(),g=AU.c.createGain(),l=LP[n]||[.03,b.duration-.06];s.buffer=b;s.loop=true;s.loopStart=l[0];s.loopEnd=l[0]+l[1];g.gain.value=vol;s.connect(g);g.connect(MUS.includes(n)?AU.m:AU.g);s.start(0,l[0]);AU.loops[n]=g}
 function grab(f,ok){const x=new XMLHttpRequest();x.open('GET','sfx/'+f+'.m4a?v=4');x.responseType='arraybuffer';x.onload=()=>{if(x.response)AU.c.decodeAudioData(x.response,ok,()=>{})};x.onerror=()=>{};x.send()}
-function auInit(){if(AU.c){if(AU.c.state!='running')AU.c.resume();return}const A=window.AudioContext||window.webkitAudioContext;if(!A)return;sessType();AU.c=new A();AU.g=AU.c.createGain();AU.g.gain.value=SV.mute?0:VOL;
+function auInit(){if(NS){if(!AU.n){AU.n=1;nat({t:'init',lp:LP,loops:LOOPS,mus:MUS});gains()}return}
+ if(AU.c){if(AU.c.state!='running')AU.c.resume();return}const A=window.AudioContext||window.webkitAudioContext;if(!A)return;sessType();AU.c=new A();AU.g=AU.c.createGain();AU.m=AU.c.createGain();gains();
  /* everything goes through one limiter, so a landing on top of the music cannot clip */
- const lim=AU.c.createDynamicsCompressor();lim.threshold.value=-6;lim.knee.value=6;lim.ratio.value=12;lim.attack.value=.002;lim.release.value=.12;AU.g.connect(lim);lim.connect(AU.c.destination);
+ const lim=AU.c.createDynamicsCompressor();lim.threshold.value=-6;lim.knee.value=6;lim.ratio.value=12;lim.attack.value=.002;lim.release.value=.12;AU.g.connect(lim);AU.m.connect(lim);lim.connect(AU.c.destination);
  for(const f of FILES)grab(f,d=>{AU.buf[f]=d;if(LOOPS.includes(f))loopS(f,0)})}
-function sfx(n,vol,rate,late){if(!AU.c)return;const k=VAR[n]?(i=>i?n+'_'+(i+1):n)(Math.floor(Math.random()*VAR[n])):n,b=AU.buf[k];if(!b)return;const s=AU.c.createBufferSource(),g=AU.c.createGain();s.buffer=b;s.playbackRate.value=rate||1;g.gain.value=vol===undefined?1:vol;s.connect(g);g.connect(AU.g);s.start(late?AU.c.currentTime+late:0);return s}
+function sfx(n,vol,rate,late){const k=VAR[n]?(i=>i?n+'_'+(i+1):n)(Math.floor(Math.random()*VAR[n])):n;
+ if(NS){const id=++AU.id;nat({t:'p',n:k,v:vol===undefined?1:vol,r:rate||1,d:late||0,id});return{stop(){nat({t:'x',id})}}}
+ if(!AU.c)return;const b=AU.buf[k];if(!b)return;const s=AU.c.createBufferSource(),g=AU.c.createGain();s.buffer=b;s.playbackRate.value=rate||1;g.gain.value=vol===undefined?1:vol;s.connect(g);g.connect(AU.g);s.start(late?AU.c.currentTime+late:0);return s}
 /* a soft landing or a wall grab starts 30 ms late; if the jump, the kick, a checkpoint or the flag comes inside that time it is dropped, so one moment makes one sound */
-function soft(n,vol,rate,keep){const s=sfx(n,vol,rate,.03);AU.soft=s&&!keep?[s,AU.c.currentTime+.03]:null}
-function unsoft(){const q=AU.soft;AU.soft=null;if(q&&AU.c.currentTime<q[1])try{q[0].stop()}catch(e){}}
-const lvol=(n,v,k)=>{const g=AU.loops[n];if(g)g.gain.value+=(v-g.gain.value)*(k||.15)};
+function soft(n,vol,rate,keep){const s=sfx(n,vol,rate,.03);AU.soft=s&&!keep?[s,anow()+.03]:null}
+function unsoft(){const q=AU.soft;AU.soft=null;if(q&&anow()<q[1])try{q[0].stop()}catch(e){}}
+/* a loop's level moves a part of the way each frame; the app is told only when it has moved enough to hear */
+const lvol=(n,v,k)=>{if(NS){const c=AU.lv[n]||0;let x=c+(v-c)*(k||.15);if(Math.abs(x-v)<.003)x=v;AU.lv[n]=x;const o=AU.ls[n];if(o===undefined||Math.abs(x-o)>.004||(x==v&&o!=x)){AU.ls[n]=x;nat({t:'l',n,v:x})}return}
+ const g=AU.loops[n];if(g)g.gain.value+=(v-g.gain.value)*(k||.15)};
 /* music: one loop under play (and pause), another on every other screen; both step back for the win and the death */
 function mus(){const pl=scr=='play'||scr=='pause',d=AU.duck>T?.35:1;lvol('music',pl?.42*d:0,.05);lvol('menu',pl?0:.65*d,.05)}
 
@@ -123,7 +135,7 @@ function hud(){const g=G,s=S,p=s.p,y=TOP+26;
 
 /* ---------- screens ---------- */
 function btn(label,x,y,w,h,kind,fn,up){btns.push({x,y,w,h,fn,up});if(kind==1){ctx.fillStyle=C.accent;rr(x,y,w,h,h/2);ctx.fill();txt(label,x+w/2,y+h/2+.5,17,'#1d1206','center',600)}
- else if(kind==2){ctx.fillStyle='rgba(22,13,30,.82)';rr(x,y,w,h,h/2);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=1;rr(x+.5,y+.5,w-1,h-1,h/2);ctx.stroke();txt(label,x+w/2,y+h/2+.5,15,C.text,'center',500)}else txt(label,x+w/2,y+h/2,15,C.dim,'center',500)}
+ else if(kind==2){ctx.fillStyle='rgba(22,13,30,.82)';rr(x,y,w,h,h/2);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=1;rr(x+.5,y+.5,w-1,h-1,h/2);ctx.stroke();txt(label,x+w/2,y+h/2+.5,15,C.text,'center',500)}else txt(label,x+w/2,y+h/2,kind==3?13:15,C.dim,'center',500)}
 function shade(a){ctx.fillStyle='rgba(16,9,22,'+a+')';ctx.fillRect(0,0,VW,H)}
 function backdrop(){back(0,-H-200);lava({lava:H-70+cam.y,frz:0});let gr=ctx.createRadialGradient(VW/2,H*.45,H*.2,VW/2,H*.45,H*.8);gr.addColorStop(0,'rgba(8,4,12,0)');gr.addColorStop(1,'rgba(8,4,12,.6)');ctx.fillStyle=gr;ctx.fillRect(0,0,VW,H)}
 function stand(ch,cy){glow(VW/2,cy-30,150,'255,150,60',.22);ctx.fillStyle='rgba(0,0,0,.3)';rr(VW/2-67,cy+7,140,12,4);ctx.fill();ctx.fillStyle='#6a5874';rr(VW/2-70,cy,140,12,4);ctx.fill();ctx.fillStyle='#9a87a5';rr(VW/2-69,cy,138,4,2);ctx.fill();
@@ -132,14 +144,16 @@ function title(){cam.y=-H-200;backdrop();const cy=H*.5;txt('Wall Jump Tower',VW/
  ctx.strokeStyle=C.dim;ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';for(const s of[-1,1]){const x=VW/2+s*112;ctx.beginPath();ctx.moveTo(x-s*5,cy-52);ctx.lineTo(x+s*5,cy-42);ctx.lineTo(x-s*5,cy-32);ctx.stroke()}ctx.lineCap='butt';
  const sw=d=>()=>{CH=CHARS[(CHARS.indexOf(CH)+d+CHARS.length)%CHARS.length];SV.ch=CH;save();rope=[]};btns.push({x:0,y:cy-110,w:VW/2,h:130,fn:sw(-1)},{x:VW/2,y:cy-110,w:VW/2,h:130,fn:sw(1)});
  let nx=LEVELS.findIndex(l=>!SV.done[l.id]);if(nx<0)nx=0;
- btn('Play',VW/2-100,H-BOT-212,200,54,1,()=>startLevel(nx));btn('Levels',VW/2-70,H-BOT-146,140,44,0,()=>{tab=Math.floor(nx/5);scr='levels'})}
+ btn('Play',VW/2-100,H-BOT-250,200,54,1,()=>startLevel(nx));btn('Levels',VW/2-70,H-BOT-186,140,44,0,()=>{tab=Math.floor(nx/5);scr='levels'});switches(H-BOT-140,3)}
 function chev(x,y,fn){ctx.strokeStyle=C.text;ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(x+5,y-9);ctx.lineTo(x-4,y);ctx.lineTo(x+5,y+9);ctx.stroke();ctx.lineCap='butt';btns.push({x:x-20,y:y-24,w:52,h:48,fn})}
 function levels(){cam.y=-H-200;backdrop();shade(.55);chev(24,TOP+30,()=>{scr='title'});
  let x=24;const ty=TOP+84;for(let i=0;i<CHAPTERS.length;i++){ctx.font='600 13.5px Inter,system-ui,sans-serif';const w=ctx.measureText(CHAPTERS[i]).width;txt(CHAPTERS[i],x,ty,13.5,i==tab?C.text:C.dim,'left',600);if(i==tab){ctx.fillStyle=C.accent;rr(x,ty+13,w,2.5,1.2);ctx.fill()}const k=i;btns.push({x:x-7,y:ty-22,w:w+14,h:44,fn:()=>{tab=k}});x+=w+16}
  for(let i=0;i<5;i++){const n=tab*5+i,L=LEVELS[n],y=TOP+124+i*62,d=SV.done[L.id];ctx.fillStyle=C.line;ctx.fillRect(24,y+61.5,VW-48,1);
   txt(L.name,24,y+31,18,C.text,'left',500);if(d){if(d.t<1e8)txt(tm2(d.t),VW-40-(d.n||1)*16.25,y+31,13,C.dim,'right');pips(VW-30,y+31,d.n||1,d.g,1.25,1);ctx.fillStyle=C.accent;ctx.beginPath();ctx.arc(14,y+31,2.5,0,6.3);ctx.fill()}btns.push({x:0,y,w:VW,h:62,fn:()=>startLevel(n)})}}
 function pauseS(){shade(.72);const y=H*.34;btn('Resume',VW/2-100,y,200,54,1,()=>{scr='play'});btn('Restart',VW/2-100,y+70,200,48,2,()=>startLevel(LV));btn('Levels',VW/2-100,y+128,200,48,2,toLevels);
- btn(SV.mute?'Sound off':'Sound on',VW/2-100,y+190,200,44,0,()=>{SV.mute=SV.mute?0:1;save();sessType();if(AU.g)AU.g.gain.value=SV.mute?0:VOL})}
+ switches(y+190)}
+/* Sound and Music, each its own switch, kept between launches (SV.mute, SV.nomus) */
+function switches(y,k){btn(SV.mute?'Sound off':'Sound on',VW/2-98,y,94,44,k||0,()=>{SV.mute=SV.mute?0:1;save();gains()});btn(SV.nomus?'Music off':'Music on',VW/2+4,y,94,44,k||0,()=>{SV.nomus=SV.nomus?0:1;save();gains()})}
 const toLevels=()=>{VS=null;tab=Math.floor(LV/5);scr='levels'};
 /* a run as a link: the level, the time and the taps, so whoever opens it races that run */
 const canShare=()=>!!(navigator.share||(navigator.clipboard&&navigator.clipboard.writeText));
@@ -175,7 +189,7 @@ cv.addEventListener('pointerdown',e=>{e.preventDefault();const r=cv.getBoundingC
 addEventListener('keydown',e=>{if(e.repeat)return;if(e.key==' '||e.key=='Enter'){e.preventDefault();if(scr=='play')down(180,400);else if(btns.length){auInit();(btns.find(b=>b.w==200)||btns[0]).fn()}}else if(e.key=='Escape'&&scr=='play')scr='pause'});
 addEventListener('keyup',e=>{if(e.key==' ')up()});addEventListener('resize',resize);
 auInit();
-document.addEventListener('visibilitychange',()=>{if(document.hidden){if(scr=='play')scr='pause';if(AU.c)AU.c.suspend()}else if(AU.c)AU.c.resume()});
+document.addEventListener('visibilitychange',()=>{if(NS)nat({t:'on',v:document.hidden?0:1});if(document.hidden){if(scr=='play')scr='pause';if(AU.c)AU.c.suspend()}else if(AU.c)AU.c.resume()});
 let last=0,autoN=0;function loop(t){if(!window.__t1)window.__t1=Math.round(performance.now());const dt=Math.min(.05,(t-last)/1000||0);last=t;T+=dt;btns=[];mus();
  if(scr=='play'){if(frz>0)frz-=dt;else{acc+=dt;while(acc>=1/120){if(window.__auto&&!S.dead&&!S.win&&autoN++%6==0&&think(G,S,{n:4,d:60}))press=true;simTick({press,release,hold});press=release=false;acc-=1/120}
    const p=S.p,a=acc*120,jx=Math.abs(p.x-RP.ox)>30||Math.abs(p.y-RP.oy)>30||S.dead;RP.x=jx?p.x:RP.ox+(p.x-RP.ox)*a;RP.y=jx?p.y:RP.oy+(p.y-RP.oy)*a;tick(dt)}}
@@ -197,5 +211,5 @@ window.__run=sec=>{for(let i=0;i<sec*120&&scr=='play';i++){if(!S.dead&&!S.win&&i
    sounds loaded, and the test player through three levels. Lines go to the app's log (ci/mac_run.py reads them). */
 if(window.__qa){const say=m=>{try{webkit.messageHandlers.qa.postMessage(m)}catch(e){console.log(m)}};
  addEventListener('error',e=>say('QA_ERROR '+e.message+' '+(e.filename||'').split('/').pop()+':'+e.lineno));
- setTimeout(()=>{auInit();setTimeout(()=>{say('QA_INFO '+JSON.stringify({from:location.origin,sheets:CHARS.map(c=>sheets[c]?sheets[c].tagName:'none').join(','),sounds:Object.keys(AU.buf).length+'/'+FILES.length,audio:AU.c?AU.c.state:'none',sess:(navigator.audioSession||{}).type||'none',w:innerWidth,h:innerHeight,top:Math.round(TOP*SC),bottom:Math.round(BOT*SC),firstFrameMs:window.__t1,share:typeof navigator.share,clip:typeof(navigator.clipboard&&navigator.clipboard.writeText),inter:document.fonts.check('500 16px Inter')}));
-  const lv=[0,7,14];let k=0;(function next(){if(k>=lv.length){say('QA_DONE');return}startLevel(lv[k]);let n=0;const t=setInterval(()=>{__run(3);if(scr=='clear'||++n>90){clearInterval(t);say('QA_LEVEL '+(lv[k]+1)+' '+(scr=='clear'?'won':'NOT won')+', deaths '+S.deaths);k++;setTimeout(next,2500)}},350)})()},5000)},1500)}
+ setTimeout(()=>{auInit();setTimeout(()=>{say('QA_INFO '+JSON.stringify({from:location.origin,sheets:CHARS.map(c=>sheets[c]?sheets[c].tagName:'none').join(','),sounds:(NS?FILES.filter(f=>__snd.includes(f)):Object.keys(AU.buf)).length+'/'+FILES.length,audio:NS?'app':AU.c?AU.c.state:'none',sess:NS?'app':(navigator.audioSession||{}).type||'none',w:innerWidth,h:innerHeight,top:Math.round(TOP*SC),bottom:Math.round(BOT*SC),firstFrameMs:window.__t1,share:typeof navigator.share,clip:typeof(navigator.clipboard&&navigator.clipboard.writeText),inter:document.fonts.check('500 16px Inter')}));
+  const lv=[0,7,14];let k=0;(function next(){if(k>=lv.length){if(NS)nat({t:'recstop'});say('QA_DONE');return}startLevel(lv[k]);let n=0;const t=setInterval(()=>{__run(3);if(scr=='clear'||++n>90){clearInterval(t);say('QA_LEVEL '+(lv[k]+1)+' '+(scr=='clear'?'won':'NOT won')+', deaths '+S.deaths);k++;setTimeout(next,2500)}},350)})()},5000)},1500)}
