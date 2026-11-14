@@ -210,8 +210,8 @@ window.__run=sec=>{for(let i=0;i<sec*120&&scr=='play';i++){if(!S.dead&&!S.win&&i
 /* the iPhone app's own check (launched with -qa on the simulator): where the page came from, whether the sheets and the
    sounds loaded, and the test player through three levels. Lines go to the app's log (ci/mac_run.py reads them). */
 /* the cue walk in the app: everything quiet, then each file once, and the app logs how loud each came out (SND_CUE) */
-async function parade(){const w=ms=>new Promise(r=>setTimeout(r,ms));scr='title';AU.hush={};await w(2500);nat({t:'meter',n:'quiet'});
- for(const f of FILES){if(LOOPS.includes(f)){AU.hush={[f]:.5};await w(1500);nat({t:'meter',n:f});AU.hush={};await w(1500);nat({t:'meter',n:''})}else{nat({t:'p',n:f,v:.8,r:1,d:0,id:0});await w(700);nat({t:'meter',n:f})}}AU.hush=null}
+async function parade(){const w=ms=>new Promise(r=>setTimeout(r,ms)),quiet=async ms=>{nat({t:'hush'});await w(ms);nat({t:'meter',n:''})};scr='title';AU.hush={};await quiet(2500);await w(700);nat({t:'meter',n:'quiet'});
+ for(const f of FILES){if(LOOPS.includes(f)){AU.hush={[f]:.5};await w(1500);nat({t:'meter',n:f});AU.hush={};await quiet(1800)}else{nat({t:'p',n:f,v:.8,r:1,d:0,id:0});await w(700);nat({t:'meter',n:f});await quiet(350)}}AU.hush=null}
 if(window.__qa){const say=m=>{try{webkit.messageHandlers.qa.postMessage(m)}catch(e){console.log(m)}};
  addEventListener('error',e=>say('QA_ERROR '+e.message+' '+(e.filename||'').split('/').pop()+':'+e.lineno));
  setTimeout(()=>{auInit();setTimeout(()=>{say('QA_INFO '+JSON.stringify({from:location.origin,sheets:CHARS.map(c=>sheets[c]?sheets[c].tagName:'none').join(','),sounds:(NS?FILES.filter(f=>__snd.includes(f)):Object.keys(AU.buf)).length+'/'+FILES.length,audio:NS?'app':AU.c?AU.c.state:'none',sess:NS?'app':(navigator.audioSession||{}).type||'none',w:innerWidth,h:innerHeight,top:Math.round(TOP*SC),bottom:Math.round(BOT*SC),firstFrameMs:window.__t1,share:typeof navigator.share,clip:typeof(navigator.clipboard&&navigator.clipboard.writeText),inter:document.fonts.check('500 16px Inter')}));
