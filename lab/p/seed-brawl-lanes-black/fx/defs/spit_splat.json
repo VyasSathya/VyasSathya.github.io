@@ -1,9 +1,0 @@
-{"id": "spit_splat", "about": "A seed-spit lands: orange splash, a flash, droplets, a wet mark that fades. x,z = where it lands.", "element": "spit", "layers": [
-    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "ramp": "flash", "at": 0, "size": [0.7, 0.8], "sizeCurve": "snap", "life": 0.08, "height": 0.4, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5}, 
-    {"name": "splash", "tex": "@burst", "blend": "matter", "ramp": "mid", "size": [0.9, 1.0], "life": 0.3, "height": 0.35, "upright": true, "fadeIn": 0.02, "fadeOut": 0.4, "toCam": 0.5}, 
-    {"name": "core", "tex": "@burst", "blend": "flame", "ramp": "hot", "at": 0, "size": [0.45, 0.5], "life": 0.14, "height": 0.42, "upright": true, "fadeIn": 0.02, "fadeOut": 0.5, "toCam": 0.55}, 
-    {"name": "drops", "tex": "@shards", "frames": "random", "blend": "matter", "ramp": "solid", "at": 0, "emit": {"burst": 4}, "size": [0.3, 0.4], "life": [0.45, 0.65], "height": 0.4, "dir": "fan", "speed": [2.0, 3.0], "gravity": 1.0, "spin": 540, "fadeIn": 0.02, "fadeOut": 0.3, "toCam": 0.35}, 
-    {"name": "sparkles", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "seed_l", "seed"], "at": 0, "emit": {"burst": 3}, "size": [0.2, 0.28], "life": [0.25, 0.45], "height": 0.45, "dir": "fan", "speed": [2.4, 3.4], "drag": 3, "spin": 300, "bright": 1.5, "fadeIn": 0.02, "fadeOut": 0.5, "toCam": 0.5}, 
-    {"name": "mark", "tex": "@mark", "ground": true, "blend": "matter", "ramp": "mark", "at": 0, "size": "radius:0.75", "life": 1.2, "height": 0.02, "alpha": 0.7, "fadeIn": 0.03, "fadeOut": 0.5, "sizeCurve": "pop"}, 
-    {"name": "dust", "tex": "@dust", "blend": "smoke", "ramp": "dust", "at": 0.05, "emit": {"burst": 1}, "shape": "disc", "spread": 0.3, "size": [0.45, 0.55], "life": [0.4, 0.55], "height": 0.08, "lift": [0.25, 0.45], "sizeCurve": "swell", "alpha": 0.6, "fadeIn": 0.1, "fadeOut": 0.6}
-  ]}

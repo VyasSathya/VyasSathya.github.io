@@ -1,9 +1,0 @@
-{"id": "spit_shot", "about": "A Spitter spits a seed: a puff at the mouth, the glowing seed flies with a short trail, then the splat. at = the Spitter, to = the target.", "element": "spit", "travel": {"time": "dist:0.06:0.03", "arc": 0.3}, "layers": [
-    {"name": "muzzle", "tex": "@burst", "blend": "matter", "ramp": "mid", "size": [0.5, 0.55], "life": 0.16, "height": 0.42, "upright": true, "fadeOut": 0.5, "toCam": 0.4}, 
-    {"name": "muzzle flash", "tex": "fx_p_flash", "blend": "glow", "ramp": "flash", "size": [0.5, 0.55], "life": 0.06, "height": 0.42, "bright": 1.5, "toCam": 0.4}, 
-    {"name": "glow", "tex": "@glow", "anchor": "move", "follow": true, "blend": "glow", "ramp": "hot", "size": 0.6, "life": "travel:1:0.02", "height": 0.45, "alpha": 0.8, "fadeIn": 0.05, "fadeOut": 0.1}, 
-    {"name": "seed", "tex": "fx_p_impact_seq", "tiles": 4, "frame": 2, "anchor": "move", "follow": true, "blend": "matter", "ramp": "mid", "size": 0.38, "life": "travel:1:0.02", "height": 0.45, "spin": 900, "fadeIn": 0.05, "fadeOut": 0.1, "toCam": 0.3}, 
-    {"name": "seed core", "tex": "fx_p_flash", "anchor": "move", "follow": true, "blend": "glow", "tokens": ["white", "spit_l", "spit"], "size": 0.3, "life": "travel:1:0.02", "height": 0.45, "spin": 720, "bright": 1.4, "fadeIn": 0.05, "fadeOut": 0.1, "toCam": 0.35}, 
-    {"name": "trail", "tex": "@dust", "anchor": "move", "blend": "smoke", "ramp": "mid", "emit": {"rate": 70, "for": "travel"}, "size": [0.22, 0.3], "life": [0.14, 0.2], "height": 0.45, "sizeCurve": "shrink", "alpha": 0.8, "fadeIn": 0.05, "fadeOut": 0.6}, 
-    {"use": "spit_splat", "at": "travel", "anchor": "to"}
-  ]}

@@ -1,7 +1,0 @@
-{"id": "shot_trail", "about": "A hero shot in flight (attach to the projectile): a glowing painted head and a trail of puffs and dots. element = the hero colour.", "element": "seed", "proof": {"times": [0.1, 0.2, 0.3, 0.45, 0.6]}, "layers": [
-    {"name": "glow", "tex": "@glow", "anchor": "move", "follow": true, "blend": "glow", "ramp": "hot", "emit": {"every": 0.1}, "size": 0.95, "life": 0.11, "height": 0.55, "alpha": 0.85, "fadeIn": 0, "fadeOut": 0.1}, 
-    {"name": "head", "tex": "fx_p_flash", "anchor": "move", "follow": true, "blend": "glow", "ramp": "flash", "emit": {"every": 0.08}, "size": 0.55, "life": 0.09, "height": 0.55, "spin": 600, "bright": 1.5, "fadeIn": 0, "fadeOut": 0.1, "toCam": 0.3}, 
-    {"name": "body", "tex": "@burst", "frame": 2, "anchor": "move", "follow": true, "blend": "matter", "ramp": "mid", "emit": {"every": 0.08}, "size": 0.55, "life": 0.09, "height": 0.55, "fadeIn": 0, "fadeOut": 0.1, "toCam": 0.25}, 
-    {"name": "trail", "tex": "fx_core_dot", "anchor": "move", "blend": "glow", "ramp": "hot", "emit": {"rate": 90}, "size": [1.6, 2.0], "life": [0.14, 0.2], "height": 0.55, "sizeCurve": "shrink", "bright": 1.2}, 
-    {"name": "wisps", "tex": "@dust", "anchor": "move", "blend": "smoke", "ramp": "mid", "emit": {"rate": 30}, "size": [0.35, 0.45], "life": [0.18, 0.26], "height": 0.55, "sizeCurve": "shrink", "alpha": 0.7}
-  ]}

@@ -1,5 +1,0 @@
-{"id": "colossus_split", "about": "A Colossus dies and splits in two: a big death burst, then two seed pops where the two Brutes stand up.", "element": "thorn", "proof": {"times": [0.05, 0.14, 0.25, 0.5, 0.9], "radius": 0.7}, "layers": [
-    {"use": "creep_death", "scale": 1.35}, 
-    {"name": "seed pops", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "seed_l", "seed"], "at": 0.12, "emit": {"burst": 2}, "shape": "ring", "spread": 0.35, "arrange": "even", "size": 0.8, "sizeCurve": "snap", "life": 0.12, "height": 0.4, "bright": 2, "toCam": 0.5}, 
-    {"name": "seed bursts", "tex": "@burst", "blend": "matter", "tokens": ["seed_l", "seed_m", "seed_dd"], "at": 0.12, "emit": {"burst": 2}, "shape": "ring", "spread": 0.35, "arrange": "even", "size": 0.75, "life": 0.25, "height": 0.35, "upright": true, "fadeOut": 0.4, "toCam": 0.45}
-  ]}
