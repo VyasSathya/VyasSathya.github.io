@@ -68,7 +68,7 @@ function build(L){
    if(m.t=='up'){const yb=y,yt=yb-m.h,out=last?[]:[yt];wall(c,0,yt-DH-44,yb+14,pend,o);wall(c,1,yt-DH-44,yb+14,out,o);floor(c,yb);
     for(const a of pend)if(a<yb-1)g.solids.push({x:X(c)+WT,y:a,w:74,h:14,blk:1});
     if(!last)ceil(c,yt-DH-30);landing(c,yt,last);fill(m,c,yb,yt);
-    if(o.gate){g.solids.push({x:X(c)+VW-WT-12,y:yt-DH,w:12,h:DH,gate:1});const ps=g.pl.filter(q=>q.x>=X(c)&&q.x<X(c)+VW&&!q.land&&!q.vx&&!q.cr&&!q.sp&&q.y<yt+420&&q.y>yt+150),q=ps.sort((a,b)=>a.x-b.x)[0];if(q)g.it.push({x:q.x+q.w/2,y:q.y-24,k:'key'})}
+    if(o.gate){g.solids.push({x:X(c)+VW-WT-12,y:yt-DH,w:12,h:DH,gate:1});for(const q of g.pl)if(q.land&&q.y==yt&&q.x==X(c)+WT)q.need=1;const ps=g.pl.filter(q=>q.x>=X(c)&&q.x<X(c)+VW&&!q.land&&!q.vx&&!q.cr&&!q.sp&&q.y<yt+420&&q.y>yt+150),q=ps.sort((a,b)=>a.x-b.x)[0];if(q)g.it.push({x:q.x+q.w/2,y:q.y-24,k:'key'})}
     g.segs.push({c,c1:c,y0:yt-DH-44,y1:yb,dir:'up',len:m.h});pend=out;y=yt;c++;if(last){g.goalY=yt;g.goalX=X(c-1)+VW/2}}
    else if(m.t=='down'){const top=y,vb=y+m.h,alt=(m.alt||[]).map(d=>top+d);wall(c,0,top-DH-44,vb+14,pend,o);wall(c,1,top-DH-44,vb+14,[vb,...alt],o);floor(c,vb);ceil(c,top-DH-30);
     g.solids.push({x:X(c)+WT,y:top,w:74,h:14,blk:1});
@@ -108,7 +108,7 @@ function step(g,s,dt,inp){
  if(s.dead||s.win)return;const p=s.p,E=(k,x,y,v)=>{if(s.ev)s.ev.push([k,x,y,v])};s.t+=dt;s.time+=dt;if(inp.press){s.jb=.14;s.go=1}else s.jb-=dt;
  const land=(lq,ly,v)=>{p.y=ly-10;p.sq=Math.min(.3,v/2600);E('land',p.x,p.y+10,v);p.vy=0;p.g=true;p.air=p.airMax;if(p.wall){p.dir=-p.wall;p.wall=0}
   if(lq.sp){p.vy=-1050;p.g=false;p.sq=-.3;lq.spt=.25;E('spring',p.x,p.y+10)}
-  if(lq.cp&&lq.cv>s.cv&&!lq.goal){s.cv=lq.cv;s.snap=clone(s);E('cp',p.x,p.y)}
+  if(lq.cp&&lq.cv>s.cv&&!lq.goal&&!(lq.need&&!s.key)){s.cv=lq.cv;s.snap=clone(s);E('cp',p.x,p.y)}
   if(lq.goal){s.win=true;E('win',p.x,p.y)}};
  let ri=-1;if(s.jb>0&&!p.g)for(let i=0;i<g.rings.length;i++){const q=g.rings[i];if(s.rg[i]<=0&&Math.abs(q.x-p.x)<q.r+8&&Math.abs(q.y-p.y)<q.r+10){ri=i;break}}
  for(let i=0;i<s.rg.length;i++)if(s.rg[i]>0)s.rg[i]-=dt;if(p.stk>0)p.stk-=dt;
