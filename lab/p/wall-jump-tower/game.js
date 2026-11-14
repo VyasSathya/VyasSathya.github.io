@@ -188,6 +188,11 @@ function up(){if(AU.c&&AU.c.state!='running')AU.c.resume();hold=false;release=tr
 cv.addEventListener('pointerdown',e=>{e.preventDefault();const r=cv.getBoundingClientRect();down((e.clientX-r.left)/SC,(e.clientY-r.top)/SC)});addEventListener('pointerup',up);addEventListener('pointercancel',up);
 addEventListener('keydown',e=>{if(e.repeat)return;if(e.key==' '||e.key=='Enter'){e.preventDefault();if(scr=='play')down(180,400);else if(btns.length){auInit();(btns.find(b=>b.w==200)||btns[0]).fn()}}else if(e.key=='Escape'&&scr=='play')scr='pause'});
 addEventListener('keyup',e=>{if(e.key==' ')up()});addEventListener('resize',resize);
+/* the simulator check (app launched with -taplog): what the page gets of each touch, and what screen it is on after */
+if(window.__taplog){const tl=m=>{try{webkit.messageHandlers.qa.postMessage(m)}catch(e){}};tl('QA_PAGE '+location.protocol+' scr '+scr);
+ addEventListener('pointerdown',e=>{tl('QA_TAP '+Math.round(e.clientX)+' '+Math.round(e.clientY)+' scr '+scr+' btns '+btns.length+' target '+(e.target&&e.target.tagName));setTimeout(()=>tl('QA_AFTER scr '+scr),1200)},true);
+ addEventListener('touchstart',e=>tl('QA_TOUCHSTART '+e.touches.length),true);addEventListener('resize',()=>tl('QA_RESIZE '+innerWidth+'x'+innerHeight));
+ document.addEventListener('visibilitychange',()=>tl('QA_VIS '+document.visibilityState));addEventListener('pageshow',()=>tl('QA_PAGESHOW'))}
 auInit();
 document.addEventListener('visibilitychange',()=>{if(NS)nat({t:'on',v:document.hidden?0:1});if(document.hidden){if(scr=='play')scr='pause';if(AU.c)AU.c.suspend()}else if(AU.c)AU.c.resume()});
 let last=0,autoN=0;function loop(t){if(!window.__t1)window.__t1=Math.round(performance.now());const dt=Math.min(.05,(t-last)/1000||0);last=t;T+=dt;btns=[];mus();
