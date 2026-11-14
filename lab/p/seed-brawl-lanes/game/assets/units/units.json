@@ -1,0 +1,305 @@
+{
+ "about": "Creep models for lanes/units.js. Key <kind>_<body>. Model: width 1.0 (x), feet at y=0, origin at the ground centre, facing +Z; the game scales it to UNIT_WIDTH[body] x 1.5. height and muzzle are in model units before scale (muzzle = where a projectile leaves the body, x y z). Sources: SOURCES.md.",
+ "units": {
+  "thorn_grunt": {
+   "file": "thorn_grunt.glb",
+   "scale": 0.84,
+   "height": 1.411,
+   "muzzle": [
+    0.0,
+    0.731,
+    0.334
+   ],
+   "tris": 2450,
+   "bytes": 112208,
+   "source": "D:/SeedBrawl/meshy/thorn_grunt_t6",
+   "meshy": {
+    "preview": "01a1d8c5-48bb-706e-9669-c31520de0653",
+    "refine": "01a1d8c5-caf0-704c-aba7-4eb6ddf398a8",
+    "credits": 15
+   },
+   "tilt": 25.0,
+   "texsize": 512
+  },
+  "thorn_brute": {
+   "file": "thorn_brute.glb",
+   "scale": 1.12,
+   "source": "D:/SeedBrawl/meshy/thorn_brute",
+   "height": 1.383,
+   "muzzle": [
+    0.0,
+    0.918,
+    0.435
+   ],
+   "tris": 2450,
+   "bytes": 138128,
+   "meshy": {
+    "preview": "01a1d8c9-6761-72e3-9ce2-3fb8fc3cf844",
+    "refine": "01a1d8c9-c11c-759f-a991-03195b24feaa",
+    "credits": 15
+   },
+   "tilt": 25.0,
+   "texsize": 512
+  },
+  "thorn_splasher": {
+   "file": "thorn_splasher.glb",
+   "scale": 0.78,
+   "source": "D:/SeedBrawl/meshy/thorn_splasher",
+   "height": 1.628,
+   "muzzle": [
+    0.0,
+    1.628,
+    -0.405
+   ],
+   "tris": 2450,
+   "bytes": 146028,
+   "meshy": {
+    "preview": "01a1d8c9-698b-718a-b685-0e4e66f1b1c6",
+    "refine": "01a1d8c9-ebd6-724e-a2f7-c6757c761368",
+    "credits": 15
+   },
+   "tilt": 25.0,
+   "texsize": 512
+  },
+  "thorn_flyer": {
+   "file": "thorn_flyer.glb",
+   "scale": 1.02,
+   "source": "D:/SeedBrawl/meshy/thorn_flyer",
+   "height": 1.219,
+   "muzzle": [
+    0.0,
+    0.911,
+    0.117
+   ],
+   "tris": 2450,
+   "bytes": 140048,
+   "meshy": {
+    "preview": "01a1d8c9-6af4-75b1-9169-6c8aa8caca1d",
+    "refine": "01a1d8ca-3abb-7202-bbdf-f4e8f5587fcd",
+    "credits": 15
+   },
+   "tilt": 25.0,
+   "texsize": 512
+  },
+  "thorn_colossus": {
+   "file": "thorn_colossus.glb",
+   "scale": 1.22,
+   "source": "D:/SeedBrawl/meshy/thorn_colossus",
+   "height": 1.436,
+   "muzzle": [
+    0.0,
+    1.037,
+    0.234
+   ],
+   "tris": 4900,
+   "bytes": 276144,
+   "meshy": {
+    "preview": "01a1d8c9-6cd2-7257-9045-c59a3209d5d5",
+    "refine": "01a1d8c9-c6a6-7220-8078-dccd4e7ddcde",
+    "credits": 15
+   },
+   "tilt": 25.0,
+   "texsize": 1024
+  },
+  "spitter_grunt": {
+   "file": "spitter_grunt.glb",
+   "scale": 0.65,
+   "source": "D:/SeedBrawl/meshy/spitter_grunt",
+   "height": 1.737,
+   "muzzle": [
+    0.0,
+    1.242,
+    0.43
+   ],
+   "tris": 2450,
+   "bytes": 119196,
+   "meshy": {
+    "preview": "01a1d8c9-7334-751e-afaf-1196df62563f",
+    "refine": "01a1d8ca-4479-71d3-a299-bb501a9a5fef",
+    "credits": 15
+   },
+   "tilt": 40.0,
+   "texsize": 512
+  },
+  "spitter_brute": {
+   "file": "spitter_brute.glb",
+   "scale": 1.33,
+   "source": "D:/SeedBrawl/meshy/spitter_brute",
+   "height": 0.909,
+   "muzzle": [
+    0.0,
+    0.458,
+    0.388
+   ],
+   "tris": 2450,
+   "bytes": 117652,
+   "meshy": {
+    "preview": "01a1d8cb-1aa4-7731-94ef-7e95be2db68b",
+    "refine": "01a1d8cb-9e06-7141-b1ae-c5b84686c119",
+    "credits": 15
+   },
+   "tilt": 45.0,
+   "texsize": 512
+  },
+  "spitter_splasher": {
+   "file": "spitter_splasher.glb",
+   "scale": 0.82,
+   "source": "D:/SeedBrawl/meshy/spitter_splasher",
+   "height": 1.557,
+   "muzzle": [
+    0.0,
+    1.557,
+    -0.687
+   ],
+   "tris": 2450,
+   "bytes": 120752,
+   "meshy": {
+    "preview": "01a1d8cb-1d9b-73e4-a37b-b311bc513f36",
+    "refine": "01a1d8cb-cb66-76a9-befe-53f3df1932dc",
+    "credits": 15
+   },
+   "tilt": 30.0,
+   "texsize": 512
+  },
+  "spitter_flyer": {
+   "file": "spitter_flyer.glb",
+   "scale": 1.33,
+   "source": "D:/SeedBrawl/meshy/spitter_flyer_r2",
+   "height": 0.805,
+   "muzzle": [
+    0.0,
+    0.446,
+    0.247
+   ],
+   "tris": 2450,
+   "bytes": 121608,
+   "meshy": {
+    "preview": "01a1d8d7-0a7e-7716-b3d0-85c2092abae6",
+    "refine": "01a1d8d7-641b-71a7-8b7d-4156f5dae49d",
+    "credits": 15
+   },
+   "tilt": 30.0,
+   "texsize": 512
+  },
+  "spitter_colossus": {
+   "file": "spitter_colossus.glb",
+   "scale": 1.37,
+   "source": "D:/SeedBrawl/meshy/spitter_colossus_r2",
+   "height": 1.383,
+   "muzzle": [
+    0.0,
+    0.74,
+    0.1
+   ],
+   "tris": 4899,
+   "bytes": 221768,
+   "meshy": {
+    "preview": "01a1d8e1-662a-77c9-baad-e901d2b7bc87",
+    "refine": "01a1d8e2-10a1-7351-946b-6382853c9a60",
+    "credits": 15
+   },
+   "tilt": 25.0,
+   "texsize": 1024
+  },
+  "runner_grunt": {
+   "file": "runner_grunt.glb",
+   "scale": 0.8,
+   "source": "D:/SeedBrawl/meshy/runner_grunt",
+   "height": 1.308,
+   "muzzle": [
+    0.0,
+    0.818,
+    0.214
+   ],
+   "tris": 2450,
+   "bytes": 126888,
+   "meshy": {
+    "preview": "01a1d8cb-253e-70d3-b167-8716846c50d3",
+    "refine": "01a1d8cb-ceda-7529-85c4-2e16d1305217",
+    "credits": 15
+   },
+   "tilt": 30.0,
+   "texsize": 512
+  },
+  "runner_brute": {
+   "file": "runner_brute.glb",
+   "scale": 1.08,
+   "source": "D:/SeedBrawl/meshy/runner_brute_r2",
+   "height": 1.42,
+   "muzzle": [
+    0.0,
+    0.857,
+    0.179
+   ],
+   "tris": 2450,
+   "bytes": 145244,
+   "meshy": {
+    "preview": "01a1d8e4-22cf-775e-a96b-2c253342d5c8",
+    "refine": "01a1d8e4-7cc3-764c-ba25-d187505eec94",
+    "credits": 15
+   },
+   "tilt": 30.0,
+   "texsize": 512
+  },
+  "runner_splasher": {
+   "file": "runner_splasher.glb",
+   "scale": 0.72,
+   "source": "D:/SeedBrawl/meshy/runner_splasher_r2",
+   "height": 1.648,
+   "muzzle": [
+    0.0,
+    1.648,
+    -0.752
+   ],
+   "tris": 2478,
+   "bytes": 148584,
+   "meshy": {
+    "preview": "01a1d8d7-0693-7555-ac8c-380e76995e1d",
+    "refine": "01a1d8d7-b072-76e1-95a2-03dfbef4d991",
+    "credits": 15
+   },
+   "tilt": 30.0,
+   "texsize": 512
+  },
+  "runner_flyer": {
+   "file": "runner_flyer.glb",
+   "scale": 1.06,
+   "source": "D:/SeedBrawl/meshy/runner_flyer",
+   "height": 1.008,
+   "muzzle": [
+    0.0,
+    0.55,
+    0.163
+   ],
+   "tris": 2450,
+   "bytes": 121872,
+   "meshy": {
+    "preview": "01a1d8cd-2a86-7566-a57b-7e0b48d03a80",
+    "refine": "01a1d8cd-ac7e-769d-8a19-33ae3aff8258",
+    "credits": 15
+   },
+   "tilt": 30.0,
+   "texsize": 512
+  },
+  "runner_colossus": {
+   "file": "runner_colossus.glb",
+   "scale": 1.35,
+   "source": "D:/SeedBrawl/meshy/runner_colossus",
+   "height": 1.256,
+   "muzzle": [
+    0.0,
+    0.642,
+    0.047
+   ],
+   "tris": 4897,
+   "bytes": 331088,
+   "meshy": {
+    "preview": "01a1d8cd-2e37-719e-a7d7-4089e29e6f30",
+    "refine": "01a1d8cd-d730-72c1-b0af-a635ea15df72",
+    "credits": 15
+   },
+   "tilt": 30.0,
+   "texsize": 1024
+  }
+ }
+}

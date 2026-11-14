@@ -1,0 +1,9 @@
+{"id": "splasher_lob", "about": "A Splasher lobs a seed pod: launch puff, the pod in a high arc trailing sparks, then a blast at the real splash radius. at = Splasher, to = target, radius = 46 rule units.", "element": "spit", "travel": {"time": 0.38, "arc": 1.6}, "layers": [
+    {"name": "launch", "tex": "@puff", "blend": "smoke", "ramp": "dust", "size": [0.6, 0.7], "life": 0.3, "height": 0.8, "lift": 0.6, "sizeCurve": "swell", "alpha": 0.6, "fadeOut": 0.6}, 
+    {"name": "launch flash", "tex": "fx_p_flash", "blend": "glow", "ramp": "flash", "size": 0.6, "life": 0.06, "height": 0.85, "bright": 1.5, "toCam": 0.3}, 
+    {"name": "pod glow", "tex": "@glow", "anchor": "move", "follow": true, "blend": "glow", "ramp": "hot", "size": 0.75, "life": "travel:1:0.02", "alpha": 0.7, "fadeIn": 0.05, "fadeOut": 0.05}, 
+    {"name": "pod", "tex": "fx_p_impact_seq", "tiles": 4, "frame": 2, "anchor": "move", "follow": true, "blend": "matter", "tokens": ["seed_l", "seed_m", "seed_dd"], "size": 0.5, "life": "travel:1:0.02", "spin": 500, "fadeIn": 0.05, "fadeOut": 0.05, "toCam": 0.2}, 
+    {"name": "trail", "tex": "fx_core_dot", "anchor": "move", "blend": "glow", "tokens": ["white", "seed_l", "seed"], "emit": {"rate": 60, "for": "travel"}, "size": [0.9, 1.1], "life": [0.15, 0.25], "sizeCurve": "shrink", "bright": 1.2}, 
+    {"name": "telegraph", "tex": "fx_p_shock_ring", "anchor": "to", "ground": true, "blend": "matter", "ramp": "team", "size": "radius:2.35", "life": "travel", "height": 0.04, "alpha": 0.7, "fadeIn": 0.3, "fadeOut": 0.05}, 
+    {"use": "blast", "at": "travel", "anchor": "to"}
+  ]}

@@ -3,6 +3,8 @@
 import * as THREE from 'three';
 import * as LOOK from './game/src/look.js';
 import * as W from './game/src/world.js';
+import * as UNITS from './units.js';
+import * as FX from './fx.js';
 
 const SB=window.SBL,I=window.SBL_INPUT,GP=(window.SBL_PATHS||{}).game||'./game/',$=id=>document.getElementById(id),PAL=LOOK.palette;
 LOOK.setHeroBase(GP+'assets/heroes/');
@@ -80,33 +82,37 @@ function tickHero(v,dt){const h=v.h,me=SB.G.me,vis=!(h.invisT>0&&h.team!==me.tea
  let d=want-v.face;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;v.face+=d*Math.min(1,dt*14);v.grp.rotation.y=v.face;
  pose(v,dt,sp,SB.G.t);
  v.fire=h.fireT||0;
- if(h.hp<v.hp-1&&!h.dead){v.pop=.14}v.hp=h.hp;v.pop=Math.max(0,v.pop-dt);v.body.scale.setScalar(v.s0*(1+v.pop*1.6));
+ if(h.hp<v.hp-1&&!h.dead){v.pop=.14;if(fxOn&&vis&&SB.G.t-(v.hitT||0)>.15){v.hitT=SB.G.t;FX.play('hero_hit',{x:wx(h.x),z:wz(h.y),element:'default'})}}v.hp=h.hp;
+ if(fxOn&&v.dead!==undefined&&v.dead!==!!h.dead)FX.play(h.dead?'hero_down':'respawn',{x:wx(h.x),z:wz(h.y),element:h.dead?(HEL[h.def.id]||'default'):'seed',team:h.team});v.dead=!!h.dead;v.pop=Math.max(0,v.pop-dt);v.body.scale.setScalar(v.s0*(1+v.pop*1.6));
  const top=project(wx(h.x),v.ht+.35,wz(h.y));v.lab.style.display=!h.dead&&vis?'':'none';v.lab.style.opacity=h.invisT>0?.5:1;v.lab.style.transform=`translate(${top.x}px,${top.y}px) translate(-50%,-100%)`;
  v.lab.children[1].firstChild.style.width=Math.max(0,h.hp/h.maxhp*100)+'%';
  if(v.seeds!==h.seeds){v.seeds=h.seeds;v.lab.firstChild.innerHTML='<u></u>'.repeat(Math.min(10,h.seeds))}}
 const pv=new THREE.Vector3();function project(x,y,z){pv.set(x,y,z).project(cam);return{x:(pv.x*.5+.5)*VW,y:(-pv.y*.5+.5)*VH}}
 
 // ---- units: one instanced body + outline per kind, body and team (the circles version's models), one instanced team ring
-const UMAX=200,USET={};let instOut=null;
-function instOutline(){if(instOut)return instOut;const src=LOOK.outlineMaterial(1.6),m=src.clone();m.uniforms.uAspect=src.uniforms.uAspect;m.uniforms.uScale=src.uniforms.uScale;
- m.vertexShader=src.vertexShader.replace('modelViewMatrix * vec4(transformed, 1.0)','modelViewMatrix * instanceMatrix * vec4(transformed, 1.0)').replace('normalMatrix * objectNormal','normalMatrix * mat3(instanceMatrix) * objectNormal');return instOut=m}
-function unitSet(kind,tier,team){const key=kind+'_'+tier+'_'+team;if(USET[key])return USET[key];let body,hull;W.unit(W.UNIT_KINDS[kind],tier,TEAM[team]).children[0].traverse(o=>{if(o.isMesh){if(o.userData.isHull)hull=o;else body=o}});
- const b=new THREE.InstancedMesh(body.geometry,body.material,UMAX),o=new THREE.InstancedMesh(hull.geometry,instOutline(),UMAX);for(const m of[b,o]){m.frustumCulled=false;m.count=0;scene.add(m)}return USET[key]={b,o,n:0,w:W.UNIT_WIDTH[tier]}}
+const UMAX=200,USET=UNITS.sets();UNITS.init(scene,UMAX);
 const ringGeo=new THREE.RingGeometry(.42,.6,14);ringGeo.rotateX(-Math.PI/2);
 const uRing=new THREE.InstancedMesh(ringGeo,new THREE.MeshBasicMaterial({color:0xffffff,depthWrite:false}),UMAX*2);uRing.frustumCulled=false;uRing.count=0;scene.add(uRing);
 const M=new THREE.Matrix4(),Q=new THREE.Quaternion(),P=new THREE.Vector3(),S=new THREE.Vector3(),C=new THREE.Color(),E3=new THREE.Euler();
-function drawUnits(t){for(const k in USET)USET[k].n=0;let nr=0;for(const u of SB.G.units){if(u.dead)continue;const ti=Math.max(0,Math.min(4,u.tier-1)),s=unitSet(u.kind,ti,u.team);if(s.n>=UMAX)continue;
-  if(u._x===undefined){u._x=u.x;u._y=u.y;u._f=u.team===1?Math.PI:0;u._s=Math.random()*6}const dx=u.x-u._x,dy=u.y-u._y;u._x=u.x;u._y=u.y;
-  if(dx*dx+dy*dy>.02){let d=Math.atan2(dx,dy)-u._f;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;u._f+=d*.25}
-  const w=s.w*1.5,ph=t+u._s,hit=u.atkCd>.78?(u.atkCd-.78)/.22:0;let y=0,sx=1,sy=1,rx=0,rz=0,fw=hit*w*.3;
-  if(ti===0){const k=Math.abs(Math.sin(ph*(u.kind===2?7:4.5)));y=k*w*.16;sy=1+(k-.5)*.14}                 // grunt: hop
-  else if(ti===1){rz=Math.sin(ph*3.2)*.16;y=Math.abs(Math.sin(ph*3.2))*w*.05;rx=.08}                      // brute: heavy waddle
-  else if(ti===2){y=Math.abs(Math.sin(ph*3.6))*w*.07;sy=1-hit*.3;sx=1+hit*.2;fw=-hit*w*.2}               // splasher: recoil
-  else if(ti===3){y=1.15+Math.sin(ph*2.4)*.12;rz=Math.sin(ph*9)*.22;rx=.3;sx=1+Math.sin(ph*18)*.1}        // flyer: flutter
-  else{const k=Math.sin(ph*1.9);y=Math.abs(k)*w*.05;rz=k*.07;sy=1+hit*.1}                                 // colossus: stomp
-  sy*=1+hit*.12;P.set(wx(u.x)+Math.sin(u._f)*fw,y,wz(u.y)+Math.cos(u._f)*fw);Q.setFromEuler(E3.set(rx,u._f,rz,'YXZ'));S.set(w*sx/Math.sqrt(sy),w*sy,w*sx/Math.sqrt(sy));M.compose(P,Q,S);s.b.setMatrixAt(s.n,M);s.o.setMatrixAt(s.n,M);s.n++;
-  P.set(wx(u.x),.02,wz(u.y));Q.identity();S.setScalar(ti===3?w*.7:w);M.compose(P,Q,S);uRing.setMatrixAt(nr,M);uRing.setColorAt(nr,C.set(TEAM[u.team]));nr++}
- for(const k in USET){const s=USET[k];s.b.count=s.o.count=s.n;s.b.visible=s.o.visible=s.n>0;s.b.instanceMatrix.needsUpdate=s.o.instanceMatrix.needsUpdate=true}
+// Creeps: where they are comes from the rules; how they move is drawn here. An attack is seen the moment the rules
+// land it (the cooldown jumps back up): a fast lunge out, then a slower settle. A hit flashes the body white.
+const env=ta=>ta<0?0:ta<.07?ta/.07:Math.max(0,1-(ta-.07)/.26),ease=k=>k<0?0:k>1?1:1-(1-k)*(1-k);
+function drawUnits(t){for(const k in USET)USET[k].n=0;let nr=0;for(const u of SB.G.units){if(u.dead)continue;const ti=Math.max(0,Math.min(4,u.tier-1)),s=UNITS.set(u.kind,ti,u.team,TEAM[u.team]);if(s.n>=UMAX)continue;
+  if(u._x===undefined){u._x=u.x;u._y=u.y;u._f=u.team===1?Math.PI:0;u._s=Math.random()*6;u._cd=u.atkCd;u._hp=u.hp;u._born=t;u._at=-9;u._fl=0;u._mv=0}
+  const dx=u.x-u._x,dy=u.y-u._y,sp2=dx*dx+dy*dy;u._x=u.x;u._y=u.y;u._mv+=((sp2>.02?1:0)-u._mv)*.2;
+  if(sp2>.02){let d=Math.atan2(dx,dy)-u._f;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;u._f+=d*.25}
+  if(u.atkCd>u._cd+.4)u._at=t;u._cd=u.atkCd;if(u.hp<u._hp-.5)u._fl=.12;u._hp=u.hp;u._fl=Math.max(0,u._fl-1/60);
+  const w=s.w*1.5,ph=t+u._s,mv=u._mv,A=env(t-u._at),R=Math.max(0,1-(t-u._at)/.5),born=ease((t-u._born)/.22),pop=1+.22*Math.sin(Math.min(1,(t-u._born)/.3)*Math.PI);
+  let y=0,sx=1,sy=1,rx=0,rz=0,fw=0,lean=0,sway=0,flap=0;
+  if(ti===0){const k=Math.abs(Math.sin(ph*(u.kind===2?7:4.5)))*mv;y=k*w*.16;sy=1+(k-.5)*.14*mv;sway=Math.sin(ph*4.5)*.05;lean=.95*A-.2*R*(1-A);fw=A*w*.4;sy*=1-.12*A}                 // grunt: hop, headbutt
+  else if(ti===1){rz=Math.sin(ph*3.2)*.13*mv;y=Math.abs(Math.sin(ph*3.2))*w*.05*mv;sway=Math.sin(ph*3.2)*.07*mv;lean=.06+.9*A;fw=A*w*.25;sy=1-.2*A;sx=1+.14*A}                              // brute: waddle, slam
+  else if(ti===2){y=Math.abs(Math.sin(ph*3.6))*w*.07*mv;sway=Math.sin(ph*3.6)*.05;lean=-.7*A+.25*R*(1-A);fw=-A*w*.22;sy=1-.28*A;sx=1+.2*A}                                                // splasher: recoil
+  else if(ti===3){y=1.15+Math.sin(ph*2.4)*.12-A*.75;flap=Math.sin(ph*17)*.3;rx=.3+.5*A;lean=.4*A;fw=A*w*.5;sway=Math.sin(ph*2.4)*.05}                                                     // flyer: flap, dive
+  else{const k=Math.sin(ph*1.9);y=Math.abs(k)*w*.05*mv;rz=k*.06*mv;sway=k*.04*mv;lean=.5*A;sy=1-.22*A+.08*R*(1-A);sx=1+.16*A;if(A>.9&&Math.abs(wz(u.y)-focus.z)<7)shake=Math.min(.1,shake+.012)} // colossus: stomp
+  const sc=w*born*pop;P.set(wx(u.x)+Math.sin(u._f)*fw,y,wz(u.y)+Math.cos(u._f)*fw);Q.setFromEuler(E3.set(rx,u._f,rz,'YXZ'));S.set(sc*sx/Math.sqrt(sy),sc*sy,sc*sx/Math.sqrt(sy));M.compose(P,Q,S);s.b.setMatrixAt(s.n,M);s.o.setMatrixAt(s.n,M);
+  s.anim.setXYZW(s.n,lean,sway,flap,u._fl/.12);s.n++;
+  P.set(wx(u.x),.02,wz(u.y));Q.identity();S.setScalar((ti===3?w*.7:w)*born);M.compose(P,Q,S);uRing.setMatrixAt(nr,M);uRing.setColorAt(nr,C.set(TEAM[u.team]));nr++}
+ for(const k in USET){const s=USET[k];s.b.count=s.o.count=s.n;s.b.visible=s.o.visible=s.n>0;s.b.instanceMatrix.needsUpdate=s.o.instanceMatrix.needsUpdate=true;s.anim.needsUpdate=true}
  uRing.count=nr;uRing.instanceMatrix.needsUpdate=true;if(uRing.instanceColor)uRing.instanceColor.needsUpdate=true}
 
 // ---- transient things, redrawn from state every frame
@@ -130,8 +136,57 @@ function ringAt(x,y,r,col,op,yy){const m=rings.get(nR++);m.position.set(wx(x),yy
 function discAt(x,y,r,col,op){const m=discs.get(nD++);m.position.set(wx(x),.035,wz(y));m.scale.setScalar(r*K);m.material.color.set(col);m.material.opacity=op}
 function coneAt(x,y,a,half,r,col,op){const m=cones.get(nC++);m.geometry=coneGeo(half);m.position.set(wx(x),.045,wz(y));m.scale.setScalar(r*K);m.rotation.z=-a;m.material.color.set(col);m.material.opacity=op}
 function chevAt(x,y,s,col,op){const m=chevs.get(nV++);m.position.set(wx(x),.03,wz(y));m.scale.set(s*1.5,s,1);m.material.color.set(col);m.material.opacity=op}
+// ---- attacks, hits, deaths and spells: painted layered effects (fx.js) played from what the rules did this step
+let fxOn=false;try{await FX.init(THREE,scene,cam,{base:'./fx/',max:600});fxOn=true}catch(e){console.warn('effects did not load, plain shapes stay',e)}
+const HEL={bramble:'leaf',sow:'seed',mower:'blade',magpie:'shade',drover:'gourd',thistle:'bloom',shade:'shade',foxglove:'fox',bamboo:'gourd'},KEL=['thorn','spit','runner'],TSC=[0,1,1.3,1.1,1,1.8];
+const ZFX={'Briar ring':'zone_briar','Nursery':'zone_nursery','Blade trap':'zone_blades','Rally post':'zone_rally','Lure':'zone_lure','Shelter':'zone_shelter'};
+const elOf=o=>o&&o.def?HEL[o.def.id]||'default':'default',near=y=>Math.abs(wz(y)-focus.z)<10,W2=(x,y)=>({x:wx(x),z:wz(y)});
+let shotsLive=[],zonesLive=[],seedsPrev=[];const seenP=new WeakSet(),seenL=new WeakSet(),muzT=new WeakMap();
+function fxReset(){FX.clear();shotsLive=[];zonesLive=[];seedsPrev=[]}
+function drawEvents(G){const E=G.ev;if(!E)return;if(fxOn)for(const e of E){if(!near(e.y))continue;const el=KEL[e.kind]||'default',sc=TSC[e.tier]||1,at=W2(e.x,e.y);
+   if(e.k==='uatk'){const to=W2(e.tx,e.ty);
+    if(e.tier===3)FX.play('splasher_lob',{...at,to,radius:46*K,element:el,team:e.team});
+    else if(SB.KINDS[e.kind].range>60)FX.play('spit_shot',{...at,to,element:el});
+    else if(e.tier===4)FX.play('flyer_dive',{...at,to,element:el});
+    else{if(e.tier===5)FX.play('colossus_stomp',{...at,radius:(SB.KINDS[e.kind].range+30)*K,element:'dust'});FX.play('creep_hit',{...at,to,dir:Math.atan2(e.ty-e.y,e.tx-e.x),element:el,scale:sc})}}
+   else if(e.k==='udie')FX.play(e.tier===5?'colossus_split':'creep_death',{...at,element:el,scale:sc,radius:.7});
+   else if(e.k==='spawn'){const sp=SB.spawnPt(e.team,e.lane);if(Math.abs(sp.y-e.y)<40)FX.play('summon_arrive',{...at,y:3.5,to:{...at,y:0},element:el,team:e.team,scale:sc})}}
+ E.length=0}
+function drawFx(G,me){projs.end(0);balls.end(0);
+ // hero shots: a painted head with a trail while it flies, a flash where it left, a hit or a fizzle where it ended
+ for(const p of G.projs)if(!seenP.has(p)){seenP.add(p);const el=elOf(p.owner);shotsLive.push(p);FX.attach('shot_trail',()=>p.left>0?W2(p.x,p.y):null,{element:el});
+   const o=p.owner||p;if(muzT.get(o)!==G.t){muzT.set(o,G.t);FX.play('hero_muzzle',{...W2(p.x,p.y),dir:Math.atan2(p.vy,p.vx),element:el})}}
+ for(let i=shotsLive.length-1;i>=0;i--){const p=shotsLive[i];if(p.left>0)continue;shotsLive[i]=shotsLive[shotsLive.length-1];shotsLive.pop();if(near(p.y))FX.play(p.hit&&p.hit.size?'shot_hit':'shot_fizzle',{...W2(p.x,p.y),dir:Math.atan2(p.vy,p.vx),element:elOf(p.owner)})}
+ // lobbed things: the arc, the landing spot at its real radius, the blast
+ for(const l of G.lobs){if(l.t<.04&&Math.hypot(l.x-me.x,l.y-me.y)<l.r+40)shake=Math.min(.12,shake+.05);if(seenL.has(l))continue;seenL.add(l);
+  FX.play(l.big?'seed_charge':'hero_lob',{...W2(l.sx,l.sy),to:W2(l.x,l.y),radius:l.r*K,travel:l.max,duration:l.max,element:l.big?'bloom':elOf(l.owner),team:l.team})}
+ // zones on the ground: painted moving surfaces at the real radius, until the rules end them
+ let nz=0;for(const z of G.zones){if(!z._fx){z._fx=FX.play(ZFX[z.label]||'puddle',{...W2(z.x,z.y),radius:z.r*K,duration:z.max,arm:z.arm,team:z.team,element:elOf(z.owner)})||{stop(){}};zonesLive.push(z)}
+  if(z.label){const el=zlabs.get(nz++),p=project(wx(z.x),.1,wz(z.y));if(el.textContent!==z.label)el.textContent=z.label;el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`}}
+ zlabs.end(nz);for(let i=zonesLive.length-1;i>=0;i--){const z=zonesLive[i];if(z.dur>0&&G.zones.includes(z))continue;z._fx.stop&&z._fx.stop();zonesLive[i]=zonesLive[zonesLive.length-1];zonesLive.pop()}
+ // seeds picked up (a seed that was there last frame and is gone)
+ {const now=new Set(G.seeds);for(const s of seedsPrev)if(!now.has(s)&&near(s.y))FX.play('seed_pickup',{...W2(s.x,s.y),element:'seed'});seedsPrev=G.seeds.slice()}
+ // what the rules flagged this step: cones, the base gun, hero spells; the few plain rings left are match events (level up, base awake)
+ let nt=0;for(const f of G.fx){const k=Math.max(0,Math.min(1,f.life/(f.max||.8)));
+  if(!seenFx.has(f)){seenFx.add(f);const at=W2(f.x,f.y);
+   if(f.k==='c')FX.play(f.src==='mower'?'hero_cone_blast':'hero_cone_slash',{...at,dir:f.a,radius:f.r*K,half:f.half,element:HEL[f.src]||'default',team:f.team});
+   else if(f.k==='l'){const b=G.base[1].x===f.x&&G.base[1].y===f.y?G.base[1]:G.base[2].x===f.x&&G.base[2].y===f.y?G.base[2]:null;
+    if(b)FX.play('base_shot',{...at,to:W2(f.x2,f.y2),element:'seed',team:b.team});else if(f.col==='#cecbf6')FX.play('heist',{...at,to:W2(f.x2,f.y2),radius:220*K,element:'shade'})}
+   else if(f.k==='r'){f._own=false;
+    if(f.r===60&&f.max===.3)FX.play('base_hit',{x:wx(f.x),z:wz(f.y)-.6,element:'seed',team:f.col==='#378add'?1:2});
+    else if(f.r===90&&f.col==='#afa9ec')FX.play('vanish',{...at,radius:90*K,element:'shade'});
+    else if(f.r===22&&f.col==='#f0997b')FX.play('seed_pickup',{...at,element:'fox'});
+    else if(f.r===26&&f.col==='#fac775')FX.play('seed_pickup',{...at,element:'seed'});
+    else if(f.r===16&&f.col==='#c0dd97')FX.play('seed_pickup',{...at,element:'heal'});
+    else if(f.max===.35||f.max===.45||f.max===.15||f.r===46||f.r===220||f.col==='#fff');   // a death, a summon, a wall hit, a splash, the heist ring, a lob landing: their effects are played from the event
+    else f._own=true}
+   else if(f.k==='t'){f._ox=(Math.random()-.5)*1.3;f._oy=Math.random()*.5;if(f.t[0]==='+')FX.play('seed_pickup',{...at,element:'heal'})}}   // numbers from hits that land together fan out so they can be read
+  if(f.k==='r'&&f._own)ringAt(f.x,f.y,f.r*(1.15-k*.4),f.col,k);
+  else if(f.k==='t'){const el=texts.get(nt++),p=project(wx(f.x)+(f._ox||0),1.2+(f._oy||0)+(1-f.life/.8)*1.1,wz(f.y));if(el.textContent!==f.t)el.textContent=f.t;el.style.color=f.col;el.style.opacity=k;el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`}}
+ texts.end(nt)}
 function drawTransient(){const G=SB.G,me=G.me;nR=nD=nS=nC=nV=0;let i=0;
  for(const s of G.seeds){const m=seeds.get(i++);m.position.set(wx(s.x),0,wz(s.y));W.tickAll(m,G.t,0)}seeds.end(i);
+ if(fxOn)drawFx(G,me);else{
  i=0;for(const p of G.projs){const m=projs.get(i++);m.position.set(wx(p.x),.7,wz(p.y));m.scale.setScalar(p.r*K*1.3);m.children[0].material.color.set(p.col);if(Math.random()<.7)burst(p.x,p.y,p.col,1,.3,.05,.3)}projs.end(i);
  i=0;for(const l of G.lobs){const k=1-l.t/l.max;if(l.t<.04&&Math.hypot(l.x-me.x,l.y-me.y)<l.r+40)shake=Math.min(.12,shake+.05);discAt(l.x,l.y,l.r,TEAM[l.team],.22);ringAt(l.x,l.y,l.r,TEAM[l.team],.9);ringAt(l.x,l.y,l.r*k,0xffffff,.8,.06);
   const m=balls.get(i++);m.position.set(wx(l.sx+(l.x-l.sx)*k),.6+Math.sin(k*3.14)*3.2,wz(l.sy+(l.y-l.sy)*k));m.scale.setScalar(l.big?1.8:1)}balls.end(i);
@@ -150,6 +205,7 @@ function drawTransient(){const G=SB.G,me=G.me;nR=nD=nS=nC=nV=0;let i=0;
   else if(f.k==='l')strip(strips.get(nS++),f.x,f.y,f.x2,f.y2,.08,f.col,k);
   else if(f.k==='t'){const el=texts.get(nt++),p=project(wx(f.x),1.2+(1-f.life/.8)*1.1,wz(f.y));if(el.textContent!==f.t)el.textContent=f.t;el.style.color=f.col;el.style.opacity=k;el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`}}
  texts.end(nt);
+ }
  // the lane my units are sent down: a bright pad at my end and arrows running up it
  {const sp=SB.spawnPt(me.team,me.lane),dir=me.team===1?-1:1,pu=.5+.5*Math.sin(G.t*5);
   const m=strips.get(nS++);m.scale.set(SB.LW*K*.8,1.1,1);m.position.set(wx(sp.x),.02,wz(sp.y));m.rotation.z=0;m.material.color.set(PAL.team.you);m.material.opacity=.45+pu*.3;
@@ -163,13 +219,14 @@ function drawTransient(){const G=SB.G,me=G.me;nR=nD=nS=nC=nV=0;let i=0;
   if(aim.sup&&me.def.sup.name==='Heist'){const ex=me.x+Math.cos(a)*r,ey=me.y+Math.sin(a)*r;ringAt(ex,ey,220,col,.6,.06)}}
  rings.end(nR);discs.end(nD);strips.end(nS);cones.end(nC);chevs.end(nV)}
 
-// ---- sound (the circles version's cue set)
-const SFX={};let soundOn=false;
-[['shoot','attack_shot.wav',0.31],['punch','attack_punch.wav',0.66],['throw','attack_throw.wav',0.64],['slash','attack_slash.wav',0.34],['hit','base_hit.wav',0.39],['seed','seed_pickup.wav',0.29],['sspawn','seed_spawn.wav',0.3],['boom','splasher_land.wav',0.53],['down','hero_down.wav',0.29],['hurt','hero_hurt.wav',0.41],['spell','super_cast.wav',0.36],['plant','plant.wav',0.8],['tier','plot_tier_up.wav',0.18],['send','send_burst.wav',0.23],['awake','base_awake.wav',0.27],['bshot','base_shot.wav',0.4],['grunt','grunt_hit.wav',0.2],['brute','brute_hit.wav',0.45],['splash','splasher_fire.wav',0.36],['flyer','flyer_dive.wav',0.2],['stomp','colossus_stomp.wav',0.8],['split','colossus_split.wav',0.54],['die','creep_die.wav',0.16],['ready','plot_open.wav',0.4],
- ['match_start','match_start.wav',0.6],['win','win.wav',0.7],['lose','lose.wav',0.7],['countdown_tick','countdown_tick.wav',0.354],['button_tap','button_tap.wav',0.369]]
-.forEach(([k,f,v])=>{SFX[k]={f,v,pool:null,i:0,last:0}});
-function playS(k){const s=SFX[k];if(!s||!soundOn)return;const n=performance.now();if(n-s.last<70)return;s.last=n;if(!s.pool)s.pool=[0,1,2].map(()=>{const a=new Audio(GP+'sfx/'+s.f);a.volume=s.v;return a});const a=s.pool[s.i++%3];try{a.currentTime=0;a.play().catch(()=>{})}catch(e){}}
-window.SBL_SND=(k,x,y)=>{if(y!==undefined&&Math.abs(wz(y)-focus.z)>13)return;playS(k)};
+// ---- sound: one player for every cue (lanes/sound.js; ids, tiers and levels in lanes/sfx/cues.json)
+const SND=window.SBL_SOUND.create({base:'sfx/'});let soundOn=false,lastSel=-1;window.SBL_SOUND.player=SND;
+// what main.js asks for by name, as cue ids; a summon tap is answered by the summon itself, a seed kind change by its switch
+function playS(k){const G=SB.G;if(k==='button_tap'&&G&&G.sel!==lastSel){lastSel=G.sel;return SND.play('ui_kind',{ui:true})}if(k==='match_start'&&G)lastSel=G.sel;return SND.play(k==='button_tap'?'ui_tap':k,{ui:true})}
+// the listener is the camera focus; the view's half width and half height in rules units set where sounds fade out
+const listen=()=>({x:(focus.x+10.5)/K,y:focus.z/K+SB.H/2,hw:SB.W/2,hh:SB.W/2*VH/VW/Math.sin(PITCH)});
+window.SBL_SND=(k,x,y,a)=>SND.play(k,{x,y,actor:a,me:SB.G&&SB.G.me,at:listen()});
+document.addEventListener('click',e=>{const t=e.target&&e.target.closest&&e.target.closest('#pick .tile,#play,#swap');if(t)SND.play(t.id==='play'?'ui_play':'ui_tap',{ui:true})},true);
 
 // ---- input
 let aim=null;const keys={},mouse={x:0,y:0,down:false};
@@ -214,9 +271,9 @@ function readInput(){const me=SB.G.me;let mx=(keys.d||keys.arrowright?1:0)-(keys
 
 // ---- HUD: seeds carried, the lane picker (a small live map), the seed kind, the five bodies
 const fmt=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};let hudT=0,lastTick=99,hudKind=-1;
-const unitPics={};
-function unitPic(kind,ti){const key=kind+'_'+ti;if(unitPics[key])return unitPics[key];const sc=new THREE.Scene();LOOK.addLights(sc);const g=W.unit(W.UNIT_KINDS[kind],ti,PAL.team.blue);g.children[0].userData.tick=null;const w=W.UNIT_WIDTH[ti];
- const body=g.children[0];sc.add(body);body.rotation.y=.5;const bx=new THREE.Box3().setFromObject(body),h=Math.max(.3,bx.max.y-bx.min.y),cy=(bx.max.y+bx.min.y)/2,c=new THREE.PerspectiveCamera(26,1,.05,50),d=Math.max(h,w*1.2)*2.6;
+const unitPics={};UNITS.load(GP+'assets/units/',()=>{for(const k in unitPics)delete unitPics[k];hudKind=-1});
+function unitPic(kind,ti){const key=kind+'_'+ti;if(unitPics[key])return unitPics[key];const sc=new THREE.Scene();LOOK.addLights(sc);const body=UNITS.single(kind,ti,PAL.team.blue);body.userData.tick=null;const w=W.UNIT_WIDTH[ti];
+ sc.add(body);body.rotation.y=.5;const bx=new THREE.Box3().setFromObject(body),h=Math.max(.3,bx.max.y-bx.min.y),cy=(bx.max.y+bx.min.y)/2,c=new THREE.PerspectiveCamera(26,1,.05,50),d=Math.max(h,w*1.2)*2.6;
  c.position.set(0,cy+h*.35,d);c.lookAt(0,cy,0);const bg=scene.background;renderer.setSize(112,112,false);LOOK.setOutlineViewport(112,112);renderer.setClearColor(0,0);renderer.render(sc,c);const url=gl.toDataURL('image/png');resize();return unitPics[key]=url}
 function buildDock(){const el=$('bodies');el.innerHTML='';for(let t=1;t<=5;t++){const b=document.createElement('div');b.className='sq';b.innerHTML='<img alt=""><kbd>'+t+'</kbd><em>'+SB.costOf(t)+'</em><span></span>';b.lastChild.textContent=SB.BODIES[t];b.setAttribute('role','button');b.setAttribute('aria-label',SB.BODIES[t]);b.addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;doSummon(t)});el.appendChild(b)}
  const k=document.createElement('kbd');k.textContent='Q';$('btnSeed').appendChild(k)}
@@ -244,7 +301,7 @@ function drawLabels(){for(const f of farmViews){const s=project(wx(f.x),f.h,wz(f
 // ---- screens and loop
 let started=false,myPick=0,busy=false;
 async function startMatch(i,auto){if(busy)return;busy=true;myPick=i;started=false;for(const v of heroViews){scene.remove(v.grp);v.lab.remove()}heroViews=[];
- SB.start(i,!!auto);buildWorld();heroViews=await Promise.all(SB.G.heroes.map(makeHero));$('pick').hidden=true;$('over').hidden=true;$('hud').hidden=false;hudKind=-1;started=true;busy=false;playS('match_start');lastTick=99;I.fire=false;aim=null;
+ SB.start(i,!!auto);fxReset();buildWorld();heroViews=await Promise.all(SB.G.heroes.map(makeHero));$('pick').hidden=true;$('over').hidden=true;$('hud').hidden=false;hudKind=-1;started=true;busy=false;playS('match_start');lastTick=99;I.fire=false;aim=null;
  toast('Pick a lane, then spend seeds on units.',5);focus.z=wz(SB.G.me.y);drawHud()}
 function toast(t,sec){const el=$('toast');if(el.textContent!==t)el.textContent=t;el.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>{el.style.opacity=0},sec*1000)}
 const portraits={};
@@ -267,7 +324,7 @@ function frame(_,__,fdt){const dt=fdt||Math.min(.05,clock.getDelta());
   const ahead=.8,tz=wz(me.y)-(me.team===1?ahead:-ahead),lim=SB.H*K/2-1.5,xl=Math.max(0,10.5-SPAN/2);
   focus.set(Math.max(-xl,Math.min(xl,focus.x+(wx(me.x)-focus.x)*Math.min(1,dt*6))),0,Math.max(-lim,Math.min(lim,focus.z+(tz-focus.z)*Math.min(1,dt*6))));
   shake=Math.max(0,shake-dt);const sx=shake?(Math.random()-.5)*shake*1.2:0,sz=shake?(Math.random()-.5)*shake*1.2:0;cam.position.set(focus.x+sx,Math.sin(PITCH)*camDist,focus.z+Math.cos(PITCH)*camDist+sz);cam.lookAt(focus.x+sx,0,focus.z+sz);cam.updateMatrixWorld();W.tickAll(world,G.t,dt);
-  for(const v of heroViews)tickHero(v,dt);drawUnits(G.t);drawTransient();drawParts(dt);drawLabels();drawHit();if((hudT+=dt)>.1){hudT=0;drawHud()}
+  for(const v of heroViews)tickHero(v,dt);drawUnits(G.t);drawTransient();drawEvents(G);if(fxOn)FX.tick(dt);drawParts(dt);drawLabels();drawHit();if((hudT+=dt)>.1){hudT=0;drawHud()}
   if(G.over&&$('over').hidden){$('overT').textContent=G.over==='Draw'?'Draw':G.over==='Blue wins'?'You win':'You lose';$('over').hidden=false;$('hud').hidden=true;playS(G.over==='Blue wins'?'win':'lose')}}
  renderer.render(scene,cam);if(++fpsN===60){const t=performance.now();window.SBFPS=Math.round(60000/(t-fpsT));fpsT=t;fpsN=0}}
 await LOOK.heroRoster();buildDock();

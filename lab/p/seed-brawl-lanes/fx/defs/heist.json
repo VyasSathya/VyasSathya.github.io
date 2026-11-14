@@ -1,0 +1,10 @@
+{"id": "heist", "about": "Magpie Heist: she dashes along the line and every seed in the real 220 unit radius at the landing flies to her. at = start, to = landing, radius = 220 rule units.", "element": "shade", "proof": {"times": [0.05, 0.15, 0.3, 0.5, 0.8]}, "layers": [
+    {"name": "dash", "tex": "fx_glow_soft", "beam": true, "blend": "glow", "ramp": "hot", "size": 0.9, "life": 0.3, "height": 0.5, "bright": 1.4, "fadeIn": 0.02, "fadeOut": 0.7}, 
+    {"name": "dash core", "tex": "fx_glow_soft", "beam": true, "blend": "glow", "tokens": ["white", "white", "shade_l"], "size": 0.35, "life": 0.22, "height": 0.52, "bright": 2, "fadeOut": 0.7}, 
+    {"name": "feathers", "tex": "fx_p_leaves", "tiles": 2, "frames": "random", "blend": "matter", "tokens": ["shade_l", "shade", "shade_dd"], "emit": {"burst": 10}, "shape": "path", "size": [0.28, 0.36], "life": [0.6, 0.9], "height": 0.5, "dir": "random", "speed": [0.6, 1.2], "gravity": 0.2, "spin": 400, "fadeOut": 0.4}, 
+    {"name": "land flash", "tex": "fx_p_flash", "anchor": "to", "blend": "glow", "ramp": "flash", "size": 1.6, "sizeCurve": "snap", "life": 0.1, "height": 0.5, "bright": 2, "toCam": 0.5}, 
+    {"name": "area", "tex": "fx_p_shock_ring", "anchor": "to", "ground": true, "blend": "matter", "ramp": "team", "size": "radius:2.35", "sizeCurve": [0, 0.3, 0.25, 1, 1, 1], "life": 0.7, "height": 0.04, "alpha": 0.95, "fadeOut": 0.4, "glow": 0.3}, 
+    {"name": "area fill", "tex": "fx_swirl_seq", "tiles": 4, "anchor": "to", "ground": true, "blend": "matter", "ramp": "mid", "size": "radius:2.2", "life": 0.7, "height": 0.03, "spin": -200, "alpha": 0.35, "fadeOut": 0.5, "smooth": true}, 
+    {"name": "pull", "tex": "fx_p_flash", "anchor": "to", "blend": "glow", "ramp": "hot", "emit": {"burst": 14}, "shape": "ring", "spread": 0.9, "size": [0.22, 0.3], "life": [0.35, 0.5], "height": 0.3, "dir": "in", "speed": "radius:2.2", "bright": 1.5, "toCam": 0.3, "fadeOut": 0.3}, 
+    {"name": "swirl", "tex": "fx_swirl_seq", "tiles": 4, "anchor": "to", "blend": "flame", "ramp": "mid", "size": 1.6, "life": 0.5, "height": 0.6, "spin": -300, "toCam": 0.4, "fadeOut": 0.5}
+  ]}

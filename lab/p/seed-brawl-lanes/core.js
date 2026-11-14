@@ -99,10 +99,14 @@ function pushOut(e) {
 const inWall = (x, y, pad) => WALLS.some(w => x > w.x0 - pad && x < w.x1 + pad && y > w.y0 - pad && y < w.y1 + pad);
 
 let G = null;
-function snd(k, x, y) { if (root.SBL_SND && G && !G.mute) root.SBL_SND(k, x, y); }
+// one event, one cue: k is a cue id in lanes/sfx/cues.json; a is who made it (the spam guard is per actor and id; my own are 2D)
+function snd(k, x, y, a) { if (root.SBL_SND && G && !G.mute) root.SBL_SND(k, x, y, a); }
+const bodyId = u => BODIES[u.tier].toLowerCase();
 function ent(o) { return Object.assign({ slowT: 0, slowV: 0, rootT: 0, hasteT: 0, hasteV: 1, invisT: 0, shield: 0, shieldT: 0, invuln: 0, shelterT: 0, dead: false }, o); }
 function float(x, y, t, col) { G.fx.push({ k: 't', x, y, t: String(t), col: col || '#fff', life: 0.8 }); }
 function ring(x, y, r, col, life) { G.fx.push({ k: 'r', x, y, r, col, life: life || 0.35, max: life || 0.35 }); }
+// things that happened this step, for the client to draw and nothing else (the client empties the list; capped so a run with no client never grows it)
+function ev(o) { const E = G.ev || (G.ev = []); if (E.length < 400) E.push(o); }
 function line(x1, y1, x2, y2, col) { G.fx.push({ k: 'l', x: x1, y: y1, x2, y2, col, life: 0.12, max: 0.12 }); }
 function foes(team, x, y, r, unitsToo) { const o = []; for (const h of G.heroes) if (!h.dead && h.team !== team && Math.hypot(h.x - x, h.y - y) < r + h.r) o.push(h); if (unitsToo !== false) for (const u of G.units) if (!u.dead && u.team !== team && Math.hypot(u.x - x, u.y - y) < r + u.r) o.push(u); return o; }
 function pals(team, x, y, r) { const o = []; for (const h of G.heroes) if (!h.dead && h.team === team && Math.hypot(h.x - x, h.y - y) < r + h.r) o.push(h); for (const u of G.units) if (!u.dead && u.team === team && Math.hypot(u.x - x, u.y - y) < r + u.r) o.push(u); return o; }
@@ -113,6 +117,7 @@ const say = (def, s) => s.replace(/\{(\d+)\}/g, (m, v) => Math.round(v * bal({ d
 // opts: quiet (no number), from (who to point the hit marker at), noCharge (super damage does not charge the super)
 function hurt(e, d, src, o) {
   o = o || {}; if (e.dead || e.invuln > 0) return;
+  if (o.from && o.from.tier) ev({ k: 'uatk', x: o.from.x, y: o.from.y, tx: e.x, ty: e.y, tier: o.from.tier, kind: o.from.kind, team: o.from.team });
   if (e.isHero) { const f = o.from || src; if (f && f !== e) e.hitFrom = { x: f.x, y: f.y, t: G.t }; }
   if (src && src.isHero) { d *= bal(src, 'dmg'); if (!e.isHero) d *= CFG.heroUnitMul; }
   if (CFG.heroGrow) { if (src && src.isHero && e.isHero) d *= 1 + hlv() * CFG.heroGrow.dmg; if (e.isHero) d /= 1 + hlv() * CFG.heroGrow.hp; }
@@ -120,8 +125,8 @@ function hurt(e, d, src, o) {
   if (e.shield > 0) { const a = Math.min(e.shield, d); e.shield -= a; d -= a; }
   if (d <= 0) return;
   const real = Math.min(d, e.hp); e.hp -= d;
-  if (src && src.isHero) { G.stats.dmg[src.def.id] = (G.stats.dmg[src.def.id] || 0) + real; if (!o.noCharge && src.sup < 1) { src.sup = Math.min(1, src.sup + real / (src.def.sup.hits * src.def.atk.dmg * (src.def.atk.n || 1)) * (e.isHero ? 1 : CFG.supUnit)); if (src.sup >= 1 && src === G.me) snd('ready', src.x, src.y); } }
-  if (e.isHero) { e.hitT = CFG.regenWait; if (e === G.me) snd('hurt', e.x, e.y); }
+  if (src && src.isHero) { G.stats.dmg[src.def.id] = (G.stats.dmg[src.def.id] || 0) + real; if (!o.noCharge && src.sup < 1) { src.sup = Math.min(1, src.sup + real / (src.def.sup.hits * src.def.atk.dmg * (src.def.atk.n || 1)) * (e.isHero ? 1 : CFG.supUnit)); if (src.sup >= 1 && src === G.me) snd('super_ready', src.x, src.y, src); } }
+  if (e.isHero) { e.hitT = CFG.regenWait; if (e === G.me) snd('hero_hurt', e.x, e.y, e); }
   let quiet = o.quiet;
   if (quiet && e.isHero) { e.qacc = (e.qacc || 0) + d; if (e.qacc >= 400) { d = e.qacc; e.qacc = 0; quiet = false; } }
   if (!quiet) float(e.x + rnd(-8, 8), e.y - e.r - 10, Math.round(d), e === G.me ? '#ff6b5e' : e.isHero ? '#fff' : '#fac775');
@@ -129,9 +134,9 @@ function hurt(e, d, src, o) {
 }
 function heal(e, d, quiet) { if (e.dead) return; const b = e.hp; e.hp = Math.min(e.maxhp, e.hp + d); if (!quiet && e.hp - b > 40) float(e.x, e.y - e.r - 10, '+' + Math.round(e.hp - b), '#c0dd97'); }
 function kill(e, src) {
-  e.dead = true;
+  e.dead = true; if (!e.isHero) ev({ k: 'udie', x: e.x, y: e.y, tier: e.tier, kind: e.kind, team: e.team });
   if (!e.isHero) {
-    snd(e.tier === 5 ? 'split' : 'die', e.x, e.y);
+    snd(e.tier === 5 ? 'colossus_split' : bodyId(e) + '_die', e.x, e.y, e);
     if (e.tier === 5) for (let i = 0; i < 2; i++) spawnUnit(e.team, e.kind, 2, e.lane, e.x + rnd(-16, 16), e.y + rnd(-16, 16));
     if (src && src.isHero) { G.stats.heroUnitKills++; if (src.def.onUnitKill) src.def.onUnitKill(src, e); } else G.stats.unitUnitKills++;
   } else {
@@ -139,7 +144,7 @@ function kill(e, src) {
     if (src && src.isHero) G.stats.kills[src.def.id] = (G.stats.kills[src.def.id] || 0) + 1;
     e.respawn = CFG.respawn;
     if (!(e.shelterT > 0)) { for (let i = 0; i < e.seeds; i++) dropSeed(e.x + rnd(-50, 50), e.y + rnd(-50, 50), e.x, e.y); e.seeds = 0; }
-    snd('down', e.x, e.y);
+    snd(e === G.me ? 'hero_down_me' : e.team === G.me.team ? 'hero_down_ally' : 'hero_down_foe_' + e.def.id, e.x, e.y, e);
   }
   ring(e.x, e.y, e.r * 2.2, TCOL[e.team]);
 }
@@ -157,7 +162,7 @@ function zone(h, x, y, o) { const z = Object.assign({ x, y, team: h.team, owner:
 function angd(a, b) { let d = a - b; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; }
 function cone(h, a, range, half, dmg, col, onHit) {
   for (const e of foes(h.team, h.x, h.y, range)) if (Math.abs(angd(Math.atan2(e.y - h.y, e.x - h.x), a)) < half && !blocked(h.x, h.y, e.x, e.y)) { hurt(e, typeof dmg === 'function' ? dmg(e) : dmg, h); if (onHit && !e.dead) onHit(e); }
-  G.fx.push({ k: 'c', x: h.x, y: h.y, a, half, r: range, col, life: 0.15, max: 0.15 });
+  G.fx.push({ k: 'c', x: h.x, y: h.y, a, half, r: range, col, life: 0.15, max: 0.15, src: h.def && h.def.id, team: h.team });
 }
 const back = u => u.team === BLUE ? 1 : -1;         // y direction toward a unit's own base
 function shove(u, d) { if (u.isHero) return; u.y = clamp(u.y + back(u) * d * (u.tier === 5 ? 0.5 : 1), 30, H - 30); }
@@ -180,7 +185,7 @@ const HEROES = [
   atk: { dmg: 1300, reload: 1.4, gap: 0.3, shape: 'cone', range: 200, half: 0.5, fn(h, a) { cone(h, a, 200, 0.5, 1300, '#d3d1c7'); } },
   onUnitKill(h) { heal(h, 150, true); },
   sup: { name: 'Blade trap', hits: 3, shape: 'circle', range: 300, r: 90, bot: 'ahead', desc: 'Blade trap: spinning blades on a lane for 12 seconds. Ground units that walk in are cut down; every 5 it kills give him a seed. Flyers pass over.',
-    fn(h, x, y) { zone(h, x, y, { r: 90, dur: 12, arm: 1, every: 0.25, col: '#b4b2a9', label: 'Blade trap', kills: 0, fn(z) { for (const e of foes(z.team, z.x, z.y, z.r)) { if (e.isHero) hurt(e, 250, h, { quiet: true, noCharge: true }); else if (!e.fly) { hurt(e, 700, null, { quiet: true }); if (e.dead) { G.stats.heroUnitKills++; z.kills++; if (z.kills % 5 === 0 && h.seeds < CFG.carry) { h.seeds++; float(h.x, h.y - 40, '+1 seed', '#fac775'); snd('seed', h.x, h.y); } } } } } }); } } },
+    fn(h, x, y) { zone(h, x, y, { r: 90, dur: 12, arm: 1, every: 0.25, col: '#b4b2a9', label: 'Blade trap', kills: 0, fn(z) { for (const e of foes(z.team, z.x, z.y, z.r)) { if (e.isHero) hurt(e, 250, h, { quiet: true, noCharge: true }); else if (!e.fly) { hurt(e, 700, null, { quiet: true }); if (e.dead) { G.stats.heroUnitKills++; z.kills++; if (z.kills % 5 === 0 && h.seeds < CFG.carry) { h.seeds++; float(h.x, h.y - 40, '+1 seed', '#fac775'); if (h === G.me) snd('seed_pickup', h.x, h.y, h); } } } } } }); } } },
 { id: 'magpie', name: 'Magpie', col: '#7f77dd', ref: 'Crow', hp: 3000, spd: 130, atkRange: 310,
   adesc: 'Darts: two quick darts, {520} each. A hit knocks a seed off an enemy hero.',
   atk: { dmg: 520, n: 2, reload: 1.4, gap: 0.25, shape: 'line', range: 333, w: 8, fn(h, a) { const st = { done: false }; for (const d of [-0.06, 0.06]) shoot(h, a + d, { speed: 620, range: 333, dmg: 520, r: 6, col: '#cecbf6', onHit(e) { if (e.isHero && e.seeds > 0 && !st.done) { st.done = true; e.seeds--; dropSeed(e.x + rnd(-70, 70), e.y + rnd(-70, 70), e.x, e.y); } } }); } },
@@ -195,9 +200,9 @@ const HEROES = [
     fn(h, x, y) { zone(h, x, y, { r: 130, dur: 10, arm: 0.3, every: 0.25, col: '#9fe1cb', label: 'Rally post', fn(z) { for (const u of G.units) if (!u.dead && u.team === z.team && Math.hypot(u.x - z.x, u.y - z.y) < z.r) { haste(u, 6, 1.6); u.stampT = 6; } } }); } } },
 { id: 'thistle', name: 'Thistle', col: '#d4537e', ref: 'Dynamike', hp: 2800, spd: 114, atkRange: 330,
   adesc: 'Shell: lobbed over walls, lands after a moment, {1500} in a small blast.',
-  atk: { dmg: 1500, reload: 1.7, gap: 0.35, shape: 'circle', range: 349, r: 60, fn(h, a, x, y) { lob(h, x, y, { r: 60, delay: 0.8, dmg: 1500 }); } },
+  atk: { dmg: 1500, reload: 1.7, gap: 0.35, shape: 'circle', range: 349, r: 60, fn(h, a, x, y) { lob(h, x, y, { r: 60, delay: 0.8, dmg: 1500, snd: 'thistle_land' }); } },
   sup: { name: 'Seed charge', hits: 3, shape: 'circle', range: 350, r: 150, bot: 'bomb', desc: 'Seed charge: a bomb thrown over walls. It sits for 1.5 seconds, then blows for {2600} in a wide blast.',
-    fn(h, x, y) { lob(h, x, y, { r: 150, delay: 1.5, dmg: 2600, big: true, noCharge: true }); } } },
+    fn(h, x, y) { lob(h, x, y, { r: 150, delay: 1.5, dmg: 2600, big: true, noCharge: true, snd: 'thistle_sup_land' }); } } },
 { id: 'shade', name: 'Nightshade', col: '#534ab7', ref: 'Leon', hp: 3600, spd: 130, atkRange: 118,
   adesc: 'Slash: fast short cut, {1150}. Double from a bush or while unseen, and more for each seed the target carries.',
   atk: { dmg: 1150, reload: 1.0, gap: 0.25, shape: 'cone', range: 128, half: 0.6, fn(h, a) { const b = h.invisT > 0 || h.ambT > 0 ? 2 : 1; h.ambT = 0; cone(h, a, 128, 0.6, e => 1150 * b * (e.isHero ? 1 + 0.1 * Math.min(6, e.seeds) : 1), '#afa9ec'); } },
@@ -210,7 +215,7 @@ const HEROES = [
     fn(h, x, y) { zone(h, x, y, { r: 120, dur: 10, arm: 1, every: 0.25, col: '#f0997b', label: 'Lure', pts: 6, fn(z) { for (const u of G.units) { if (u.dead || u.team === z.team || Math.hypot(u.x - z.x, u.y - z.y) > z.r) continue; u.lureT = (u.lureT || 0) + z.every; if (u.lureT >= 1.5 && z.pts >= LP[u.tier]) { z.pts -= LP[u.tier]; u.team = z.team; u.lureT = 0; u.backT = 0; G.stats.turned++; ring(u.x, u.y, 22, '#f0997b', 0.4); float(u.x, u.y - 20, 'turned', '#f0997b'); if (z.pts <= 0) z.dur = 0; } } } }); } } },
 { id: 'bamboo', name: 'Bamboo', col: '#5dcaa5', ref: 'Poco', hp: 5000, spd: 114, atkRange: 300,
   adesc: 'Gourd: lobbed over walls, {900} to enemies. It leaves a puddle for 3 seconds that heals his team and slows enemy units.',
-  atk: { dmg: 900, reload: 1.6, gap: 0.3, shape: 'circle', range: 320, r: 70, fn(h, a, x, y) { lob(h, x, y, { r: 70, delay: 0.6, dmg: 900, onLand(l) { zone(h, l.x, l.y, { r: 70, dur: 3, col: '#5dcaa5', puddle: true, fn(z) { for (const e of pals(z.team, z.x, z.y, z.r)) heal(e, e.isHero ? 200 : 75, true); for (const e of foes(z.team, z.x, z.y, z.r, true)) if (!e.isHero) slow(e, 0.6, 0.3); } }); } }); } },
+  atk: { dmg: 900, reload: 1.6, gap: 0.3, shape: 'circle', range: 320, r: 70, fn(h, a, x, y) { lob(h, x, y, { r: 70, delay: 0.6, dmg: 900, snd: 'bamboo_land', onLand(l) { zone(h, l.x, l.y, { r: 70, dur: 3, col: '#5dcaa5', puddle: true, fn(z) { for (const e of pals(z.team, z.x, z.y, z.r)) heal(e, e.isHero ? 200 : 75, true); for (const e of foes(z.team, z.x, z.y, z.r, true)) if (!e.isHero) slow(e, 0.6, 0.3); } }); } }); } },
   sup: { name: 'Shelter', hits: 4, shape: 'circle', range: 400, r: 220, bot: 'ally', desc: 'Shelter: a dome for 6 seconds. His team inside takes 40 percent less damage and heals; a hero who dies inside keeps his seeds.',
     fn(h, x, y) { zone(h, x, y, { r: 220, dur: 6, every: 0.25, col: '#9fe1cb', label: 'Shelter', dome: true, fn(z) { for (const e of pals(z.team, z.x, z.y, z.r)) { e.shelterT = 0.3; if (e.isHero) heal(e, 75, true); } } }); } } }
 ];
@@ -233,7 +238,7 @@ function newGame(pi, auto, lineup) {
 function spawnUnit(team, kind, tier, lane, x, y) {
   const ug = CFG.unitGrow, k = KINDS[kind], hp = k.hp * THP[tier] * CFG.unitHpMul * (ug ? 1 + ug.hp * Math.min(ug.max, Math.floor(G.t / ug.every)) : 1);   // later waves are tougher, so the match ends at a base
   const u = ent({ team, kind, tier, fly: tier === 4, lane, x, y, r: TR[tier], hp, maxhp: hp, atkCd: rnd(0, 1), ox: laneX(lane) + rnd(-LW * 0.3, LW * 0.3), stampT: 0, backT: 0 });
-  G.units.push(u); return u;
+  G.units.push(u); ev({ k: 'spawn', x, y, tier, kind, team, lane }); return u;
 }
 const costOf = tier => CFG.cost[tier];
 function canSummon(h, tier) { return !h.dead && h.seeds >= costOf(tier) && G.units.reduce((a, u) => a + (u.team === h.team && !u.dead ? 1 : 0), 0) < CFG.unitCap; }
@@ -241,23 +246,23 @@ function summon(h, tier, kind) {
   if (!canSummon(h, tier)) return false;
   h.seeds -= costOf(tier); const p = spawnPt(h.team, h.lane), kd = kind === undefined ? (h === G.me && !G.auto ? G.sel : h.kind) : kind;
   spawnUnit(h.team, kd, tier, h.lane, p.x + rnd(-LW * 0.3, LW * 0.3), p.y + rnd(-10, 10));
-  G.stats.summoned[tier]++; G.stats.sumTeam[h.team] += costOf(tier); ring(p.x, p.y, 50, TCOL[h.team], 0.45); float(p.x, p.y - 30, BODIES[tier], '#fac775'); snd(tier >= 4 ? 'tier' : 'plant', p.x, p.y);
+  G.stats.summoned[tier]++; G.stats.sumTeam[h.team] += costOf(tier); ring(p.x, p.y, 50, TCOL[h.team], 0.45); float(p.x, p.y - 30, BODIES[tier], '#fac775'); snd('summon_' + BODIES[tier].toLowerCase(), p.x, p.y, h);
   return true;
 }
-function setLane(h, lane) { h.lane = ((lane % NL) + NL) % NL; if (h === G.me) snd('send', h.x, h.y); }
+function setLane(h, lane) { h.lane = ((lane % NL) + NL) % NL; if (h === G.me) snd('lane_pick', h.x, h.y, h); }
 function castSuper(h, x, y) {
   const sp = h.def.sup; if (h.dead || h.sup < 1) return false;
   let a = Math.atan2(y - h.y, x - h.x);
   if (sp.shape === 'circle') { const d = Math.hypot(x - h.x, y - h.y); if (d > sp.range) { x = h.x + Math.cos(a) * sp.range; y = h.y + Math.sin(a) * sp.range; } }
   h.aimA = a; h.supT = 0.5; sp.fn(h, x, y, a); h.sup = 0; h.invisT = sp.name === 'Vanish' ? h.invisT : 0;
-  G.stats.casts[h.def.id] = (G.stats.casts[h.def.id] || 0) + 1; float(h.x, h.y - 46, sp.name, '#fac775'); snd('spell', h.x, h.y); return true;
+  G.stats.casts[h.def.id] = (G.stats.casts[h.def.id] || 0) + 1; float(h.x, h.y - 46, sp.name, '#fac775'); snd(h.def.id + '_sup', h.x, h.y, h); return true;
 }
 function attack(h, x, y) {
   if (h.dead || h.atkCd > 0 || h.ammo < 1) return false;
   const a = Math.atan2(y - h.y, x - h.x), at = h.def.atk;
   if (at.shape === 'circle') { const d = Math.hypot(x - h.x, y - h.y); if (d > at.range) { x = h.x + Math.cos(a) * at.range; y = h.y + Math.sin(a) * at.range; } }
   h.aimA = a; h.fireT = 0.15; at.fn(h, a, x, y); h.invisT = 0; h.revT = 0.8; h.atkCd = at.gap; h.ammo -= 1; h.hitT = Math.max(h.hitT, CFG.regenWait);
-  snd(h.def.id === 'bramble' ? 'punch' : at.shape === 'circle' ? 'throw' : at.shape === 'cone' ? 'slash' : 'shoot', h.x, h.y); return true;
+  snd(h.def.id + '_atk', h.x, h.y, h); return true;
 }
 
 // ---- bots
@@ -355,13 +360,13 @@ function update(dt) {
   if (!G || G.over) return; G.t += dt; G.time -= dt;
   if (G.time <= 0) { const b = G.base[1].hp, r = G.base[2].hp; G.over = b === r ? 'Draw' : b > r ? 'Blue wins' : 'Red wins'; G.stats.endBy = 'timer'; return; }
   G.statT += dt; if (G.statT >= 1) { G.statT -= 1; const st = G.stats, ld = Math.sign(G.base[1].hp - G.base[2].hp); if (ld && st.lead && ld !== st.lead) st.leadChanges++; if (ld) st.lead = ld; if (st.lead60 === null && CFG.time - G.time >= 60) st.lead60 = ld; }
-  if (CFG.late && !G.lateOn && G.time <= CFG.late.at) { G.lateOn = true; for (const b of [G.base[1], G.base[2]]) { float(b.x, b.y - 90, 'base hits count double', '#fac775'); ring(b.x, b.y, 200, '#fac775', 1); } snd('awake', G.me.x, G.me.y); }
+  if (CFG.late && !G.lateOn && G.time <= CFG.late.at) { G.lateOn = true; for (const b of [G.base[1], G.base[2]]) { float(b.x, b.y - 90, 'base hits count double', '#fac775'); ring(b.x, b.y, 200, '#fac775', 1); } snd('late_double', G.me.x, G.me.y, 'match'); }
   const me = G.me, I = root.SBL_INPUT;
   if (!G.auto && !me.dead && I) { me.mx = I.mx; me.my = I.my; if (I.aimA !== null) me.aimA = I.aimA; if (I.fire) { attack(me, me.x + Math.cos(I.fireA) * I.fireD, me.y + Math.sin(I.fireA) * I.fireD); I.fire = I.hold; } }
   const lead = G.base[1].hp - G.base[2].hp;
   G.flip = !G.flip;                                   // heroes and units act in alternating order, so neither team always moves first
   for (const h of G.heroes) {
-    if (h.dead) { h.respawn -= dt; if (h.respawn <= 0) { const b = BASEPOS[h.team]; Object.assign(h, { dead: false, hp: h.maxhp, ammo: 3, x: b.x + rnd(-80, 80), y: b.y + (h.team === BLUE ? -150 : 150), slowT: 0, rootT: 0, invuln: 1.5, goal: null }); } continue; }
+    if (h.dead) { h.respawn -= dt; if (h.respawn <= 0) { const b = BASEPOS[h.team]; Object.assign(h, { dead: false, hp: h.maxhp, ammo: 3, x: b.x + rnd(-80, 80), y: b.y + (h.team === BLUE ? -150 : 150), slowT: 0, rootT: 0, invuln: 1.5, goal: null }); if (h === me) snd('hero_respawn', h.x, h.y, h); } continue; }
     tickStatus(h, dt); h.atkCd = Math.max(0, h.atkCd - dt); h.ammo = Math.min(3, h.ammo + dt / h.def.atk.reload); if (h.fireT > 0) h.fireT -= dt;
     h.inBush = BUSHES.some(b => Math.hypot(h.x - b.x, h.y - b.y) < b.r); if (h.inBush && !(h.revT > 0) && !G.heroes.some(e => e.team !== h.team && !e.dead && dist(e, h) < 95)) h.invisT = Math.max(h.invisT, 0.08);
     if (h.hitT > 0) h.hitT -= dt; else h.hp = Math.min(h.maxhp, h.hp + h.maxhp * CFG.regen * dt);
@@ -370,17 +375,17 @@ function update(dt) {
     h.seedT += dt * cm * (1 + CFG.seedRamp * G.t / CFG.time); if (h.seedT >= CFG.seedEvery) { h.seedT = 0; if (h.seeds < CFG.carry) h.seeds++; }
     if (h.bot) botThink(h, dt);
     const s = spd(h, h.def.spd); moveHero(h, h.mx * s, h.my * s, dt);
-    for (let i = G.seeds.length - 1; i >= 0; i--) { const sd = G.seeds[i]; if (h.seeds < CFG.carry && Math.hypot(sd.x - h.x, sd.y - h.y) < 32 && (!sd.to || sd.to === h)) { G.seeds.splice(i, 1); h.seeds++; { const fi = FARMS.findIndex(f => Math.hypot(f.x - sd.tx, f.y - sd.ty) < 120), k = h.team + ':' + (fi < 0 ? 'drop' : fi); G.stats.pick[k] = (G.stats.pick[k] || 0) + 1; } if (h === me) snd('seed', h.x, h.y); } }
-    if (CFG.heroGrow) { const l = hlv(); if (l !== (h.lv || 0)) { h.lv = l; float(h.x, h.y - h.r - 26, 'level ' + (l + 1), '#fac775'); ring(h.x, h.y, 60, '#fac775', 0.5); } }
+    for (let i = G.seeds.length - 1; i >= 0; i--) { const sd = G.seeds[i]; if (h.seeds < CFG.carry && Math.hypot(sd.x - h.x, sd.y - h.y) < 32 && (!sd.to || sd.to === h)) { G.seeds.splice(i, 1); h.seeds++; { const fi = FARMS.findIndex(f => Math.hypot(f.x - sd.tx, f.y - sd.ty) < 120), k = h.team + ':' + (fi < 0 ? 'drop' : fi); G.stats.pick[k] = (G.stats.pick[k] || 0) + 1; } if (h === me) snd('seed_pickup', h.x, h.y, h); } }
+    if (CFG.heroGrow) { const l = hlv(); if (l !== (h.lv || 0)) { h.lv = l; float(h.x, h.y - h.r - 26, 'level ' + (l + 1), '#fac775'); ring(h.x, h.y, 60, '#fac775', 0.5); if (h === me) snd('level_up', h.x, h.y, h); } }
     const ob = BASEPOS[h.team]; if (dist(ob, h) < 190) h.hp = Math.min(h.maxhp, h.hp + 800 * dt);
   }
-  for (const f of FARMS) { f.t += dt; if (f.t >= f.every) { f.t = 0; if (G.seeds.filter(s => Math.hypot(s.tx - f.x, s.ty - f.y) < 110).length < f.cap) { const a = rnd(0, 6.28), d = rnd(42, 80); dropSeed(f.x + Math.cos(a) * d * (f.mid ? 0.45 : 1), f.y + Math.sin(a) * d, f.x, f.y); snd('sspawn', f.x, f.y); } } }
+  for (const f of FARMS) { f.t += dt; if (f.t >= f.every) { f.t = 0; if (G.seeds.filter(s => Math.hypot(s.tx - f.x, s.ty - f.y) < 110).length < f.cap) { const a = rnd(0, 6.28), d = rnd(42, 80); dropSeed(f.x + Math.cos(a) * d * (f.mid ? 0.45 : 1), f.y + Math.sin(a) * d, f.x, f.y); snd('seed_farm', f.x, f.y, f); } } }
   for (const b of [G.base[1], G.base[2]]) {
     const bg = CFG.baseGun; b.gunT -= dt; let e = null, bd = bg.range;
     for (const u of G.units) if (!u.dead && u.team !== b.team) { const d = dist(u, b); if (d < bd) { bd = d; e = u; } }
     for (const h of G.heroes) if (!h.dead && h.team !== b.team && h.invisT <= 0) { const d = dist(h, b); if (d < bd) { bd = d; e = h; } }
-    if (e && !b.awake) { b.awake = true; ring(b.x, b.y, bg.range, TCOL[b.team], 0.8); float(b.x, b.y - 70, 'base awake', TCOL[b.team]); snd('awake', b.x, b.y); }
-    if (e && b.gunT <= 0) { b.gunT = bg.every; b.shotT = G.t; line(b.x, b.y, e.x, e.y, TCOL[b.team]); hurt(e, bg.dmg, null, { from: b }); snd('bshot', b.x, b.y); }
+    if (e && !b.awake) { b.awake = true; ring(b.x, b.y, bg.range, TCOL[b.team], 0.8); float(b.x, b.y - 70, 'base awake', TCOL[b.team]); snd('base_awake', b.x, b.y, b); }
+    if (e && b.gunT <= 0) { b.gunT = bg.every; b.shotT = G.t; line(b.x, b.y, e.x, e.y, TCOL[b.team]); hurt(e, bg.dmg, null, { from: b }); snd('base_shot', b.x, b.y, b); }
   }
   for (const u of G.units) {
     if (u.dead) continue; tickStatus(u, dt); u.atkCd -= dt; const k = KINDS[u.kind];
@@ -390,7 +395,7 @@ function update(dt) {
       for (const e of G.heroes) if (!e.dead && e.team !== u.team && e.invisT <= 0) { const d = dist(e, u) - e.r; if (d < fd && !blocked(u.x, u.y, e.x, e.y)) { fd = d; foe = e; } }
     }
     if (foe) {
-      if (fd <= k.range) { if (u.atkCd <= 0) { u.atkCd = 1; hurt(foe, k.dmg * TD[u.tier] * CFG.unitDmgMul, null, { quiet: true, from: u }); snd(['', 'grunt', 'brute', 'splash', 'flyer', 'stomp'][u.tier], u.x, u.y);
+      if (fd <= k.range) { if (u.atkCd <= 0) { u.atkCd = 1; hurt(foe, k.dmg * TD[u.tier] * CFG.unitDmgMul, null, { quiet: true, from: u }); snd(k.id + '_' + bodyId(u) + '_atk', u.x, u.y, u);
           if (u.tier === 3) { ring(foe.x, foe.y, 46, k.col, 0.3); for (const e of G.units) if (e !== foe && !e.dead && e.team !== u.team && Math.hypot(e.x - foe.x, e.y - foe.y) < 46) hurt(e, k.dmg * TD[3] * CFG.unitDmgMul * 0.6, null, { quiet: true }); }
           if (k.range > 60) line(u.x, u.y, foe.x, foe.y, k.col); } }
       else { const d = dist(foe, u) || 1, s = spd(u, k.spd); moveUnit(u, (foe.x - u.x) / d * s, (foe.y - u.y) / d * s, dt); }
@@ -400,7 +405,7 @@ function update(dt) {
     const past = u.team === BLUE ? u.y < Y0 + 6 : u.y > Y1 - 6;
     if (past && !(u.backT > 0)) {
       const d = dist(eb, u);
-      if (d < 46) { u.dead = true; G.stats.arrived++; G.stats.arrTeam[u.team]++; const dm = TM[u.tier] * (u.stampT > 0 ? 2 : 1) * (CFG.late && G.time <= CFG.late.at ? CFG.late.base : 1); eb.hp -= dm; ring(eb.x, eb.y, 60, TCOL[u.team], 0.3); float(eb.x + rnd(-30, 30), eb.y - 60, '-' + dm, TCOL[u.team]); snd(u.tier === 2 ? 'brute' : u.tier === 5 ? 'stomp' : 'hit', eb.x, eb.y);
+      if (d < 46) { u.dead = true; G.stats.arrived++; G.stats.arrTeam[u.team]++; const dm = TM[u.tier] * (u.stampT > 0 ? 2 : 1) * (CFG.late && G.time <= CFG.late.at ? CFG.late.base : 1); eb.hp -= dm; ring(eb.x, eb.y, 60, TCOL[u.team], 0.3); float(eb.x + rnd(-30, 30), eb.y - 60, '-' + dm, TCOL[u.team]); snd(eb.team === G.me.team ? 'base_hit_ours' : 'base_hit_theirs', eb.x, eb.y, eb);
         if (eb.hp <= 0) { eb.hp = 0; G.over = u.team === BLUE ? 'Blue wins' : 'Red wins'; G.stats.endBy = 'base'; } continue; }
       moveUnit(u, (eb.x - u.x) / d * s, (eb.y - u.y) / d * s, dt);
     } else { const dx = clamp((u.ox - u.x) / 60, -0.5, 0.5); moveUnit(u, dx * s, fwd * s, dt); }
@@ -410,10 +415,10 @@ function update(dt) {
     const st = Math.hypot(p.vx, p.vy) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.left -= st;
     if (inWall(p.x, p.y, 0) || p.x < 0 || p.x > W || p.y < 0 || p.y > H) { p.left = 0; ring(p.x, p.y, 12, '#d3d1c7', 0.15); continue; }
     if (p.healU) for (const u of G.units) if (!u.dead && u.team === p.team && !p.hit.has(u) && Math.hypot(u.x - p.x, u.y - p.y) < p.r + u.r) { p.hit.add(u); heal(u, p.healU, true); ring(u.x, u.y, 16, '#c0dd97', 0.25); }
-    for (const e of foes(p.team, p.x, p.y, p.r)) { if (p.hit.has(e)) continue; p.hit.add(e); hurt(e, p.dmg, p.owner); if (p.onHit && !e.dead) p.onHit(e); snd('hit', p.x, p.y); if (!p.pierce) { p.left = 0; break; } }
+    for (const e of foes(p.team, p.x, p.y, p.r)) { if (p.hit.has(e)) continue; p.hit.add(e); hurt(e, p.dmg, p.owner); if (p.onHit && !e.dead) p.onHit(e); if (e !== G.me && !e.dead) snd(e.isHero ? 'hit_hero' : e.tier === 2 ? 'unit_hit_armour' : e.tier === 5 ? 'unit_hit_big' : 'unit_hit_small', p.x, p.y, p.owner); if (!p.pierce) { p.left = 0; break; } }
   }
   G.projs = G.projs.filter(p => p.left > 0);
-  for (const l of G.lobs) { l.t -= dt; if (l.t <= 0) { for (const e of foes(l.team, l.x, l.y, l.r)) hurt(e, l.dmg, l.owner, { noCharge: l.noCharge }); if (l.onLand) l.onLand(l); ring(l.x, l.y, l.r, '#fff', l.big ? 0.5 : 0.3); snd('boom', l.x, l.y); } }
+  for (const l of G.lobs) { l.t -= dt; if (l.t <= 0) { for (const e of foes(l.team, l.x, l.y, l.r)) hurt(e, l.dmg, l.owner, { noCharge: l.noCharge }); if (l.onLand) l.onLand(l); ring(l.x, l.y, l.r, '#fff', l.big ? 0.5 : 0.3); snd(l.snd, l.x, l.y, l.owner); } }
   G.lobs = G.lobs.filter(l => l.t > 0);
   for (const z of G.zones) { if (z.arm > 0) { z.arm -= dt; continue; } z.dur -= dt; z.acc += dt; while (z.acc >= z.every) { z.acc -= z.every; z.fn(z); } }
   G.zones = G.zones.filter(z => z.dur > 0);
