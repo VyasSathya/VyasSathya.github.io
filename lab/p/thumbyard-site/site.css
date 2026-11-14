@@ -38,11 +38,14 @@ h1,h2{margin:0;font-weight:700;letter-spacing:-.015em}
 .yard{--hw:128cqw;--crest:calc(var(--hw) * .76 * 460 / 760)}
 .stage{position:absolute;left:50%;bottom:calc(var(--crest) - 6px);height:min(calc(100cqh - var(--crest) - 36px),78cqw);aspect-ratio:1;
   transform:translateX(-44%)}
-.stage .poster,.stage canvas{position:absolute;inset:0;width:100%;height:100%}
-.stage .poster{top:auto;height:85%;transition:opacity .5s ease}
-.stage canvas{opacity:0;transition:opacity .6s ease;touch-action:pan-y;cursor:grab}
-.stage.live canvas{opacity:1}
-.stage.live .poster{opacity:0}
+.stage .poster{position:absolute;inset:0;width:100%;height:100%;top:auto;height:85%}
+/* the 3D yard (yard.js) lands exactly on the flat hill and takes over from it */
+.hill,.stage{transition:opacity .35s ease}
+.yard3d{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .35s ease;touch-action:pan-y}
+.yard.live3d .yard3d{opacity:1}
+.yard.live3d .hill,.yard.live3d .stage{opacity:0}
+.plot.hot .name{color:var(--moss)}
+.plot.hot .stake i{animation:wave .7s ease-in-out 2}
 
 .shelf{padding:clamp(28px,5vh,56px) var(--pad) 40px}
 .shelf section+section{margin-top:44px}
