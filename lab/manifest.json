@@ -1,6 +1,30 @@
 {
  "items": [
   {
+   "id": "wall-jump-tower",
+   "key": "wall-jump-tower?m=steps",
+   "title": "Tower: up and right",
+   "url": "p/wall-jump-tower/index.html?m=steps",
+   "added": "2026-11-13",
+   "v": "20261113180326"
+  },
+  {
+   "id": "wall-jump-tower",
+   "key": "wall-jump-tower?m=over",
+   "title": "Tower: up, over, drop",
+   "url": "p/wall-jump-tower/index.html?m=over",
+   "added": "2026-11-13",
+   "v": "20261113180326"
+  },
+  {
+   "id": "wall-jump-tower",
+   "key": "wall-jump-tower?m=sides",
+   "title": "Tower: side towers",
+   "url": "p/wall-jump-tower/index.html?m=sides",
+   "added": "2026-11-13",
+   "v": "20261113180326"
+  },
+  {
    "id": "six-base-games",
    "key": "six-base-games?g=0",
    "title": "Tower",
