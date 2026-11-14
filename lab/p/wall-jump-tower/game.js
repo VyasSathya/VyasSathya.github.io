@@ -1,10 +1,15 @@
 'use strict';
 /* Screens, animation, sound, input and the loop. The simulation is sim.js; drawing of the world is draw.js. */
-const Q=new URLSearchParams(location.search);
+/* a page from before race.js existed can still be in a cache with this file new: load the page again, once */
+if(typeof recNew=='undefined'||typeof PAR=='undefined'){if(!/[?&]fresh=/.test(location.search))location.replace(location.pathname+'?fresh='+Date.now()+location.search.replace(/^\?/,'&'));throw new Error('reloading')}
+const Q=new URLSearchParams(location.search),PUB='https://vyasapps.dev/lab/p/wall-jump-tower/';
 let SV={done:{},ch:'gecko',mute:0};try{Object.assign(SV,JSON.parse(localStorage.getItem('wjt2')||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem('wjt2',JSON.stringify(SV))}catch(e){}};
 let CH=CHARS.includes(Q.get('c'))?Q.get('c'):CHARS.includes(SV.ch)?SV.ch:'gecko';
 let scr='title',LV=0,tab=0,btns=[],hold=false,press=false,release=false,frz=0,deadT=0,winT=0,intro=0,acc=0,lastSi=0,gone=false;
+/* REC = this run's taps. GH = the ghost beside the player: a friend's run from a link (VS) or the player's own best.
+   WIN = the run that just ended. pend = a button that must fire on release (the share sheet needs that). */
+let REC=recNew(),GH=null,VS=null,WIN=null,pend=null,copied=0;
 const an={clip:'idle',t:0,fr:0,sx:1,sy:1,face:1,tilt:0,dist:0,dustT:0};
 
 /* ---------- sound ---------- */
@@ -35,7 +40,8 @@ function events(){const p=S.p;for(const[k,x,y,v]of S.ev){
   else if(k=='gem'){let n=0;for(let i=0;i<G.gems.length;i++)n+=S.gems>>i&1;puff(x,y,14,C.gem,0,0,140);sfx('gem',.8,.9+.1*n)}
   else if(k=='cp'){puff(x-150,y-6,8,'#ff8a2a',0,-60);puff(x+150,y-6,8,'#ff8a2a',0,-60);sfx('checkpoint',.6)}
   else if(k=='dead'){setClip('die');puff(x,y,26,C.warn,0,-40,190);puff(x,y,10,'#ffe36a',0,-60,120);cam.sh=7;frz=.07;deadT=.62;sfx('death',.8)}
-  else if(k=='win'){winT=1.25;puff(x,y-20,30,C.accent,0,-80,200);sfx('win',.8);const id=G.L.id,o=SV.done[id]||{g:0,t:1e9};SV.done[id]={g:o.g|S.gems,t:Math.min(o.t,S.time),n:G.gems.length};save()}}
+  else if(k=='win'){winT=1.25;puff(x,y-20,30,C.accent,0,-80,200);sfx('win',.8);const L=G.L,o=SV.done[L.id]||{g:0,t:1e9},t=REC.n/120,pk=recPack(REC),hv=lvHash(L),d={...o,g:o.g|S.gems,t:Math.min(o.t,t),n:G.gems.length};
+   WIN={n:REC.n,t,prev:o.t<1e8?o.t:0,nb:t<o.t-1e-4,pk,ch:CH};if(!o.r||o.v!=hv||REC.n<o.rk){d.r=pk;d.rk=REC.n;d.rc=CH;d.v=hv}SV.done[L.id]=d;save()}}
  S.ev.length=0}
 function anim(dt){const p=S.p;an.t+=dt;let k=an.clip,c=CLIPS[k]||CLIPS.run,done=c[1]&&an.t*c[1]>=c[0];
  if(S.dead)setClip('die');else if(S.win&&p.g)setClip('win');
@@ -69,7 +75,16 @@ function hero(){if(gone)return;const p=S.p,rc=CH=='gecko'?['#2fd1b8',6.2,.95,6]:
 const RP={x:0,y:0,ox:0,oy:0};
 function camX(){const p=S.p,q=G.segs[S.si];return q.dir=='across'?cl(RP.x-VW/2+p.dir*50,q.x0,q.x0+q.len-VW):Math.floor(p.x/VW)*VW}
 const ease=(r,dt)=>1-Math.exp(-r*dt);
-function startLevel(i){LV=i;G=build(LEVELS[i]);S=newState(G);fx=[];rope=[];scr='play';intro=1.8;deadT=winT=frz=acc=0;gone=false;lastSi=S.si;an.clip='run';an.t=0;an.sx=an.sy=1;an.tilt=0;RP.x=RP.ox=S.p.x;RP.y=RP.oy=S.p.y;cam.x=camX();cam.y=S.p.y-H*.7;press=release=false}
+function ghostFor(i){const L=LEVELS[i];if(VS&&VS.lv==i)return VS.run?{run:VS.run,ch:VS.ch}:null;const d=SV.done[L.id];
+ if(d&&d.r&&d.v==lvHash(L)){const run=ghostRun(G,recUnpack(d.r),d.rk);if(run)return{run,ch:CHARS.includes(d.rc)?d.rc:CH}}return null}
+/* the ghost is where that run was after as many steps as the player has played, so a death costs both the same wait */
+function ghost(){const gh=GH&&GH.run;if(!gh)return;const k=Math.min(REC.n,gh.n)-1;let x=G.start.x,y=G.start.y,b=5;
+ if(k>=0){b=gh.st[k];if(b&16)return;x=gh.xs[k];y=gh.ys[k];if(k>0&&REC.n<gh.n&&!S.dead&&!S.win){const a=cl(acc*120,0,1),ox=gh.xs[k-1],oy=gh.ys[k-1];if(Math.abs(x-ox)<30&&Math.abs(y-oy)<30){x=ox+(x-ox)*a;y=oy+(y-oy)*a}}}
+ const clip=REC.n>=gh.n?'win':b&1?'run':b&2?'slide':b&8?'jump':'fall',c=CLIPS[clip],fr=clip=='run'?Math.floor(k*RUN/120/46*c[0])%c[0]:clip=='jump'?2:Math.floor(T*(c[1]||10))%c[0];
+ ctx.save();ctx.globalAlpha=.42;ctx.translate(x,y+10);ctx.scale(b&4?1:-1,1);sprite(ctx,GH.ch,clip,fr);ctx.restore()}
+/* one step of play: the tap goes into the run, then into the simulation */
+function simTick(inp){if(!S.dead&&!S.win)recTick(REC,inp);RP.ox=S.p.x;RP.oy=S.p.y;step(G,S,1/120,inp);if(S.ev.length)events()}
+function startLevel(i){LV=i;G=build(LEVELS[i]);S=newState(G);REC=recNew();WIN=null;GH=ghostFor(i);fx=[];rope=[];scr='play';intro=1.8;deadT=winT=frz=acc=0;gone=false;lastSi=S.si;an.clip='run';an.t=0;an.sx=an.sy=1;an.tilt=0;RP.x=RP.ox=S.p.x;RP.y=RP.oy=S.p.y;cam.x=camX();cam.y=S.p.y-H*.7;press=release=false}
 function tick(dt){anim(dt);trail(dt);const p=S.p;
  if(S.si!=lastSi){lastSi=S.si;sfx('door',.5)}
  if(deadT>0){deadT-=dt;if(an.clip=='die'&&an.t>.3)gone=true;if(deadT<=0){S=respawn(S);RP.x=RP.ox=S.p.x;RP.y=RP.oy=S.p.y;gone=false;rope=[];an.clip='';setClip(S.p.g?'run':'fall');an.sx=.7;an.sy=1.3;lastSi=S.si;puff(S.p.x,S.p.y,12,'#bfeeff',0,-30)}}
@@ -78,13 +93,15 @@ function tick(dt){anim(dt);trail(dt);const p=S.p;
  const ac=G.segs[S.si].dir=='across',tx=camX();cam.x+=(tx-cam.x)*ease(ac?7:9,dt);if(!ac&&Math.abs(tx-cam.x)<.5)cam.x=tx;
  const dn=G.segs[S.si].dir=='down',hi=RP.y-H*(dn?.3:.55),lo=RP.y-H*(dn?.34:.78);
  if(cam.y>hi)cam.y+=(hi-cam.y)*ease(dn?6:14,dt);else if(cam.y<lo)cam.y+=(lo-cam.y)*ease(12,dt)}
-const tm=t=>Math.floor(t/60)+':'+(t%60<10?'0':'')+(t%60).toFixed(1);
+const p2=n=>String(n).padStart(2,'0'),tm=t=>{const d=Math.floor(t*10);return Math.floor(d/600)+':'+p2(Math.floor(d/10)%60)+'.'+d%10},
+ tm2=t=>{const c=Math.round(t*100);return Math.floor(c/6000)+':'+p2(Math.floor(c/100)%60)+'.'+p2(c%100)};
 function pips(x,y,n,mask,k,right){for(let i=0;i<n;i++)gemAt(right?x-(n-1-i)*13*k:x+i*13*k,y,k*.72,mask>>i&1)}
 function hud(){const g=G,s=S,p=s.p,y=TOP+26;
  ctx.fillStyle=C.text;rr(16,y-8,4,16,1.5);ctx.fill();rr(24,y-8,4,16,1.5);ctx.fill();
  txt(g.L.name,VW/2,y,13,C.dim,'center');pips(VW-22,y,g.gems.length,s.gems,1,1);
  ctx.fillStyle=C.line;rr(16,y+15,VW-32,4,2);ctx.fill();const f=cl(s.best/g.total,0,1);if(f>0){ctx.fillStyle=C.accent;rr(16,y+15,Math.max(4,(VW-32)*f),4,2);ctx.fill()}
  for(let i=0;i<p.airMax;i++){ctx.beginPath();ctx.arc(22+i*13,y+33,4,0,6.3);if(i<p.air){ctx.fillStyle='#bfeeff';ctx.fill()}else{ctx.lineWidth=1.5;ctx.strokeStyle=C.line;ctx.stroke()}}
+ if(GH||VS&&VS.lv==LV)txt(tm(REC.n/120),VW/2,y+34,12,C.dim,'center');
  if(s.key)icon('key',26+p.airMax*13,y+33,C.accent);if(s.frz>0){ctx.fillStyle='#8fe3ff';rr(16,y+44,60*s.frz/7,3,1.5);ctx.fill()}
  if(g.segs.length>1){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const q of g.segs){x0=Math.min(x0,q.c*VW);x1=Math.max(x1,q.c1*VW+VW);y0=Math.min(y0,q.y0+(q.dir=='across'?0:DH+30));y1=Math.max(y1,q.y1)}
   const k=Math.min(64/(x1-x0),90/(y1-y0)),mx=VW-16-(x1-x0)*k,my=y+30;ctx.lineWidth=1;ctx.globalAlpha=.85;
@@ -94,13 +111,13 @@ function hud(){const g=G,s=S,p=s.p,y=TOP+26;
  if(intro>0){ctx.globalAlpha=cl(intro*1.6,0,1);txt(CHAPTERS[Math.floor(LV/5)],VW/2,H*.3-28,13,C.dim,'center');txt(g.L.name,VW/2,H*.3,30,C.text,'center',600);ctx.globalAlpha=1}}
 
 /* ---------- screens ---------- */
-function btn(label,x,y,w,h,kind,fn){btns.push({x,y,w,h,fn});if(kind==1){ctx.fillStyle=C.accent;rr(x,y,w,h,h/2);ctx.fill();txt(label,x+w/2,y+h/2+.5,17,'#1d1206','center',600)}
- else if(kind==2){ctx.strokeStyle=C.line;ctx.lineWidth=1;rr(x+.5,y+.5,w-1,h-1,h/2);ctx.stroke();txt(label,x+w/2,y+h/2+.5,15,C.text,'center',500)}else txt(label,x+w/2,y+h/2,15,C.dim,'center',500)}
+function btn(label,x,y,w,h,kind,fn,up){btns.push({x,y,w,h,fn,up});if(kind==1){ctx.fillStyle=C.accent;rr(x,y,w,h,h/2);ctx.fill();txt(label,x+w/2,y+h/2+.5,17,'#1d1206','center',600)}
+ else if(kind==2){ctx.fillStyle='rgba(22,13,30,.82)';rr(x,y,w,h,h/2);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=1;rr(x+.5,y+.5,w-1,h-1,h/2);ctx.stroke();txt(label,x+w/2,y+h/2+.5,15,C.text,'center',500)}else txt(label,x+w/2,y+h/2,15,C.dim,'center',500)}
 function shade(a){ctx.fillStyle='rgba(16,9,22,'+a+')';ctx.fillRect(0,0,VW,H)}
 function backdrop(){back(0,-H-200);lava({lava:H-70+cam.y,frz:0});let gr=ctx.createRadialGradient(VW/2,H*.45,H*.2,VW/2,H*.45,H*.8);gr.addColorStop(0,'rgba(8,4,12,0)');gr.addColorStop(1,'rgba(8,4,12,.6)');ctx.fillStyle=gr;ctx.fillRect(0,0,VW,H)}
-function title(){cam.y=-H-200;backdrop();const cy=H*.5;txt('Wall Jump Tower',VW/2,TOP+H*.17,31,C.text,'center',600);
- glow(VW/2,cy-30,150,'255,150,60',.22);ctx.fillStyle='rgba(0,0,0,.3)';rr(VW/2-67,cy+7,140,12,4);ctx.fill();ctx.fillStyle='#6a5874';rr(VW/2-70,cy,140,12,4);ctx.fill();ctx.fillStyle='#9a87a5';rr(VW/2-69,cy,138,4,2);ctx.fill();
- const c=CLIPS.idle;ctx.save();ctx.translate(VW/2,cy);ctx.scale(3.4,3.4);ctx.imageSmoothingEnabled=true;sprite(ctx,CH,'idle',Math.floor(T*c[1])%c[0]);ctx.restore();
+function stand(ch,cy){glow(VW/2,cy-30,150,'255,150,60',.22);ctx.fillStyle='rgba(0,0,0,.3)';rr(VW/2-67,cy+7,140,12,4);ctx.fill();ctx.fillStyle='#6a5874';rr(VW/2-70,cy,140,12,4);ctx.fill();ctx.fillStyle='#9a87a5';rr(VW/2-69,cy,138,4,2);ctx.fill();
+ const c=CLIPS.idle;ctx.save();ctx.translate(VW/2,cy);ctx.scale(3.4,3.4);ctx.imageSmoothingEnabled=true;sprite(ctx,ch,'idle',Math.floor(T*c[1])%c[0]);ctx.restore()}
+function title(){cam.y=-H-200;backdrop();const cy=H*.5;txt('Wall Jump Tower',VW/2,TOP+H*.17,31,C.text,'center',600);stand(CH,cy);
  ctx.strokeStyle=C.dim;ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';for(const s of[-1,1]){const x=VW/2+s*112;ctx.beginPath();ctx.moveTo(x-s*5,cy-52);ctx.lineTo(x+s*5,cy-42);ctx.lineTo(x-s*5,cy-32);ctx.stroke()}ctx.lineCap='butt';
  const sw=d=>()=>{CH=CHARS[(CHARS.indexOf(CH)+d+CHARS.length)%CHARS.length];SV.ch=CH;save();rope=[]};btns.push({x:0,y:cy-110,w:VW/2,h:130,fn:sw(-1)},{x:VW/2,y:cy-110,w:VW/2,h:130,fn:sw(1)});
  let nx=LEVELS.findIndex(l=>!SV.done[l.id]);if(nx<0)nx=0;
@@ -109,12 +126,31 @@ function chev(x,y,fn){ctx.strokeStyle=C.text;ctx.lineWidth=2.5;ctx.lineCap='roun
 function levels(){cam.y=-H-200;backdrop();shade(.55);chev(24,TOP+30,()=>{scr='title'});
  let x=24;const ty=TOP+84;for(let i=0;i<CHAPTERS.length;i++){ctx.font='600 13.5px Inter,system-ui,sans-serif';const w=ctx.measureText(CHAPTERS[i]).width;txt(CHAPTERS[i],x,ty,13.5,i==tab?C.text:C.dim,'left',600);if(i==tab){ctx.fillStyle=C.accent;rr(x,ty+13,w,2.5,1.2);ctx.fill()}const k=i;btns.push({x:x-7,y:ty-22,w:w+14,h:44,fn:()=>{tab=k}});x+=w+16}
  for(let i=0;i<5;i++){const n=tab*5+i,L=LEVELS[n],y=TOP+124+i*62,d=SV.done[L.id];ctx.fillStyle=C.line;ctx.fillRect(24,y+61.5,VW-48,1);
-  txt(L.name,24,y+31,18,C.text,'left',500);if(d){pips(VW-30,y+31,d.n||1,d.g,1.25,1);ctx.fillStyle=C.accent;ctx.beginPath();ctx.arc(14,y+31,2.5,0,6.3);ctx.fill()}btns.push({x:0,y,w:VW,h:62,fn:()=>startLevel(n)})}}
-function pauseS(){shade(.72);const y=H*.34;btn('Resume',VW/2-100,y,200,54,1,()=>{scr='play'});btn('Restart',VW/2-100,y+70,200,48,2,()=>startLevel(LV));btn('Levels',VW/2-100,y+128,200,48,2,()=>{tab=Math.floor(LV/5);scr='levels'});
+  txt(L.name,24,y+31,18,C.text,'left',500);if(d){if(d.t<1e8)txt(tm2(d.t),VW-40-(d.n||1)*16.25,y+31,13,C.dim,'right');pips(VW-30,y+31,d.n||1,d.g,1.25,1);ctx.fillStyle=C.accent;ctx.beginPath();ctx.arc(14,y+31,2.5,0,6.3);ctx.fill()}btns.push({x:0,y,w:VW,h:62,fn:()=>startLevel(n)})}}
+function pauseS(){shade(.72);const y=H*.34;btn('Resume',VW/2-100,y,200,54,1,()=>{scr='play'});btn('Restart',VW/2-100,y+70,200,48,2,()=>startLevel(LV));btn('Levels',VW/2-100,y+128,200,48,2,toLevels);
  btn(SV.mute?'Sound off':'Sound on',VW/2-100,y+190,200,44,0,()=>{SV.mute=SV.mute?0:1;save();if(AU.g)AU.g.gain.value=SV.mute?0:1})}
-function clearS(){shade(.72);const y=H*.3,g=G;txt(g.L.name,VW/2,y,15,C.dim,'center');txt('Clear',VW/2,y+38,34,C.text,'center',600);
- if(g.gems.length)pips(VW/2-(g.gems.length-1)*13,y+86,g.gems.length,S.gems,2,0);txt(tm(S.time),VW/2,y+124,15,C.dim,'center');
- const last=LV>=LEVELS.length-1;btn(last?'Levels':'Next',VW/2-100,y+164,200,54,1,()=>last?(tab=2,scr='levels'):startLevel(LV+1));btn('Again',VW/2-100,y+232,200,48,2,()=>startLevel(LV));if(!last)btn('Levels',VW/2-100,y+288,200,44,0,()=>{tab=Math.floor(LV/5);scr='levels'})}
+const toLevels=()=>{VS=null;tab=Math.floor(LV/5);scr='levels'};
+/* a run as a link: the level, the time and the taps, so whoever opens it races that run */
+const canShare=()=>!!(navigator.share||(navigator.clipboard&&navigator.clipboard.writeText));
+function share(lv,w){const L=LEVELS[lv],url=PUB+'?r='+linkPack(L,w.n,CHARS.indexOf(w.ch),w.pk),text='Beat my '+tm2(w.t)+' on '+L.name;
+ if(navigator.share)navigator.share({text,url}).catch(()=>{});else navigator.clipboard.writeText(text+' '+url).then(()=>{copied=T+2.5},()=>{})}
+function clearS(){shade(.86);const g=G,w=WIN,y=Math.max(TOP+64,H*.22),X=VW/2-100,vs=VS&&VS.lv==LV?VS:null,last=LV>=LEVELS.length-1,again=()=>startLevel(LV);
+ txt(g.L.name,VW/2,y,15,C.dim,'center');
+ if(vs){const d=(vs.n-w.n)/120,row=(a,b,yy,on)=>{txt(a,VW/2-64,yy,15,C.dim,'left');txt(b,VW/2+64,yy,15,on?C.text:C.dim,'right',600)};
+  txt(d>0?'Won by '+d.toFixed(2):d<0?'Lost by '+(-d).toFixed(2):'Dead heat',VW/2,y+40,32,C.text,'center',600);row('You',tm2(w.t),y+92,d>=0);row('Them',tm2(vs.n/120),y+120,d<=0);
+  if(d>0&&canShare()){btn(copied>T?'Link copied':'Send it back',X,y+162,200,54,1,()=>share(LV,w),1);btn('Again',X,y+230,200,48,2,again);btn('Levels',X,y+286,200,44,0,toLevels)}
+  else{btn('Again',X,y+162,200,54,1,again);btn('Levels',X,y+226,200,44,0,toLevels)}return}
+ txt('Clear',VW/2,y+38,34,C.text,'center',600);if(g.gems.length)pips(VW/2-(g.gems.length-1)*13,y+84,g.gems.length,S.gems,2,0);
+ txt(tm2(w.t),VW/2,y+126,24,C.text,'center',600);let ly=y+154;const par=PAR[g.L.id];
+ if(w.prev){txt(w.nb?'New best, '+(w.prev-w.t).toFixed(2)+' faster':'Best '+tm2(w.prev),VW/2,ly,13,w.nb?C.accent:C.dim,'center');ly+=20}
+ if(par){txt('Par '+tm2(par/120),VW/2,ly,13,w.n<=par?C.gem:C.dim,'center');ly+=20}
+ btn(last?'Levels':'Next',X,ly+8,200,54,1,()=>last?(tab=2,scr='levels'):startLevel(LV+1));
+ if(canShare()){btn('Again',X,ly+74,96,48,2,again);btn(copied>T?'Copied':'Challenge',VW/2+4,ly+74,96,48,2,()=>share(LV,w),1)}else btn('Again',X,ly+74,200,48,2,again);
+ if(!last)btn('Levels',X,ly+130,200,44,0,toLevels)}
+/* what a challenge link opens on: the level, whose run it is, the time to beat */
+function vsS(){cam.y=-H-200;backdrop();shade(.45);const L=LEVELS[VS.lv],cy=H*.5,ty=TOP+H*.13;chev(24,TOP+30,()=>{VS=null;scr='title'});
+ txt(CHAPTERS[Math.floor(VS.lv/5)],VW/2,ty,13,C.dim,'center');txt(L.name,VW/2,ty+34,30,C.text,'center',600);stand(VS.ch,cy);
+ txt(tm2(VS.n/120),VW/2,cy+62,34,C.text,'center',600);txt('to beat',VW/2,cy+92,13,C.dim,'center');btn('Race',VW/2-100,H-BOT-150,200,54,1,()=>startLevel(VS.lv))}
 
 /* ---------- loop and input ---------- */
 function resize(){const r=cv.getBoundingClientRect(),d=Math.min(3,window.devicePixelRatio||1);cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);SC=r.width/VW;H=r.height/SC;ctx.setTransform(d*SC,0,0,d*SC,0,0);
@@ -122,30 +158,32 @@ function resize(){const r=cv.getBoundingClientRect(),d=Math.min(3,window.deviceP
  /* the iPhone app reports 0 for the page's own insets, so its shell hands over the screen's (ios/.../GameView.swift) */
  const sf=window.__safe;if(sf){TOP=Math.max(TOP,(+sf.top||0)/SC);BOT=Math.max(BOT,(+sf.bottom||0)/SC)}}
 function down(x,y){auInit();if(scr=='play'){if(x<56&&y<TOP+52&&!S.win&&!S.dead){scr='pause';sfx('ui_tap',.6);return}press=true;hold=true;return}
- for(let i=btns.length-1;i>=0;i--){const b=btns[i];if(x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h){sfx('ui_tap',.6);b.fn();return}}}
-function up(){hold=false;release=true}
+ for(let i=btns.length-1;i>=0;i--){const b=btns[i];if(x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h){sfx('ui_tap',.6);if(b.up)pend=b.fn;else b.fn();return}}}
+function up(){hold=false;release=true;if(pend){const f=pend;pend=null;f()}}
 cv.addEventListener('pointerdown',e=>{e.preventDefault();const r=cv.getBoundingClientRect();down((e.clientX-r.left)/SC,(e.clientY-r.top)/SC)});addEventListener('pointerup',up);addEventListener('pointercancel',up);
 addEventListener('keydown',e=>{if(e.repeat)return;if(e.key==' '||e.key=='Enter'){e.preventDefault();if(scr=='play')down(180,400);else if(btns.length){auInit();(btns.find(b=>b.w==200)||btns[0]).fn()}}else if(e.key=='Escape'&&scr=='play')scr='pause'});
 addEventListener('keyup',e=>{if(e.key==' ')up()});addEventListener('resize',resize);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){if(scr=='play')scr='pause';if(AU.c)AU.c.suspend()}else if(AU.c)AU.c.resume()});
 let last=0,autoN=0;function loop(t){if(!window.__t1)window.__t1=Math.round(performance.now());const dt=Math.min(.05,(t-last)/1000||0);last=t;T+=dt;btns=[];
- if(scr=='play'){if(frz>0)frz-=dt;else{acc+=dt;while(acc>=1/120){if(window.__auto&&!S.dead&&!S.win&&autoN++%6==0&&think(G,S,{n:4,d:60}))press=true;RP.ox=S.p.x;RP.oy=S.p.y;step(G,S,1/120,{press,release,hold});press=release=false;acc-=1/120;if(S.ev.length)events()}
+ if(scr=='play'){if(frz>0)frz-=dt;else{acc+=dt;while(acc>=1/120){if(window.__auto&&!S.dead&&!S.win&&autoN++%6==0&&think(G,S,{n:4,d:60}))press=true;simTick({press,release,hold});press=release=false;acc-=1/120}
    const p=S.p,a=acc*120,jx=Math.abs(p.x-RP.ox)>30||Math.abs(p.y-RP.oy)>30||S.dead;RP.x=jx?p.x:RP.ox+(p.x-RP.ox)*a;RP.y=jx?p.y:RP.oy+(p.y-RP.oy)*a;tick(dt)}}
  else{lvol('wall_slide',0);lvol('lava_loop',scr=='title'?.25:0)}
  for(const f of fx){f.x+=f.vx*dt;f.y+=f.vy*dt;if(!f.dust)f.vy+=260*dt;f.life-=dt}fx=fx.filter(f=>f.life>0);cam.sh=Math.max(0,cam.sh-22*dt);
  ctx.clearRect(0,0,VW,H);
- if(scr=='title')title();else if(scr=='levels')levels();else{world(hero);hud();if(scr=='pause')pauseS();else if(scr=='clear')clearS()}
+ if(scr=='title')title();else if(scr=='levels')levels();else if(scr=='vs')vsS();else{world(()=>{ghost();hero()});hud();if(scr=='pause')pauseS();else if(scr=='clear')clearS()}
  requestAnimationFrame(loop)}
 resize();loadSheets();try{document.fonts.load('500 16px Inter');document.fonts.load('600 16px Inter')}catch(e){}G=build(LEVELS[0]);S=newState(G);
 if(+Q.get('l')>0&&LEVELS[+Q.get('l')-1])startLevel(+Q.get('l')-1);
+/* a challenge link: ?r=<run>. Its taps are replayed here first; if they no longer win, only the time is raced */
+{const v=linkUnpack(Q.get('r'),LEVELS);if(v){VS={lv:v.lv,n:v.n,ch:CHARS[v.ch]||'gecko',run:v.same?ghostRun(build(LEVELS[v.lv]),recUnpack(v.taps),v.n):null};scr='vs'}}
 requestAnimationFrame(loop);
 /* checks only: the test player drives the real game. __auto plays live; __run(sec) plays ahead without waiting for frames */
-window.__dbg=()=>({G,S,cam,H,an,scr});window.__go=startLevel;
-window.__run=sec=>{for(let i=0;i<sec*120&&scr=='play';i++){if(!S.dead&&!S.win&&i%6==0&&think(G,S,{n:4,d:60}))press=true;RP.ox=S.p.x;RP.oy=S.p.y;step(G,S,1/120,{press,release,hold:true});press=release=false;if(S.ev.length)events();
+window.__dbg=()=>({G,S,cam,H,an,scr,R:REC,GH,VS,WIN,SV,btns});window.__go=startLevel;window.__link=()=>WIN?PUB+'?r='+linkPack(LEVELS[LV],WIN.n,CHARS.indexOf(WIN.ch),WIN.pk):null;
+window.__run=sec=>{for(let i=0;i<sec*120&&scr=='play';i++){if(!S.dead&&!S.win&&i%6==0&&think(G,S,{n:4,d:60}))press=true;simTick({press,release,hold:true});press=release=false;
   if(i%2){RP.x=S.p.x;RP.y=S.p.y;T+=1/60;tick(1/60);for(const f of fx){f.x+=f.vx/60;f.y+=f.vy/60;f.life-=1/60}fx=fx.filter(f=>f.life>0)}}return{scr,x:Math.round(S.p.x),y:Math.round(S.p.y),si:S.si,deaths:S.deaths,gems:S.gems,clip:an.clip}};
 /* the iPhone app's own check (launched with -qa on the simulator): where the page came from, whether the sheets and the
    sounds loaded, and the test player through three levels. Lines go to the app's log (ci/mac_run.py reads them). */
 if(window.__qa){const say=m=>{try{webkit.messageHandlers.qa.postMessage(m)}catch(e){console.log(m)}};
  addEventListener('error',e=>say('QA_ERROR '+e.message+' '+(e.filename||'').split('/').pop()+':'+e.lineno));
- setTimeout(()=>{auInit();setTimeout(()=>{say('QA_INFO '+JSON.stringify({from:location.origin,sheets:CHARS.map(c=>sheets[c]?sheets[c].tagName:'none').join(','),sounds:Object.keys(AU.buf).length+'/'+FILES.length,audio:AU.c?AU.c.state:'none',w:innerWidth,h:innerHeight,top:Math.round(TOP*SC),bottom:Math.round(BOT*SC),firstFrameMs:window.__t1,inter:document.fonts.check('500 16px Inter')}));
+ setTimeout(()=>{auInit();setTimeout(()=>{say('QA_INFO '+JSON.stringify({from:location.origin,sheets:CHARS.map(c=>sheets[c]?sheets[c].tagName:'none').join(','),sounds:Object.keys(AU.buf).length+'/'+FILES.length,audio:AU.c?AU.c.state:'none',w:innerWidth,h:innerHeight,top:Math.round(TOP*SC),bottom:Math.round(BOT*SC),firstFrameMs:window.__t1,share:typeof navigator.share,clip:typeof(navigator.clipboard&&navigator.clipboard.writeText),inter:document.fonts.check('500 16px Inter')}));
   const lv=[0,7,14];let k=0;(function next(){if(k>=lv.length){say('QA_DONE');return}startLevel(lv[k]);let n=0;const t=setInterval(()=>{__run(3);if(scr=='clear'||++n>90){clearInterval(t);say('QA_LEVEL '+(lv[k]+1)+' '+(scr=='clear'?'won':'NOT won')+', deaths '+S.deaths);k++;setTimeout(next,2500)}},350)})()},5000)},1500)}
