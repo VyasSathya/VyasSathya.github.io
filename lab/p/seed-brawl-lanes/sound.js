@@ -16,7 +16,7 @@ const FADE_NEAR = 0.6, FADE_EDGE = 0.95;             // share of the half screen
 const FADE4 = [0.3, 0.75];                           // tier 4 (bodies and world) is heard only around the middle of the view
 const MUSIC_GAIN = 0.42;                             // music sits under the effects (tier 5): about 7.5 dB under them
 const XFADE = 1.2;                                   // seconds of crossfade between two music tracks
-const MASTER = 0.7;                                  // headroom: a busy moment sums under full scale; a limiter catches the rest
+const MASTER = 2.2;                                  // 2026-11-14: was 0.7; the shared sound gate measured the app about 5 dB under its loudness floor (median -33 dBFS in the app's own log, floor -28, target -16 to -20 LUFS), so everything is 10 dB up and the limiter holds the busy moments
 const MAX_SAME = 2;                                  // no cue id more than twice at once
 // bodies in a group share a cap: the fight of many creeps is a few clear hits, not a wash (tier 4, so these may drop)
 // near: a body this close to my hero (rules units) is the fight I am looking at. It is never dropped: it takes the place
@@ -103,9 +103,9 @@ function create(opt) {
   // To respect the silent switch instead: 'ambient' here and .ambient there, together.
   try { if (root.navigator && root.navigator.audioSession) root.navigator.audioSession.type = 'playback'; } catch (e) { }
   const ctx = new AC(), master = ctx.createGain(), hush = ctx.createGain(), buses = [];
-  master.gain.value = MASTER; hush.gain.value = muted ? 0 : 1;   // the agent mute sits after the report's tap, so a muted test run still measures
-  let out = ctx.destination; if (ctx.createDynamicsCompressor) { const l = ctx.createDynamicsCompressor(); l.threshold.value = -2; l.knee.value = 0; l.ratio.value = 20; l.attack.value = 0.002; l.release.value = 0.1; l.connect(ctx.destination); out = l; }
-  master.connect(hush); hush.connect(out);
+  master.gain.value = MASTER; hush.gain.value = muted ? 0 : 1;   // the agent mute sits after the limiter and the report's tap, so a muted test run still measures what would be heard
+  let out = master; if (ctx.createDynamicsCompressor) { const l = ctx.createDynamicsCompressor(); l.threshold.value = -2; l.knee.value = 0; l.ratio.value = 20; l.attack.value = 0.002; l.release.value = 0.1; master.connect(l); out = l; }   // out: what is heard (after the limiter)
+  out.connect(hush); hush.connect(ctx.destination);
   // effects (tiers 1 to 4) and music (tier 5) each have a switch (Settings: Sound, Music)
   const sfxGain = ctx.createGain(), musGain = ctx.createGain(); sfxGain.gain.value = P.soundOn ? 1 : 0; musGain.gain.value = P.musicOn ? MUSIC_GAIN : 0; sfxGain.connect(master); musGain.connect(master);
   for (let i = 0; i <= 5; i++) { const g = ctx.createGain(); g.connect(i === 5 ? musGain : sfxGain); buses.push(g); }
@@ -180,7 +180,7 @@ function create(opt) {
   ctx.addEventListener && ctx.addEventListener('statechange', () => { if (ctx.state === 'running') P.unlocked = true; if (ctx.state === 'interrupted') setTimeout(wake, 300); });
   // ---- the self-report: one SOUND_REPORT line a few seconds into the menu and into the first match, from an analyser on the
   // master output (before the agent mute), so a build nobody can hear still proves it makes sound (app/ci/mac_run.py reads it)
-  const R = P.reports = []; const an = ctx.createAnalyser(), anSink = ctx.createGain(); an.fftSize = 1024; anSink.gain.value = 0; master.connect(an); an.connect(anSink); anSink.connect(ctx.destination);   // the silent sink keeps WebKit pulling the analyser
+  const R = P.reports = []; const an = ctx.createAnalyser(), anSink = ctx.createGain(); an.fftSize = 1024; anSink.gain.value = 0; out.connect(an); an.connect(anSink); anSink.connect(ctx.destination);   // the silent sink keeps WebKit pulling the analyser
   const abuf = new Float32Array(an.fftSize), WIN = 3, SETTLE = 3, LONG = 20, GIVEUP = 60;   // report after SETTLE s once something was heard, after LONG s of silence at the latest
   let rep = null;   // { where, armed, ranFor, peaks: [[t, peak]] } while a report is pending
   const emit = r => { const pk = Math.max(r.best || 0, r.peaks.reduce((m, p) => Math.max(m, p[1]), 0)), mus = P.music && P.music.cur ? 1 : 0;

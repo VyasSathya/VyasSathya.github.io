@@ -29,6 +29,17 @@ function skinned(vs) {
 // the game's toon material plus the bend and the flash (and the skinning when opts.bones is a baked bone texture)
 // Team part: the model's second UV layer (u) marks it (tools/creep_rig.py: Brute shells, Splasher pod, Flyer wings, Grunt
 // and Colossus band); 1 = recoloured to the team keeping the texel's light and dark, 2 = flat team colour. opts.team sets it.
+// Optional per-creep light (units.json "ramp"): "two" = two soft steps instead of the three toon bands, "soft" = a smooth
+// gradient (no bands). Absent = the game's toon ramp, unchanged.
+const RAMPS = {};
+function ramp(name) {
+  if (RAMPS[name]) return RAMPS[name];
+  const v = name === 'two' ? [168, 255] : [150, 172, 196, 220, 240, 255], d = new Uint8Array(v.length * 4);
+  v.forEach((x, i) => d.set([x, x, x, 255], i * 4));
+  const t = new THREE.DataTexture(d, v.length, 1, THREE.RGBAFormat); t.generateMipmaps = false;
+  t.minFilter = t.magFilter = name === 'two' ? THREE.NearestFilter : THREE.LinearFilter; t.needsUpdate = true;
+  return RAMPS[name] = t;
+}
 function creepMaterial(opts) {
   const m = LOOK.toonMaterial(opts), base = m.onBeforeCompile, top = { value: opts.top || 1.2 }, tc = { value: new THREE.Color(opts.team === undefined ? 0xffffff : opts.team) };   // top: the body's height, for the lit-top gradient (lighter at the head, darker at the feet)
   m.onBeforeCompile = (s) => {
@@ -41,16 +52,21 @@ function creepMaterial(opts) {
       .replace('#include <opaque_fragment>', 'outgoingLight = mix(outgoingLight, vec3(1.0), vFlash * 0.6);\n#include <opaque_fragment>');
   };
   m.customProgramCacheKey = () => (opts.bones ? 'seedtoon-creep-skin' : 'seedtoon-creep') + (opts.team === undefined ? '' : '-team');
+  if (opts.ramp) m.gradientMap = ramp(opts.ramp);
   return m;
 }
 // Real models keep their own colours, so their team is carried by the outline (and the floor ring): a team-coloured
 // line around the whole body reads in a clump where the rings are hidden. Procedural bodies are team-coloured already.
 const outMats = {};
-function outlineMat(col, width = 1.6, md = null) {
-  const key = col + ':' + width + (md && md.bones ? ':' + md.key : ''); if (outMats[key]) return outMats[key];
+// push: how far the hull is pushed away from the camera (view space units, look.js default 0.03). A big push ("line":
+// "edge" in units.json) hides the hull behind the creep's own body everywhere inside it, so only the outer silhouette keeps a line.
+function outlineMat(col, width = 1.6, md = null, push = 0) {
+  const key = col + ':' + width + (md && md.bones ? ':' + md.key : '') + (push ? ':p' + push : ''); if (outMats[key]) return outMats[key];
   const src = LOOK.outlineMaterial(width, col === undefined ? LOOK.palette.outline : col), m = src.clone();
   m.uniforms.uAspect = src.uniforms.uAspect; m.uniforms.uScale = src.uniforms.uScale;
-  m.vertexShader = src.vertexShader.replace('#include <common>', '#include <common>' + BEND)
+  // (the push grows from the look.js 0.03 at the feet to the full push 0.6 model units up, so the feet keep their line
+  // against the ground instead of sinking into it)
+  m.vertexShader = (push ? src.vertexShader.replace('normalize(mv.xyz) * 0.03', 'normalize(mv.xyz) * mix(0.03, ' + push.toFixed(3) + ', clamp(transformed.y / 0.6, 0.0, 1.0))') : src.vertexShader).replace('#include <common>', '#include <common>' + BEND)
     .replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed = creepBend(transformed, aAnim);')
     .replace('modelViewMatrix * vec4(transformed, 1.0)', 'modelViewMatrix * instanceMatrix * vec4(transformed, 1.0)')
     .replace('normalMatrix * objectNormal', 'normalMatrix * mat3(instanceMatrix) * objectNormal');
@@ -78,16 +94,33 @@ export const meta = (kind, ti) => info.units[KEYS[kind] + '_' + BODY[ti]] || nul
 export function set(kind, ti, team, teamCol) {
   const key = kind + '_' + ti + '_' + team; if (SETS[key]) return SETS[key];
   const md = model(kind, ti); let geo, hull, mat;
-  let line; if (md) { geo = md.geo; hull = md.hull; mat = md.matFor(teamCol); line = OUTLINE === 'black' ? outlineMat(undefined, 1.6, md) : outlineMat(new THREE.Color(teamCol).multiplyScalar(0.85).getHex(), 1.9, md); }
+  // units.json "line" (optional, per creep): a number = that width; "edge" = the outer silhouette only (lineW, linePush);
+  // "none" = no ink line (the outline mesh is kept but hidden). Absent = today's line.
+  const ln = md && md.info.line, lw = typeof ln === 'number' ? ln : (md && md.info.lineW) || 1.6, push = ln === 'edge' ? (md.info.linePush || 0.3) : 0;
+  let line; if (md) { geo = md.geo; hull = md.hull; mat = md.matFor(teamCol); line = OUTLINE === 'black' ? outlineMat(undefined, lw, md, push) : outlineMat(new THREE.Color(teamCol).multiplyScalar(0.85).getHex(), lw === 1.6 ? 1.9 : lw * 1.19, md, push); }
   else { W.unit(W.UNIT_KINDS[kind], ti, teamCol).children[0].traverse((o) => { if (o.isMesh) { if (o.userData.isHull) hull = o.geometry; else geo = o.geometry; } }); mat = procMat; }
   const anim = new THREE.InstancedBufferAttribute(new Float32Array(MAX * 4), 4); anim.setUsage(THREE.DynamicDrawUsage);
   const pose = md && md.bones ? new THREE.InstancedBufferAttribute(new Float32Array(MAX), 1) : null; if (pose) pose.setUsage(THREE.DynamicDrawUsage);
   const b = new THREE.InstancedMesh(instanced(geo, anim, pose), mat, MAX), o = new THREE.InstancedMesh(instanced(hull, anim, pose), line || outlineMat(), MAX);
   for (const m of [b, o]) { m.frustumCulled = false; m.count = 0; scene.add(m); }
-  return SETS[key] = { b, o, n: 0, w: W.UNIT_WIDTH[ti], anim, pose, clips: md && md.bones ? md.clips : null, real: !!md };
+  if (ln === 'none') o.visible = false;
+  let sh = null;   // units.json "shadow": a soft dark blob under the creep (share of the model width), sharing the body's instance matrices
+  if (md && md.info.shadow) {
+    const sg = new THREE.PlaneGeometry(md.info.shadow * md.w0, md.info.shadow * md.w0 * 0.85); sg.rotateX(-Math.PI / 2); sg.translate(0, 0.01, 0.04);
+    sh = new THREE.InstancedMesh(sg, shadowMat(), MAX); sh.instanceMatrix = b.instanceMatrix; sh.frustumCulled = false; sh.count = 0; sh.renderOrder = 1; scene.add(sh);
+    b.onBeforeRender = () => { sh.count = b.count; };
+  }
+  return SETS[key] = { b, o, sh, n: 0, w: W.UNIT_WIDTH[ti], anim, pose, clips: md && md.bones ? md.clips : null, real: !!md };
 }
 export const sets = () => SETS;
-function drop(prefix) { for (const k in SETS) if (k.startsWith(prefix)) { const s = SETS[k]; scene.remove(s.b, s.o); s.b.dispose(); s.o.dispose(); delete SETS[k]; } }
+function drop(prefix) { for (const k in SETS) if (k.startsWith(prefix)) { const s = SETS[k]; scene.remove(s.b, s.o); s.b.dispose(); s.o.dispose(); if (s.sh) { scene.remove(s.sh); s.sh.dispose(); } delete SETS[k]; } }
+let _shMat = null;
+function shadowMat() {
+  if (_shMat) return _shMat;
+  const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.6, 'rgba(255,255,255,0.85)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  return _shMat = new THREE.MeshBasicMaterial({ color: 0x1d2410, alphaMap: new THREE.CanvasTexture(c), transparent: true, opacity: 0.38, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+}
 
 // a single creep as its own object (the dock pictures)
 export function single(kind, ti, teamCol) {
@@ -132,19 +165,24 @@ export function row(clips, name, sec) {
 }
 
 // loads every creep model listed in units.json; missing file or list = the procedural bodies stay
+// ?unitsrc=<folder>/ (a units.json and its files, e.g. ../work/creeps/clean/): its creeps replace the ones of the same key
+// (candidates seen in the real game). Absent = only base.
+const OVERLAY = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('unitsrc') : null;
 export async function load(base, onReady) {
   let j; try { j = await (await fetch(base + 'units.json')).json(); } catch (e) { return 0; }
+  if (OVERLAY) { try { const o = await (await fetch(OVERLAY + 'units.json', { cache: 'no-store' })).json(); for (const [k, d] of Object.entries(o.units || {})) j.units[k] = Object.assign({}, d, { url: OVERLAY + d.file }); } catch (e) { console.warn('unitsrc', e.message); } }
   info = j; const L = new GLTFLoader(); let n = 0;
   await Promise.all(Object.entries(j.units || {}).map(async ([key, d]) => {
     try {
-      const g = await L.loadAsync(base + d.file); let mesh = null; g.scene.updateMatrixWorld(true); g.scene.traverse((o) => { if (o.isMesh && !mesh) mesh = o; });
+      const g = await L.loadAsync(d.url || base + d.file); let mesh = null; g.scene.updateMatrixWorld(true); g.scene.traverse((o) => { if (o.isMesh && !mesh) mesh = o; });
       const geo = mesh.geometry.clone(); geo.applyMatrix4(mesh.matrixWorld); if (d.scale) geo.scale(d.scale, d.scale, d.scale); if (d.turn) geo.rotateY(d.turn);
       let bake = null; if (mesh.isSkinnedMesh && g.animations.length && !NOBAKE) { try { bake = bakeClips(g, mesh, d); } catch (e) { console.warn('creep clips', key, e.message); } }
       const tuv = geo.attributes.uv1; if (tuv) { const a = new Float32Array(tuv.count); for (let i = 0; i < tuv.count; i++) a[i] = tuv.getX(i); geo.setAttribute('aTeam', new THREE.BufferAttribute(a, 1)); }
       for (const k of Object.keys(geo.attributes)) if (!['position', 'normal', 'uv', 'aTeam'].concat(bake ? ['skinIndex', 'skinWeight'] : []).includes(k)) geo.deleteAttribute(k);
       const map = mesh.material.map; if (map) { map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4; }
       const mo = { map, sat: d.sat, contrast: d.contrast, top: (d.height || 1.2) * (d.scale || 1), bones: bake && bake.tex }, mats = {};
-      MODELS[key] = { key, geo, hull: LOOK.hullGeometry(geo), bones: bake && bake.tex, clips: bake && bake.clips, mat: creepMaterial(mo),
+      if (d.ramp) mo.ramp = d.ramp; if (d.rim !== undefined) mo.rim = d.rim;   // optional light switches (see ramp() and set())
+      MODELS[key] = { key, info: d, w0: d.scale || 1, geo, hull: LOOK.hullGeometry(geo), bones: bake && bake.tex, clips: bake && bake.clips, mat: creepMaterial(mo),
         matFor: (col) => NOTEAM ? MODELS[key].mat : mats[col] || (mats[col] = creepMaterial(Object.assign({}, mo, { team: col }))) };   // one material per team: the team part's colour
       const [kn, bn] = key.split('_'); drop(KEYS.indexOf(kn) + '_' + BODY.indexOf(bn) + '_'); n++; if (onReady) onReady(key);
     } catch (e) { console.warn('creep model', key, e.message); }
