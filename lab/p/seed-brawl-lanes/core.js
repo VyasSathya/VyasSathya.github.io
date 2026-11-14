@@ -234,20 +234,13 @@ function mkHero(def, team, bot, idx) {
 }
 // ---- decks. A creep is a card {kind, tier}; each hero brings 6, holds 3 in the hand and sees the next one. Playing a card puts it
 // at the back of the line and the next one takes its place (Clash Royale's cycle, 8 and 4 sized down to 6 and 3).
-// Default decks (picked by Claude): mixed costs, at most one Colossus, something in every deck that hits flyers.
+// Default deck (picked by Claude): mixed costs (1, 1, 2, 3, 5, 8: 20 seeds, 3.3 a card), one Colossus, three cards that hit flyers.
+// Every hero brings the same one for now: the creeps are not even with each other yet (measured 2026-11-14: decks heavy in Runner
+// Splashers, Flyers and Colossi lose about two matches in three), so a deck per hero would move hero balance by 30 points.
 const C = (kind, tier) => ({ kind, tier }), TH = 0, SP = 1, RU = 2;
-const DECKS = {
-  _: [C(TH, 1), C(SP, 1), C(RU, 2), C(SP, 3), C(TH, 4), C(TH, 5)],
-  bramble: [C(TH, 1), C(RU, 1), C(TH, 2), C(SP, 3), C(RU, 4), C(TH, 5)],
-  sow: [C(TH, 1), C(SP, 1), C(RU, 1), C(TH, 2), C(SP, 3), C(SP, 4)],
-  mower: [C(RU, 1), C(TH, 2), C(RU, 2), C(TH, 3), C(SP, 4), C(RU, 5)],
-  magpie: [C(SP, 1), C(RU, 2), C(SP, 3), C(TH, 3), C(RU, 4), C(SP, 5)],
-  drover: [C(RU, 1), C(TH, 1), C(RU, 2), C(TH, 2), C(SP, 3), C(TH, 4)],
-  thistle: [C(TH, 1), C(SP, 1), C(TH, 2), C(SP, 3), C(SP, 4), C(TH, 5)],
-  shade: [C(RU, 1), C(SP, 1), C(TH, 2), C(RU, 3), C(SP, 4), C(RU, 5)],
-  foxglove: [C(SP, 1), C(TH, 2), C(SP, 3), C(TH, 3), C(TH, 4), C(SP, 5)],
-  bamboo: [C(TH, 1), C(SP, 1), C(TH, 2), C(TH, 3), C(SP, 4), C(TH, 5)]
-};
+const BASE_DECK = [C(TH, 1), C(SP, 1), C(RU, 2), C(SP, 3), C(SP, 4), C(TH, 5)];
+const DECKS = { _: BASE_DECK };
+for (const id of ['bramble', 'sow', 'mower', 'magpie', 'drover', 'thistle', 'shade', 'foxglove', 'bamboo']) DECKS[id] = BASE_DECK;
 const HAND = 3, cardName = c => KINDS[c.kind].name + ' ' + BODIES[c.tier];
 function deckOk(d) { return Array.isArray(d) && d.length === 6 && d.every(c => c && KINDS[c.kind] && c.tier >= 1 && c.tier <= 5); }
 function dealDeck(h, deck) {   // shuffled with the match's own random source, so seeded bot matches repeat
