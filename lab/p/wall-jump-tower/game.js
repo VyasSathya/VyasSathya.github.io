@@ -118,7 +118,9 @@ function clearS(){shade(.72);const y=H*.3,g=G;txt(g.L.name,VW/2,y,15,C.dim,'cent
 
 /* ---------- loop and input ---------- */
 function resize(){const r=cv.getBoundingClientRect(),d=Math.min(3,window.devicePixelRatio||1);cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);SC=r.width/VW;H=r.height/SC;ctx.setTransform(d*SC,0,0,d*SC,0,0);
- const sa=document.getElementById('sa');if(sa){const s=getComputedStyle(sa);TOP=(parseFloat(s.paddingTop)||0)/SC;BOT=(parseFloat(s.paddingBottom)||0)/SC}}
+ const sa=document.getElementById('sa');if(sa){const s=getComputedStyle(sa);TOP=(parseFloat(s.paddingTop)||0)/SC;BOT=(parseFloat(s.paddingBottom)||0)/SC}
+ /* the iPhone app reports 0 for the page's own insets, so its shell hands over the screen's (ios/.../GameView.swift) */
+ const sf=window.__safe;if(sf){TOP=Math.max(TOP,(+sf.top||0)/SC);BOT=Math.max(BOT,(+sf.bottom||0)/SC)}}
 function down(x,y){auInit();if(scr=='play'){if(x<56&&y<TOP+52&&!S.win&&!S.dead){scr='pause';sfx('ui_tap',.6);return}press=true;hold=true;return}
  for(let i=btns.length-1;i>=0;i--){const b=btns[i];if(x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h){sfx('ui_tap',.6);b.fn();return}}}
 function up(){hold=false;release=true}
@@ -126,7 +128,7 @@ cv.addEventListener('pointerdown',e=>{e.preventDefault();const r=cv.getBoundingC
 addEventListener('keydown',e=>{if(e.repeat)return;if(e.key==' '||e.key=='Enter'){e.preventDefault();if(scr=='play')down(180,400);else if(btns.length){auInit();(btns.find(b=>b.w==200)||btns[0]).fn()}}else if(e.key=='Escape'&&scr=='play')scr='pause'});
 addEventListener('keyup',e=>{if(e.key==' ')up()});addEventListener('resize',resize);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){if(scr=='play')scr='pause';if(AU.c)AU.c.suspend()}else if(AU.c)AU.c.resume()});
-let last=0,autoN=0;function loop(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;T+=dt;btns=[];
+let last=0,autoN=0;function loop(t){if(!window.__t1)window.__t1=Math.round(performance.now());const dt=Math.min(.05,(t-last)/1000||0);last=t;T+=dt;btns=[];
  if(scr=='play'){if(frz>0)frz-=dt;else{acc+=dt;while(acc>=1/120){if(window.__auto&&!S.dead&&!S.win&&autoN++%6==0&&think(G,S,{n:4,d:60}))press=true;RP.ox=S.p.x;RP.oy=S.p.y;step(G,S,1/120,{press,release,hold});press=release=false;acc-=1/120;if(S.ev.length)events()}
    const p=S.p,a=acc*120,jx=Math.abs(p.x-RP.ox)>30||Math.abs(p.y-RP.oy)>30||S.dead;RP.x=jx?p.x:RP.ox+(p.x-RP.ox)*a;RP.y=jx?p.y:RP.oy+(p.y-RP.oy)*a;tick(dt)}}
  else{lvol('wall_slide',0);lvol('lava_loop',scr=='title'?.25:0)}
@@ -134,7 +136,7 @@ let last=0,autoN=0;function loop(t){const dt=Math.min(.05,(t-last)/1000||0);last
  ctx.clearRect(0,0,VW,H);
  if(scr=='title')title();else if(scr=='levels')levels();else{world(hero);hud();if(scr=='pause')pauseS();else if(scr=='clear')clearS()}
  requestAnimationFrame(loop)}
-resize();loadSheets();G=build(LEVELS[0]);S=newState(G);
+resize();loadSheets();try{document.fonts.load('500 16px Inter');document.fonts.load('600 16px Inter')}catch(e){}G=build(LEVELS[0]);S=newState(G);
 if(+Q.get('l')>0&&LEVELS[+Q.get('l')-1])startLevel(+Q.get('l')-1);
 requestAnimationFrame(loop);
 /* checks only: the test player drives the real game. __auto plays live; __run(sec) plays ahead without waiting for frames */
@@ -145,5 +147,5 @@ window.__run=sec=>{for(let i=0;i<sec*120&&scr=='play';i++){if(!S.dead&&!S.win&&i
    sounds loaded, and the test player through three levels. Lines go to the app's log (ci/mac_run.py reads them). */
 if(window.__qa){const say=m=>{try{webkit.messageHandlers.qa.postMessage(m)}catch(e){console.log(m)}};
  addEventListener('error',e=>say('QA_ERROR '+e.message+' '+(e.filename||'').split('/').pop()+':'+e.lineno));
- setTimeout(()=>{auInit();setTimeout(()=>{say('QA_INFO '+JSON.stringify({from:location.origin,sheets:CHARS.map(c=>sheets[c]?sheets[c].tagName:'none').join(','),sounds:Object.keys(AU.buf).length+'/'+FILES.length,audio:AU.c?AU.c.state:'none',w:innerWidth,h:innerHeight,top:Math.round(TOP*SC),bottom:Math.round(BOT*SC)}));
+ setTimeout(()=>{auInit();setTimeout(()=>{say('QA_INFO '+JSON.stringify({from:location.origin,sheets:CHARS.map(c=>sheets[c]?sheets[c].tagName:'none').join(','),sounds:Object.keys(AU.buf).length+'/'+FILES.length,audio:AU.c?AU.c.state:'none',w:innerWidth,h:innerHeight,top:Math.round(TOP*SC),bottom:Math.round(BOT*SC),firstFrameMs:window.__t1,inter:document.fonts.check('500 16px Inter')}));
   const lv=[0,7,14];let k=0;(function next(){if(k>=lv.length){say('QA_DONE');return}startLevel(lv[k]);let n=0;const t=setInterval(()=>{__run(3);if(scr=='clear'||++n>90){clearInterval(t);say('QA_LEVEL '+(lv[k]+1)+' '+(scr=='clear'?'won':'NOT won')+', deaths '+S.deaths);k++;setTimeout(next,2500)}},350)})()},5000)},1500)}
