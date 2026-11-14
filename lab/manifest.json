@@ -2,27 +2,27 @@
  "items": [
   {
    "id": "wall-jump-tower",
-   "key": "wall-jump-tower?m=over&s=ember",
-   "title": "Tower look: night keep",
-   "url": "p/wall-jump-tower/index.html?m=over&s=ember",
+   "key": "wall-jump-tower?m=over&c=gecko",
+   "title": "Lava keep: gecko",
+   "url": "p/wall-jump-tower/index.html?m=over&c=gecko",
    "added": "2026-11-13",
-   "v": "20261113184856"
+   "v": "20261113192648"
   },
   {
    "id": "wall-jump-tower",
-   "key": "wall-jump-tower?m=over&s=garden",
-   "title": "Tower look: sky garden",
-   "url": "p/wall-jump-tower/index.html?m=over&s=garden",
+   "key": "wall-jump-tower?m=over&c=knight",
+   "title": "Lava keep: knight",
+   "url": "p/wall-jump-tower/index.html?m=over&c=knight",
    "added": "2026-11-13",
-   "v": "20261113184856"
+   "v": "20261113192648"
   },
   {
    "id": "wall-jump-tower",
-   "key": "wall-jump-tower?m=over&s=neon",
-   "title": "Tower look: neon arcade",
-   "url": "p/wall-jump-tower/index.html?m=over&s=neon",
+   "key": "wall-jump-tower?m=over&c=bones",
+   "title": "Lava keep: skeleton",
+   "url": "p/wall-jump-tower/index.html?m=over&c=bones",
    "added": "2026-11-13",
-   "v": "20261113184856"
+   "v": "20261113192648"
   },
   {
    "id": "wall-jump-tower",
@@ -30,7 +30,7 @@
    "title": "Tower: up and right",
    "url": "p/wall-jump-tower/index.html?m=steps",
    "added": "2026-11-13",
-   "v": "20261113184856"
+   "v": "20261113192648"
   },
   {
    "id": "wall-jump-tower",
@@ -38,7 +38,7 @@
    "title": "Tower: up, over, drop",
    "url": "p/wall-jump-tower/index.html?m=over",
    "added": "2026-11-13",
-   "v": "20261113184856"
+   "v": "20261113192648"
   },
   {
    "id": "wall-jump-tower",
@@ -46,7 +46,7 @@
    "title": "Tower: side towers",
    "url": "p/wall-jump-tower/index.html?m=sides",
    "added": "2026-11-13",
-   "v": "20261113184856"
+   "v": "20261113192648"
   },
   {
    "id": "six-base-games",
