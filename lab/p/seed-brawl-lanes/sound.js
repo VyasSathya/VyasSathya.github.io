@@ -14,6 +14,8 @@ const TIER_CAP = [0, 99, 6, 6, 5, 2];                // voices per tier
 const DUCK = { gain: 0.5, hold: 0.4, release: 0.3, tiers: [3, 4, 5] };
 const FADE_NEAR = 0.6, FADE_EDGE = 0.95;             // share of the half screen where a sound starts to fade, and where it is gone
 const FADE4 = [0.3, 0.75];                           // tier 4 (bodies and world) is heard only around the middle of the view
+const MUSIC_GAIN = 0.42;                             // music sits under the effects (tier 5): about 7.5 dB under them
+const XFADE = 1.2;                                   // seconds of crossfade between two music tracks
 const MASTER = 0.7;                                  // headroom: a busy moment sums under full scale; a limiter catches the rest
 const MAX_SAME = 2;                                  // no cue id more than twice at once
 // bodies in a group share a cap: the fight of many creeps is a few clear hits, not a wash (tier 4, so these may drop)
@@ -90,17 +92,19 @@ Mixer.prototype.stopVoice = function (v, t) { v.gone = true; v.end = Math.min(v.
 // ---- the browser player: Web Audio, decoded buffers, buses per tier
 function create(opt) {
   opt = opt || {};
-  const base = opt.base || 'sfx/', AC = root.AudioContext || root.webkitAudioContext, qs = root.location ? root.location.search : '';
+  const base = opt.base || 'sfx/', mbase = opt.music || 'music/', AC = root.AudioContext || root.webkitAudioContext, qs = root.location ? root.location.search : '';
   const ua = (root.navigator && root.navigator.userAgent) || '';
   // agents never play sound on his speakers: muted by ?mute, a driven browser, or the Claude app's browser pane
   const muted = /[?&]mute\b/.test(qs) || !!(root.navigator && root.navigator.webdriver) || /\bClaude\//.test(ua);
-  const P = { ready: false, unlocked: false, muted, cues: {}, buffers: {}, log: [], errors: [], decoded: 0, files: 0 };
+  const P = { ready: false, unlocked: false, muted, cues: {}, buffers: {}, tracks: {}, log: [], errors: [], decoded: 0, files: 0, soundOn: opt.sound !== false, musicOn: opt.music_on !== false };
   if (!AC) { P.play = () => 'nosound'; P.stats = () => ({}); return P; }
   const ctx = new AC(), master = ctx.createGain(), buses = [];
   master.gain.value = muted ? 0 : MASTER;
   let out = ctx.destination; if (ctx.createDynamicsCompressor) { const l = ctx.createDynamicsCompressor(); l.threshold.value = -2; l.knee.value = 0; l.ratio.value = 20; l.attack.value = 0.002; l.release.value = 0.1; l.connect(ctx.destination); out = l; }
   master.connect(out);
-  for (let i = 0; i <= 5; i++) { const g = ctx.createGain(); g.connect(master); buses.push(g); }
+  // effects (tiers 1 to 4) and music (tier 5) each have a switch (Settings: Sound, Music)
+  const sfxGain = ctx.createGain(), musGain = ctx.createGain(); sfxGain.gain.value = P.soundOn ? 1 : 0; musGain.gain.value = P.musicOn ? MUSIC_GAIN : 0; sfxGain.connect(master); musGain.connect(master);
+  for (let i = 0; i <= 5; i++) { const g = ctx.createGain(); g.connect(i === 5 ? musGain : sfxGain); buses.push(g); }
   const backend = {
     ready: c => !!P.buffers[c.file],
     duration: c => P.buffers[c.file] ? P.buffers[c.file].duration : 0,
@@ -116,6 +120,36 @@ function create(opt) {
   P.mixer = mixer; P.ctx = ctx;
   P.play = (id, o) => { const r = mixer.play(id, o); if (P.log.length < 400) P.log.push([Math.round(ctx.currentTime * 100) / 100, id, r]); return r; };
   P.stats = () => mixer.stats;
+  const ramp = (g, v, sec) => { const t = ctx.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(v, t + sec); };
+  P.setSound = on => { P.soundOn = !!on; ramp(sfxGain, on ? 1 : 0, 0.05); };
+  P.setMusic = on => { P.musicOn = !!on; ramp(musGain, on ? MUSIC_GAIN : 0, 0.3); };
+  // ---- music: one track at a time on the tier 5 bus (ducked under tier 1 with the rest), loops crossfade, stingers once.
+  // A track that is not made yet (no file in the cue list) is silence, so its file can drop in later with no code change.
+  const M = P.music = { want: null, cur: null, name: null, missing: [], log: [] };
+  const mload = {};
+  const trackBuf = name => { const tr = P.tracks[name]; if (!tr) return Promise.resolve(null); return mload[name] || (mload[name] = fetch(mbase + tr.file).then(r => { if (!r.ok) throw new Error(r.status + ' ' + tr.file); return r.arrayBuffer(); }).then(decode).catch(e => { P.errors.push(tr.file + ': ' + (e && e.message || e)); return null; })); };
+  const fadeOut = (node, sec) => { if (!node) return; const t = ctx.currentTime; try { node.g.gain.cancelScheduledValues(t); node.g.gain.setValueAtTime(node.g.gain.value, t); node.g.gain.linearRampToValueAtTime(0, t + sec); node.src.stop(t + sec + 0.05); } catch (e) { } };
+  const startTrack = (name, buf, once, sec) => { const tr = P.tracks[name], src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = buf;
+    if (!once) { src.loop = true; src.loopStart = tr.offset || 0; src.loopEnd = (tr.offset || 0) + (tr.loop || buf.duration); }
+    const t = ctx.currentTime, v = tr.gain === undefined ? 1 : tr.gain; g.gain.setValueAtTime(sec ? 0 : v, t); if (sec) g.gain.linearRampToValueAtTime(v, t + sec);
+    src.connect(g); g.connect(buses[5]); src.start(t, once ? 0 : (tr.offset || 0)); M.log.push([Math.round(t * 100) / 100, name]); return { src, g, name, once }; };
+  // set('menu' | 'match' | 'match_late' | null): crossfade to that loop; nothing starts before the first touch has run the context
+  M.set = name => { M.want = name; M.after = null; apply(); return name; };
+  // stinger('stinger_win', 'menu'): the current loop fades fast, the stinger plays once, then the next loop fades in
+  M.stinger = (name, after) => { M.want = name; M.after = after === undefined ? null : after; apply(); };
+  M.now = () => M.cur && M.cur.name;
+  const apply = () => {
+    if (ctx.state !== 'running') return; const name = M.want; if ((M.cur && M.cur.name) === name) return;
+    const tr = name && P.tracks[name], once = !!(tr && tr.kind === 'stinger');
+    fadeOut(M.cur, once ? 0.3 : XFADE); M.cur = null;
+    if (!name) return; if (!tr && !P.cuesLoaded) return;   // the cue list is still loading: apply() runs again when it is in
+    if (!tr) { if (!M.missing.includes(name)) M.missing.push(name); if (M.after !== null && M.after !== undefined) { const a = M.after; M.after = null; M.want = a; setTimeout(apply, 50); } return; }
+    trackBuf(name).then(buf => { if (!buf || M.want !== name || (M.cur && M.cur.name === name)) return; if (ctx.state !== 'running') return;
+      M.cur = startTrack(name, buf, once, once ? 0 : XFADE);
+      if (once) { const node = M.cur; node.src.onended = () => { if (M.cur === node) { M.cur = null; const a = M.after; M.after = null; M.want = a; apply(); } }; } });
+  };
+  M.preload = (...names) => names.forEach(trackBuf);
+  ctx.addEventListener && ctx.addEventListener('statechange', () => { if (ctx.state === 'running') apply(); });
   // unlock on the first touch, click or key, inside that event (iOS needs the resume and one played buffer there)
   const unlock = () => {
     if (ctx.state !== 'running') ctx.resume().catch(() => { });
@@ -127,7 +161,10 @@ function create(opt) {
   const decode = ab => new Promise((ok, bad) => { const p = ctx.decodeAudioData(ab, ok, bad); if (p && p.then) p.then(ok, bad); });
   P.loading = fetch(base + 'cues.json').then(r => r.json()).then(doc => {
     const files = new Set();
-    for (const c of doc.cues) { if (!c.file || c.status !== 'made') continue; const f = c.file.split('/').pop(); P.cues[c.id] = { id: c.id, tier: c.tier, file: f, length_s: c.length_s, play: c.play || {} }; files.add(f); }
+    for (const c of doc.cues) { if (!c.file || c.status !== 'made') continue; const f = c.file.split('/').pop();
+      if (c.file.indexOf('music/') >= 0) { P.tracks[c.id] = { kind: c.kind === 'loop' ? 'loop' : 'stinger', file: f, offset: (c.play || {}).offset, loop: (c.play || {}).loop, gain: (c.play || {}).gain }; continue; }
+      P.cues[c.id] = { id: c.id, tier: c.tier, file: f, length_s: c.length_s, play: c.play || {} }; files.add(f); }
+    P.cuesLoaded = true; if (M.want) apply();
     P.files = files.size; const list = [...files]; let i = 0;
     const next = () => { if (i >= list.length) return Promise.resolve(); const f = list[i++];
       return fetch(base + f).then(r => { if (!r.ok) throw new Error(r.status + ' ' + f); return r.arrayBuffer(); }).then(decode).then(b => { P.buffers[f] = b; P.decoded++; }, e => { P.errors.push(f + ': ' + (e && e.message || e)); }).then(next); };
@@ -136,6 +173,6 @@ function create(opt) {
   return P;
 }
 
-const api = { Mixer, create, TOTAL, HARD, TIER_CAP, DUCK, FADE_NEAR, FADE_EDGE, FADE4, MAX_SAME, GROUPS, MASTER };
+const api = { Mixer, create, TOTAL, HARD, TIER_CAP, DUCK, FADE_NEAR, FADE_EDGE, FADE4, MAX_SAME, GROUPS, MASTER, MUSIC_GAIN, XFADE };
 if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SBL_SOUND = api;
 })(typeof window !== 'undefined' ? window : globalThis);

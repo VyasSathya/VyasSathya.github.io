@@ -6,7 +6,8 @@
   "upstream": "D:/worktrees/ff-vfx (branch ff/vfx of C:/Dev/forge-flood, commit d4cd50d57), see C:/Dev/toybox/assets/fx/defs/ORIGIN.json",
   "licence": "our own painted textures (Vyas's projects); no third-party pack art, nothing ai_restricted",
   "files": ["fx_char", "fx_core_dot", "fx_glow_soft", "fx_lick_seq", "fx_p_cracks", "fx_p_dust", "fx_p_flash", "fx_p_frost_mist", "fx_p_frost_patch", "fx_p_glow_ring", "fx_p_heal_spiral", "fx_p_ice_shatter", "fx_p_impact_seq", "fx_p_leaves", "fx_p_rocks", "fx_p_roots", "fx_p_shield", "fx_p_shock_ring", "fx_p_splash_seq", "fx_p_streaks", "fx_p_wave_seq", "fx_smoke_seq", "fx_swirl_seq"],
-  "added": "none: no new textures were painted for this pass"
+  "added": "none: no new textures were painted for this pass",
+  "copied_2026_11_14": {"files": ["fx_p_slash"], "source": "C:/Dev/toybox/assets/fx/textures/toon-painted/fx_p_slash.png (Toybox commit 20f7b71, file added in 5557dea), copied unchanged", "why": "the painted crescent for creep_hit, hero_cone_slash and the range arc of hero_cone_blast (effects pass 2)"}
  },
- "defs": "lanes/fx/defs/*.json, written for this game (sizes in tiles; generator work/fx/make_defs.py, creep_hit.json by hand). elements.json and palette.json are this game's skins and colours (values match game/src/look.js)."
+ "defs": "lanes/fx/defs/*.json, written for this game (sizes in tiles; generator work/fx/make_defs.py, creep_hit.json by hand; pass 2 on 2026-11-14 edited creep_hit, hero_cone_slash, zone_shelter, heist, hero_cone_blast, colossus_split, creep_death, base_hit, summon_arrive and respawn by hand, review frames in work/fx/review2). elements.json and palette.json are this game's skins and colours (values match game/src/look.js)."
 }

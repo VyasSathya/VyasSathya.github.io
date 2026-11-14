@@ -35,6 +35,10 @@ const CFG = Object.assign({
   heroGrow: { every: 45, dmg: 0.2, hp: 0.15, max: 5 },
   unitGrow: { every: 45, hp: 0.4, max: 5 },           // each 45 s summoned units come out 40 percent tougher (of the starting toughness), up to 3x
   comeback: { under: 0.5 },
+  // defending is cheaper than attacking (Clash Royale's answer to a losing side), each off unless set:
+  homeGround: null,         // {third, dmg, take}: creeps in the part of the map nearest their own base (third of its length) hit dmg x harder and take take x damage
+  gunRage: null,            // {dmg, every}: the base gun hits harder and fires faster as its base loses health (x(1 + dmg * lost share), every / (1 + every * lost share))
+  behindRespawn: null,      // {min, at}: heroes of the team whose base is behind come back sooner, down to min x the respawn time when behind by at least at
   supUnit: 0.35,            // share of damage done to units that charges the super
   regenWait: 3, regen: 0.13,
   botDefend: 0.5,           // how often a bot answers a lane that is being lost (per think)
@@ -122,6 +126,7 @@ function hurt(e, d, src, o) {
   if (src && src.isHero) { d *= bal(src, 'dmg'); if (!e.isHero) d *= CFG.heroUnitMul; }
   if (CFG.heroGrow) { if (src && src.isHero && e.isHero) d *= 1 + hlv() * CFG.heroGrow.dmg; if (e.isHero) d /= 1 + hlv() * CFG.heroGrow.hp; }
   if (e.shelterT > 0) d *= 0.6;
+  { const hg = CFG.homeGround; if (hg) { if (o.from && o.from.tier && onHome(o.from, hg.third)) d *= hg.dmg; if (!e.isHero && onHome(e, hg.third)) d *= hg.take; } }
   if (e.shield > 0) { const a = Math.min(e.shield, d); e.shield -= a; d -= a; }
   if (d <= 0) return;
   const real = Math.min(d, e.hp); e.hp -= d;
@@ -143,6 +148,7 @@ function kill(e, src) {
     G.stats.heroKills++; G.stats.deaths[e.def.id] = (G.stats.deaths[e.def.id] || 0) + 1;
     if (src && src.isHero) G.stats.kills[src.def.id] = (G.stats.kills[src.def.id] || 0) + 1;
     e.respawn = CFG.respawn;
+    { const br = CFG.behindRespawn; if (br) { const lag = (e.team === BLUE ? G.base[2].hp - G.base[1].hp : G.base[1].hp - G.base[2].hp); if (lag > 0) e.respawn *= 1 - (1 - br.min) * Math.min(1, lag / br.at); } }
     if (!(e.shelterT > 0)) { for (let i = 0; i < e.seeds; i++) dropSeed(e.x + rnd(-50, 50), e.y + rnd(-50, 50), e.x, e.y); e.seeds = 0; }
     snd(e === G.me ? 'hero_down_me' : e.team === G.me.team ? 'hero_down_ally' : 'hero_down_foe_' + e.def.id, e.x, e.y, e);
   }
@@ -164,7 +170,8 @@ function cone(h, a, range, half, dmg, col, onHit) {
   for (const e of foes(h.team, h.x, h.y, range)) if (Math.abs(angd(Math.atan2(e.y - h.y, e.x - h.x), a)) < half && !blocked(h.x, h.y, e.x, e.y)) { hurt(e, typeof dmg === 'function' ? dmg(e) : dmg, h); if (onHit && !e.dead) onHit(e); }
   G.fx.push({ k: 'c', x: h.x, y: h.y, a, half, r: range, col, life: 0.15, max: 0.15, src: h.def && h.def.id, team: h.team });
 }
-const back = u => u.team === BLUE ? 1 : -1;         // y direction toward a unit's own base
+const back = u => u.team === BLUE ? 1 : -1;
+const onHome = (e, third) => e.team === BLUE ? e.y > H * (1 - third) : e.y < H * third;   // in the part of the map nearest its own base         // y direction toward a unit's own base
 function shove(u, d) { if (u.isHero) return; u.y = clamp(u.y + back(u) * d * (u.tier === 5 ? 0.5 : 1), 30, H - 30); }
 
 // ---- heroes. hp, damage per hit, range (tiles x 47.6), reload, speed and hits-to-super follow the named Brawl Stars hero.
@@ -225,16 +232,84 @@ function mkHero(def, team, bot, idx) {
   const b = BASEPOS[team], hp = def.hp * (CFG.hb[def.id] && CFG.hb[def.id].hp || 1);
   return ent({ isHero: true, def, team, bot, idx, ammo: 3, sup: 0, x: b.x + (idx - 1) * 90, y: b.y + (team === BLUE ? -150 : 150), r: 16, hp, maxhp: hp, hitT: 0, botWait: 0, seeds: CFG.startSeeds, seedT: 0, atkCd: 0, aimA: team === BLUE ? -Math.PI / 2 : Math.PI / 2, lane: Math.min(NL - 1, idx), home: Math.min(NL - 1, idx), kind: Math.floor(rnd(0, 3)), think: rnd(0, 0.3), goal: null, plan: null, mx: 0, my: 0 });
 }
-function newGame(pi, auto, lineup) {
+// ---- decks. A creep is a card {kind, tier}; each hero brings 6, holds 3 in the hand and sees the next one. Playing a card puts it
+// at the back of the line and the next one takes its place (Clash Royale's cycle, 8 and 4 sized down to 6 and 3).
+// Default decks (picked by Claude): mixed costs, at most one Colossus, something in every deck that hits flyers.
+const C = (kind, tier) => ({ kind, tier }), TH = 0, SP = 1, RU = 2;
+const DECKS = {
+  _: [C(TH, 1), C(SP, 1), C(RU, 2), C(SP, 3), C(TH, 4), C(TH, 5)],
+  bramble: [C(TH, 1), C(RU, 1), C(TH, 2), C(SP, 3), C(RU, 4), C(TH, 5)],
+  sow: [C(TH, 1), C(SP, 1), C(RU, 1), C(TH, 2), C(SP, 3), C(SP, 4)],
+  mower: [C(RU, 1), C(TH, 2), C(RU, 2), C(TH, 3), C(SP, 4), C(RU, 5)],
+  magpie: [C(SP, 1), C(RU, 2), C(SP, 3), C(TH, 3), C(RU, 4), C(SP, 5)],
+  drover: [C(RU, 1), C(TH, 1), C(RU, 2), C(TH, 2), C(SP, 3), C(TH, 4)],
+  thistle: [C(TH, 1), C(SP, 1), C(TH, 2), C(SP, 3), C(SP, 4), C(TH, 5)],
+  shade: [C(RU, 1), C(SP, 1), C(TH, 2), C(RU, 3), C(SP, 4), C(RU, 5)],
+  foxglove: [C(SP, 1), C(TH, 2), C(SP, 3), C(TH, 3), C(TH, 4), C(SP, 5)],
+  bamboo: [C(TH, 1), C(SP, 1), C(TH, 2), C(TH, 3), C(SP, 4), C(TH, 5)]
+};
+const HAND = 3, cardName = c => KINDS[c.kind].name + ' ' + BODIES[c.tier];
+function deckOk(d) { return Array.isArray(d) && d.length === 6 && d.every(c => c && KINDS[c.kind] && c.tier >= 1 && c.tier <= 5); }
+function dealDeck(h, deck) {   // shuffled with the match's own random source, so seeded bot matches repeat
+  const d = (deckOk(deck) ? deck : DECKS[h.def.id] || DECKS._).map(c => ({ kind: c.kind | 0, tier: c.tier | 0 }));
+  for (let k = d.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [d[k], d[j]] = [d[j], d[k]]; }
+  h.deck = d.map(c => Object.assign({}, c)); h.hand = d.slice(0, HAND); h.queue = d.slice(HAND);
+}
+const nextCard = h => h.queue && h.queue[0];
+function canPlay(h, i) { const c = h.hand && h.hand[i]; return !!c && canSummon(h, c.tier); }
+function playCard(h, i) {   // summon the creep in hand slot i into the hero's lane; the card goes to the back of the line
+  const c = h.hand && h.hand[i]; if (!c || !summon(h, c.tier, c.kind)) return false;
+  h.queue.push(c); h.hand[i] = h.queue.shift(); h.cycled = (h.cycled || 0) + 1; return true;
+}
+// a bot's deck from a pool of allowed creeps: its hero's default cards that are in the pool first, then the rest of the pool
+// in random order, at most one Colossus while anything else is left; fewer than six in the pool repeats cards
+function deckFromPool(h, pool) {
+  const ok = pool.filter(c => c && KINDS[c.kind] && c.tier >= 1 && c.tier <= 5).map(c => ({ kind: c.kind | 0, tier: c.tier | 0 })); if (!ok.length) return null;
+  const same = (a, b) => a.kind === b.kind && a.tier === b.tier, d = [];
+  const add = c => { if (d.length < 6 && !d.some(x => same(x, c)) && !(c.tier === 5 && d.some(x => x.tier === 5) && ok.some(x => x.tier < 5 && !d.some(y => same(y, x))))) d.push(c); };
+  for (const c of DECKS[h.def.id] || DECKS._) if (ok.some(x => same(x, c))) add(c);
+  for (const c of ok.slice().sort(() => Math.random() - 0.5)) add(c);
+  const rep = d.filter(c => c.tier < 5).length ? d.filter(c => c.tier < 5) : d.slice(); for (let i = 0; d.length < 6; i++) d.push(Object.assign({}, rep[i % rep.length]));
+  return d;
+}
+// how hard a bot plays, by level (0 easy for a first match, 2 = the bots every sweep was tuned with, 4 hardest). Reaction (how often
+// it thinks), aim (spread of a shot at a hero, wait between shots), lane sense (how often it answers a lane being lost),
+// seed sense (how often a wave starts with the biggest card it can pay for) and a delay before a ready super. No stat boosts.
+const BOTLV = [
+  { think: 0.8, aim: 0.55, wait: [0.8, 1.6], defend: 0.15, big: 0.25, supWait: 3 },
+  { think: 0.55, aim: 0.35, wait: [0.5, 1.1], defend: 0.3, big: 0.4, supWait: 1.5 },
+  { think: 0.35, aim: 0.2, wait: [0.3, 0.8], defend: null, big: 0.5, supWait: 0 },
+  { think: 0.25, aim: 0.12, wait: [0.2, 0.55], defend: 0.7, big: 0.6, supWait: 0 },
+  { think: 0.18, aim: 0.06, wait: [0.1, 0.35], defend: 0.9, big: 0.7, supWait: 0 }];
+const skillOf = h => h.skill || BOTLV[2];
+// SBL.start(heroIndex, auto, opts) or the older SBL.start(heroIndex, auto, lineup). opts, every field optional:
+//   deck: six {kind, tier} the player brings (default: the hero's deck in DECKS)
+//   pool: the {kind, tier} creeps the bots may build their decks from (default: their hero's deck in DECKS)
+//   botLevel: 0..4, how hard the enemy (Red) bots play, see BOTLV; the player's own team plays at 2 (default 2 for all)
+//   heroes: hero ids the bots may be (default: all nine, no repeats); fewer than five repeats heroes
+//   lineup: six hero indexes, seat order Blue (player first) then Red, as the sweeps use
+// When it ends, G.over is 'Blue wins', 'Red wins' or 'Draw' and G.result = { winner: 1 | 2 | 0 (draw), by: 'base' | 'timer',
+// base: [blue base health, red base health], mine: true when the player's team won }.
+function newGame(pi, auto, lineup, opts) {
+  if (lineup && !Array.isArray(lineup)) { opts = lineup; lineup = opts.lineup; } opts = opts || {};
   for (const f of FARMS) { f.t = 0; f.n = 0; }
   G = { heroes: [], units: [], seeds: [], projs: [], lobs: [], zones: [], fx: [], base: [null, { team: BLUE, x: BASEPOS[1].x, y: BASEPOS[1].y, hp: CFG.baseHp, awake: false, gunT: 0 }, { team: RED, x: BASEPOS[2].x, y: BASEPOS[2].y, hp: CFG.baseHp, awake: false, gunT: 0 }],
-    stats: { leadChanges: 0, lead: 0, lead60: null, heroUnitKills: 0, unitUnitKills: 0, heroKills: 0, arrived: 0, endBy: null, summoned: [0, 0, 0, 0, 0, 0], sumTeam: [0, 0, 0], arrTeam: [0, 0, 0], pick: {}, turned: 0, grown: 0, dmg: {}, kills: {}, deaths: {}, casts: {} },
+    stats: { leadChanges: 0, lead: 0, lead60: null, heroUnitKills: 0, unitUnitKills: 0, heroKills: 0, arrived: 0, endBy: null, summoned: [0, 0, 0, 0, 0, 0], sumTeam: [0, 0, 0], arrTeam: [0, 0, 0], spent: [null, [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]], pick: {}, turned: 0, grown: 0, dmg: {}, kills: {}, deaths: {}, casts: {} },
     statT: 0, time: CFG.time, over: null, sel: 0, auto: !!auto, t: 0, lateOn: false };
-  const o = lineup || [pi].concat(HEROES.map((_, i) => i).filter(i => i !== pi).sort(() => Math.random() - 0.5));
+  let o = lineup;
+  if (!o && Array.isArray(opts.heroes) && opts.heroes.length) {
+    let allow = HEROES.map((h, i) => opts.heroes.includes(h.id) ? i : -1).filter(i => i >= 0 && i !== pi); if (!allow.length) allow = HEROES.map((h, i) => opts.heroes.includes(h.id) ? i : -1).filter(i => i >= 0);
+    if (!allow.length) allow = HEROES.map((_, i) => i).filter(i => i !== pi);
+    const sh = allow.sort(() => Math.random() - 0.5); o = [pi]; for (let i = 0; o.length < 6; i++) o.push(sh[i % sh.length]);
+  }
+  o = o || [pi].concat(HEROES.map((_, i) => i).filter(i => i !== pi).sort(() => Math.random() - 0.5));
   // seats: the player (or first pick) takes the middle lane of Blue
   G.heroes.push(mkHero(HEROES[o[0]], BLUE, !!auto, 1), mkHero(HEROES[o[1]], BLUE, true, 0), mkHero(HEROES[o[2]], BLUE, true, 2), mkHero(HEROES[o[3]], RED, true, 0), mkHero(HEROES[o[4]], RED, true, 1), mkHero(HEROES[o[5]], RED, true, 2));
   G.me = G.heroes[0];
+  const lv = opts.botLevel === undefined ? 2 : clamp(Math.round(+opts.botLevel) || 0, 0, 4);
+  for (const h of G.heroes) { if (h.team === RED && lv !== 2) h.skill = BOTLV[lv]; dealDeck(h, h === G.me ? opts.deck : Array.isArray(opts.pool) && opts.pool.length ? deckFromPool(h, opts.pool) : null); }
 }
+function finish(winner, by) { G.over = winner === BLUE ? 'Blue wins' : winner === RED ? 'Red wins' : 'Draw'; G.stats.endBy = by; G.result = { winner, by, base: [G.base[1].hp, G.base[2].hp], mine: winner === G.me.team }; }
 function spawnUnit(team, kind, tier, lane, x, y) {
   const ug = CFG.unitGrow, k = KINDS[kind], hp = k.hp * THP[tier] * CFG.unitHpMul * (ug ? 1 + ug.hp * Math.min(ug.max, Math.floor(G.t / ug.every)) : 1);   // later waves are tougher, so the match ends at a base
   const u = ent({ team, kind, tier, fly: tier === 4, lane, x, y, r: TR[tier], hp, maxhp: hp, atkCd: rnd(0, 1), ox: laneX(lane) + rnd(-LW * 0.3, LW * 0.3), stampT: 0, backT: 0 });
@@ -246,7 +321,7 @@ function summon(h, tier, kind) {
   if (!canSummon(h, tier)) return false;
   h.seeds -= costOf(tier); const p = spawnPt(h.team, h.lane), kd = kind === undefined ? (h === G.me && !G.auto ? G.sel : h.kind) : kind;
   spawnUnit(h.team, kd, tier, h.lane, p.x + rnd(-LW * 0.3, LW * 0.3), p.y + rnd(-10, 10));
-  G.stats.summoned[tier]++; G.stats.sumTeam[h.team] += costOf(tier); ring(p.x, p.y, 50, TCOL[h.team], 0.45); float(p.x, p.y - 30, BODIES[tier], '#fac775'); snd('summon_' + BODIES[tier].toLowerCase(), p.x, p.y, h);
+  G.stats.summoned[tier]++; G.stats.sumTeam[h.team] += costOf(tier); G.stats.spent[h.team][tier] += costOf(tier); ring(p.x, p.y, 50, TCOL[h.team], 0.45); float(p.x, p.y - 30, BODIES[tier], '#fac775'); snd('summon_' + BODIES[tier].toLowerCase(), p.x, p.y, h);
   return true;
 }
 function setLane(h, lane) { h.lane = ((lane % NL) + NL) % NL; if (h === G.me) snd('lane_pick', h.x, h.y, h); }
@@ -284,18 +359,26 @@ function waypoint(h, gx, gy) { // next point to walk to, around the wall strips
   if (Math.abs(h.y - best.y) < 16 && (h.x - near.x) * s > -18) return far;
   return near;
 }
-function sendWave(h, lane, kind, defend) { // spend what the hero carries on one lane; a defending wave skips Brutes (they walk past fights)
-  h.lane = lane; let guard = 0;
-  while (h.seeds > 0 && guard++ < 12) { let top = 5; while (top > 1 && h.seeds < costOf(top)) top--; let tier = Math.random() < 0.5 ? top : 1 + Math.floor(rnd(0, top)); if (defend && tier === 2) tier = 1; if (!summon(h, tier, Math.random() < 0.7 ? kind : Math.floor(rnd(0, 3)))) break; }
+const hitsAir = c => KINDS[c.kind].range > 60 || c.tier === 3 || c.tier === 4;
+function sendWave(h, lane, defend, air) { // play the hand into one lane until nothing in it is affordable. A defending wave skips Brutes
+  h.lane = lane; let guard = 0;                                              // (they walk past fights) and wants something that hits flyers
+  while (guard++ < 12) {
+    let ok = []; for (let i = 0; i < HAND; i++) if (canPlay(h, i) && !(defend && h.hand[i].tier === 2)) ok.push(i);
+    if (!ok.length) break;
+    if (air && ok.some(i => hitsAir(h.hand[i]))) ok = ok.filter(i => hitsAir(h.hand[i]));
+    let pick = ok[Math.floor(rnd(0, ok.length))];
+    if (Math.random() < skillOf(h).big) for (const i of ok) if (h.hand[i].tier > h.hand[pick].tier) pick = i;   // half the time (level 2) the biggest it can pay for
+    if (!playCard(h, pick)) break;
+  }
 }
 function botSummon(h) {
   if (h.dead) return;
   // a lane where the other team is winning near our base gets units first
   let worst = -1, wv = 0; for (let i = 0; i < NL; i++) { const s = laneState(h.team, i); const v = s.foe - s.own; if (v > wv && s.foe >= 4 && s.front && (h.team === BLUE ? s.front.y > H * 0.45 : s.front.y < H * 0.55)) { wv = v; worst = i; } }
-  if (worst >= 0 && h.seeds >= 3 && Math.random() < CFG.botDefend) { const fl = G.units.some(u => !u.dead && u.team !== h.team && u.lane === worst && u.fly); sendWave(h, worst, fl ? 1 : Math.floor(rnd(0, 3)), true); h.plan = null; return; }
+  if (worst >= 0 && h.seeds >= 3 && Math.random() < (skillOf(h).defend === null ? CFG.botDefend : skillOf(h).defend)) { const fl = G.units.some(u => !u.dead && u.team !== h.team && u.lane === worst && u.fly); sendWave(h, worst, true, fl); h.plan = null; return; }
   // otherwise save up and send a wave down one lane: the home lane, or the lane where the other team is thinnest
   if (!h.plan) { let lane = h.home; if (Math.random() < 0.45) { let b = 1e9; for (let i = 0; i < NL; i++) { const s = laneState(h.team, i), v = s.foe - s.own * 0.5 + rnd(0, 2); if (v < b) { b = v; lane = i; } } } h.plan = { budget: [4, 5, 6, 8, 9, 10][Math.floor(rnd(0, 6))], lane }; }
-  if (h.seeds >= Math.min(CFG.carry, h.plan.budget)) { sendWave(h, h.plan.lane, Math.floor(rnd(0, 3)), false); h.plan = null; }
+  if (h.seeds >= Math.min(CFG.carry, h.plan.budget)) { sendWave(h, h.plan.lane, false, false); h.plan = null; }
 }
 function cluster(team, x, y, range, r, own) { // densest group of units within range; own=true counts the caster's team
   let best = null, bn = 0;
@@ -321,7 +404,7 @@ function botThink(h, dt) {
   if (!tgt || td > h.def.atkRange + 20) for (const u of G.units) if (!u.dead && u.team !== h.team) { const d = dist(u, h); if (d < h.def.atkRange + 60 && d < td && see(u)) { td = d; tgt = u; } }
   h.think -= dt;
   if (h.think <= 0) {
-    h.think = 0.35; const home = BASEPOS[h.team], dir = h.team === BLUE ? 1 : -1;
+    h.think = skillOf(h).think; const home = BASEPOS[h.team], dir = h.team === BLUE ? 1 : -1;
     botSummon(h);
     if (h.hp < h.maxhp * 0.3 || (h.goal && h.goal.heal && h.hp < h.maxhp * 0.8)) h.goal = { x: home.x + (h.idx - 1) * 50, y: home.y - dir * 140, heal: true };
     else {
@@ -347,8 +430,8 @@ function botThink(h, dt) {
   const m = Math.hypot(mx, my); if (m > 1) { mx /= m; my /= m; }
   h.mx = mx; h.my = my;
   if (tgt) { h.aimA = Math.atan2(tgt.y - h.y, tgt.x - h.x);
-    if (td < h.def.atkRange + tgt.r && h.atkCd <= 0 && h.ammo >= 1) { if (!tgt.isHero) attack(h, tgt.x, tgt.y); else if (h.botWait > 0) h.botWait -= dt; else { const a = h.aimA + rnd(-0.2, 0.2); attack(h, h.x + Math.cos(a) * td, h.y + Math.sin(a) * td); h.botWait = rnd(0.3, 0.8); } } }
-  if (h.sup >= 1) botSuper(h, foeH, fhd);
+    if (td < h.def.atkRange + tgt.r && h.atkCd <= 0 && h.ammo >= 1) { if (!tgt.isHero) attack(h, tgt.x, tgt.y); else if (h.botWait > 0) h.botWait -= dt; else { const k = skillOf(h), a = h.aimA + rnd(-k.aim, k.aim); attack(h, h.x + Math.cos(a) * td, h.y + Math.sin(a) * td); h.botWait = rnd(k.wait[0], k.wait[1]); } } }
+  if (h.sup >= 1) { h.supReady = (h.supReady || 0) + dt; if (h.supReady >= skillOf(h).supWait) botSuper(h, foeH, fhd); } else h.supReady = 0;
 }
 
 function moveHero(e, vx, vy, dt) { e.x += vx * dt; e.y += vy * dt; pushOut(e); e.x = clamp(e.x, e.r, W - e.r); e.y = clamp(e.y, e.r, H - e.r); }
@@ -358,7 +441,7 @@ function tickStatus(e, dt) { for (const k of ['slowT', 'rootT', 'hasteT', 'invis
 
 function update(dt) {
   if (!G || G.over) return; G.t += dt; G.time -= dt;
-  if (G.time <= 0) { const b = G.base[1].hp, r = G.base[2].hp; G.over = b === r ? 'Draw' : b > r ? 'Blue wins' : 'Red wins'; G.stats.endBy = 'timer'; return; }
+  if (G.time <= 0) { const b = G.base[1].hp, r = G.base[2].hp; finish(b === r ? 0 : b > r ? BLUE : RED, 'timer'); return; }
   G.statT += dt; if (G.statT >= 1) { G.statT -= 1; const st = G.stats, ld = Math.sign(G.base[1].hp - G.base[2].hp); if (ld && st.lead && ld !== st.lead) st.leadChanges++; if (ld) st.lead = ld; if (st.lead60 === null && CFG.time - G.time >= 60) st.lead60 = ld; }
   if (CFG.late && !G.lateOn && G.time <= CFG.late.at) { G.lateOn = true; for (const b of [G.base[1], G.base[2]]) { float(b.x, b.y - 90, 'base hits count double', '#fac775'); ring(b.x, b.y, 200, '#fac775', 1); } snd('late_double', G.me.x, G.me.y, 'match'); }
   const me = G.me, I = root.SBL_INPUT;
@@ -385,7 +468,8 @@ function update(dt) {
     for (const u of G.units) if (!u.dead && u.team !== b.team) { const d = dist(u, b); if (d < bd) { bd = d; e = u; } }
     for (const h of G.heroes) if (!h.dead && h.team !== b.team && h.invisT <= 0) { const d = dist(h, b); if (d < bd) { bd = d; e = h; } }
     if (e && !b.awake) { b.awake = true; ring(b.x, b.y, bg.range, TCOL[b.team], 0.8); float(b.x, b.y - 70, 'base awake', TCOL[b.team]); snd('base_awake', b.x, b.y, b); }
-    if (e && b.gunT <= 0) { b.gunT = bg.every; b.shotT = G.t; line(b.x, b.y, e.x, e.y, TCOL[b.team]); hurt(e, bg.dmg, null, { from: b }); snd('base_shot', b.x, b.y, b); }
+    const gr = CFG.gunRage, lost = gr ? Math.max(0, 1 - b.hp / CFG.baseHp) : 0;
+    if (e && b.gunT <= 0) { b.gunT = bg.every / (1 + (gr ? gr.every * lost : 0)); b.shotT = G.t; line(b.x, b.y, e.x, e.y, TCOL[b.team]); hurt(e, bg.dmg * (1 + (gr ? gr.dmg * lost : 0)), null, { from: b }); snd('base_shot', b.x, b.y, b); }
   }
   for (const u of G.units) {
     if (u.dead) continue; tickStatus(u, dt); u.atkCd -= dt; const k = KINDS[u.kind];
@@ -406,7 +490,7 @@ function update(dt) {
     if (past && !(u.backT > 0)) {
       const d = dist(eb, u);
       if (d < 46) { u.dead = true; G.stats.arrived++; G.stats.arrTeam[u.team]++; const dm = TM[u.tier] * (u.stampT > 0 ? 2 : 1) * (CFG.late && G.time <= CFG.late.at ? CFG.late.base : 1); eb.hp -= dm; ring(eb.x, eb.y, 60, TCOL[u.team], 0.3); float(eb.x + rnd(-30, 30), eb.y - 60, '-' + dm, TCOL[u.team]); snd(eb.team === G.me.team ? 'base_hit_ours' : 'base_hit_theirs', eb.x, eb.y, eb);
-        if (eb.hp <= 0) { eb.hp = 0; G.over = u.team === BLUE ? 'Blue wins' : 'Red wins'; G.stats.endBy = 'base'; } continue; }
+        if (eb.hp <= 0) { eb.hp = 0; finish(u.team, 'base'); } continue; }
       moveUnit(u, (eb.x - u.x) / d * s, (eb.y - u.y) / d * s, dt);
     } else { const dx = clamp((u.ox - u.x) / 60, -0.5, 0.5); moveUnit(u, dx * s, fwd * s, dt); }
   }
@@ -427,5 +511,5 @@ function update(dt) {
   for (const f of G.fx) f.life -= dt; G.fx = G.fx.filter(f => f.life > 0);
 }
 
-root.SBL = { get G() { return G; }, start: newGame, update, spawnUnit, HEROES, KINDS, BODIES, CFG, TM, castSuper, attack, summon, canSummon, setLane, costOf, laneX, laneL, laneR, laneOf, spawnPt, blocked, WALLS, GAPS, FARMS, BUSHES, BASEPOS, W, H, T, NL, LW, Y0, Y1, BLUE, RED, hlv, say, hpOf };
+root.SBL = { get G() { return G; }, start: newGame, update, spawnUnit, HEROES, KINDS, BODIES, CFG, TM, castSuper, attack, summon, canSummon, playCard, canPlay, nextCard, cardName, DECKS, HAND, setLane, costOf, laneX, laneL, laneR, laneOf, spawnPt, blocked, WALLS, GAPS, FARMS, BUSHES, BASEPOS, W, H, T, NL, LW, Y0, Y1, BLUE, RED, hlv, say, hpOf };
 })(typeof window !== 'undefined' ? window : globalThis);

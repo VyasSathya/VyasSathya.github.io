@@ -2,7 +2,7 @@
  "game": "seed-brawl-lanes",
  "owner_lead": "Seed Brawl game lead",
  "engine": "web (three.js), lanes/sound.js on Web Audio; Capacitor iOS",
- "made_on": "2026-11-13",
+ "made_on": "2026-11-14",
  "made_by": "Creative studio sound designer (subagent), work/sound/make_set.py",
  "format": "mono 32 kHz 16-bit WAV (2D web kit sfx row: no codec delay)",
  "loudness": "every file: 180 Hz high-pass, RMS -20 dB measured above 350 Hz over the sounding part (what a phone speaker plays), peak under 0.89 (-1 dBFS); the mix level is play.gain",
@@ -15,13 +15,13 @@
    "work/sound/foley.json",
    "work/sound/foley2.json",
    "work/sound/foley3.json",
-   "work/sound/foley4.json"
+   "work/sound/foley4.json",
+   "work/sound/foley5.json"
   ],
   "credits_before": 56732,
-  "credits_after": 55468,
-  "used": 1264,
-  "generations": 145,
-  "passes": "first pass 138 takes; second pass 2026-11-14: 7 takes (bramble_atk2 x4, hero_down_light x3), balance 55554 before and 55468 after",
+  "credits_after": 54614,
+  "generations": 166,
+  "passes": "first pass 138 takes (56732 -> 55658); second pass 2026-11-14: 7 takes (bramble_atk2 x4, hero_down_light x3), 55554 -> 55468; third pass 2026-11-14: 21 menu takes, 54779 -> 54614 (165). Between passes the shared balance also fell by about 790 that these runs did not use (another session on the same account)",
   "note": "balance read with eleven_audio.py credits before the first take and after the last; no top-up"
  },
  "not_made": [
@@ -6793,26 +6793,846 @@
    "notes": ""
   },
   {
-   "id": "music_match",
-   "kind": "loop",
-   "tier": 5,
-   "trigger": "match screen",
-   "brief": "match music, real track (Suno), not synthesized",
-   "source": null,
-   "status": "needed",
-   "wired": "no: games never synthesize music; Suno downloads are used up until 2026-11-22",
+   "id": "menu_tap",
+   "kind": "ui",
+   "tier": 2,
+   "trigger": "menu.js: any menu button (back, settings, Home, Later, close)",
+   "brief": "soft rounded bubbly pop: a chunky cartoon button, friendlier than the in-match click",
+   "file": "lanes/sfx/menu_tap.wav",
+   "length_s": 0.25,
+   "source": "elevenlabs:seed-brawl/takes/menu_tap/menu_tap_3.mp3",
+   "source_path": "C:/Dev/toybox/assets/audio/made/seed-brawl/takes/menu_tap/menu_tap_3.mp3",
+   "source_sha256": "eddb825e15aa5c3ff7b383d34e18d15e7b8eed290c71835169ac754817ec2aac",
+   "source_prompt": "A soft bubbly cartoon button press in a mobile game menu: a short rounded plastic pop. Chunky stylised cartoon game sound effect, close, dry, no music.",
+   "licence": "ElevenLabs text-to-sound, Starter plan (paid; commercial use cleared per the game-audio skill), made for Seed Brawl lanes 2026-11-13",
+   "edits": [
+    "decoded to mono 32 kHz",
+    "head trimmed to 1 ms before 3 % of peak (no late start)",
+    "tail cut at -45 dB",
+    "capped at 0.25 s",
+    "180 Hz high-pass",
+    "levelled to RMS -20 dB above 350 Hz (phone speaker), peak under 0.89"
+   ],
+   "play": {
+    "gain": 0.55,
+    "glob": true,
+    "gap": 0.04
+   },
+   "measures": {
+    "len_s": 0.25,
+    "peak_db": -5.4,
+    "head_ms": 0.0,
+    "attack_ms": 1.8,
+    "active_s": 0.183,
+    "centroid_hz": 1058,
+    "tonal_db": 66.3,
+    "above_350_pct": 88.9,
+    "phone_rms_db": -20.0,
+    "above_350_pct_before_fix": 88.9
+   },
+   "phone_steps": [
+    "180 Hz high-pass: 88.9 % above 350 Hz, phone -20.0 dB (limiter up to 9 dB)"
+   ],
+   "takes": [
+    {
+     "take": "elevenlabs:seed-brawl/takes/menu_tap/menu_tap_1.mp3",
+     "pass": true,
+     "len_s": 0.25,
+     "peak_db": 2.7,
+     "head_ms": 0.0,
+     "attack_ms": 15.0,
+     "active_s": 0.069,
+     "centroid_hz": 705,
+     "tonal_db": 65.9,
+     "above_350_pct": 68.8,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/menu_tap/menu_tap_2.mp3",
+     "pass": true,
+     "len_s": 0.169,
+     "peak_db": -0.4,
+     "head_ms": 0.0,
+     "attack_ms": 0.4,
+     "active_s": 0.132,
+     "centroid_hz": 506,
+     "tonal_db": 83.9,
+     "above_350_pct": 79.2,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/menu_tap/menu_tap_3.mp3",
+     "pass": true,
+     "len_s": 0.25,
+     "peak_db": -13.3,
+     "head_ms": 0.0,
+     "attack_ms": 0.1,
+     "active_s": 0.183,
+     "centroid_hz": 1013,
+     "tonal_db": 66.4,
+     "above_350_pct": 88.2,
+     "flat_tops": 0
+    }
+   ],
+   "picked_by": "measures and source prompt only (check 'hit': pass); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js via core.js snd() / main.js sound section",
+   "review": "work/sound/review/menu_tap.wav",
    "notes": ""
   },
   {
-   "id": "music_menu",
+   "id": "card_tap",
+   "kind": "ui",
+   "tier": 2,
+   "trigger": "menu.js: a creep card or hero tile on the Deck and Heroes screens, the trophy chip, the road bar",
+   "brief": "crisp paper flick with a light pop: these are cards",
+   "file": "lanes/sfx/card_tap.wav",
+   "length_s": 0.3,
+   "source": "elevenlabs:seed-brawl/takes/card_tap/card_tap_2.mp3",
+   "source_path": "C:/Dev/toybox/assets/audio/made/seed-brawl/takes/card_tap/card_tap_2.mp3",
+   "source_sha256": "adb9ce2ab23a245392f9b98c9c48548522010cfdf5e9b371502aba2d54061c2e",
+   "source_prompt": "A playing card is picked up and flipped in a cartoon card game: a short crisp paper flick with a light pop. Chunky stylised cartoon game sound effect, close, dry, no music.",
+   "licence": "ElevenLabs text-to-sound, Starter plan (paid; commercial use cleared per the game-audio skill), made for Seed Brawl lanes 2026-11-13",
+   "edits": [
+    "decoded to mono 32 kHz",
+    "head trimmed to 1 ms before 3 % of peak (no late start)",
+    "tail cut at -45 dB",
+    "capped at 0.3 s",
+    "180 Hz high-pass",
+    "levelled to RMS -20 dB above 350 Hz (phone speaker), peak under 0.89"
+   ],
+   "play": {
+    "gain": 0.55,
+    "glob": true,
+    "gap": 0.04
+   },
+   "measures": {
+    "len_s": 0.3,
+    "peak_db": -4.4,
+    "head_ms": 0.0,
+    "attack_ms": 1.2,
+    "active_s": 0.07,
+    "centroid_hz": 7222,
+    "tonal_db": 16.7,
+    "above_350_pct": 87.7,
+    "phone_rms_db": -20.0,
+    "above_350_pct_before_fix": 87.7
+   },
+   "phone_steps": [
+    "180 Hz high-pass: 87.7 % above 350 Hz, phone -20.0 dB (limiter up to 9 dB)"
+   ],
+   "takes": [
+    {
+     "take": "elevenlabs:seed-brawl/takes/card_tap/card_tap_1.mp3",
+     "pass": false,
+     "len_s": 0.3,
+     "peak_db": 3.0,
+     "head_ms": 1.0,
+     "attack_ms": 89.7,
+     "active_s": 0.154,
+     "centroid_hz": 3040,
+     "tonal_db": 35.8,
+     "above_350_pct": 34.5,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/card_tap/card_tap_2.mp3",
+     "pass": true,
+     "len_s": 0.3,
+     "peak_db": -5.8,
+     "head_ms": 0.0,
+     "attack_ms": 0.2,
+     "active_s": 0.138,
+     "centroid_hz": 7023,
+     "tonal_db": 22.3,
+     "above_350_pct": 25.6,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/card_tap/card_tap_3.mp3",
+     "pass": false,
+     "len_s": 0.3,
+     "peak_db": 3.5,
+     "head_ms": 1.0,
+     "attack_ms": 107.7,
+     "active_s": 0.228,
+     "centroid_hz": 4593,
+     "tonal_db": 33.2,
+     "above_350_pct": 42.0,
+     "flat_tops": 0
+    }
+   ],
+   "picked_by": "measures and source prompt only (check 'hit': pass); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js via core.js snd() / main.js sound section",
+   "review": "work/sound/review/card_tap.wav",
+   "notes": ""
+  },
+  {
+   "id": "play_press",
+   "kind": "ui",
+   "tier": 2,
+   "trigger": "menu.js: Play on Home, Play again on the result screen",
+   "brief": "punchy thump with a bright rising swoosh: the one button that starts a fight gets the biggest press",
+   "file": "lanes/sfx/play_press.wav",
+   "length_s": 0.597,
+   "source": "elevenlabs:seed-brawl/takes/play_press/play_press_3.mp3",
+   "source_path": "C:/Dev/toybox/assets/audio/made/seed-brawl/takes/play_press/play_press_3.mp3",
+   "source_sha256": "773b270acc991dcdf9208a8dadfb6a2115a513b765401428b70966d937fbb6fc",
+   "source_prompt": "A big chunky Play button is pressed in a cartoon mobile game: a punchy satisfying thump with a bright rising swoosh, ready to battle. Chunky stylised cartoon game sound effect, close, dry, no music.",
+   "licence": "ElevenLabs text-to-sound, Starter plan (paid; commercial use cleared per the game-audio skill), made for Seed Brawl lanes 2026-11-13",
+   "edits": [
+    "decoded to mono 32 kHz",
+    "head trimmed to 1 ms before 3 % of peak (no late start)",
+    "tail cut at -45 dB",
+    "capped at 0.7 s",
+    "180 Hz high-pass",
+    "levelled to RMS -20 dB above 350 Hz (phone speaker), peak under 0.89"
+   ],
+   "play": {
+    "gain": 0.7,
+    "glob": true,
+    "gap": 0.3
+   },
+   "measures": {
+    "len_s": 0.597,
+    "peak_db": -1.0,
+    "head_ms": 0.0,
+    "attack_ms": 0.5,
+    "active_s": 0.395,
+    "centroid_hz": 5808,
+    "tonal_db": 42.6,
+    "above_350_pct": 88.4,
+    "phone_rms_db": -20.1,
+    "above_350_pct_before_fix": 88.4
+   },
+   "phone_steps": [
+    "180 Hz high-pass: 88.4 % above 350 Hz, phone -20.1 dB (limiter up to 9 dB)"
+   ],
+   "takes": [
+    {
+     "take": "elevenlabs:seed-brawl/takes/play_press/play_press_1.mp3",
+     "pass": true,
+     "len_s": 0.44,
+     "peak_db": 2.7,
+     "head_ms": 0.0,
+     "attack_ms": 0.7,
+     "active_s": 0.317,
+     "centroid_hz": 2628,
+     "tonal_db": 51.7,
+     "above_350_pct": 6.3,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/play_press/play_press_2.mp3",
+     "pass": true,
+     "len_s": 0.282,
+     "peak_db": 2.8,
+     "head_ms": 1.0,
+     "attack_ms": 3.7,
+     "active_s": 0.211,
+     "centroid_hz": 3546,
+     "tonal_db": 36.2,
+     "above_350_pct": 10.3,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/play_press/play_press_3.mp3",
+     "pass": true,
+     "len_s": 0.597,
+     "peak_db": 1.6,
+     "head_ms": 0.0,
+     "attack_ms": 0.2,
+     "active_s": 0.356,
+     "centroid_hz": 5666,
+     "tonal_db": 42.6,
+     "above_350_pct": 59.0,
+     "flat_tops": 0
+    }
+   ],
+   "picked_by": "measures and source prompt only (check 'hit': pass); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js via core.js snd() / main.js sound section",
+   "review": "work/sound/review/play_press.wav",
+   "notes": ""
+  },
+  {
+   "id": "trophy_tick",
+   "kind": "ui",
+   "tier": 2,
+   "trigger": "menu.js result screen: the trophy count-up, one tick every few points",
+   "brief": "tiny bright coin tink: points counting, short so a run of them reads as a count",
+   "file": "lanes/sfx/trophy_tick.wav",
+   "length_s": 0.15,
+   "source": "elevenlabs:seed-brawl/takes/trophy_tick/trophy_tick_1.mp3",
+   "source_path": "C:/Dev/toybox/assets/audio/made/seed-brawl/takes/trophy_tick/trophy_tick_1.mp3",
+   "source_sha256": "a9f6d324bb017ccfe20dd0ab5089225f0e6570837e5b82fe71eee4db59b9d946",
+   "source_prompt": "A single tiny bright coin tick, like one trophy point counting up on a game score screen: a short crisp metallic tink. Chunky stylised cartoon game sound effect, close, dry, no music.",
+   "licence": "ElevenLabs text-to-sound, Starter plan (paid; commercial use cleared per the game-audio skill), made for Seed Brawl lanes 2026-11-13",
+   "edits": [
+    "decoded to mono 32 kHz",
+    "head trimmed to 1 ms before 3 % of peak (no late start)",
+    "tail cut at -45 dB",
+    "capped at 0.15 s",
+    "180 Hz high-pass",
+    "levelled to RMS -20 dB above 350 Hz (phone speaker), peak under 0.89"
+   ],
+   "play": {
+    "gain": 0.4,
+    "glob": true,
+    "gap": 0.05,
+    "vary": [
+     40,
+     0.5
+    ]
+   },
+   "measures": {
+    "len_s": 0.15,
+    "peak_db": -1.0,
+    "head_ms": 1.2,
+    "attack_ms": 1.2,
+    "active_s": 0.126,
+    "centroid_hz": 8446,
+    "tonal_db": 20.4,
+    "above_350_pct": 100.0,
+    "phone_rms_db": -20.4,
+    "above_350_pct_before_fix": 100.0
+   },
+   "phone_steps": [
+    "180 Hz high-pass: 100.0 % above 350 Hz, phone -20.4 dB (limiter up to 9 dB)"
+   ],
+   "takes": [
+    {
+     "take": "elevenlabs:seed-brawl/takes/trophy_tick/trophy_tick_1.mp3",
+     "pass": true,
+     "len_s": 0.15,
+     "peak_db": -0.4,
+     "head_ms": 1.0,
+     "attack_ms": 2.0,
+     "active_s": 0.125,
+     "centroid_hz": 8422,
+     "tonal_db": 20.5,
+     "above_350_pct": 99.9,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/trophy_tick/trophy_tick_2.mp3",
+     "pass": true,
+     "len_s": 0.15,
+     "peak_db": -1.8,
+     "head_ms": 0.0,
+     "attack_ms": 20.5,
+     "active_s": 0.142,
+     "centroid_hz": 10640,
+     "tonal_db": 20.4,
+     "above_350_pct": 99.8,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/trophy_tick/trophy_tick_3.mp3",
+     "pass": true,
+     "len_s": 0.15,
+     "peak_db": -2.7,
+     "head_ms": 1.0,
+     "attack_ms": 9.7,
+     "active_s": 0.122,
+     "centroid_hz": 7961,
+     "tonal_db": 35.5,
+     "above_350_pct": 99.7,
+     "flat_tops": 0
+    }
+   ],
+   "picked_by": "measures and source prompt only (check 'hit': pass); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js via core.js snd() / main.js sound section",
+   "review": "work/sound/review/trophy_tick.wav",
+   "notes": ""
+  },
+  {
+   "id": "road_fill",
+   "kind": "ui",
+   "tier": 2,
+   "trigger": "menu.js result screen: the trophy road bar fills toward the next reward",
+   "brief": "smooth rising sparkly whoosh ending on a shine: the bar moving up",
+   "file": "lanes/sfx/road_fill.wav",
+   "length_s": 0.843,
+   "source": "elevenlabs:seed-brawl/takes/road_fill/road_fill_2.mp3",
+   "source_path": "C:/Dev/toybox/assets/audio/made/seed-brawl/takes/road_fill/road_fill_2.mp3",
+   "source_sha256": "9bf2f3908e8dad84f3238980f6151daec72ac16af9fe0413e9e774cce9181f28",
+   "source_prompt": "A progress bar filling up quickly in a cartoon mobile game: a smooth rising sparkly whoosh that ends on a soft shine. Chunky stylised cartoon game sound effect, close, dry, no music.",
+   "licence": "ElevenLabs text-to-sound, Starter plan (paid; commercial use cleared per the game-audio skill), made for Seed Brawl lanes 2026-11-13",
+   "edits": [
+    "decoded to mono 32 kHz",
+    "head trimmed to 1 ms before 3 % of peak (no late start)",
+    "tail cut at -45 dB",
+    "capped at 1.0 s",
+    "180 Hz high-pass",
+    "levelled to RMS -20 dB above 350 Hz (phone speaker), peak under 0.89"
+   ],
+   "play": {
+    "gain": 0.5,
+    "glob": true,
+    "gap": 0.5
+   },
+   "measures": {
+    "len_s": 0.843,
+    "peak_db": -11.0,
+    "head_ms": 0.2,
+    "attack_ms": 14.8,
+    "active_s": 0.807,
+    "centroid_hz": 3703,
+    "tonal_db": 34.1,
+    "above_350_pct": 100.0,
+    "phone_rms_db": -20.0,
+    "above_350_pct_before_fix": 100.0
+   },
+   "phone_steps": [
+    "180 Hz high-pass: 100.0 % above 350 Hz, phone -20.0 dB (limiter up to 9 dB)"
+   ],
+   "takes": [
+    {
+     "take": "elevenlabs:seed-brawl/takes/road_fill/road_fill_1.mp3",
+     "pass": true,
+     "len_s": 1.0,
+     "peak_db": 3.1,
+     "head_ms": 0.0,
+     "attack_ms": 0.3,
+     "active_s": 0.976,
+     "centroid_hz": 3720,
+     "tonal_db": 38.5,
+     "above_350_pct": 99.9,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/road_fill/road_fill_2.mp3",
+     "pass": true,
+     "len_s": 0.843,
+     "peak_db": 3.3,
+     "head_ms": 0.0,
+     "attack_ms": 15.4,
+     "active_s": 0.807,
+     "centroid_hz": 3698,
+     "tonal_db": 34.1,
+     "above_350_pct": 99.9,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/road_fill/road_fill_3.mp3",
+     "pass": true,
+     "len_s": 1.0,
+     "peak_db": 3.0,
+     "head_ms": 0.0,
+     "attack_ms": 0.0,
+     "active_s": 0.857,
+     "centroid_hz": 3949,
+     "tonal_db": 37.2,
+     "above_350_pct": 99.9,
+     "flat_tops": 0
+    }
+   ],
+   "picked_by": "measures and source prompt only (check 'magic': pass); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js via core.js snd() / main.js sound section",
+   "review": "work/sound/review/road_fill.wav",
+   "notes": ""
+  },
+  {
+   "id": "unlock_shake",
+   "kind": "ui",
+   "tier": 2,
+   "trigger": "menu.js unlock reveal: the seed pod shakes (three times)",
+   "brief": "woody rattle with seeds knocking inside: it is a seed pod about to open",
+   "file": "lanes/sfx/unlock_shake.wav",
+   "length_s": 0.4,
+   "source": "elevenlabs:seed-brawl/takes/unlock_shake/unlock_shake_3.mp3",
+   "source_path": "C:/Dev/toybox/assets/audio/made/seed-brawl/takes/unlock_shake/unlock_shake_3.mp3",
+   "source_sha256": "94b24c8f86083c6e2803eb6f8d36994a818845a2dae9a730d4568c4c6a982566",
+   "source_prompt": "A big magic seed pod is shaken once: a woody rattle with seeds knocking around inside and a little creak. Chunky stylised cartoon game sound effect, close, dry, no music.",
+   "licence": "ElevenLabs text-to-sound, Starter plan (paid; commercial use cleared per the game-audio skill), made for Seed Brawl lanes 2026-11-13",
+   "edits": [
+    "decoded to mono 32 kHz",
+    "head trimmed to 1 ms before 3 % of peak (no late start)",
+    "tail cut at -45 dB",
+    "capped at 0.4 s",
+    "180 Hz high-pass",
+    "levelled to RMS -20 dB above 350 Hz (phone speaker), peak under 0.89"
+   ],
+   "play": {
+    "gain": 0.6,
+    "glob": true,
+    "gap": 0.15,
+    "vary": [
+     60,
+     0.5
+    ]
+   },
+   "measures": {
+    "len_s": 0.4,
+    "peak_db": -3.2,
+    "head_ms": 1.1,
+    "attack_ms": 4.3,
+    "active_s": 0.288,
+    "centroid_hz": 6387,
+    "tonal_db": 19.3,
+    "above_350_pct": 99.9,
+    "phone_rms_db": -20.0,
+    "above_350_pct_before_fix": 99.9
+   },
+   "phone_steps": [
+    "180 Hz high-pass: 99.9 % above 350 Hz, phone -20.0 dB (limiter up to 9 dB)"
+   ],
+   "takes": [
+    {
+     "take": "elevenlabs:seed-brawl/takes/unlock_shake/unlock_shake_1.mp3",
+     "pass": false,
+     "len_s": 0.4,
+     "peak_db": 2.3,
+     "head_ms": 1.0,
+     "attack_ms": 90.6,
+     "active_s": 0.341,
+     "centroid_hz": 6347,
+     "tonal_db": 28.6,
+     "above_350_pct": 100.0,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/unlock_shake/unlock_shake_2.mp3",
+     "pass": false,
+     "len_s": 0.4,
+     "peak_db": 0.9,
+     "head_ms": 0.3,
+     "attack_ms": 45.8,
+     "active_s": 0.299,
+     "centroid_hz": 7020,
+     "tonal_db": 20.1,
+     "above_350_pct": 99.9,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/unlock_shake/unlock_shake_3.mp3",
+     "pass": true,
+     "len_s": 0.4,
+     "peak_db": 0.8,
+     "head_ms": 1.0,
+     "attack_ms": 4.3,
+     "active_s": 0.288,
+     "centroid_hz": 6377,
+     "tonal_db": 19.3,
+     "above_350_pct": 99.9,
+     "flat_tops": 0
+    }
+   ],
+   "picked_by": "measures and source prompt only (check 'hit': pass); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js via core.js snd() / main.js sound section",
+   "review": "work/sound/review/unlock_shake.wav",
+   "notes": ""
+  },
+  {
+   "id": "unlock_burst",
+   "kind": "ui",
+   "tier": 1,
+   "trigger": "menu.js unlock reveal: the seed pod bursts open and the reward shows",
+   "brief": "juicy pop, leaves and sparkles flying out, a bright shimmer: the reward moment",
+   "file": "lanes/sfx/unlock_burst.wav",
+   "length_s": 1.48,
+   "source": "elevenlabs:seed-brawl/takes/unlock_burst/unlock_burst_3.mp3",
+   "source_path": "C:/Dev/toybox/assets/audio/made/seed-brawl/takes/unlock_burst/unlock_burst_3.mp3",
+   "source_sha256": "17bc5ca97334732c5478fad9a1c07be4c59e6706736a4b463df51a8dc8292770",
+   "source_prompt": "A big magic seed pod bursts open to reveal a reward: a juicy pop, leaves and sparkles flying out and a bright shimmering reveal. Chunky stylised cartoon game sound effect, close, dry, no music.",
+   "licence": "ElevenLabs text-to-sound, Starter plan (paid; commercial use cleared per the game-audio skill), made for Seed Brawl lanes 2026-11-13",
+   "edits": [
+    "decoded to mono 32 kHz",
+    "head trimmed to 1 ms before 3 % of peak (no late start)",
+    "tail cut at -45 dB",
+    "capped at 1.5 s",
+    "180 Hz high-pass",
+    "levelled to RMS -20 dB above 350 Hz (phone speaker), peak under 0.89"
+   ],
+   "play": {
+    "gain": 0.85,
+    "glob": true,
+    "gap": 0.5
+   },
+   "measures": {
+    "len_s": 1.48,
+    "peak_db": -1.4,
+    "head_ms": 0.1,
+    "attack_ms": 0.4,
+    "active_s": 1.009,
+    "centroid_hz": 10261,
+    "tonal_db": 23.4,
+    "above_350_pct": 99.8,
+    "phone_rms_db": -20.0,
+    "above_350_pct_before_fix": 99.8
+   },
+   "phone_steps": [
+    "180 Hz high-pass: 99.8 % above 350 Hz, phone -20.0 dB (limiter up to 9 dB)"
+   ],
+   "takes": [
+    {
+     "take": "elevenlabs:seed-brawl/takes/unlock_burst/unlock_burst_1.mp3",
+     "pass": true,
+     "len_s": 1.003,
+     "peak_db": -2.2,
+     "head_ms": 0.0,
+     "attack_ms": 22.0,
+     "active_s": 0.77,
+     "centroid_hz": 9526,
+     "tonal_db": 26.5,
+     "above_350_pct": 59.0,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/unlock_burst/unlock_burst_2.mp3",
+     "pass": true,
+     "len_s": 0.821,
+     "peak_db": -3.6,
+     "head_ms": 0.0,
+     "attack_ms": 0.0,
+     "active_s": 0.573,
+     "centroid_hz": 10019,
+     "tonal_db": 21.3,
+     "above_350_pct": 71.8,
+     "flat_tops": 0
+    },
+    {
+     "take": "elevenlabs:seed-brawl/takes/unlock_burst/unlock_burst_3.mp3",
+     "pass": true,
+     "len_s": 1.48,
+     "peak_db": -7.8,
+     "head_ms": 0.0,
+     "attack_ms": 0.8,
+     "active_s": 1.008,
+     "centroid_hz": 10241,
+     "tonal_db": 23.4,
+     "above_350_pct": 98.7,
+     "flat_tops": 0
+    }
+   ],
+   "picked_by": "measures and source prompt only (check 'magic': pass); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js via core.js snd() / main.js sound section",
+   "review": "work/sound/review/unlock_burst.wav",
+   "notes": ""
+  },
+  {
+   "id": "menu",
    "kind": "loop",
    "tier": 5,
-   "trigger": "hero pick screen",
-   "brief": "menu music, real track (Suno)",
-   "source": null,
-   "status": "needed",
-   "wired": "no: games never synthesize music; Suno downloads are used up until 2026-11-22",
-   "notes": ""
+   "trigger": "menu.js enterMenu() (every app screen) and the old pick screen (?nomenu); music.set('menu')",
+   "brief": "bouncy tarantella mandolin and accordion with plucks, light drums, playful (Suno prompt): light and upbeat for browsing; the longest clean menu section, so a 77 s loop rarely repeats",
+   "file": "lanes/music/menu.m4a",
+   "length_s": 76.79,
+   "source": "suno:88fb9a47-924b-4da1-99ad-ce3b78d2e739@4.17-80.96",
+   "source_song": "BB Menus (brainrot_menus, Suno)",
+   "source_path": "D:/AI/music/suno/88fb9a47-924b-4da1-99ad-ce3b78d2e739.wav",
+   "suno_url": "https://suno.com/song/88fb9a47-924b-4da1-99ad-ce3b78d2e739",
+   "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
+   "lufs": -18.06,
+   "measures": {
+    "lufs": -18.06,
+    "true_peak_dbtp": -5.42,
+    "len_s": 76.99,
+    "band_1_4k_pct": 13.1,
+    "bpm": 125.0,
+    "bars": 40,
+    "gain_db": -1.95,
+    "seam_click_db": -33.44,
+    "seam_ok": true,
+    "cut": [
+     4.171,
+     80.96
+    ]
+   },
+   "edits": [
+    "whole phrases on the beat grid, 2-beat equal-power crossfade at the seam, wrapped in 0.1 s of itself (AAC smear)",
+    "-18 LUFS, AAC 160 kb/s 48 kHz"
+   ],
+   "tool": "C:/Dev/last-man-earth-2d/tools/music.py loop and tools/suno.py sting, run by work/sound/music_cut.py into a scratch folder",
+   "play": {
+    "gain": 1.0,
+    "offset": 0.1,
+    "loop": 76.7893
+   },
+   "picked_by": "Demucs vocal level, 1 to 4 kHz share, tempo and the Suno prompt of each section (work/sound/music_measure.py); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js music (tier 5)",
+   "notes": "shared with Brainrot Brawl: the same Suno download carries its menu and mode music"
+  },
+  {
+   "id": "match",
+   "kind": "loop",
+   "tier": 5,
+   "trigger": "main.js playS('match_start'): the match begins; music.set('match')",
+   "brief": "whimsical orchestral chase, fast pizzicato strings, clarinet runs, driving drums (Suno prompt): a cartoon chase that drives; only 5.4 % of its energy in 1 to 4 kHz, so hits and shots stay on top",
+   "file": "lanes/music/match.m4a",
+   "length_s": 46.29,
+   "source": "suno:92e6309c-d2ff-47a8-8f22-aaab15f88d37@213.16-259.45",
+   "source_song": "BB Mode Layers (brainrot_mode_layers, Suno)",
+   "source_path": "D:/AI/music/suno/92e6309c-d2ff-47a8-8f22-aaab15f88d37.wav",
+   "suno_url": "https://suno.com/song/92e6309c-d2ff-47a8-8f22-aaab15f88d37",
+   "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
+   "lufs": -18.07,
+   "measures": {
+    "lufs": -18.07,
+    "true_peak_dbtp": -7.5,
+    "len_s": 46.51,
+    "band_1_4k_pct": 5.4,
+    "bpm": 83.96,
+    "bars": 16,
+    "gain_db": -3.19,
+    "seam_click_db": -6.89,
+    "seam_ok": true,
+    "cut": [
+     6.155,
+     52.448
+    ]
+   },
+   "edits": [
+    "whole phrases on the beat grid, 2-beat equal-power crossfade at the seam, wrapped in 0.1 s of itself (AAC smear)",
+    "-18 LUFS, AAC 160 kb/s 48 kHz"
+   ],
+   "tool": "C:/Dev/last-man-earth-2d/tools/music.py loop and tools/suno.py sting, run by work/sound/music_cut.py into a scratch folder",
+   "play": {
+    "gain": 1.0,
+    "offset": 0.1,
+    "loop": 46.2933
+   },
+   "picked_by": "Demucs vocal level, 1 to 4 kHz share, tempo and the Suno prompt of each section (work/sound/music_measure.py); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js music (tier 5)",
+   "notes": "shared with Brainrot Brawl: the same Suno download carries its menu and mode music"
+  },
+  {
+   "id": "match_late",
+   "kind": "loop",
+   "tier": 5,
+   "trigger": "main.js SBL_SND('late_double'): the rules reach CFG.late.at (75 s) left; music.set('match_late')",
+   "brief": "frantic breakcore drum and bass, max intensity, 160 bpm (Suno prompt): the same song and key (E minor) as the match loop, faster and harder for the last 75 s",
+   "file": "lanes/music/match_late.m4a",
+   "length_s": 81.8,
+   "source": "suno:92e6309c-d2ff-47a8-8f22-aaab15f88d37@3.05-84.85",
+   "source_song": "BB Mode Layers (brainrot_mode_layers, Suno)",
+   "source_path": "D:/AI/music/suno/92e6309c-d2ff-47a8-8f22-aaab15f88d37.wav",
+   "suno_url": "https://suno.com/song/92e6309c-d2ff-47a8-8f22-aaab15f88d37",
+   "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
+   "lufs": -18.16,
+   "measures": {
+    "lufs": -18.16,
+    "true_peak_dbtp": -7.93,
+    "len_s": 82.01,
+    "band_1_4k_pct": 22.8,
+    "bpm": 165.44,
+    "bars": 56,
+    "gain_db": -2.16,
+    "seam_click_db": -21.21,
+    "seam_ok": true,
+    "cut": [
+     3.051,
+     84.853
+    ]
+   },
+   "edits": [
+    "whole phrases on the beat grid, 2-beat equal-power crossfade at the seam, wrapped in 0.1 s of itself (AAC smear)",
+    "-18 LUFS, AAC 160 kb/s 48 kHz"
+   ],
+   "tool": "C:/Dev/last-man-earth-2d/tools/music.py loop and tools/suno.py sting, run by work/sound/music_cut.py into a scratch folder",
+   "play": {
+    "gain": 1.0,
+    "offset": 0.1,
+    "loop": 81.8027
+   },
+   "picked_by": "Demucs vocal level, 1 to 4 kHz share, tempo and the Suno prompt of each section (work/sound/music_measure.py); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js music (tier 5)",
+   "notes": "shared with Brainrot Brawl: the same Suno download carries its menu and mode music"
+  },
+  {
+   "id": "stinger_win",
+   "kind": "stinger",
+   "tier": 5,
+   "trigger": "menu.js showResult(): a win (with ?nomenu: main.js at the match end)",
+   "brief": "the first 4.5 s of the swaggering victory groove, brass and mandolin (Suno prompt), faded on the last beat",
+   "file": "lanes/music/stinger_win.m4a",
+   "length_s": 4.5,
+   "source": "suno:88fb9a47-924b-4da1-99ad-ce3b78d2e739@96.75-101.25",
+   "source_song": "BB Menus (brainrot_menus, Suno)",
+   "source_path": "D:/AI/music/suno/88fb9a47-924b-4da1-99ad-ce3b78d2e739.wav",
+   "suno_url": "https://suno.com/song/88fb9a47-924b-4da1-99ad-ce3b78d2e739",
+   "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
+   "lufs": -16.1,
+   "measures": {
+    "lufs": -16.1,
+    "true_peak_dbtp": -4.41,
+    "len_s": 4.5,
+    "band_1_4k_pct": 6.4,
+    "vocals_db": -65.7,
+    "bpm": null,
+    "bars": null,
+    "gain_db": -0.33,
+    "seam_click_db": null,
+    "seam_ok": null,
+    "cut": [
+     0.747,
+     5.247
+    ]
+   },
+   "edits": [
+    "the section's first bars from its first beat, faded out over the last beat",
+    "-16 LUFS, AAC 160 kb/s 48 kHz"
+   ],
+   "tool": "C:/Dev/last-man-earth-2d/tools/music.py loop and tools/suno.py sting, run by work/sound/music_cut.py into a scratch folder",
+   "play": {
+    "gain": 1.0
+   },
+   "picked_by": "Demucs vocal level, 1 to 4 kHz share, tempo and the Suno prompt of each section (work/sound/music_measure.py); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js music (tier 5)",
+   "notes": "shared with Brainrot Brawl: the same Suno download carries its menu and mode music"
+  },
+  {
+   "id": "stinger_lose",
+   "kind": "stinger",
+   "tier": 5,
+   "trigger": "menu.js showResult(): a loss (with ?nomenu: main.js at the match end)",
+   "brief": "the first 4.5 s of the chill comic lament, accordion, soft drums (Suno prompt): a shrug, not a dirge",
+   "file": "lanes/music/stinger_lose.m4a",
+   "length_s": 4.5,
+   "source": "suno:88fb9a47-924b-4da1-99ad-ce3b78d2e739@126.91-131.41",
+   "source_song": "BB Menus (brainrot_menus, Suno)",
+   "source_path": "D:/AI/music/suno/88fb9a47-924b-4da1-99ad-ce3b78d2e739.wav",
+   "suno_url": "https://suno.com/song/88fb9a47-924b-4da1-99ad-ce3b78d2e739",
+   "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
+   "lufs": -16.04,
+   "measures": {
+    "lufs": -16.04,
+    "true_peak_dbtp": -3.01,
+    "len_s": 4.5,
+    "band_1_4k_pct": 3.1,
+    "vocals_db": -58.6,
+    "bpm": null,
+    "bars": null,
+    "gain_db": 2.97,
+    "seam_click_db": null,
+    "seam_ok": null,
+    "cut": [
+     0.907,
+     5.407
+    ]
+   },
+   "edits": [
+    "the section's first bars from its first beat, faded out over the last beat",
+    "-16 LUFS, AAC 160 kb/s 48 kHz"
+   ],
+   "tool": "C:/Dev/last-man-earth-2d/tools/music.py loop and tools/suno.py sting, run by work/sound/music_cut.py into a scratch folder",
+   "play": {
+    "gain": 1.0
+   },
+   "picked_by": "Demucs vocal level, 1 to 4 kHz share, tempo and the Suno prompt of each section (work/sound/music_measure.py); nobody listened",
+   "status": "made",
+   "wired": "lanes/sound.js music (tier 5)",
+   "notes": "shared with Brainrot Brawl: the same Suno download carries its menu and mode music"
   }
  ]
 }

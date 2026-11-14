@@ -11,7 +11,9 @@
 //
 // Format extensions used by the game's definitions (all optional, ignored by other players):
 //   layer.arc (half angle, number or "half"), layer.sweep (the arc wipes from one side to the other over the life),
-//   layer.swing (1, -1 or "random"), layer.rot "aim" (decal turned to the direction), layer.beam (quad from at to to),
+//   layer.swing (1, -1 or "random"), layer.rot "aim" or "aim:deg" (decal turned to the direction, plus deg), layer.beam (quad from at to to),
+//   layer.rot [min, max] degrees picked once per effect so every layer of one hit shares it (layer.rotSign "random" mirrors it, once per effect),
+//   layer.forward (spawn point moved this far along dir, e.g. "radius:0.55"),
 //   layer.anchor "move" (the travelling point of a def with "travel"), layer.follow (moves with its anchor),
 //   layer.frame (always this flipbook tile), layer.toCam (pulled this far toward the camera, so a hit draws over the body it lands on),
 //   def.travel { time, arc } (the anchor flies from at to to), "travel" and "arm" as number names, team ramps.
@@ -158,7 +160,7 @@ function build(fx, def, a, tOff, depth) {
 }
 function newFx(id, o, getPos) {
   const def = data && data.defs[id]; if (!def) { if (data) console.warn('fx: no effect', id); return null; }
-  const a = args(o, def), fx = { id, def, a, t: 0, layers: [], end: 0, getPos: getPos || null, stopped: false, mx: a.x, my: a.y, mz: a.z, live: 0, len: 0 };
+  const a = args(o, def), fx = { id, def, a, t: 0, layers: [], end: 0, getPos: getPos || null, u0: rnd(), s0: rnd() < .5 ? -1 : 1, stopped: false, mx: a.x, my: a.y, mz: a.z, live: 0, len: 0 };
   build(fx, def, a, 0, 0);
   fx.len = getPos ? Infinity : def.loop ? Math.max(.05, a.duration) + (def.tail !== undefined ? def.tail : 1) : def.length !== undefined ? expr(def.length, a, 1.5) : Math.max(.2, fx.end, a.travel);
   if (getPos) for (const ly of fx.layers) if (ly.hasRate && ly.L.emit.until === undefined && ly.L.emit.for === undefined) ly.until = Infinity;
@@ -194,6 +196,7 @@ function spawn(fx, ly, i, n) {
     case 'body': { const g = R(0, TAU), r = a.height * R(.2, .34) * spread; ox = Math.cos(g); oz = Math.sin(g); px += ox * r; py += a.height * R(.15, .9); pz += oz * r; break; }
     default: { const g = R(0, TAU); ox = Math.cos(g); oz = Math.sin(g); }
   }
+  if (L.forward !== undefined) { const f = V(L, 'forward', 0, a); px += fdx * f; pz += fdz * f; }
   const size = V(L, 'size', 1, a) * a.scale * ly.sizeMul, aspect = L.aspect || 1; py += V(L, 'height', 0, a);
   const speed = V(L, 'speed', 0, a), lift = V(L, 'lift', 0, a); let vx = 0, vy = 0, vz = 0;
   switch (L.dir) {
@@ -205,8 +208,10 @@ function spawn(fx, ly, i, n) {
   }
   vy += lift; if (L.drift !== undefined) { vx += .15 * L.drift; vz -= .1 * L.drift; }
   if (L.standing) py += size * aspect * .5 * (L.foot !== undefined ? L.foot * 2 : .84);
-  let rot = L.rot === 'aim' ? a.dir : L.rot !== undefined ? L.rot * Math.PI / 180 : (L.upright || L.standing) ? R(-7, 7) * Math.PI / 180 : R(0, TAU);
-  if (L.rot === 'aim' && L.rotJitter) rot += R(-L.rotJitter, L.rotJitter) * Math.PI / 180;
+  const aimOff = typeof L.rot === 'string' && L.rot.slice(0, 4) === 'aim:' ? +L.rot.slice(4) : null;
+  let rot = L.rot === 'aim' ? a.dir : aimOff !== null ? a.dir + aimOff * Math.PI / 180 : Array.isArray(L.rot) ? (L.rot[0] + (L.rot[1] - L.rot[0]) * fx.u0) * (L.rotSign === 'random' ? fx.s0 : 1) * Math.PI / 180
+    : L.rot !== undefined ? L.rot * Math.PI / 180 : (L.upright || L.standing) ? R(-7, 7) * Math.PI / 180 : R(0, TAU);
+  if ((L.rot === 'aim' || aimOff !== null) && L.rotJitter) rot += R(-L.rotJitter, L.rotJitter) * Math.PI / 180;
   if (L.rot === 'out') rot = Math.atan2(oz, ox);
   q.alive = true; q.ly = ly; q.fx = fx; q.p[0] = px; q.p[1] = py; q.p[2] = pz; q.v[0] = vx; q.v[1] = vy; q.v[2] = vz; q.o[0] = px - c[0]; q.o[1] = py - c[1]; q.o[2] = pz - c[2];
   q.size = size; q.aspect = aspect; q.life = Math.max(.02, V(L, 'life', 1, a)); q.age = 0; q.rot = rot; q.spin = L.spin ? R(-L.spin, L.spin) * Math.PI / 180 : 0;

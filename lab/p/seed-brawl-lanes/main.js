@@ -222,13 +222,20 @@ function drawTransient(){const G=SB.G,me=G.me;nR=nD=nS=nC=nV=0;let i=0;
  rings.end(nR);discs.end(nD);strips.end(nS);cones.end(nC);chevs.end(nV)}
 
 // ---- sound: one player for every cue (lanes/sound.js; ids, tiers and levels in lanes/sfx/cues.json)
-const SND=window.SBL_SOUND.create({base:'sfx/'});let soundOn=false,lastSel=-1;window.SBL_SOUND.player=SND;
-// what main.js asks for by name, as cue ids; a summon tap is answered by the summon itself, a seed kind change by its switch
-function playS(k){const G=SB.G;if(k==='button_tap'&&G&&G.sel!==lastSel){lastSel=G.sel;return SND.play('ui_kind',{ui:true})}if(k==='match_start'&&G)lastSel=G.sel;return SND.play(k==='button_tap'?'ui_tap':k,{ui:true})}
+// Settings (meta.js) switch effects and music; the menu flow plays the result stinger on its result screen (menu.js)
+try{window.SBL_META&&window.SBL_META.load()}catch(e){}   // saved settings before the player starts (menu.js loads it again)
+const SET=(window.SBL_META&&window.SBL_META.state&&window.SBL_META.state.settings)||{},MENU_FLOW=!!window.SBL_META&&!/[?&]nomenu\b/.test(location.search);
+const SND=window.SBL_SOUND.create({base:'sfx/',music:'music/',sound:SET.sound!==false,music_on:SET.music!==false});let soundOn=false;window.SBL_SOUND.player=SND;
+// what main.js asks for by name, as cue ids; a summon tap is answered by the summon itself (the tap click stays quiet after my own sound).
+// match start: the match loop; match over: the loop fades, and the stinger plays (here without the menu, on the result screen with it)
+function playS(k){if(k==='match_start'){SND.music.set('match');SND.music.preload('match_late','stinger_win','stinger_lose')}
+ if(k==='win'||k==='lose'){const G=SB.G;if(G){if(G._endSnd)return 'once';G._endSnd=1}SND.music.set(null);if(MENU_FLOW)return 'menu';SND.music.stinger(k==='win'?'stinger_win':'stinger_lose',null);if(SND.tracks['stinger_'+k])return 'stinger'}
+ return SND.play(k==='button_tap'?'ui_tap':k,{ui:true})}
 // the listener is the camera focus; the view's half width and half height in rules units set where sounds fade out
 const listen=()=>({x:(focus.x+10.5)/K,y:focus.z/K+SB.H/2,hw:SB.W/2,hh:SB.W/2*VH/VW/Math.sin(PITCH)});
-window.SBL_SND=(k,x,y,a)=>SND.play(k,{x,y,actor:a,me:SB.G&&SB.G.me,at:listen()});
+window.SBL_SND=(k,x,y,a)=>{if(k==='late_double')SND.music.set('match_late');return SND.play(k,{x,y,actor:a,me:SB.G&&SB.G.me,at:listen()})};   // the late phase (CFG.late.at seconds left) switches the music
 document.addEventListener('click',e=>{const t=e.target&&e.target.closest&&e.target.closest('#pick .tile,#play,#swap');if(t)SND.play(t.id==='play'?'ui_play':'ui_tap',{ui:true})},true);
+if(!MENU_FLOW)SND.music.set('menu');   // the old pick screen: menu music once the first touch runs the sound
 
 // ---- input
 let aim=null;const keys={},mouse={x:0,y:0,down:false};
@@ -237,12 +244,11 @@ function groundAt(sx,sy){ray.setFromCamera(new THREE.Vector2(sx/VW*2-1,-(sy/VH)*
 function autoAim(me,range){let best=null,bd=range*1.15;for(const e of[...SB.G.heroes,...SB.G.units]){if(e.dead||e.team===me.team||e.invisT>0)continue;const d=Math.hypot(e.x-me.x,e.y-me.y)-(e.isHero?40:0);if(d<bd){bd=d;best=e}}return best?{a:Math.atan2(best.y-me.y,best.x-me.x),d:Math.hypot(best.x-me.x,best.y-me.y)}:{a:me.aimA,d:range*.7}}
 function fire(a,d){I.fireA=a;I.fireD=d;I.fire=true}
 function castSup(a,d){const me=SB.G.me,sp=me.def.sup,r=sp.range||0,q=sp.shape==='circle'?Math.min(r,d):Math.max(60,r);SB.castSuper(me,me.x+Math.cos(a)*q,me.y+Math.sin(a)*q)}
-function doSummon(tier){const G=SB.G;if(!G||G.over)return;const el=$('bodies').children[tier-1];if(!SB.summon(G.me,tier)){el.animate([{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'none'}],{duration:160});return}playS('button_tap')}
-function nextKind(){const G=SB.G;if(!G)return;G.sel=(G.sel+1)%3;playS('button_tap');drawHud()}
+function doSummon(slot){const G=SB.G;if(!G||G.over)return;const el=$('hand').children[slot];if(!el)return;if(!SB.playCard(G.me,slot)){el.animate([{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'none'}],{duration:160});return}playS('button_tap');drawHud()}
 function pickLane(l){const G=SB.G;if(!G||G.over)return;SB.setLane(G.me,l);drawHud()}
 const LANEKEYS='zxcvb';
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k===' ')e.preventDefault();if(e.repeat||!SB.G||!started)return;keys[k]=true;
- if(k>='1'&&k<='5')doSummon(+k);if(k==='q')nextKind();if(k==='e')pickLane(SB.G.me.lane+1);const li=LANEKEYS.indexOf(k);if(li>=0&&li<SB.NL)pickLane(li);
+ if(k>='1'&&k<=String(SB.HAND))doSummon(+k-1);if(k==='e')pickLane(SB.G.me.lane+1);const li=LANEKEYS.indexOf(k);if(li>=0&&li<SB.NL)pickLane(li);
  if(k===' ')aim={sup:true,a:SB.G.me.aimA,d:300,mouse:true}});
 addEventListener('keyup',e=>{const k=e.key.toLowerCase();keys[k]=false;if(k===' '&&aim&&aim.sup){castSup(aim.a,aim.d);aim=null}});
 const gl=$('gl');
@@ -263,7 +269,6 @@ function dragButton(el,sup){let id=null,ox=0,oy=0;
   if(e.type==='pointerup'){if(sup)castSup(t.a,t.d);else fire(t.a,d.shape==='circle'?t.d:r)}aim=null};
  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)}
 dragButton($('btnAtk'),false);dragButton($('btnSup'),true);
-$('btnSeed').addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;nextKind()});
 $('lanes').addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;const r=e.currentTarget.getBoundingClientRect();pickLane(SB.laneOf((ROT?(e.clientY-r.top)/r.height:(e.clientX-r.left)/r.width)*SB.W))});
 function readInput(){const me=SB.G.me;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),my=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
  if(stick.id!==null){mx=stick.x;my=stick.y}const m=Math.hypot(mx,my);if(m>1){mx/=m;my/=m}if(m<.18){mx=my=0}I.mx=mx;I.my=my;
@@ -271,14 +276,20 @@ function readInput(){const me=SB.G.me;let mx=(keys.d||keys.arrowright?1:0)-(keys
  else if(mouse.seen){const g=groundAt(mouse.x,mouse.y);I.aimA=Math.atan2(g.y-me.y,g.x-me.x);if(mouse.down)fire(I.aimA,Math.hypot(g.x-me.x,g.y-me.y))}
  else if(mx||my)I.aimA=Math.atan2(my,mx)}
 
-// ---- HUD: seeds carried, the lane picker (a small live map), the seed kind, the five bodies
-const fmt=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};let hudT=0,lastTick=99,hudKind=-1;
-const unitPics={};UNITS.load(GP+'assets/units/',()=>{for(const k in unitPics)delete unitPics[k];hudKind=-1});
+// ---- HUD: seeds carried, the lane picker (a small live map), the three creeps in hand and the next one
+const fmt=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};let hudT=0,lastTick=99,hudCards=[];
+const unitPics={};UNITS.load(GP+'assets/units/',()=>{for(const k in unitPics)delete unitPics[k];hudCards=[]});
 function unitPic(kind,ti){const key=kind+'_'+ti;if(unitPics[key])return unitPics[key];const sc=new THREE.Scene();LOOK.addLights(sc);const body=UNITS.single(kind,ti,PAL.team.blue);body.userData.tick=null;const w=W.UNIT_WIDTH[ti];
  sc.add(body);body.rotation.y=.5;const bx=new THREE.Box3().setFromObject(body),h=Math.max(.3,bx.max.y-bx.min.y),cy=(bx.max.y+bx.min.y)/2,c=new THREE.PerspectiveCamera(26,1,.05,50),d=Math.max(h,w*1.2)*2.6;
  c.position.set(0,cy+h*.35,d);c.lookAt(0,cy,0);const bg=scene.background;renderer.setSize(112,112,false);LOOK.setOutlineViewport(112,112);renderer.setClearColor(0,0);renderer.render(sc,c);const url=gl.toDataURL('image/png');resize();return unitPics[key]=url}
-function buildDock(){const el=$('bodies');el.innerHTML='';for(let t=1;t<=5;t++){const b=document.createElement('div');b.className='sq';b.innerHTML='<img alt=""><kbd>'+t+'</kbd><em>'+SB.costOf(t)+'</em><span></span>';b.lastChild.textContent=SB.BODIES[t];b.setAttribute('role','button');b.setAttribute('aria-label',SB.BODIES[t]);b.addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;doSummon(t)});el.appendChild(b)}
- const k=document.createElement('kbd');k.textContent='Q';$('btnSeed').appendChild(k)}
+// hand slots keep a fixed label (Card 1..3) for the iOS test taps; the creep's own name is on the card
+function buildDock(){const el=$('hand');el.innerHTML='';for(let i=0;i<SB.HAND;i++){const b=document.createElement('div');b.className='card';b.innerHTML='<img alt=""><kbd>'+(i+1)+'</kbd><em></em><span><small></small><b></b></span>';b.setAttribute('role','button');b.setAttribute('aria-label','Card '+(i+1));b.addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;doSummon(i)});el.appendChild(b)}}
+// what a card shows: the creep's picture, its body and kind, its seed cost; redrawn only when the slot holds a new card
+function drawCards(me){const els=$('hand').children,cards=me.hand.concat([SB.nextCard(me)]);
+ cards.forEach((c,i)=>{if(!c)return;const el=i<SB.HAND?els[i]:$('next'),key=c.kind+'_'+c.tier;if(hudCards[i]!==c||el.dataset.k!==key){const fresh=hudCards[i]!==undefined&&hudCards[i]!==c;hudCards[i]=c;el.dataset.k=key;
+  el.querySelector('img').src=unitPic(c.kind,c.tier-1);el.querySelector('em').textContent=SB.costOf(c.tier);
+  if(i<SB.HAND){el.querySelector('b').textContent=SB.BODIES[c.tier];el.querySelector('small').textContent=SB.KINDS[c.kind].name;if(fresh){el.classList.remove('deal');void el.offsetWidth;el.classList.add('deal')}}}
+  if(i<SB.HAND)el.classList.toggle('off',!SB.canPlay(me,i))})}
 const lc=$('lanes'),lx=lc.getContext('2d');
 function drawLanes(){const G=SB.G,me=G.me,w=lc.width,h=lc.height,sx=w/SB.W,sy=h/SB.H;lx.clearRect(0,0,w,h);
  for(let i=0;i<SB.NL;i++){const x0=SB.laneL(i)*sx,x1=SB.laneR(i)*sx,on=i===me.lane;lx.fillStyle=on?'#4c6b55':'#2f4237';lx.fillRect(x0,0,x1-x0,h);
@@ -292,8 +303,7 @@ function drawHud(){const G=SB.G;if(!G)return;const me=G.me;{const c=Math.ceil(G.
  $('seeds').innerHTML=Array.from({length:SB.CFG.carry},(_,i)=>'<u class="'+(i<me.seeds?'on':'')+'"></u>').join('');
  $('ammo').innerHTML=[0,1,2].map(i=>'<u class="'+(i<Math.floor(me.ammo)?'on':'')+'"></u>').join('');
  $('supArc').style.strokeDashoffset=100.5*(1-me.sup);$('btnSup').classList.toggle('cd',me.sup<1);$('supName').textContent=me.def.sup.name;
- if(hudKind!==G.sel){hudKind=G.sel;$('seedName').textContent=SB.KINDS[G.sel].name;$('btnSeed').firstElementChild.src=unitPic(G.sel,0);[...$('bodies').children].forEach((b,i)=>{b.firstElementChild.src=unitPic(G.sel,i)})}
- [...$('bodies').children].forEach((b,i)=>b.classList.toggle('off',!SB.canSummon(me,i+1)));
+ drawCards(me);
  drawLanes();if(me.dead)toast('Back in '+Math.max(1,Math.ceil(me.respawn)),.4)}
 function drawHit(){const me=SB.G.me,el=$('hitdir'),f=me.hitFrom,age=f?SB.G.t-f.t:9;if(!f||age>.6||me.dead){el.style.opacity=0;$('hurt').style.opacity=0;return}
  const a=project(wx(me.x),.6,wz(me.y)),b=project(wx(f.x),.6,wz(f.y)),ang=Math.atan2(b.y-a.y,b.x-a.x);el.style.opacity=1-age/.6;el.style.transform=`translate(${a.x}px,${a.y}px) rotate(${ang}rad)`;$('hurt').style.opacity=Math.max(0,.55-age*1.4)}
@@ -302,8 +312,9 @@ function drawLabels(){for(const f of farmViews){const s=project(wx(f.x),f.h,wz(f
 
 // ---- screens and loop
 let started=false,myPick=0,busy=false;
-async function startMatch(i,auto){if(busy)return;busy=true;myPick=i;started=false;for(const v of heroViews){scene.remove(v.grp);v.lab.remove()}heroViews=[];
- SB.start(i,!!auto);fxReset();buildWorld();heroViews=await Promise.all(SB.G.heroes.map(makeHero));$('pick').hidden=true;$('over').hidden=true;$('hud').hidden=false;hudKind=-1;started=true;busy=false;playS('match_start');lastTick=99;I.fire=false;aim=null;
+// opts.deck: six {kind, tier} the player brings (the menu sets it); with none the hero's default deck
+let myOpts={};async function startMatch(i,auto,opts){if(busy)return;busy=true;myPick=i;if(opts)myOpts=opts;started=false;for(const v of heroViews){scene.remove(v.grp);v.lab.remove()}heroViews=[];
+ SB.start(i,!!auto,myOpts);fxReset();buildWorld();heroViews=await Promise.all(SB.G.heroes.map(makeHero));$('pick').hidden=true;$('over').hidden=true;$('hud').hidden=false;hudCards=[];started=true;busy=false;playS('match_start');lastTick=99;I.fire=false;aim=null;
  toast('Pick a lane, then spend seeds on units.',5);focus.z=wz(SB.G.me.y);drawHud()}
 function toast(t,sec){const el=$('toast');if(el.textContent!==t)el.textContent=t;el.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>{el.style.opacity=0},sec*1000)}
 const portraits={};
@@ -332,3 +343,6 @@ function frame(_,__,fdt){const dt=fdt||Math.min(.05,clock.getDelta());
 await LOOK.heroRoster();buildDock();
 const qs=new URLSearchParams(location.search);if(qs.has('hero'))await startMatch(+qs.get('hero')||0,qs.has('auto'));else showPick();
 renderer.setAnimationLoop(frame);window.GAME={startMatch,showPick,scene,cam,renderer,SB,step(n,dt){for(let i=0;i<n;i++)frame(0,0,dt||1/30)},hold(v){renderer.setAnimationLoop(v?null:frame)}};   // step and hold are for tests and the clip recorder
+// ==== MENU (shell branch): the app screens around the match live in menu.js; it gets the renderer, the hero pose code and the match start, and runs the frame while a screen is up. Keep this block whole when merging.
+{const MENU=await import('./menu.js');await MENU.init({THREE,LOOK,W,UNITS,renderer,resize,CAST,rigOf,setBone,pose,startMatch,frame});}
+// ==== /MENU
