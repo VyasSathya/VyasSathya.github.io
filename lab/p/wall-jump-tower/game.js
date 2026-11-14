@@ -141,3 +141,9 @@ requestAnimationFrame(loop);
 window.__dbg=()=>({G,S,cam,H,an,scr});window.__go=startLevel;
 window.__run=sec=>{for(let i=0;i<sec*120&&scr=='play';i++){if(!S.dead&&!S.win&&i%6==0&&think(G,S,{n:4,d:60}))press=true;RP.ox=S.p.x;RP.oy=S.p.y;step(G,S,1/120,{press,release,hold:true});press=release=false;if(S.ev.length)events();
   if(i%2){RP.x=S.p.x;RP.y=S.p.y;T+=1/60;tick(1/60);for(const f of fx){f.x+=f.vx/60;f.y+=f.vy/60;f.life-=1/60}fx=fx.filter(f=>f.life>0)}}return{scr,x:Math.round(S.p.x),y:Math.round(S.p.y),si:S.si,deaths:S.deaths,gems:S.gems,clip:an.clip}};
+/* the iPhone app's own check (launched with -qa on the simulator): where the page came from, whether the sheets and the
+   sounds loaded, and the test player through three levels. Lines go to the app's log (ci/mac_run.py reads them). */
+if(window.__qa){const say=m=>{try{webkit.messageHandlers.qa.postMessage(m)}catch(e){console.log(m)}};
+ addEventListener('error',e=>say('QA_ERROR '+e.message+' '+(e.filename||'').split('/').pop()+':'+e.lineno));
+ setTimeout(()=>{auInit();setTimeout(()=>{say('QA_INFO '+JSON.stringify({from:location.origin,sheets:CHARS.map(c=>sheets[c]?sheets[c].tagName:'none').join(','),sounds:Object.keys(AU.buf).length+'/'+FILES.length,audio:AU.c?AU.c.state:'none',w:innerWidth,h:innerHeight,top:Math.round(TOP*SC),bottom:Math.round(BOT*SC)}));
+  const lv=[0,7,14];let k=0;(function next(){if(k>=lv.length){say('QA_DONE');return}startLevel(lv[k]);let n=0;const t=setInterval(()=>{__run(3);if(scr=='clear'||++n>90){clearInterval(t);say('QA_LEVEL '+(lv[k]+1)+' '+(scr=='clear'?'won':'NOT won')+', deaths '+S.deaths);k++;setTimeout(next,2500)}},350)})()},5000)},1500)}
