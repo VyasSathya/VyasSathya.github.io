@@ -11,7 +11,7 @@
     0.334
    ],
    "tris": 2450,
-   "bytes": 230988,
+   "bytes": 231228,
    "source": "D:/SeedBrawl/meshy/thorn_grunt_t6",
    "meshy": {
     "preview": "01a1d8c5-48bb-706e-9669-c31520de0653",
@@ -69,7 +69,7 @@
      "walk": 1.62
     }
    },
-   "team_part": "headband"
+   "team_part": "headband (wider, 2026-11-14 polish)"
   },
   "thorn_brute": {
    "file": "thorn_brute.glb",
@@ -297,7 +297,7 @@
     0.234
    ],
    "tris": 4900,
-   "bytes": 446988,
+   "bytes": 462348,
    "meshy": {
     "preview": "01a1d8c9-6cd2-7257-9045-c59a3209d5d5",
     "refine": "01a1d8c9-c6a6-7220-8078-dccd4e7ddcde",
@@ -354,7 +354,7 @@
      "walk": 2.22
     }
    },
-   "team_part": "belt"
+   "team_part": "belt and a sash over one shoulder (2026-11-14 polish)"
   },
   "spitter_grunt": {
    "file": "spitter_grunt.glb",
@@ -424,7 +424,7 @@
      "walk": 1.51
     }
    },
-   "team_part": "headband"
+   "team_part": "headband (wider, 2026-11-14 polish)"
   },
   "spitter_brute": {
    "file": "spitter_brute.glb",
@@ -581,7 +581,7 @@
     0.247
    ],
    "tris": 2450,
-   "bytes": 236732,
+   "bytes": 252096,
    "meshy": {
     "preview": "01a1d8d7-0a7e-7716-b3d0-85c2092abae6",
     "refine": "01a1d8d7-641b-71a7-8b7d-4156f5dae49d",
@@ -638,7 +638,7 @@
      "walk": 2.17
     }
    },
-   "team_part": "wings"
+   "team_part": "wings and a band round the body (2026-11-14 polish)"
   },
   "spitter_colossus": {
    "file": "spitter_colossus.glb",
@@ -651,7 +651,7 @@
     0.1
    ],
    "tris": 4899,
-   "bytes": 397260,
+   "bytes": 412620,
    "meshy": {
     "preview": "01a1d8e1-662a-77c9-baad-e901d2b7bc87",
     "refine": "01a1d8e2-10a1-7351-946b-6382853c9a60",
@@ -708,7 +708,7 @@
      "walk": 2.05
     }
    },
-   "team_part": "belt"
+   "team_part": "belt and a sash over one shoulder (2026-11-14 polish)"
   },
   "runner_grunt": {
    "file": "runner_grunt.glb",
@@ -778,7 +778,7 @@
      "walk": 1.97
     }
    },
-   "team_part": "headband"
+   "team_part": "headband (wider, 2026-11-14 polish)"
   },
   "runner_brute": {
    "file": "runner_brute.glb",
@@ -935,7 +935,7 @@
     0.163
    ],
    "tris": 2450,
-   "bytes": 229992,
+   "bytes": 245352,
    "meshy": {
     "preview": "01a1d8cd-2a86-7566-a57b-7e0b48d03a80",
     "refine": "01a1d8cd-ac7e-769d-8a19-33ae3aff8258",
@@ -992,7 +992,7 @@
      "walk": 1.72
     }
    },
-   "team_part": "wings"
+   "team_part": "wings and a band round the body (2026-11-14 polish)"
   },
   "runner_colossus": {
    "file": "runner_colossus.glb",
@@ -1005,7 +1005,7 @@
     0.047
    ],
    "tris": 4897,
-   "bytes": 557676,
+   "bytes": 573036,
    "meshy": {
     "preview": "01a1d8cd-2e37-719e-a7d7-4089e29e6f30",
     "refine": "01a1d8cd-d730-72c1-b0af-a635ea15df72",
@@ -1062,7 +1062,7 @@
      "walk": 2.16
     }
    },
-   "team_part": "belt"
+   "team_part": "belt and a sash over one shoulder (2026-11-14 polish)"
   }
  }
 }

@@ -5,6 +5,8 @@ import * as LOOK from './game/src/look.js';
 import * as W from './game/src/world.js';
 import * as UNITS from './units.js';
 import * as FX from './fx.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const SB=window.SBL,I=window.SBL_INPUT,GP=(window.SBL_PATHS||{}).game||'./game/',$=id=>document.getElementById(id),PAL=LOOK.palette;
 LOOK.setHeroBase(GP+'assets/heroes/');
@@ -34,15 +36,48 @@ function domPool(cls){const a=[];return{get(i){if(!a[i]){a[i]=document.createEle
 
 // ---- static world: lanes, the wall strips between them, bushes and seed farms in the openings, the two bases
 const world=new THREE.Group();scene.add(world);let built=false,farmViews=[],baseViews=[];
+// field props made in Meshy the creeps' way (game/assets/props, provenance in work/props/provenance.json): every copy of a
+// prop is merged into one mesh (2 draw calls with its outline); the few farms stay separate, each with its shadow and its
+// pod as its own mesh with the pod pulse world.js seedPod() has. The code-built piece shows until the model arrives and
+// stays if it fails to load. Size: the footprint width and height the code-built piece had (model width is 1.0). The
+// textures are flat palette colours, so the material is the world pieces' own (no saturation lift, rim .45).
+const PROP_SIZE={bush:{w:1.1,h:.85},farm:{w:1.6,d:1.6,h:.75,rx:-Math.PI/2,split:.3},rock:{w:.94,d:.94,h:.9},hedge:{w:1,d:1,h:.85}},propLoader=new GLTFLoader(),propCache={};
+function loadProp(n){return propCache[n]||(propCache[n]=new Promise(ok=>propLoader.load(GP+'assets/props/'+n+'.glb',g=>{g.scene.updateMatrixWorld(true);let m=null;g.scene.traverse(o=>{if(o.isMesh&&!m)m=o});
+ if(m){m.geometry.applyMatrix4(m.matrixWorld);m.geometry.computeBoundingBox()}ok(m)},undefined,()=>ok(null))))}
+// which props use the Meshy model: ?props=0 none (all code-built), ?props=all every one, ?props=bush,farm,rock just those;
+// with no switch PROP_ON (the ones judged same or better than the code-built piece, work/props/props.md)
+const PROP_ON=['bush','farm','rock'],PQ=(location.search.match(/[?&]props=([\w,]*)/)||[])[1];
+const PROPS=new Set(PQ===undefined?PROP_ON:PQ==='0'?[]:PQ==='all'?Object.keys(PROP_SIZE):PQ.split(','));
+function swapProp(n,old,at,size){if(!PROPS.has(n))return;loadProp(n).then(m=>{if(!m)return;let src=m.geometry;
+ if(size.rx){src=src.clone().rotateX(size.rx);src.computeBoundingBox();const b=src.boundingBox;src.translate(-(b.min.x+b.max.x)/2,-b.min.y,-(b.min.z+b.max.z)/2);src.computeBoundingBox()}   // a model made standing up, laid flat
+ const bb=src.boundingBox,mw=bb.max.x-bb.min.x,mh=bb.max.y-bb.min.y,md=bb.max.z-bb.min.z,mx=new THREE.Matrix4(),q=new THREE.Quaternion(),up=new THREE.Vector3(0,1,0);
+ const fit=p=>mx.compose(new THREE.Vector3(p.x,p.y||0,p.z),q.setFromAxisAngle(up,p.ry||0),new THREE.Vector3((p.sx||p.s)*size.w/mw,(p.sy||p.s)*size.h/mh,(p.sz||p.s)*(size.d||size.w)/(size.d?md:mw)));
+ const mat=LOOK.toonMaterial({map:m.material.map,sat:1,contrast:1,rim:.45}),g=new THREE.Group();g.userData.kind=n;
+ if(size.split){   // farms: one group each, base and pod split at split x height (triangle centre), blob shadow as seedPod() has
+  const tri=src.toNonIndexed(),P=tri.attributes.position,ids=[[],[]];for(let i=0;i<P.count;i+=3)ids[(P.getY(i)+P.getY(i+1)+P.getY(i+2))/3>size.split*mh?1:0].push(i);
+  const part=list=>{const o=new THREE.BufferGeometry();for(const k in tri.attributes){const A=tri.attributes[k],n_=A.itemSize,a=new A.array.constructor(list.length*3*n_);list.forEach((i,j)=>{for(let v=0;v<3;v++)for(let c=0;c<n_;c++)a[(j*3+v)*n_+c]=A.array[(i+v)*n_+c]});o.setAttribute(k,new THREE.BufferAttribute(a,n_))}return o};
+  const base=part(ids[0]),pod=part(ids[1]);
+  for(const p of at){const f=new THREE.Group(),b=new THREE.Group(),pd=new THREE.Group();b.add(new THREE.Mesh(base,mat));pd.add(new THREE.Mesh(pod,mat));LOOK.addOutline(b);LOOK.addOutline(pd);
+   f.add(b,pd);fit(p).decompose(f.position,f.quaternion,f.scale);const sh=LOOK.blobShadow(1.3*.6,.2);sh.scale.set(1/f.scale.x,1/f.scale.z,1);f.add(sh);
+   pd.userData.tick=t=>{const s=1+Math.sin(t*2.2)*.025;pd.scale.set(s,1/s,s)};g.add(f)}}   // the same pulse as world.js seedPod() (it runs where W.tickAll runs)
+ else{const geo=mergeGeometries(at.map(p=>src.clone().applyMatrix4(fit(p))),false);geo.computeBoundingSphere();g.add(new THREE.Mesh(geo,mat));LOOK.addOutline(g)}
+ old.parent.add(g);old.parent.remove(old)})}
 function buildWorld(){if(built)return;built=true;const L=SB.H*K;
  world.add(W.ground(21,L+8));
  for(let i=0;i<SB.NL;i++){const x=wx(SB.laneX(i));world.add(W.link({x,z:wz(SB.Y1+20)},{x,z:wz(SB.Y0-20)},'path'));
   for(const t of[1,2]){const p=SB.spawnPt(t,i),pad=flat(new THREE.PlaneGeometry(SB.LW*K*.8,1.1),TEAM[t],.22);pad.position.set(wx(p.x),.012,wz(p.y));world.add(pad)}}
+ const wallGrp={rock:new THREE.Group(),hedge:new THREE.Group()},wallAt={rock:[],hedge:[]};for(const k in wallGrp)world.add(wallGrp[k]);
  SB.WALLS.forEach((w,wi)=>{const nx=Math.max(1,Math.round((w.x1-w.x0)*K)),nz=Math.max(1,Math.round((w.y1-w.y0)*K)),sx=(w.x1-w.x0)*K/nx,sz=(w.y1-w.y0)*K/nz;
-  for(let a=0;a<nx;a++)for(let b=0;b<nz;b++){const g=W.wall(w.kind,wi*31+a*7+b+1,0);g.scale.set(sx,1,sz);g.position.set(wx(w.x0)+(a+.5)*sx,0,wz(w.y0)+(b+.5)*sz);world.add(g)}});
- SB.BUSHES.forEach((b,i)=>{for(const[ox,oz,sc]of[[0,0,1],[-.45,.3,.7],[.45,.25,.72],[0,-.45,.7]]){const g=W.bush(i*4+ox*7+oz*3+1);g.scale.setScalar(b.r*K*1.25*sc);g.position.set(wx(b.x)+ox*b.r*K,0,wz(b.y)+oz*b.r*K);world.add(g)}});
- for(const f of SB.FARMS){const sc=.6,pod=W.seedPod();pod.scale.setScalar(sc);pod.position.set(wx(f.x),0,wz(f.y));world.add(pod);const pad=flat(new THREE.CircleGeometry(sc*1.9,28),GOLD,.3);pad.position.set(wx(f.x),.022,wz(f.y));world.add(pad);
+  for(let a=0;a<nx;a++)for(let b=0;b<nz;b++){const g=W.wall(w.kind,wi*31+a*7+b+1,0),x=wx(w.x0)+(a+.5)*sx,z=wz(w.y0)+(b+.5)*sz;g.scale.set(sx,1,sz);g.position.set(x,0,z);(wallGrp[w.kind]||world).add(g);
+   if(wallAt[w.kind])wallAt[w.kind].push({x,z,sx,sz,sy:1,ry:((wi*7+a*3+b*5)%4)*Math.PI/2})}});
+ for(const k in wallGrp)swapProp(k,wallGrp[k],wallAt[k],PROP_SIZE[k]);
+ const bushGrp=new THREE.Group(),bushAt=[];world.add(bushGrp);
+ SB.BUSHES.forEach((b,i)=>{for(const[ox,oz,sc]of[[0,0,1],[-.45,.3,.7],[.45,.25,.72],[0,-.45,.7]]){const g=W.bush(i*4+ox*7+oz*3+1),s=b.r*K*1.25*sc,x=wx(b.x)+ox*b.r*K,z=wz(b.y)+oz*b.r*K;g.scale.setScalar(s);g.position.set(x,0,z);bushGrp.add(g);bushAt.push({x,z,s,ry:bushAt.length*2.39})}});
+ swapProp('bush',bushGrp,bushAt,PROP_SIZE.bush);
+ const farmGrp=new THREE.Group(),farmAt=[];world.add(farmGrp);
+ for(const f of SB.FARMS){const sc=.6,pod=W.seedPod();pod.scale.setScalar(sc);pod.position.set(wx(f.x),0,wz(f.y));farmGrp.add(pod);farmAt.push({x:wx(f.x),z:wz(f.y),s:1,ry:0});const pad=flat(new THREE.CircleGeometry(sc*1.9,28),GOLD,.3);pad.position.set(wx(f.x),.022,wz(f.y));world.add(pad);
   const lab=document.createElement('div');lab.className='lab farm';lab.innerHTML='<u></u>Seeds';$('labels').appendChild(lab);farmViews.push({x:f.x,y:f.y,h:sc*2.6,lab})}
+ swapProp('farm',farmGrp,farmAt,PROP_SIZE.farm);
  for(const t of[1,2]){const p=SB.BASEPOS[t],g=W.base(TEAM[t]);g.position.set(wx(p.x),0,wz(p.y));if(t===2)g.rotation.y=Math.PI;world.add(g);
   const gun=flat(new THREE.RingGeometry(SB.CFG.baseGun.range*K-.06,SB.CFG.baseGun.range*K,72),TEAM[t],.35);gun.position.set(wx(p.x),.014,wz(p.y));world.add(gun);   // how far the base gun reaches
   const lab=document.createElement('div');lab.className='lab base';$('labels').appendChild(lab);baseViews.push({t,p,lab,txt:''})}}
@@ -123,6 +158,7 @@ function tickHero(v,dt){const h=v.h,me=SB.G.me,vis=!(h.invisT>0&&h.team!==me.tea
  let d=want-v.face;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;v.face+=d*Math.min(1,dt*(h.fireT>0||h.supT>0?30:14));v.grp.rotation.y=v.face;   // a shot or a cast turns the body fast: the rules release it on the same frame
  pose(v,dt,sp,SB.G.t);
  v.fire=h.fireT||0;
+ v.body.visible=!(h.invuln>0&&!h.dead&&SB.G.t*9%1<.4);   // the 3 s of protection after coming back to life: the body blinks
  if(h.hp<v.hp-1&&!h.dead){v.pop=.14;v.hitNew=1;if(fxOn&&vis&&SB.G.t-(v.hitT||0)>.15){v.hitT=SB.G.t;FX.play('hero_hit',{x:wx(h.x),z:wz(h.y),element:'default'})}}v.hp=h.hp;
  if(fxOn&&v.dead!==undefined&&v.dead!==!!h.dead)FX.play(h.dead?'hero_down':'respawn',{x:wx(h.x),z:wz(h.y),element:h.dead?(HEL[h.def.id]||'default'):'seed',team:h.team});v.dead=!!h.dead;v.pop=Math.max(0,v.pop-dt);v.body.scale.setScalar(v.s0*(1+v.pop*1.6));
  const top=project(wx(h.x),v.ht+.35,wz(h.y));v.lab.style.display=!h.dead&&vis?'':'none';v.lab.style.opacity=h.invisT>0?.5:1;v.lab.style.transform=`translate(${top.x}px,${top.y}px) translate(-50%,-100%)`;

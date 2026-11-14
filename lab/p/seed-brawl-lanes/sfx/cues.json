@@ -6995,7 +6995,7 @@
    "status": "made",
    "wired": "no: the seed kind switch (Q, the seed button) left the HUD when the deck came in; nothing changes kind now",
    "review": "work/sound/review/ui_kind.wav",
-   "notes": ""
+   "notes": "dead cue: nothing fires it (grep of lanes/ and game/ on 2026-11-14 finds 'ui_kind' only in this list); kept in the list and the file kept in lanes/sfx, in case a kind switch comes back"
   },
   {
    "id": "menu_tap",
@@ -7641,16 +7641,16 @@
    "source_path": "D:/AI/music/suno/88fb9a47-924b-4da1-99ad-ce3b78d2e739.wav",
    "suno_url": "https://suno.com/song/88fb9a47-924b-4da1-99ad-ce3b78d2e739",
    "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
-   "lufs": -18.06,
+   "lufs": -18.07,
    "measures": {
-    "lufs": -18.06,
-    "true_peak_dbtp": -5.42,
+    "lufs": -18.07,
+    "true_peak_dbtp": -4.22,
     "len_s": 76.99,
-    "band_1_4k_pct": 13.1,
+    "band_1_4k_pct": 16.8,
     "bpm": 125.0,
     "bars": 40,
-    "gain_db": -1.95,
-    "seam_click_db": -33.44,
+    "gain_db": -1.49,
+    "seam_click_db": -33.84,
     "seam_ok": true,
     "cut": [
      4.171,
@@ -7658,6 +7658,7 @@
     ]
    },
    "edits": [
+    "phone EQ: 2nd-order high-pass at 60 Hz over the whole song before the cut (a phone plays little under 350 Hz; work/sound/MUSIC-PHONE-2026-11-14.md), then levelled by what is left",
     "whole phrases on the beat grid, 2-beat equal-power crossfade at the seam, wrapped in 0.1 s of itself (AAC smear)",
     "-18 LUFS, AAC 160 kb/s 48 kHz"
    ],
@@ -7677,31 +7678,32 @@
    "kind": "loop",
    "tier": 5,
    "trigger": "main.js playS('match_start'): the match begins; music.set('match')",
-   "brief": "whimsical orchestral chase, fast pizzicato strings, clarinet runs, driving drums (Suno prompt): a cartoon chase that drives; only 5.4 % of its energy in 1 to 4 kHz, so hits and shots stay on top",
+   "brief": "whimsical orchestral chase, fast pizzicato strings, clarinet runs, driving drums (Suno prompt): a cartoon chase that drives; only 11.6 % of its energy in 1 to 4 kHz after the phone EQ (5.4 % before), so hits and shots stay on top",
    "file": "lanes/music/match.m4a",
-   "length_s": 46.29,
-   "source": "suno:92e6309c-d2ff-47a8-8f22-aaab15f88d37@213.16-259.45",
+   "length_s": 45.58,
+   "source": "suno:92e6309c-d2ff-47a8-8f22-aaab15f88d37@213.16-258.73",
    "source_song": "BB Mode Layers (brainrot_mode_layers, Suno)",
    "source_path": "D:/AI/music/suno/92e6309c-d2ff-47a8-8f22-aaab15f88d37.wav",
    "suno_url": "https://suno.com/song/92e6309c-d2ff-47a8-8f22-aaab15f88d37",
    "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
-   "lufs": -18.07,
+   "lufs": -18.09,
    "measures": {
-    "lufs": -18.07,
-    "true_peak_dbtp": -7.5,
-    "len_s": 46.51,
-    "band_1_4k_pct": 5.4,
+    "lufs": -18.09,
+    "true_peak_dbtp": -4.68,
+    "len_s": 45.78,
+    "band_1_4k_pct": 11.6,
     "bpm": 83.96,
     "bars": 16,
-    "gain_db": -3.19,
-    "seam_click_db": -6.89,
+    "gain_db": -1.02,
+    "seam_click_db": -9.32,
     "seam_ok": true,
     "cut": [
      6.155,
-     52.448
+     51.733
     ]
    },
    "edits": [
+    "phone EQ: 2nd-order high-pass at 180 Hz over the whole song before the cut (a phone plays little under 350 Hz; work/sound/MUSIC-PHONE-2026-11-14.md), then levelled by what is left",
     "whole phrases on the beat grid, 2-beat equal-power crossfade at the seam, wrapped in 0.1 s of itself (AAC smear)",
     "-18 LUFS, AAC 160 kb/s 48 kHz"
    ],
@@ -7709,7 +7711,7 @@
    "play": {
     "gain": 1.0,
     "offset": 0.1,
-    "loop": 46.2933
+    "loop": 45.5787
    },
    "picked_by": "Demucs vocal level, 1 to 4 kHz share, tempo and the Suno prompt of each section (work/sound/music_measure.py); nobody listened",
    "status": "made",
@@ -7729,16 +7731,16 @@
    "source_path": "D:/AI/music/suno/92e6309c-d2ff-47a8-8f22-aaab15f88d37.wav",
    "suno_url": "https://suno.com/song/92e6309c-d2ff-47a8-8f22-aaab15f88d37",
    "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
-   "lufs": -18.16,
+   "lufs": -18.17,
    "measures": {
-    "lufs": -18.16,
-    "true_peak_dbtp": -7.93,
+    "lufs": -18.17,
+    "true_peak_dbtp": -7.11,
     "len_s": 82.01,
-    "band_1_4k_pct": 22.8,
+    "band_1_4k_pct": 26.1,
     "bpm": 165.44,
     "bars": 56,
-    "gain_db": -2.16,
-    "seam_click_db": -21.21,
+    "gain_db": -1.93,
+    "seam_click_db": -21.04,
     "seam_ok": true,
     "cut": [
      3.051,
@@ -7746,6 +7748,7 @@
     ]
    },
    "edits": [
+    "phone EQ: 2nd-order high-pass at 70 Hz over the whole song before the cut (a phone plays little under 350 Hz; work/sound/MUSIC-PHONE-2026-11-14.md), then levelled by what is left",
     "whole phrases on the beat grid, 2-beat equal-power crossfade at the seam, wrapped in 0.1 s of itself (AAC smear)",
     "-18 LUFS, AAC 160 kb/s 48 kHz"
    ],
@@ -7773,16 +7776,16 @@
    "source_path": "D:/AI/music/suno/88fb9a47-924b-4da1-99ad-ce3b78d2e739.wav",
    "suno_url": "https://suno.com/song/88fb9a47-924b-4da1-99ad-ce3b78d2e739",
    "licence": "Suno, Premier plan download (commercial use on counted downloads; already downloaded, no new download)",
-   "lufs": -16.1,
+   "lufs": -16.17,
    "measures": {
-    "lufs": -16.1,
-    "true_peak_dbtp": -4.41,
+    "lufs": -16.17,
+    "true_peak_dbtp": -1.54,
     "len_s": 4.5,
-    "band_1_4k_pct": 6.4,
-    "vocals_db": -65.7,
+    "band_1_4k_pct": 16.6,
+    "vocals_db": -58.9,
     "bpm": null,
     "bars": null,
-    "gain_db": -0.33,
+    "gain_db": 1.71,
     "seam_click_db": null,
     "seam_ok": null,
     "cut": [
@@ -7791,6 +7794,7 @@
     ]
    },
    "edits": [
+    "phone EQ: 2nd-order high-pass at 110 Hz over the whole song before the cut (a phone plays little under 350 Hz; work/sound/MUSIC-PHONE-2026-11-14.md), then levelled by what is left",
     "the section's first bars from its first beat, faded out over the last beat",
     "-16 LUFS, AAC 160 kb/s 48 kHz"
    ],
@@ -7822,7 +7826,7 @@
     "true_peak_dbtp": -3.01,
     "len_s": 4.5,
     "band_1_4k_pct": 3.1,
-    "vocals_db": -58.6,
+    "vocals_db": -59.5,
     "bpm": null,
     "bars": null,
     "gain_db": 2.97,

@@ -10,7 +10,7 @@ html,body{margin:0;height:100%;background:#16202a;overflow:hidden;overscroll-beh
 .lab.base{font-size:20px}.lab.zone{font-size:11px;letter-spacing:.02em}
 .lab.dmg{font-size:14px}.lab.hero{display:flex;flex-direction:column;align-items:center;gap:2px}
 .hp{width:46px;height:7px;border-radius:4px;background:var(--ink);border:1.5px solid var(--ink);overflow:hidden}.hp i{display:block;height:100%;background:#6fe04a}.hp.foe i{background:var(--red)}
-.nm{font-size:10px;font-weight:700;letter-spacing:.02em}
+.nm{font-size:11px;font-weight:700;letter-spacing:.02em}
 .pips{display:flex;gap:2px;height:5px}.pips u{width:7px;height:5px;border-radius:2px;background:var(--gold);border:1px solid var(--ink)}
 .lab.farm{font-size:12px;color:var(--gold);display:flex;align-items:center;gap:4px}.lab.farm u{width:10px;height:13px;border-radius:50%/60% 60% 40% 40%;background:var(--gold);border:1.5px solid var(--ink)}
 #hud{position:absolute;inset:0;pointer-events:none}
@@ -77,7 +77,7 @@ html,body{margin:0;height:100%;background:#16202a;overflow:hidden;overscroll-beh
 #over h1{font-size:44px;margin:0;text-shadow:0 3px 0 var(--ink)}
 #over button{font:inherit;font-weight:800;font-size:16px;padding:10px 22px;border-radius:12px;border:3px solid var(--ink);background:var(--gold);color:var(--ink)}
 /* short landscape phone: keep the dock clear of the stick and the buttons */
-.short .card{width:56px;height:66px}.short .card img{width:48px;height:48px}.short .card span{font-size:10px}.short #next{width:38px;height:46px}.short #next img{width:34px;height:34px;top:5px}.short #lanes{width:90px;height:56px}
+.short .card{width:58px;height:68px}.short .card img{width:48px;height:48px}.short .card span{font-size:11px;letter-spacing:-.02em}.short .card small{font-size:11px;letter-spacing:0}.short #next{width:38px;height:46px}.short #next span{font-size:11px;letter-spacing:.01em}.short #next em,.short .card em{font-size:11px}.short #next img{width:34px;height:34px;top:5px}.short #lanes{width:90px;height:56px}
 .short #dock{left:calc(50% - 40px)}
 .short #info h2{font-size:20px}.short #info p{font-size:12px}
 /* small phone (iPhone SE and the like, under 760 wide): a smaller stick, attack and super, a smaller dock between them */

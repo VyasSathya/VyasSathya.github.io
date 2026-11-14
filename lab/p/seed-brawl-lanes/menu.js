@@ -24,11 +24,21 @@ function snd(id) { try { if (window.SBL_SOUND && window.SBL_SOUND.player) window
 function music(name, after) { try { const m = window.SBL_SOUND.player.music; if (after !== undefined) m.stinger(name, after); else if (m.want !== name || !m.cur) m.set(name); } catch (e) { } }
 function applySound() { try { const p = window.SBL_SOUND && window.SBL_SOUND.player; if (p && p.setSound) { p.setSound(META.state.settings.sound); p.setMusic(META.state.settings.music); } } catch (e) { } }
 
-// ---- layout: the design box scaled into the stage, centred
+// ---- layout: the design box scaled into the stage, centred. The box keeps 62 points each side for the island; a phone
+// with a smaller side inset (iPhone SE: none) lets those empty sides run past the screen edge instead of shrinking the
+// whole screen, keeping at least EDGE points clear, so text stays readable on the small phones.
 let VW = 1, VH = 1, MS = 1, OX = 0, OY = 0, box = null, back = null, root = null;
+const SIDE = 62, EDGE = 12;
+let probe = null, insetAt = -1e9, inset = 0;
+function sideInset() {   // the larger of the stage's left and right safe areas (the phone can be turned either way)
+  const now = performance.now(); if (now - insetAt < 500) return inset; insetAt = now;
+  if (!probe) { probe = document.createElement('div'); probe.style.cssText = 'position:absolute;left:0;top:0;height:0;visibility:hidden;pointer-events:none;width:0;margin-left:var(--sl);margin-right:var(--sr)'; stage.appendChild(probe); }
+  const cs = getComputedStyle(probe); inset = Math.max(parseFloat(cs.marginLeft) || 0, parseFloat(cs.marginRight) || 0); return inset;
+}
 function layout() {
   VW = stage.offsetWidth || innerWidth; VH = stage.offsetHeight || innerHeight;
-  MS = Math.min(VW / BW, VH / BH); OX = (VW - BW * MS) / 2; OY = (VH - BH * MS) / 2;
+  const S = Math.max(EDGE, sideInset());
+  MS = Math.min(VH / BH, Math.max(VW / BW, (VW - 2 * S) / (BW - 2 * SIDE))); OX = (VW - BW * MS) / 2; OY = (VH - BH * MS) / 2;
   if (box) box.style.transform = `translate(${OX}px,${OY}px) scale(${MS})`;
 }
 const el = (tag, cls, html, css) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; if (css) e.style.cssText = css; return e; };
@@ -323,10 +333,10 @@ async function showHeroes(focusId) {
     onTap(t, () => { snd('card_tap'); show(h.id); });
     s.appendChild(t); tiles.push(t);
   });
-  const info = el('div', 'at in-right hinfo', '', at(626, 10, 196) + delay(120)); s.appendChild(info);
-  const pick = btn('gold', 'Pick', at(626, 306, 196, 62) + 'font-size:24px', () => { if (META.setHero(cur)) { META.markSeen(cur); showHome(); } }, 'ui_play'); pick.id = 'mPick'; s.appendChild(pick);
-  const hit = el('div', 'at tap', '', at(448, 40, 180, 300)); s.appendChild(hit); dragTurn(hit, () => heroes3[0]);
-  camAim = () => aim(new THREE.Vector3(0, .8, 0), 538, 200, 120, 14);
+  const info = el('div', 'at in-right hinfo', '', at(616, 10, 196) + delay(120)); s.appendChild(info);   // right edge at 812: clear of the 62 point island side
+  const pick = btn('gold', 'Pick', at(616, 306, 196, 62) + 'font-size:24px', () => { if (META.setHero(cur)) { META.markSeen(cur); showHome(); } }, 'ui_play'); pick.id = 'mPick'; s.appendChild(pick);
+  const hit = el('div', 'at tap', '', at(448, 40, 164, 300)); s.appendChild(hit); dragTurn(hit, () => heroes3[0]);
+  camAim = () => aim(new THREE.Vector3(0, .8, 0), 532, 200, 120, 14);
   let token = 0;
   async function show(id) {
     cur = id; const h = SB.HEROES.find(x => x.id === id), ok = u.includes(id); tiles.forEach(t => t.classList.toggle('on', t.dataset.id === id));
@@ -346,7 +356,7 @@ async function showHeroes(focusId) {
 // Result: banner and trophy change at top left, your team big, the road bar filling (Brawl Stars end screen)
 async function showResult(rec, G) {
   const out = rec.result, s = newScreen('result'); setBack('result', out); clear3(); island.visible = true;
-  const ban = el('div', 'at in-left', `<div class="banner ${out}"><span class="big">${out === 'win' ? 'Victory!' : out === 'loss' ? 'Defeat' : 'Draw'}</span></div>`, at(62, 16)); s.appendChild(ban);
+  const ban = el('div', 'at in-left', `<div class="banner ${out}"><span class="big">${out === 'win' ? 'Victory!' : out === 'loss' ? 'Defeat' : 'Draw'}</span></div>`, at(70, 16)); s.appendChild(ban);   // the slant reaches 7 points left of its box
   const dl = el('div', 'at delta o in-fade' + (rec.delta < 0 ? ' neg' : ''), SVG.trophy + '<span>0</span>', at(70, 100) + delay(500)); s.appendChild(dl);
   const rb = roadBar(62, 300, 400, rec.before); rb.classList.add('in-rise'); rb.style.cssText += delay(600); s.appendChild(rb);
   music(out === 'win' ? 'stinger_win' : out === 'loss' ? 'stinger_lose' : 'menu', 'menu');
@@ -383,7 +393,7 @@ async function showReveal(r, then) {
   META.markSeen(r.id);
   const pod = makeSeed(); scene3.add(pod); extras.push(pod);
   camAim = () => aim(new THREE.Vector3(0, .78, 0), 268, 206, hero ? 190 : 165, 9);
-  const txt = el('div', 'at', '', at(470, 60, 350)); s.appendChild(txt);
+  const txt = el('div', 'at', '', at(470, 60, 342)); s.appendChild(txt);
   const main = btn('gold', hero ? 'Pick' : 'Add to deck', at(632, 300, 180, 66) + 'font-size:22px;visibility:hidden', () => { if (hero) { META.setHero(r.id); } leave(hero ? null : r.id); }, 'ui_play'); main.id = 'mMain';
   const later = btn('ink', 'Later', at(486, 304, 130, 62) + 'font-size:20px;visibility:hidden', () => leave(null)); later.id = 'mLater';
   s.append(main, later);

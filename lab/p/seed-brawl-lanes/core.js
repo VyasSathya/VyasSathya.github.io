@@ -42,6 +42,15 @@ const CFG = Object.assign({
   supUnit: 0.35,            // share of damage done to units that charges the super
   regenWait: 3, regen: 0.13,
   botDefend: 0.5,           // how often a bot answers a lane that is being lost (per think)
+  // 2026-11-14 polish (every number picked by Claude, not by Vyas; work/polish/rules.md has the measurements). null turns one off.
+  space: { mul: 2.1, push: 0.5, side: 0.3, own: true },   // creeps of one team keep apart by mul x their rules radius (about the width they are drawn), mostly across the lane (side), so a group reads as single creeps; creeps of the two teams keep the old 0.95; hit sizes are unchanged
+  respawnGuard: null,       // {r, shove, root}: coming back to life pushes enemy creeps within r of the base back down their lane by shove and holds them root seconds
+  deadPlay: true,           // (shipped: off) a dead hero still earns seeds and can play cards (they come out at his lane's end as always)
+  deathKeep: 0,             // share of the seeds he carries that a hero keeps when he dies (the rest drop where he fell)
+  respawnInvuln: 3,         // (shipped 1.5) seconds a hero who comes back to life cannot be hurt
+  handCheap: 2,             // cost: the hand always holds a card of this cost or less while one waits in the line
+  respawnBack: true,        // come back to life behind the base (between it and the map edge) instead of in front of it
+  handDear: null,           // cost: the hand holds at most one card of this cost or more while a cheaper card waits in the line, so something is always playable soon
   hb: {}                    // per hero balance multipliers {id:{hp,dmg}}
 }, root.SBL_CFG || {});
 const TM = CFG.TM, THP = CFG.THP, TD = CFG.TD, TR = CFG.TR;
@@ -149,7 +158,7 @@ function kill(e, src) {
     if (src && src.isHero) G.stats.kills[src.def.id] = (G.stats.kills[src.def.id] || 0) + 1;
     e.respawn = CFG.respawn;
     { const br = CFG.behindRespawn; if (br) { const lag = (e.team === BLUE ? G.base[2].hp - G.base[1].hp : G.base[1].hp - G.base[2].hp); if (lag > 0) e.respawn *= 1 - (1 - br.min) * Math.min(1, lag / br.at); } }
-    if (!(e.shelterT > 0)) { for (let i = 0; i < e.seeds; i++) dropSeed(e.x + rnd(-50, 50), e.y + rnd(-50, 50), e.x, e.y); e.seeds = 0; }
+    if (!(e.shelterT > 0)) { const keep = Math.floor(e.seeds * (CFG.deathKeep || 0)); for (let i = keep; i < e.seeds; i++) dropSeed(e.x + rnd(-50, 50), e.y + rnd(-50, 50), e.x, e.y); e.seeds = keep; }
     snd(e === G.me ? 'hero_down_me' : e.team === G.me.team ? 'hero_down_ally' : 'hero_down_foe_' + e.def.id, e.x, e.y, e);
   }
   ring(e.x, e.y, e.r * 2.2, TCOL[e.team]);
@@ -246,13 +255,31 @@ function deckOk(d) { return Array.isArray(d) && d.length === 6 && d.every(c => c
 function dealDeck(h, deck) {   // shuffled with the match's own random source, so seeded bot matches repeat
   const d = (deckOk(deck) ? deck : DECKS[h.def.id] || DECKS._).map(c => ({ kind: c.kind | 0, tier: c.tier | 0 }));
   for (let k = d.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [d[k], d[j]] = [d[j], d[k]]; }
-  h.deck = d.map(c => Object.assign({}, c)); h.hand = d.slice(0, HAND); h.queue = d.slice(HAND);
+  h.deck = d.map(c => Object.assign({}, c)); h.hand = []; h.queue = d;
+  for (let i = 0; i < HAND; i++) h.hand.push(drawFor(h, h.hand));
 }
-const nextCard = h => h.queue && h.queue[0];
+// the next card for an open hand slot: the front of the line, except that a dear card waits its turn (keeps its place at the front)
+// while the hand already holds one and a cheaper card is in the line (CFG.handDear)
+const dear = c => CFG.handDear && CFG.cost[c.tier] >= CFG.handDear;
+// CFG.handCheap: when the hand would hold no card of this cost or less, the first such card in the line comes in instead
+const cheap = c => CFG.handCheap && CFG.cost[c.tier] <= CFG.handCheap;
+function drawIdx(h, hand) {
+  let i = -1;
+  if (CFG.handCheap && !hand.some(c => c && cheap(c))) i = h.queue.findIndex(cheap);
+  if (i < 0 && CFG.handDear && hand.some(c => c && dear(c))) i = h.queue.findIndex(c => !dear(c));
+  return i < 0 ? 0 : i;
+}
+function drawFor(h, hand) { return h.queue.splice(drawIdx(h, hand), 1)[0]; }
+// the card that comes in when hand slot i is played (without i: when the cheapest card in the hand is played, the usual play)
+function nextCard(h, i) {
+  if (!h.queue || !h.hand) return null;
+  if (i === undefined) { i = 0; for (let k = 1; k < h.hand.length; k++) if (h.hand[k] && (!h.hand[i] || costOf(h.hand[k].tier) < costOf(h.hand[i].tier))) i = k; }
+  return h.queue[drawIdx(h, h.hand.filter((c, k) => k !== i))];
+}
 function canPlay(h, i) { const c = h.hand && h.hand[i]; return !!c && canSummon(h, c.tier); }
 function playCard(h, i) {   // summon the creep in hand slot i into the hero's lane; the card goes to the back of the line
   const c = h.hand && h.hand[i]; if (!c || !summon(h, c.tier, c.kind)) return false;
-  h.queue.push(c); h.hand[i] = h.queue.shift(); h.cycled = (h.cycled || 0) + 1; return true;
+  h.queue.push(c); h.hand[i] = null; h.hand[i] = drawFor(h, h.hand); h.cycled = (h.cycled || 0) + 1; return true;
 }
 // a bot's deck from a pool of allowed creeps: its hero's default cards that are in the pool first, then the rest of the pool
 // in random order, at most one Colossus while anything else is left; fewer than six in the pool repeats cards
@@ -309,7 +336,7 @@ function spawnUnit(team, kind, tier, lane, x, y) {
   G.units.push(u); ev({ k: 'spawn', x, y, tier, kind, team, lane }); return u;
 }
 const costOf = tier => CFG.cost[tier];
-function canSummon(h, tier) { return !h.dead && h.seeds >= costOf(tier) && G.units.reduce((a, u) => a + (u.team === h.team && !u.dead ? 1 : 0), 0) < CFG.unitCap; }
+function canSummon(h, tier) { return (!h.dead || CFG.deadPlay) && h.seeds >= costOf(tier) && G.units.reduce((a, u) => a + (u.team === h.team && !u.dead ? 1 : 0), 0) < CFG.unitCap; }
 function summon(h, tier, kind) {
   if (!canSummon(h, tier)) return false;
   h.seeds -= costOf(tier); const p = spawnPt(h.team, h.lane), kd = kind === undefined ? (h === G.me && !G.auto ? G.sel : h.kind) : kind;
@@ -365,7 +392,7 @@ function sendWave(h, lane, defend, air) { // play the hand into one lane until n
   }
 }
 function botSummon(h) {
-  if (h.dead) return;
+  if (h.dead && !CFG.deadPlay) return;
   // a lane where the other team is winning near our base gets units first
   let worst = -1, wv = 0; for (let i = 0; i < NL; i++) { const s = laneState(h.team, i); const v = s.foe - s.own; if (v > wv && s.foe >= 4 && s.front && (h.team === BLUE ? s.front.y > H * 0.45 : s.front.y < H * 0.55)) { wv = v; worst = i; } }
   if (worst >= 0 && h.seeds >= 3 && Math.random() < (skillOf(h).defend === null ? CFG.botDefend : skillOf(h).defend)) { const fl = G.units.some(u => !u.dead && u.team !== h.team && u.lane === worst && u.fly); sendWave(h, worst, true, fl); h.plan = null; return; }
@@ -442,7 +469,11 @@ function update(dt) {
   const lead = G.base[1].hp - G.base[2].hp;
   G.flip = !G.flip;                                   // heroes and units act in alternating order, so neither team always moves first
   for (const h of G.heroes) {
-    if (h.dead) { h.respawn -= dt; if (h.respawn <= 0) { const b = BASEPOS[h.team]; Object.assign(h, { dead: false, hp: h.maxhp, ammo: 3, x: b.x + rnd(-80, 80), y: b.y + (h.team === BLUE ? -150 : 150), slowT: 0, rootT: 0, invuln: 1.5, goal: null }); if (h === me) snd('hero_respawn', h.x, h.y, h); } continue; }
+    if (h.dead) { h.respawn -= dt;
+      if (CFG.deadPlay) { const bh = h.team === BLUE ? -lead : lead; h.seedT += dt * (CFG.comeback && bh > 0 ? 1 + CFG.comeback.under * 2 * bh / CFG.baseHp : 1) * (1 + CFG.seedRamp * G.t / CFG.time); if (h.seedT >= CFG.seedEvery) { h.seedT = 0; if (h.seeds < CFG.carry) h.seeds++; } if (h.bot) { h.think -= dt; if (h.think <= 0) { h.think = skillOf(h).think; botSummon(h); } } }
+      if (h.respawn <= 0) { const b = BASEPOS[h.team]; Object.assign(h, { dead: false, hp: h.maxhp, ammo: 3, x: b.x + rnd(-80, 80), y: b.y + (h.team === BLUE ? -1 : 1) * (CFG.respawnBack ? -70 : 150), slowT: 0, rootT: 0, invuln: CFG.respawnInvuln, goal: null }); if (h === me) snd('hero_respawn', h.x, h.y, h);
+        const rg = CFG.respawnGuard; if (rg) { let n = 0; for (const u of G.units) if (!u.dead && u.team !== h.team && Math.hypot(u.x - b.x, u.y - b.y) < rg.r) { shove(u, rg.shove); rootE(u, rg.root); n++; } if (n) { ring(b.x, b.y, rg.r, TCOL[h.team], 0.6); ev({ k: 'guard', x: b.x, y: b.y, r: rg.r, team: h.team, n }); } } }
+      continue; }
     tickStatus(h, dt); h.atkCd = Math.max(0, h.atkCd - dt); h.ammo = Math.min(3, h.ammo + dt / h.def.atk.reload); if (h.fireT > 0) h.fireT -= dt;
     h.inBush = BUSHES.some(b => Math.hypot(h.x - b.x, h.y - b.y) < b.r); if (h.inBush && !(h.revT > 0) && !G.heroes.some(e => e.team !== h.team && !e.dead && dist(e, h) < 95)) h.invisT = Math.max(h.invisT, 0.08);
     if (h.hitT > 0) h.hitT -= dt; else h.hp = Math.min(h.maxhp, h.hp + h.maxhp * CFG.regen * dt);
@@ -487,7 +518,14 @@ function update(dt) {
       moveUnit(u, (eb.x - u.x) / d * s, (eb.y - u.y) / d * s, dt);
     } else { const dx = clamp((u.ox - u.x) / 60, -0.5, 0.5); moveUnit(u, dx * s, fwd * s, dt); }
   }
-  { const U = G.units; for (let i = 0; i < U.length; i++) { const a = U[i]; if (a.dead) continue; for (let j = i + 1; j < U.length; j++) { const b = U[j]; if (b.dead || a.fly !== b.fly) continue; let dx = b.x - a.x, dy = b.y - a.y; const m = (a.r + b.r) * 0.95; if (Math.abs(dx) > m || Math.abs(dy) > m) continue; let d = Math.hypot(dx, dy); if (d >= m) continue; if (d < 0.05) { dx = rnd(-1, 1); dy = rnd(-1, 1); d = Math.hypot(dx, dy) || 1; } const q = (m - d) * 0.3 / d; a.x -= dx * q; a.y -= dy * q; b.x += dx * q; b.y += dy * q; } } }
+  { const U = G.units, sp = CFG.space, mul = sp ? sp.mul : 0.95, pu = sp ? sp.push : 0.3;
+    for (let i = 0; i < U.length; i++) { const a = U[i]; if (a.dead) continue; for (let j = i + 1; j < U.length; j++) { const b = U[j]; if (b.dead || a.fly !== b.fly) continue; let dx = b.x - a.x, dy = b.y - a.y; const m = (a.r + b.r) * (sp && sp.own && a.team !== b.team ? 0.95 : mul); if (Math.abs(dx) > m || Math.abs(dy) > m) continue; let d = Math.hypot(dx, dy); if (d >= m) continue; if (d < 0.05) { dx = rnd(-1, 1); dy = rnd(-1, 1); d = Math.hypot(dx, dy) || 1; }
+      if (!sp) { const q = (m - d) * 0.3 / d; a.x -= dx * q; a.y -= dy * q; b.x += dx * q; b.y += dy * q; continue; }
+      // the bigger body gives way less (Colossus 19 against Grunt 9 moves about half as far), and a creep is kept inside its lane
+      // side (0..1): how much of the push goes along the lane; below 1 a group spreads across the lane more than along it, so it is not slowed
+      const q = (m - d) * pu / d, wa = b.r / (a.r + b.r) * 2, wb = a.r / (a.r + b.r) * 2, qy = sp.side === undefined ? 1 : sp.side, sx = (dx < 0 ? -1 : 1) * Math.abs(dy) * (1 - qy);
+      a.x -= (dx + sx) * q * wa; a.y -= dy * q * wa * qy; b.x += (dx + sx) * q * wb; b.y += dy * q * wb * qy;
+      for (const e of [a, b]) if (inSpan(e.y)) e.x = clamp(e.x, laneL(e.lane) + e.r, laneR(e.lane) - e.r); } } }
   for (const p of G.projs) {
     const st = Math.hypot(p.vx, p.vy) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.left -= st;
     if (inWall(p.x, p.y, 0) || p.x < 0 || p.x > W || p.y < 0 || p.y > H) { p.left = 0; ring(p.x, p.y, 12, '#d3d1c7', 0.15); continue; }
