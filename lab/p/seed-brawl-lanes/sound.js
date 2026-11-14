@@ -98,10 +98,14 @@ function create(opt) {
   const muted = /[?&]mute\b/.test(qs) || !!(root.navigator && root.navigator.webdriver) || /\bClaude\//.test(ua);
   const P = { ready: false, unlocked: false, muted, cues: {}, buffers: {}, tracks: {}, log: [], errors: [], decoded: 0, files: 0, soundOn: opt.sound !== false, musicOn: opt.music_on !== false };
   if (!AC) { P.play = () => 'nosound'; P.stats = () => ({}); return P; }
-  const ctx = new AC(), master = ctx.createGain(), buses = [];
-  master.gain.value = muted ? 0 : MASTER;
+  // iPhone silent mode (game-audio skill, master ruling 2026-11-14): the game plays in silent mode, mixed with other audio.
+  // The binding line is native (app/ios/App/App/AppDelegate.swift, .playback + .mixWithOthers); this is the page's half.
+  // To respect the silent switch instead: 'ambient' here and .ambient there, together.
+  try { if (root.navigator && root.navigator.audioSession) root.navigator.audioSession.type = 'playback'; } catch (e) { }
+  const ctx = new AC(), master = ctx.createGain(), hush = ctx.createGain(), buses = [];
+  master.gain.value = MASTER; hush.gain.value = muted ? 0 : 1;   // the agent mute sits after the report's tap, so a muted test run still measures
   let out = ctx.destination; if (ctx.createDynamicsCompressor) { const l = ctx.createDynamicsCompressor(); l.threshold.value = -2; l.knee.value = 0; l.ratio.value = 20; l.attack.value = 0.002; l.release.value = 0.1; l.connect(ctx.destination); out = l; }
-  master.connect(out);
+  master.connect(hush); hush.connect(out);
   // effects (tiers 1 to 4) and music (tier 5) each have a switch (Settings: Sound, Music)
   const sfxGain = ctx.createGain(), musGain = ctx.createGain(); sfxGain.gain.value = P.soundOn ? 1 : 0; musGain.gain.value = P.musicOn ? MUSIC_GAIN : 0; sfxGain.connect(master); musGain.connect(master);
   for (let i = 0; i <= 5; i++) { const g = ctx.createGain(); g.connect(i === 5 ? musGain : sfxGain); buses.push(g); }
@@ -139,6 +143,7 @@ function create(opt) {
   M.stinger = (name, after) => { M.want = name; M.after = after === undefined ? null : after; apply(); };
   M.now = () => M.cur && M.cur.name;
   const apply = () => {
+    if ((M.want === 'menu' || M.want === 'match') && P.reportAt) P.reportAt(M.want);   // the menu loop means an app screen, the match loop a match
     if (ctx.state !== 'running') return; const name = M.want; if ((M.cur && M.cur.name) === name) return;
     const tr = name && P.tracks[name], once = !!(tr && tr.kind === 'stinger');
     fadeOut(M.cur, once ? 0.3 : XFADE); M.cur = null;
@@ -150,14 +155,37 @@ function create(opt) {
   };
   M.preload = (...names) => names.forEach(trackBuf);
   ctx.addEventListener && ctx.addEventListener('statechange', () => { if (ctx.state === 'running') apply(); });
-  // unlock on the first touch, click or key, inside that event (iOS needs the resume and one played buffer there)
+  // unlock inside a user activation: on a touch screen WebKit counts touchend and click (not pointerdown or touchstart);
+  // the listeners stay for the whole session, so any later touch resumes a context left suspended or interrupted
   const unlock = () => {
     if (ctx.state !== 'running') ctx.resume().catch(() => { });
     if (!P.unlocked) { try { const b = ctx.createBuffer(1, 1, 22050), s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination); s.start(0); } catch (e) { } P.unlocked = true; }
   };
-  for (const ev of ['pointerdown', 'touchend', 'mousedown', 'keydown']) root.addEventListener(ev, unlock, { capture: true, passive: true });
-  // a hidden page is silent; iOS can also leave the context 'interrupted' after a call, so the next touch resumes it
-  if (root.document) root.document.addEventListener('visibilitychange', () => { if (root.document.hidden) ctx.suspend().catch(() => { }); else if (P.unlocked) ctx.resume().catch(() => { }); });
+  for (const ev of ['touchend', 'click', 'pointerdown', 'mousedown', 'keydown']) root.addEventListener(ev, unlock, { capture: true, passive: true });
+  // sound from launch: the app's web view needs no tap for media (Capacitor's mediaTypesRequiringUserActionForPlayback = []),
+  // so the context is resumed at once and the menu music starts on the first screen; a browser (Web Lab) still waits for the first touch
+  P.stateAtLoad = ctx.state;
+  ctx.resume().then(() => { if (ctx.state === 'running') P.unlocked = true; }, () => { });
+  // a hidden page is silent; back in front (app switch, lock screen, a call ended) the context runs again; iOS can leave it
+  // 'interrupted' after a call or alarm, so it is resumed when the page is shown or focused, and by the next touch at the latest
+  const wake = () => { if (P.unlocked && !(root.document && root.document.hidden) && ctx.state !== 'running') ctx.resume().catch(() => { }); };
+  if (root.document) root.document.addEventListener('visibilitychange', () => { if (root.document.hidden) ctx.suspend().catch(() => { }); else wake(); });
+  for (const ev of ['focus', 'pageshow']) root.addEventListener(ev, wake);
+  ctx.addEventListener && ctx.addEventListener('statechange', () => { if (ctx.state === 'running') P.unlocked = true; if (ctx.state === 'interrupted') setTimeout(wake, 300); });
+  // ---- the self-report: one SOUND_REPORT line a few seconds into the menu and into the first match, from an analyser on the
+  // master output (before the agent mute), so a build nobody can hear still proves it makes sound (app/ci/mac_run.py reads it)
+  const R = P.reports = []; const an = ctx.createAnalyser(), anSink = ctx.createGain(); an.fftSize = 1024; anSink.gain.value = 0; master.connect(an); an.connect(anSink); anSink.connect(ctx.destination);   // the silent sink keeps WebKit pulling the analyser
+  const abuf = new Float32Array(an.fftSize), WIN = 3, SETTLE = 3, GIVEUP = 60;
+  let rep = null;   // { where, armed, ranFor, peaks: [[t, peak]] } while a report is pending
+  const emit = r => { const pk = r.peaks.reduce((m, p) => Math.max(m, p[1]), 0), mus = P.music && P.music.cur ? 1 : 0;
+    const plays = Object.values(mixer.stats).reduce((a, st) => a + st.plays, 0);
+    const line = 'SOUND_REPORT where=' + r.where + ' ctx=' + ctx.state + ' peak=' + pk.toFixed(3) + ' music=' + mus + ' cues=' + plays + ' sound=' + (P.soundOn ? 1 : 0) + ' musicsw=' + (P.musicOn ? 1 : 0) + ' muted=' + (muted ? 1 : 0) + ' atload=' + P.stateAtLoad + ' session=' + ((root.navigator && root.navigator.audioSession && root.navigator.audioSession.type) || 'none');
+    R.push(line); try { console.log(line); } catch (e) { } try { root.webkit && root.webkit.messageHandlers && root.webkit.messageHandlers.sbSound && root.webkit.messageHandlers.sbSound.postMessage(line); } catch (e) { } };
+  P.reportAt = where => { if (rep && rep.where === where) return; if (rep && rep.ranFor >= 1) emit(rep);   // left early: report what was measured
+    rep = R.some(l => l.indexOf('where=' + where + ' ') >= 0) ? null : { where, armed: Date.now(), ranFor: 0, peaks: [] }; };
+  setInterval(() => { if (!rep) return; const t = Date.now() / 1000;
+    if (ctx.state === 'running') { an.getFloatTimeDomainData(abuf); let m = 0; for (let i = 0; i < abuf.length; i++) { const v = Math.abs(abuf[i]); if (v > m) m = v; } rep.peaks.push([t, m]); rep.peaks = rep.peaks.filter(p => t - p[0] <= WIN); rep.ranFor += 0.25; }
+    if (rep.ranFor >= SETTLE + 0.01 || Date.now() - rep.armed > GIVEUP * 1000) { emit(rep); rep = null; } }, 250);
   const decode = ab => new Promise((ok, bad) => { const p = ctx.decodeAudioData(ab, ok, bad); if (p && p.then) p.then(ok, bad); });
   P.loading = fetch(base + 'cues.json').then(r => r.json()).then(doc => {
     const files = new Set();

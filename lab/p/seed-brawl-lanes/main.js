@@ -291,7 +291,7 @@ const SND=window.SBL_SOUND.create({base:'sfx/',music:'music/',sound:SET.sound!==
 // what main.js asks for by name, as cue ids; a summon tap is answered by the summon itself (the tap click stays quiet after my own sound).
 // match start: the match loop; match over: the loop fades, and the stinger plays (here without the menu, on the result screen with it)
 function playS(k){if(k==='match_start'){SND.music.set('match');SND.music.preload('match_late','stinger_win','stinger_lose')}
- if(k==='win'||k==='lose'){const G=SB.G;if(G){if(G._endSnd)return 'once';G._endSnd=1}SND.music.set(null);if(MENU_FLOW)return 'menu';SND.music.stinger(k==='win'?'stinger_win':'stinger_lose',null);if(SND.tracks['stinger_'+k])return 'stinger'}
+ if(k==='win'||k==='lose'||k==='draw'){const G=SB.G;if(G){if(G._endSnd)return 'once';G._endSnd=1}SND.music.set(null);if(k!=='draw'){if(MENU_FLOW)return 'menu';SND.music.stinger(k==='win'?'stinger_win':'stinger_lose',null);if(SND.tracks['stinger_'+k])return 'stinger'}}   // a draw has no music stinger: its own short sting on the stamp
  return SND.play(k==='button_tap'?'ui_tap':k,{ui:true})}
 // the listener is the camera focus; the view's half width and half height in rules units set where sounds fade out
 const listen=()=>({x:(focus.x+10.5)/K,y:focus.z/K+SB.H/2,hw:SB.W/2,hh:SB.W/2*VH/VW/Math.sin(PITCH)});
@@ -310,7 +310,7 @@ function reach(x,y,a,r){const c=Math.cos(a),s=Math.sin(a);if(c)r=Math.min(r,(c>0
 function fire(a,d){I.fireA=a;I.fireD=d;I.fire=true}
 function castSup(a,d){const me=SB.G.me,sp=me.def.sup,r=sp.range||0,q=sp.shape==='circle'?Math.min(r,d):Math.max(60,r);SB.castSuper(me,me.x+Math.cos(a)*q,me.y+Math.sin(a)*q)}
 // a card that costs more than the seeds carried shakes, and so do the seeds, with the missing ones lit red: the cost is in seeds
-function doSummon(slot){const G=SB.G;if(!G||G.over||paused)return;const el=$('hand').children[slot];if(!el)return;if(!SB.playCard(G.me,slot)){el.animate([{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'none'}],{duration:160});lackSeeds(G.me,slot);SND.play('ui_tap',{ui:true});return}playS('button_tap');coach.summoned=true;drawHud()}
+function doSummon(slot){const G=SB.G;if(!G||G.over||paused)return;const el=$('hand').children[slot];if(!el)return;if(!SB.playCard(G.me,slot)){el.animate([{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'none'}],{duration:160});lackSeeds(G.me,slot);SND.play('ui_deny',{ui:true});return}playS('button_tap');coach.summoned=true;drawHud()}
 function lackSeeds(me,slot){const c=me.hand[slot];if(!c)return;const need=SB.costOf(c.tier),s=$('seeds');drawHud();[...s.children].forEach((u,i)=>u.classList.toggle('miss',i>=me.seeds&&i<need));s.classList.remove('lack');void s.offsetWidth;s.classList.add('lack');clearTimeout(lackSeeds.h);lackSeeds.h=setTimeout(()=>{s.classList.remove('lack');for(const u of s.children)u.classList.remove('miss')},650)}
 function pickLane(l){const G=SB.G;if(!G||G.over||paused)return;SB.setLane(G.me,l);coach.laned=true;drawHud()}
 const LANEKEYS='zxcvb';
@@ -464,7 +464,7 @@ function frame(_,__,fdt){const dt=fdt||Math.min(.05,clock.getDelta());
   focus.set(Math.max(-xl,Math.min(xl,focus.x+(wx(me.x)-focus.x)*Math.min(1,dt*6))),0,Math.max(-lim,Math.min(lim,focus.z+(tz-focus.z)*Math.min(1,dt*6))));
   shake=Math.max(0,shake-dt);const sx=shake?(Math.random()-.5)*shake*1.2:0,sz=shake?(Math.random()-.5)*shake*1.2:0;cam.position.set(focus.x+sx,Math.sin(PITCH)*camDist,focus.z+Math.cos(PITCH)*camDist+sz);cam.lookAt(focus.x+sx,0,focus.z+sz);cam.updateMatrixWorld();W.tickAll(world,G.t,dt);
   for(const v of heroViews)tickHero(v,dt);drawUnits(G.t);drawTransient();drawEvents(G);if(fxOn)FX.tick(dt);drawParts(dt);drawLabels();drawHit();if((hudT+=dt)>.1){hudT=0;drawHud()}
-  if(G.over&&$('over').hidden){$('overT').textContent=G.over==='Draw'?'Draw':G.over==='Blue wins'?'You win':'You lose';$('over').hidden=false;$('hud').hidden=true;coachAt(null);playS(G.over==='Blue wins'?'win':'lose');
+  if(G.over&&$('over').hidden){$('overT').textContent=G.over==='Draw'?'Draw':G.over==='Blue wins'?'You win':'You lose';$('over').hidden=false;$('hud').hidden=true;coachAt(null);playS(G.over==='Draw'?'draw':G.over===(G.me.team===1?'Blue wins':'Red wins')?'win':'lose');
    if(MENU_FLOW&&!G._left){const out=G.over==='Draw'?'draw':G.over===(me.team===1?'Blue wins':'Red wins')?'win':'loss',st=$('endStamp');st.className=out;st.textContent=out==='win'?'Victory!':out==='loss'?'Defeat':'Draw';st.hidden=false}}}
  renderer.render(scene,cam);if(++fpsN===60){const t=performance.now();window.SBFPS=Math.round(60000/(t-fpsT));fpsT=t;fpsN=0}}
 await LOOK.heroRoster();buildDock();BOOT(.7);

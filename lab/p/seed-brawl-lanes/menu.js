@@ -294,7 +294,7 @@ function showDeck(holdId) {
     else t.appendChild(el('div', 'mk', SVG.trophy + META.markFor(id)));
     t.appendChild(el('div', 'chk', '', 'display:none'));
     onTap(t, () => {
-      if (!ok) { snd('ui_tap'); t.classList.remove('nope'); void t.offsetWidth; t.classList.add('nope'); return; }
+      if (!ok) { snd('ui_deny'); t.classList.remove('nope'); void t.offsetWidth; t.classList.add('nope'); return; }
       snd('ui_tap'); META.markSeen(id); const dt = t.querySelector('.dot'); if (dt) dt.remove();
       if (held && held.from === 'deck') { META.swap(held.slot, id); flash(deckEls[held.slot]); held = null; }
       else if (st.deck.includes(id)) held = null;

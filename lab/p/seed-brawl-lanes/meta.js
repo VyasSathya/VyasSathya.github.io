@@ -31,13 +31,16 @@
     ],
     // bots get harder with your trophies: level n from botLevels[n] trophies up (0..4)
     botLevels: [0, 50, 330, 930, 1440],
+    // a losing run eases the bots: after `after` losses in a row they play one level easier, one more for each further loss
+    // (at most `max` levels easier, never under level 0); each win takes one step back
+    ease: { after: 2, max: 2 },
   };
   const KEY = 'seedbrawl.meta.v1', KINDS = ['thorn', 'spitter', 'runner'];
   const clone = o => JSON.parse(JSON.stringify(o));
   const startRow = () => TABLE.road[0];
   function fresh() {
     return { v: 1, trophies: 0, best: 0, hero: TABLE.startHero, deck: startRow().creeps.slice(0, TABLE.deckSize), seen: [...(startRow().heroes || []), ...(startRow().creeps || [])],
-      played: 0, wins: 0, losses: 0, draws: 0, firstRun: true, settings: { music: true, sound: true, vibrate: true }, last: null };
+      played: 0, wins: 0, losses: 0, draws: 0, lossRun: 0, ease: 0, firstRun: true, settings: { music: true, sound: true, vibrate: true }, last: null };
   }
   let store = null; try { store = root.localStorage || null; } catch (e) { store = null; }
   const M = { TABLE, KEY, state: fresh() };
@@ -53,6 +56,7 @@
   M.prev = (t = M.state.trophies) => { let p = 0; for (const r of TABLE.road) if (r.at <= t) p = r.at; return p; };
   M.progress = (t = M.state.trophies) => { const n = M.next(t); if (!n) return 1; const p = M.prev(t); return (t - p) / (n.at - p); };
   M.botLevel = (t = M.state.trophies) => { let l = 0; TABLE.botLevels.forEach((at, i) => { if (t >= at) l = i; }); return l; };
+  M.matchLevel = () => Math.max(0, M.botLevel() - Math.max(0, Math.min(TABLE.ease.max, M.state.ease | 0)));   // the level the next match's bots play at
   M.allCreeps = () => { const a = []; for (const k of KINDS) for (let t = 1; t <= 5; t++) a.push(k + '_' + t); return a; };
   M.parse = id => { const [k, t] = id.split('_'); return { kind: KINDS.indexOf(k), tier: +t }; };   // {kind 0..2, tier 1..5}, the match's deck shape
 
@@ -92,12 +96,14 @@
     const idx = id => heroes ? heroes.findIndex(h => h.id === id) : -1;
     const heroIds = [...u.heroes, ...ahead.filter(r => r.type === 'hero').map(r => r.id)];
     const poolIds = [...u.creeps, ...ahead.filter(r => r.type === 'creep').map(r => r.id)];
-    return { heroIndex: Math.max(0, idx(s.hero)), deck: s.deck.map(M.parse), pool: poolIds.map(M.parse), botLevel: M.botLevel(), heroes: heroIds };
+    return { heroIndex: Math.max(0, idx(s.hero)), deck: s.deck.map(M.parse), pool: poolIds.map(M.parse), botLevel: M.matchLevel(), heroes: heroIds };
   };
   M.record = result => {
     const s = M.state, before = s.trophies, bestBefore = s.best, T = TABLE.trophies;
     let after = before;
-    if (result === 'win') { after += T.win; s.wins++; } else if (result === 'draw') { after += T.draw; s.draws++; } else { after = Math.max(M.floor(bestBefore), before - T.loss); s.losses++; }
+    if (result === 'win') { after += T.win; s.wins++; s.lossRun = 0; s.ease = Math.max(0, (s.ease | 0) - 1); }
+    else if (result === 'draw') { after += T.draw; s.draws++; s.lossRun = 0; }
+    else { after = Math.max(M.floor(bestBefore), before - T.loss); s.losses++; s.lossRun = (s.lossRun | 0) + 1; if (s.lossRun >= TABLE.ease.after) s.ease = Math.min(TABLE.ease.max, (s.ease | 0) + 1); }
     s.trophies = after; s.best = Math.max(bestBefore, after); s.played++; s.firstRun = false;
     const crossed = TABLE.road.filter(r => r.at > bestBefore && r.at <= s.best).map(r => ({ at: r.at, rewards: rewardsOf(r) }));
     const unlocks = []; for (const c of crossed) for (const r of c.rewards) unlocks.push(r);
