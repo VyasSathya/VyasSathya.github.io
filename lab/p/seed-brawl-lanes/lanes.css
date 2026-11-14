@@ -24,6 +24,8 @@ html,body{margin:0;height:100%;background:#16202a;overflow:hidden;overscroll-beh
 .btn{position:absolute;pointer-events:auto;border-radius:50%;border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px}
 .btn i{position:absolute;left:50%;top:50%;width:38%;height:38%;margin:-19% 0 0 -19%;border-radius:50%;background:rgba(255,255,255,.9);border:2px solid var(--ink)}
 .btn.on{filter:brightness(1.25);transform:scale(1.06)}
+/* a thumb that lands just outside a button still takes it (the super sits later in the page, so its own face always wins over the attack's margin) */
+#gl,.btn{touch-action:none}.btn::before{content:'';position:absolute;inset:-12px;border-radius:50%}.sup::before{inset:-6px}
 .atk{right:max(30px,var(--sr));bottom:max(30px,calc(var(--sb) + 8px));width:104px;height:104px;background:#e5484d}
 .atk b{position:absolute;bottom:-14px;display:flex;gap:3px}.atk b u{width:20px;height:6px;border-radius:3px;background:#55413a;border:1.5px solid var(--ink)}.atk b u.on{background:var(--gold)}
 .sup{right:max(150px,calc(var(--sr) + 120px));bottom:max(22px,var(--sb));width:78px;height:78px;background:#f2a900}

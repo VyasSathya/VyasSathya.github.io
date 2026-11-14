@@ -119,7 +119,7 @@ function pose(v,dt,sp,t){const h=v.h,r=v.rig,S=r.set||{},k=Math.min(1,dt*10);
 function tickHero(v,dt){const h=v.h,me=SB.G.me,vis=!(h.invisT>0&&h.team!==me.team);v.grp.visible=vis;
  const dx=h.x-v.lx,dy=h.y-v.ly,sp=Math.hypot(dx,dy)/Math.max(dt,.001);v.lx=h.x;v.ly=h.y;
  v.grp.position.set(wx(h.x),0,wz(h.y));
- let want=v.face;if(h.fireT>0||h.supT>0)want=Math.atan2(Math.cos(h.aimA),Math.sin(h.aimA));else if(sp>12&&sp<900)want=Math.atan2(dx,dy);
+ let want=v.face;if(h.fireT>0||h.supT>0||(h===me&&aim&&!aim.cancel))want=Math.atan2(Math.cos(h.aimA),Math.sin(h.aimA));else if(sp>12&&sp<900)want=Math.atan2(dx,dy);
  let d=want-v.face;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;v.face+=d*Math.min(1,dt*(h.fireT>0||h.supT>0?30:14));v.grp.rotation.y=v.face;   // a shot or a cast turns the body fast: the rules release it on the same frame
  pose(v,dt,sp,SB.G.t);
  v.fire=h.fireT||0;
@@ -273,13 +273,14 @@ function drawTransient(){const G=SB.G,me=G.me;nR=nD=nS=nC=nV=0;let i=0;
  {const sp=SB.spawnPt(me.team,me.lane),dir=me.team===1?-1:1,pu=.5+.5*Math.sin(G.t*5);
   const m=strips.get(nS++);m.scale.set(SB.LW*K*.8,1.1,1);m.position.set(wx(sp.x),.02,wz(sp.y));m.rotation.z=0;m.material.color.set(PAL.team.you);m.material.opacity=.45+pu*.3;
   for(let j=0;j<7;j++){const f=(j+(G.t*1.2)%1)/7;chevAt(sp.x,sp.y+dir*(40+f*520),.5,PAL.team.you,.85*(1-f))}}
- // aim preview: the real reach and the real area
- if(aim&&!me.dead){const d=aim.sup?me.def.sup:me.def.atk,a=aim.a,r=d.range||d.r||200,col=aim.sup?GOLD:0xffffff;
-  if(d.shape==='cone')coneAt(me.x,me.y,a,d.half||.6,r,col,.28);
-  else if(d.shape==='line')strip(strips.get(nS++),me.x,me.y,me.x+Math.cos(a)*r,me.y+Math.sin(a)*r,(d.w||10)*2*K+.2,col,.3);
-  else if(d.shape==='circle'){const dd=Math.min(r,aim.d);discAt(me.x+Math.cos(a)*dd,me.y+Math.sin(a)*dd,d.r||60,col,.3);ringAt(me.x+Math.cos(a)*dd,me.y+Math.sin(a)*dd,d.r||60,col,.9,.06);ringAt(me.x,me.y,r,col,.25)}
-  else if(d.shape==='self')discAt(me.x,me.y,d.r||200,col,.25);
-  if(aim.sup&&me.def.sup.name==='Heist'){const ex=me.x+Math.cos(a)*r,ey=me.y+Math.sin(a)*r;ringAt(ex,ey,220,col,.6,.06)}}
+ // aim preview: the real reach and the real area. A shot (and Magpie's dash) stops at the first wall as the rules stop it; a lob flies over.
+ // Not drawn while a drag back to the middle has cancelled the shot.
+ if(aim&&!me.dead&&!aim.cancel){const d=aim.sup?me.def.sup:me.def.atk,a=aim.a,r=d.range||d.r||200,col=aim.sup?GOLD:0xffffff;
+  if(d.shape==='cone'){coneAt(me.x,me.y,a,d.half||.6,r,col,.42)}
+  else if(d.shape==='line'){const L=reach(me.x,me.y,a,r),ex=me.x+Math.cos(a)*L,ey=me.y+Math.sin(a)*L;strip(strips.get(nS++),me.x,me.y,ex,ey,(d.w||10)*2*K+.24,col,.45);ringAt(ex,ey,(d.w||10)+10,col,.9,.06)}
+  else if(d.shape==='circle'){const dd=Math.min(r,aim.d);discAt(me.x+Math.cos(a)*dd,me.y+Math.sin(a)*dd,d.r||60,col,.38);ringAt(me.x+Math.cos(a)*dd,me.y+Math.sin(a)*dd,d.r||60,col,.95,.06);ringAt(me.x,me.y,r,col,.45)}
+  else if(d.shape==='self')discAt(me.x,me.y,d.r||200,col,.3);
+  if(aim.sup&&me.def.sup.name==='Heist'){const L=reach(me.x,me.y,a,r),ex=me.x+Math.cos(a)*L,ey=me.y+Math.sin(a)*L;ringAt(ex,ey,220,col,.6,.06)}}
  rings.end(nR);discs.end(nD);strips.end(nS);cones.end(nC);chevs.end(nV)}
 
 // ---- sound: one player for every cue (lanes/sound.js; ids, tiers and levels in lanes/sfx/cues.json)
@@ -303,6 +304,9 @@ let aim=null;const keys={},mouse={x:0,y:0,down:false};
 const ray=new THREE.Raycaster(),gp=new THREE.Plane(new THREE.Vector3(0,1,0),0),hit=new THREE.Vector3();
 function groundAt(sx,sy){ray.setFromCamera(new THREE.Vector2(sx/VW*2-1,-(sy/VH)*2+1),cam);ray.ray.intersectPlane(gp,hit);return{x:(hit.x+10.5)/K,y:hit.z/K+SB.H/2}}
 function autoAim(me,range){let best=null,bd=range*1.15;for(const e of[...SB.G.heroes,...SB.G.units]){if(e.dead||e.team===me.team||e.invisT>0)continue;const d=Math.hypot(e.x-me.x,e.y-me.y)-(e.isHero?40:0);if(d<bd){bd=d;best=e}}return best?{a:Math.atan2(best.y-me.y,best.x-me.x),d:Math.hypot(best.x-me.x,best.y-me.y)}:{a:me.aimA,d:range*.7}}
+// how far a straight shot from x,y at angle a gets before the first wall or the map edge (the rules end a shot there), at most r
+function reach(x,y,a,r){const c=Math.cos(a),s=Math.sin(a);if(c)r=Math.min(r,(c>0?SB.W-x:x)/Math.abs(c));if(s)r=Math.min(r,(s>0?SB.H-y:y)/Math.abs(s));r=Math.max(0,r);
+ if(!SB.blocked(x,y,x+c*r,y+s*r))return r;let lo=0,hi=r;for(let i=0;i<12;i++){const m=(lo+hi)/2;if(SB.blocked(x,y,x+c*m,y+s*m))hi=m;else lo=m}return lo}
 function fire(a,d){I.fireA=a;I.fireD=d;I.fire=true}
 function castSup(a,d){const me=SB.G.me,sp=me.def.sup,r=sp.range||0,q=sp.shape==='circle'?Math.min(r,d):Math.max(60,r);SB.castSuper(me,me.x+Math.cos(a)*q,me.y+Math.sin(a)*q)}
 // a card that costs more than the seeds carried shakes, and so do the seeds, with the missing ones lit red: the cost is in seeds
@@ -319,23 +323,34 @@ gl.addEventListener('pointerdown',e=>{soundOn=true;if(!SB.G||e.pointerType!=='mo
 addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){mouse.x=px(e);mouse.y=py(e);mouse.seen=true}});
 addEventListener('pointerup',e=>{if(e.pointerType!=='mouse')return;if(e.button===0)mouse.down=false;else if(e.button===2&&aim&&aim.sup){castSup(aim.a,aim.d);aim=null}});
 gl.addEventListener('contextmenu',e=>e.preventDefault());
-// touch: the left half of the screen is a floating move stick; attack and super are drag-to-aim buttons
+// touch: the left half of the screen is a floating move stick; attack and super are drag-to-aim buttons, Brawl Stars' way: a tap fires at the
+// nearest enemy, a drag aims and the release fires, dragging back to the middle cancels. Each button keeps its own finger (pointerId) and its own aim.
 const stick={id:null,ox:0,oy:0,x:0,y:0},sl=$('stickL');
 gl.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'||!SB.G||stick.id!==null||px(e)>VW*.5)return;stick.id=e.pointerId;stick.ox=px(e);stick.oy=py(e);stick.x=stick.y=0;sl.style.left=(px(e)-59)+'px';sl.style.bottom=(VH-py(e)-59)+'px'});
 addEventListener('pointermove',e=>{if(e.pointerId!==stick.id)return;let dx=px(e)-stick.ox,dy=py(e)-stick.oy;const m=Math.hypot(dx,dy),R=46;if(m>R){dx*=R/m;dy*=R/m}stick.x=dx/R;stick.y=dy/R;sl.firstChild.style.transform=`translate(${dx}px,${dy}px)`});
 const endStick=e=>{if(e.pointerId!==stick.id)return;stick.id=null;stick.x=stick.y=0;sl.firstChild.style.transform='';sl.style.left='';sl.style.bottom=''};addEventListener('pointerup',endStick);addEventListener('pointercancel',endStick);
-function dragButton(el,sup){let id=null,ox=0,oy=0;
- el.addEventListener('pointerdown',e=>{soundOn=true;if(!SB.G||id!==null)return;e.preventDefault();id=e.pointerId;el.setPointerCapture(id);ox=px(e);oy=py(e);el.classList.add('on');const me=SB.G.me,t=autoAim(me,(sup?me.def.sup:me.def.atk).range||200);aim={sup,a:t.a,d:t.d,auto:true}});
- el.addEventListener('pointermove',e=>{if(e.pointerId!==id||!aim)return;const dx=px(e)-ox,dy=py(e)-oy,m=Math.hypot(dx,dy);el.firstElementChild.style.transform=`translate(${Math.max(-30,Math.min(30,dx))}px,${Math.max(-30,Math.min(30,dy))}px)`;
-  if(m>12){aim.a=Math.atan2(dy,dx);aim.auto=false;const d=sup?SB.G.me.def.sup:SB.G.me.def.atk;aim.d=(d.range||200)*Math.min(1,m/70)}else if(aim.auto){const me=SB.G.me,t=autoAim(me,(sup?me.def.sup:me.def.atk).range||200);aim.a=t.a;aim.d=t.d}});
- const up=e=>{if(e.pointerId!==id)return;id=null;el.classList.remove('on');el.firstElementChild.style.transform='';if(!aim)return;const me=SB.G.me,d=sup?me.def.sup:me.def.atk,r=d.range||200,t=aim.auto?autoAim(me,r):aim;
-  if(e.type==='pointerup'){if(sup)castSup(t.a,t.d);else fire(t.a,d.shape==='circle'?t.d:r)}aim=null};
- el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)}
+// px: a drag past DZ aims by hand, back inside CANCEL cancels, FULL is full reach for a lobbed shot. The drag is kept as a screen vector and turned
+// into a world direction through the camera every frame (aimOf), so the shot leaves the hero the way the thumb went on screen (the ground is seen
+// at 58 degrees: the raw screen angle was up to 4 degrees off on the diagonals). The knob follows the thumb in a circle, never a square.
+const DZ=14,CANCEL=10,FULL=64;
+function aimOf(me,a,r){const h=project(wx(me.x),0,wz(me.y)),n=Math.hypot(a.dx,a.dy)||1,g=groundAt(h.x+a.dx/n*90,h.y+a.dy/n*90);return{a:Math.atan2(g.y-me.y,g.x-me.x),d:r*a.k}}
+function dragButton(el,sup){let id=null,ox=0,oy=0,my=null,hist=[];
+ const knob=(dx,dy)=>{const m=Math.hypot(dx,dy),T=el.offsetWidth*.32,k=m>T?T/m:1;el.firstElementChild.style.transform=dx||dy?`translate(${dx*k}px,${dy*k}px)`:''};
+ el.addEventListener('pointerdown',e=>{soundOn=true;if(!SB.G||id!==null||paused)return;e.preventDefault();id=e.pointerId;try{el.setPointerCapture(id)}catch(_){}ox=px(e);oy=py(e);hist=[];el.classList.add('on');const me=SB.G.me,t=autoAim(me,(sup?me.def.sup:me.def.atk).range||200);aim=my={sup,a:t.a,d:t.d,auto:true,touch:true,dx:0,dy:0,k:1}});
+ el.addEventListener('pointermove',e=>{if(e.pointerId!==id||!my)return;const dx=px(e)-ox,dy=py(e)-oy,m=Math.hypot(dx,dy);knob(dx,dy);
+  if(my.auto){if(m>DZ)my.auto=false}else my.cancel=m<CANCEL;
+  if(!my.auto&&!my.cancel){my.dx=dx;my.dy=dy;my.k=Math.min(1,m/FULL);hist.push([e.timeStamp,dx,dy,my.k]);if(hist.length>16)hist.shift()}aim=my});
+ const up=e=>{if(e.pointerId!==id)return;id=null;el.classList.remove('on');knob(0,0);const a=my;my=null;if(aim===a)aim=null;if(!a||e.type!=='pointerup'||a.cancel||!SB.G||paused)return;
+  // a thumb rolls a few pixels as it lifts: when the last 50 ms moved less than 8 px, the aim held before them is the one fired (a flick keeps its end)
+  if(!a.auto&&hist.length>1){const L=hist[hist.length-1];for(let i=hist.length-2;i>=0;i--)if(L[0]-hist[i][0]>=50||i===0){if(Math.hypot(L[1]-hist[i][1],L[2]-hist[i][2])<8&&Math.hypot(hist[i][1],hist[i][2])>DZ)[,a.dx,a.dy,a.k]=hist[i];break}}
+  const me=SB.G.me,d=sup?me.def.sup:me.def.atk,r=d.range||200,t=a.auto?autoAim(me,r):aimOf(me,a,r);if(sup)castSup(t.a,t.d);else fire(t.a,d.shape==='circle'?t.d:r)};
+ el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('lostpointercapture',up)}
 dragButton($('btnAtk'),false);dragButton($('btnSup'),true);
 $('lanes').addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;const r=e.currentTarget.getBoundingClientRect();pickLane(SB.laneOf((ROT?(e.clientY-r.top)/r.height:(e.clientX-r.left)/r.width)*SB.W))});
 function readInput(){const me=SB.G.me;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),my=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
  if(stick.id!==null){mx=stick.x;my=stick.y}const m=Math.hypot(mx,my);if(m>1){mx/=m;my/=m}if(m<.18){mx=my=0}I.mx=mx;I.my=my;
- I.aimA=null;if(aim){if(aim.mouse){const g=groundAt(mouse.x,mouse.y);aim.a=Math.atan2(g.y-me.y,g.x-me.x);aim.d=Math.hypot(g.x-me.x,g.y-me.y)}I.aimA=aim.a}
+ I.aimA=null;if(aim){if(aim.mouse){const g=groundAt(mouse.x,mouse.y);aim.a=Math.atan2(g.y-me.y,g.x-me.x);aim.d=Math.hypot(g.x-me.x,g.y-me.y)}
+  else if(aim.touch&&!aim.cancel){const r=(aim.sup?me.def.sup:me.def.atk).range||200,t=aim.auto?autoAim(me,r):aimOf(me,aim,r);aim.a=t.a;aim.d=t.d}I.aimA=aim.a}
  else if(mouse.seen){const g=groundAt(mouse.x,mouse.y);I.aimA=Math.atan2(g.y-me.y,g.x-me.x);if(mouse.down)fire(I.aimA,Math.hypot(g.x-me.x,g.y-me.y))}
  else if(mx||my)I.aimA=Math.atan2(my,mx)}
 
@@ -454,7 +469,7 @@ function frame(_,__,fdt){const dt=fdt||Math.min(.05,clock.getDelta());
  renderer.render(scene,cam);if(++fpsN===60){const t=performance.now();window.SBFPS=Math.round(60000/(t-fpsT));fpsT=t;fpsN=0}}
 await LOOK.heroRoster();buildDock();BOOT(.7);
 const qs=new URLSearchParams(location.search);if(qs.has('hero'))await startMatch(+qs.get('hero')||0,qs.has('auto'));else showPick();
-renderer.setAnimationLoop(frame);window.GAME={startMatch,showPick,scene,cam,renderer,SB,step(n,dt){for(let i=0;i<n;i++)frame(0,0,dt||1/30)},hold(v){renderer.setAnimationLoop(v?null:frame)},heroView:h=>heroViews.find(v=>v.h===h)};   // step and hold are for tests and the clip recorder
+renderer.setAnimationLoop(frame);window.GAME={startMatch,showPick,scene,cam,renderer,SB,step(n,dt){for(let i=0;i<n;i++)frame(0,0,dt||1/30)},hold(v){renderer.setAnimationLoop(v?null:frame)},heroView:h=>heroViews.find(v=>v.h===h),aim:()=>aim&&{sup:aim.sup,auto:!!aim.auto,cancel:!!aim.cancel,a:aim.a,d:aim.d}};   // step, hold and aim are for tests and the clip recorder
 // ==== MENU (shell branch): the app screens around the match live in menu.js; it gets the renderer, the hero pose code and the match start, and runs the frame while a screen is up. Keep this block whole when merging.
 {const MENU=await import('./menu.js');await MENU.init({THREE,LOOK,W,UNITS,renderer,resize,CAST,rigOf,setBone,pose,startMatch,frame});}
 // ==== /MENU
