@@ -150,11 +150,14 @@ function clear3() { for (const v of heroes3) scene3.remove(v.grp); heroes3 = [];
 
 // ---- screens
 let screen = '', active = false, pending = null, lastOutcome = null, queue = [];
+// the new background fades in over the old one (never over an empty frame); the same background stays as it is
 function setBack(kind, extra) {
-  back.innerHTML = '';
-  const b = el('div', 'bg ' + kind + (extra ? ' ' + extra : '')); back.appendChild(b);
+  const cls = 'bg ' + kind + (extra ? ' ' + extra : ''), cur = back.lastElementChild;
+  if (cur && cur.className.replace(' on', '') === cls) return;
+  const b = el('div', cls); back.appendChild(b);
   if (kind === 'reveal') { const r = el('div', 'rays' + (extra === 'hero' ? ' hero' : '')); b.appendChild(r); }
-  requestAnimationFrame(() => b.classList.add('on'));
+  if (!cur) b.classList.add('on'); else requestAnimationFrame(() => b.classList.add('on'));
+  setTimeout(() => { while (back.firstElementChild && back.firstElementChild !== b && back.lastElementChild === b) back.firstElementChild.remove(); }, 420);
 }
 function newScreen(name) { screen = name; box.innerHTML = ''; const s = el('div', 'scr'); box.appendChild(s); return s; }
 function trophyChip(x, y, go, n) {
@@ -218,7 +221,7 @@ function dragTurn(hitEl, getV) {
 // Road: a long horizontal track you drag, the rewards standing on it, you marked on it (Brawl Stars trophy road)
 function showRoad() {
   const s = newScreen('road'); setBack('plain'); clear3();
-  const st = META.state, marks = META.marks(), STEP = 150, X0 = 150;
+  const st = META.state, marks = META.marks(), STEP = 176, X0 = 150;
   s.appendChild(backBtn(() => showHome()));
   s.appendChild(trophyChip(122, 8));
   s.appendChild(el('div', 'at title o', 'Trophy Road', at(270, 14)));
@@ -235,11 +238,11 @@ function showRoad() {
     const x = xs[i + 1], got = m.at <= st.best;
     inner.appendChild(el('div', 'node' + (got ? ' got' : ''), '', `left:${x}px`));
     inner.appendChild(el('div', 'lab', SVG.trophy + m.at, `left:${x}px`));
-    const r = m.rewards[0], hero = r.type === 'hero', w = hero ? 132 : 112, h = hero ? 150 : 126;
+    const r = m.rewards[0], hero = r.type === 'hero', w = hero ? 156 : 136, h = hero ? 180 : 152;
     const wrap = el('div', 'rw tap in-pop' + (m.at === nextAt ? ' next' : ''), '', `left:${x}px;` + delay(Math.min(500, i * 35)));
     const t = el('div', (hero ? 'ht' : 'ct k' + META.parse(r.id).kind) + (got ? '' : ' lock'), '', `width:${w}px;height:${h}px`);
     const img = el('img'); img.alt = ''; if (!hero) img.style.cssText = `width:${w - 6}px;height:${w - 6}px`; setImg(img, rewardPic(r)); t.appendChild(img);
-    t.appendChild(el('div', 'nm o', got || hero ? nameOf(r.id) : BODY_NAMES[META.parse(r.id).tier]));
+    t.appendChild(el('div', 'nm o', nameOf(r.id)));
     wrap.appendChild(t); inner.appendChild(wrap);
     onTap(wrap, e => {
       e.stopPropagation(); snd('ui_tap'); if (popEl) popEl.remove();
@@ -271,7 +274,7 @@ function showDeck(holdId) {
   };
   const fillTile = (t, id, inDeck) => {
     const { kind, tier } = META.parse(id); if (t.dataset.id === id) return; t.dataset.id = id; t.className = 'ct tap k' + kind + (inDeck ? '' : '');
-    t.innerHTML = ''; const img = el('img'); img.style.cssText = 'width:78px;height:78px'; img.src = creepPic(id); t.append(img, el('div', 'nm o', BODY_NAMES[tier]), el('div', 'cost', costOf(id)));
+    t.innerHTML = ''; const img = el('img'); img.style.cssText = 'width:78px;height:78px'; img.src = creepPic(id); t.append(img, el('div', 'nm o', '<small>' + KIND_NAMES[kind] + '</small>' + BODY_NAMES[tier]), el('div', 'cost', costOf(id)));
   };
   for (let i = 0; i < 6; i++) {
     const t = el('div', 'ct tap in-drop', '', at(62 + (i % 3) * 92, 64 + Math.floor(i / 3) * 142, 86, 128) + delay(i * 40)); t.dataset.slot = i; s.appendChild(t); deckEls.push(t);
@@ -286,8 +289,8 @@ function showDeck(holdId) {
   META.allCreeps().forEach((id, n) => {
     const { kind, tier } = META.parse(id), col = tier - 1, row = kind, ok = u.includes(id);
     const t = el('div', 'ct tap in-pop k' + kind + (ok ? '' : ' lock'), '', at(366 + col * 90, 64 + row * 98, 82, 88) + delay(150 + row * 60 + col * 20)); t.dataset.id = id;
-    const img = el('img'); img.style.cssText = 'width:66px;height:66px'; img.src = creepPic(id); t.appendChild(img);
-    if (ok) { t.append(el('div', 'nm o', BODY_NAMES[tier]), el('div', 'cost', costOf(id))); if (!st.seen.includes(id)) t.appendChild(el('div', 'dot')); }
+    const img = el('img'); img.style.cssText = ok ? 'width:60px;height:60px' : 'width:66px;height:66px'; img.src = creepPic(id); t.appendChild(img);
+    if (ok) { t.append(el('div', 'nm o', '<small>' + KIND_NAMES[kind] + '</small>' + BODY_NAMES[tier]), el('div', 'cost', costOf(id))); if (!st.seen.includes(id)) t.appendChild(el('div', 'dot')); }
     else t.appendChild(el('div', 'mk', SVG.trophy + META.markFor(id)));
     t.appendChild(el('div', 'chk', '', 'display:none'));
     onTap(t, () => {
@@ -311,8 +314,8 @@ async function showHeroes(focusId) {
   const s = newScreen('heroes'); setBack('home'); clear3(); island.visible = true;
   const st = META.state, u = META.unlocked().heroes; let cur = typeof focusId === 'string' && SB.HEROES.some(h => h.id === focusId) ? focusId : st.hero;
   s.appendChild(backBtn(() => showHome()));
-  const tiles = [];
-  SB.HEROES.forEach((h, i) => {
+  const tiles = [];   // in the order they open: yours first, then by the road mark that opens each
+  SB.HEROES.slice().sort((a, b) => (META.markFor(a.id) || 0) - (META.markFor(b.id) || 0)).forEach((h, i) => {
     const ok = u.includes(h.id), t = el('div', 'ht tap in-pop' + (ok ? '' : ' lock'), '', at(124 + (i % 3) * 102, 10 + Math.floor(i / 3) * 124, 96, 116) + delay(i * 25)); t.dataset.id = h.id;
     const img = el('img'); setImg(img, heroPic(h.id)); t.appendChild(img);
     t.appendChild(ok ? el('div', 'nm o', h.name) : el('div', 'mk', SVG.trophy + META.markFor(h.id)));
@@ -320,8 +323,8 @@ async function showHeroes(focusId) {
     onTap(t, () => { snd('card_tap'); show(h.id); });
     s.appendChild(t); tiles.push(t);
   });
-  const info = el('div', 'at in-right', '', at(640, 26, 172) + delay(120)); s.appendChild(info);
-  const pick = btn('gold', 'Pick', at(640, 306, 172, 62) + 'font-size:24px', () => { if (META.setHero(cur)) { META.markSeen(cur); showHome(); } }, 'ui_play'); pick.id = 'mPick'; s.appendChild(pick);
+  const info = el('div', 'at in-right hinfo', '', at(626, 10, 196) + delay(120)); s.appendChild(info);
+  const pick = btn('gold', 'Pick', at(626, 306, 196, 62) + 'font-size:24px', () => { if (META.setHero(cur)) { META.markSeen(cur); showHome(); } }, 'ui_play'); pick.id = 'mPick'; s.appendChild(pick);
   const hit = el('div', 'at tap', '', at(448, 40, 180, 300)); s.appendChild(hit); dragTurn(hit, () => heroes3[0]);
   camAim = () => aim(new THREE.Vector3(0, .8, 0), 538, 200, 120, 14);
   let token = 0;
@@ -461,7 +464,7 @@ function watch() {   // called every frame while a match runs
 }
 function finish(G) {
   const ov = $('over'); if (ov) { ov.hidden = true; ov.style.visibility = ''; }
-  const hud = $('hud'); if (hud) hud.hidden = true;
+  const hud = $('hud'); if (hud) hud.hidden = true; const es = $('endStamp'); if (es) es.hidden = true;
   const rec = META.record(outcomeOf(G)); lastOutcome = rec;
   enterMenu(); showResult(rec, G);
 }
@@ -469,7 +472,7 @@ function enterMenu() { music('menu'); active = true; root.hidden = false; back.h
 function firstRun() {
   enterMenu(); const s = newScreen('splash'); setBack('home'); clear3();
   s.appendChild(el('div', 'at splash', '<div class="big stamp">Seed Brawl</div>', at(0, 120, BW, 120)));
-  setTimeout(() => { if (screen === 'splash') play_(); }, 1300);
+  setTimeout(() => { if (screen === 'splash') play_(); }, 900);
 }
 
 // ---- the frame while a screen is up

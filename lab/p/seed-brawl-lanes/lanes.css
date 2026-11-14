@@ -78,3 +78,53 @@ html,body{margin:0;height:100%;background:#16202a;overflow:hidden;overscroll-beh
 .short .card{width:56px;height:66px}.short .card img{width:48px;height:48px}.short .card span{font-size:10px}.short #next{width:38px;height:46px}.short #next img{width:34px;height:34px;top:5px}.short #lanes{width:90px;height:56px}
 .short #dock{left:calc(50% - 40px)}
 .short #info h2{font-size:20px}.short #info p{font-size:12px}
+/* small phone (iPhone SE and the like, under 760 wide): a smaller stick, attack and super, a smaller dock between them */
+.narrow .stick{left:max(16px,var(--sl));bottom:max(16px,var(--sb));width:100px;height:100px}.narrow .stick i{width:44px;height:44px;margin:-22px}
+.narrow .atk{right:max(20px,var(--sr));bottom:max(24px,calc(var(--sb) + 8px));width:92px;height:92px}
+.narrow .sup{right:max(120px,calc(var(--sr) + 100px));bottom:max(16px,var(--sb));width:70px;height:70px}
+.narrow #dock{left:calc(50% - 64px)}
+.narrow .card{width:52px;height:62px}.narrow .card img{width:46px;height:46px}.narrow #lanes{width:78px;height:50px}.narrow #next{width:36px;height:44px}.narrow #next img{width:32px;height:32px}
+/* loading: the title where the first-run splash puts it, a bar under it */
+#boot{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:radial-gradient(120% 90% at 52% 58%,#4f8a55 0%,#2c5a37 38%,#183424 70%,#0f1f16 100%);transition:opacity .35s}
+#boot.out{opacity:0;pointer-events:none}
+#boot .t{font-size:min(64px,7.3vw,16vh);margin-top:-8px;font-weight:900;font-style:italic;color:#fff;-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink)}
+#boot .bar{width:min(46vw,360px);height:18px;border:3px solid var(--ink);border-radius:9px;background:#2b2233;overflow:hidden;box-shadow:0 4px 0 var(--ink)}
+#boot .bar i{display:block;height:100%;width:4%;background:linear-gradient(#ffe68a,#ffc83d 55%,#e9a01a);transition:width .25s}
+/* pause: a button at the top left, clear of the Dynamic Island; the panel stops the match */
+#pauseBtn{position:absolute;left:max(14px,calc(var(--sl) + 4px));top:max(8px,var(--st));width:44px;height:44px;border-radius:12px;border:3px solid var(--ink);background:rgba(26,19,32,.72);pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 3px 0 var(--ink)}
+#pauseBtn i{width:6px;height:16px;border-radius:2px;background:#fff}
+#pauseBtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+#pause{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+#pause[hidden],#endStamp[hidden],#coach[hidden]{display:none}
+#pause .dim{position:absolute;inset:0;background:rgba(10,8,14,.62)}
+#pause .pp{position:relative;width:300px;padding:16px;border:3px solid var(--ink);border-radius:18px;background:linear-gradient(#2f4a36,#1d2f23);box-shadow:0 6px 0 var(--ink);display:flex;flex-direction:column;gap:6px}
+.pb{height:54px;display:flex;align-items:center;justify-content:center;gap:8px;border:3px solid var(--ink);border-radius:14px;font-size:20px;box-shadow:0 5px 0 var(--ink),inset 0 2px 0 rgba(255,255,255,.28);text-shadow:0 0 3px var(--ink),0 2px 0 var(--ink)}
+.pb:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.pb.gold{background:linear-gradient(#ffe68a,#ffc83d 52%,#f0a51a);color:var(--ink);text-shadow:0 2px 0 rgba(255,255,255,.55);font-size:24px;margin-bottom:6px}
+.pb.ink{background:linear-gradient(#3a3142,#241c2b);margin-top:6px}
+.pb.arm{background:linear-gradient(#ff7a6b,#e5484d)}
+.pb .tr{display:flex;align-items:center;gap:2px;padding:1px 8px 1px 3px;border-radius:10px;background:var(--paper);color:var(--ink);border:2px solid var(--ink);font-size:15px;text-shadow:none}
+.pb .tr svg{width:18px;height:18px}
+.prow{display:flex;align-items:center;justify-content:space-between;height:50px;padding:0 4px;font-size:18px;text-shadow:0 0 3px var(--ink),0 2px 0 var(--ink)}
+.psw{position:relative;width:74px;height:38px;border:3px solid var(--ink);border-radius:19px;background:#4a3f55;box-shadow:inset 0 3px 0 rgba(0,0,0,.25)}
+.psw i{position:absolute;left:3px;top:3px;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--ink);transition:left .15s}
+.psw.on{background:#6fe04a}.psw.on i{left:39px}
+.short #pause .pp{padding:12px 16px}.short .prow{height:44px}
+/* the end of a match: the word stamps in over the field before the result screen */
+#endStamp{position:absolute;left:0;right:0;top:34%;text-align:center;z-index:20;pointer-events:none;font-size:clamp(48px,15vh,76px);font-weight:900;font-style:italic;color:#fff;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;text-shadow:0 5px 0 var(--ink);animation:stampIn .3s cubic-bezier(.2,1.8,.5,1) both}
+#endStamp.win{color:#ffd23f}#endStamp.loss{color:#ff7a6b}
+@keyframes stampIn{from{transform:scale(1.9) rotate(-4deg);opacity:0}}
+/* the first match teaches by pointing: a hand that bobs over what to touch, and a glow on it */
+#coach{position:absolute;left:0;top:0;width:54px;height:54px;z-index:5;pointer-events:none;transition:transform .25s ease-out}
+#coach svg{width:54px;height:54px;animation:coach .9s ease-in-out infinite;filter:drop-shadow(0 3px 0 rgba(26,19,32,.5))}
+@keyframes coach{50%{transform:translate(-6px,-9px) scale(.94)}}
+.glow{animation:glow 1s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 5px rgba(255,200,61,.9),0 0 18px 6px rgba(255,200,61,.6)}}
+#seeds.glow{border-radius:10px;padding:2px 4px}
+/* seeds and cards answer: a new seed pops, a card that can now be played pops, a tap on one that costs too much shakes the seeds */
+#seeds u.new{animation:seedNew .3s cubic-bezier(.2,1.8,.5,1)}@keyframes seedNew{from{transform:scale(1.8)}}
+#seeds u.miss{background:#ff4d4d}
+#seeds.lack{animation:shortSeeds .32s}@keyframes shortSeeds{20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.card.ready{animation:ready2 .3s cubic-bezier(.2,1.8,.5,1)}@keyframes ready2{from{transform:scale(1.14)}}
+/* labels in the world never sit under a thumb control or the dock; damage numbers sit above names */
+.lab.farm,.lab.base{transition:opacity .15s}.lab.dmg{z-index:2;font-size:15px}.lab.hero{z-index:1}

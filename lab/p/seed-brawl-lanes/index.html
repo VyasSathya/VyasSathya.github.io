@@ -8,6 +8,7 @@
 </head><body>
 <div id="stage">
 <canvas id="gl"></canvas>
+<div id="boot"><div class="t">Seed Brawl</div><div class="bar"><i id="bootBar"></i></div></div>
 <div id="labels"></div>
 <div id="hud" hidden>
  <div id="top"><span id="sb" class="pill blue">0</span><span id="clock">5:00</span><span id="sr" class="pill red">0</span></div>
@@ -22,11 +23,29 @@
    <div id="next" aria-label="Next card"><img alt=""><em></em><span>Next</span></div>
   </div>
  </div>
+ <div id="pauseBtn" role="button" aria-label="Pause"><i></i><i></i></div>
+ <div id="coach" hidden></div>
  <div id="toast"></div><div id="hurt"></div><div id="hitdir"><i></i></div>
 </div>
+<div id="endStamp" hidden></div>
+<div id="pause" hidden><div class="dim"></div><div class="pp">
+ <div id="pResume" class="pb gold" role="button">Resume</div>
+ <div class="prow"><span>Music</span><div id="pMusic" class="psw" role="switch"><i></i></div></div>
+ <div class="prow"><span>Sound</span><div id="pSound" class="psw" role="switch"><i></i></div></div>
+ <div id="pLeave" class="pb ink" role="button"><span>Leave</span></div>
+</div></div>
 <div id="pick"></div>
 <div id="over" hidden><h1 id="overT"></h1><button id="again">Play again</button><button id="swap">Change hero</button></div>
 </div>
+<script>
+// loading: the bar follows the files as they arrive (pictures, models, sounds) and the steps main.js reports
+(function () { var n = 0, step = 0, bar = document.getElementById('bootBar'), done = false;
+  function draw() { if (done) return; var p = Math.max(step, 1 - Math.exp(-n / 70)) * 0.96; bar.style.width = (4 + p * 96) + '%'; }
+  try { new PerformanceObserver(function (l) { n += l.getEntries().length; draw(); }).observe({ type: 'resource', buffered: true }); } catch (e) { }
+  window.SBL_BOOT = { step: function (k) { step = Math.max(step, k); draw(); },
+    done: function () { if (done) return; bar.style.width = '100%'; done = true; var b = document.getElementById('boot'); setTimeout(function () { b.classList.add('out'); setTimeout(function () { b.remove(); }, 400); }, 120); } };
+  draw(); })();
+</script>
 <script src="config.js"></script>
 <script src="core.js"></script>
 <script src="sound.js"></script>

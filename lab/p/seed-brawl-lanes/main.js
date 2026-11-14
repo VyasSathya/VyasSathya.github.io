@@ -16,12 +16,12 @@ const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,alpha:true
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene();scene.background=new THREE.Color(PAL.sky);
 const cam=new THREE.PerspectiveCamera(30,1,.1,300),PITCH=58*Math.PI/180,focus=new THREE.Vector3();
-let camDist=20,VW=1,VH=1,shake=0,ROT=false;const SPAN=21,stage=document.getElementById('stage');   // the whole 21 tile width is always on screen; the camera only follows the hero up and down the map
+let camDist=20,VW=1,VH=1,shake=0,ROT=false,hudRects=null;const SPAN=21,stage=document.getElementById('stage');   // the whole 21 tile width is always on screen; the camera only follows the hero up and down the map
 // Landscape always. A touch screen held upright (the Web Lab frame, a phone browser) gets the stage turned a quarter turn, so the game is played with the phone on its side.
 const px=e=>ROT?e.clientY:e.clientX,py=e=>ROT?innerWidth-e.clientX:e.clientY;
 function resize(){ROT=innerHeight>innerWidth&&matchMedia('(pointer:coarse)').matches;VW=ROT?innerHeight:innerWidth;VH=ROT?innerWidth:innerHeight;
  stage.style.width=VW+'px';stage.style.height=VH+'px';stage.style.transform=ROT?`translateX(${innerWidth}px) rotate(90deg)`:'';stage.style.setProperty('--H',VH+'px');
- stage.classList.toggle('rot',ROT);stage.classList.toggle('short',VH<=480);
+ stage.classList.toggle('rot',ROT);stage.classList.toggle('short',VH<=480);stage.classList.toggle('narrow',VW<760);hudRects=null;
  cam.aspect=VW/VH;cam.updateProjectionMatrix();renderer.setSize(VW,VH,false);LOOK.setOutlineViewport(VW,VH);
  const hf=2*Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);camDist=SPAN/2/Math.tan(hf/2)}
 addEventListener('resize',resize);resize();LOOK.addLights(scene);
@@ -194,7 +194,9 @@ function discAt(x,y,r,col,op){const m=discs.get(nD++);m.position.set(wx(x),.035,
 function coneAt(x,y,a,half,r,col,op){const m=cones.get(nC++);m.geometry=coneGeo(half);m.position.set(wx(x),.045,wz(y));m.scale.setScalar(r*K);m.rotation.z=-a;m.material.color.set(col);m.material.opacity=op}
 function chevAt(x,y,s,col,op){const m=chevs.get(nV++);m.position.set(wx(x),.03,wz(y));m.scale.set(s*1.5,s,1);m.material.color.set(col);m.material.opacity=op}
 // ---- attacks, hits, deaths and spells: painted layered effects (fx.js) played from what the rules did this step
+const BOOT=k=>{try{window.SBL_BOOT&&(k>=1?window.SBL_BOOT.done():window.SBL_BOOT.step(k))}catch(e){}};BOOT(.15);
 let fxOn=false;try{await FX.init(THREE,scene,cam,{base:'./fx/',max:600});fxOn=true}catch(e){console.warn('effects did not load, plain shapes stay',e)}
+BOOT(.45);
 const HEL={bramble:'leaf',sow:'seed',mower:'blade',magpie:'shade',drover:'gourd',thistle:'bloom',shade:'shade',foxglove:'fox',bamboo:'gourd'},KEL=['thorn','spit','runner'],TSC=[0,1,1.3,1.1,1,1.8];
 const ZFX={'Briar ring':'zone_briar','Nursery':'zone_nursery','Blade trap':'zone_blades','Rally post':'zone_rally','Lure':'zone_lure','Shelter':'zone_shelter'};
 const elOf=o=>o&&o.def?HEL[o.def.id]||'default':'default',near=y=>Math.abs(wz(y)-focus.z)<10,W2=(x,y)=>({x:wx(x),z:wz(y)});
@@ -207,7 +209,7 @@ function drawEvents(G){const E=G.ev;if(!E)return;if(fxOn)for(const e of E){if(!n
     if(e.tier===3)FX.play('splasher_lob',{...muzzleOf(e,to),to,radius:46*K,element:el,team:e.team});
     else if(SB.KINDS[e.kind].range>60)FX.play('spit_shot',{...muzzleOf(e,to),to,element:el});
     else if(e.tier===4)FX.play('flyer_dive',{...at,to,element:el});
-    else{if(e.tier===5)FX.play('colossus_stomp',{...at,radius:(SB.KINDS[e.kind].range+30)*K,element:'dust'});FX.play('creep_hit',{...at,to,dir:Math.atan2(e.ty-e.y,e.tx-e.x),element:el,scale:sc})}}
+    else{if(e.tier===5)FX.play('colossus_stomp',{...at,radius:(SB.KINDS[e.kind].range+30)*K,element:'dust'});FX.play('creep_hit',{...at,to,dir:Math.atan2(e.ty-e.y,e.tx-e.x),element:el,scale:sc*.62})}}   // .62: the slash stays smaller than the body it lands on, so the creeps' own motion reads in a clump
    else if(e.k==='udie')FX.play(e.tier===5?'colossus_split':'creep_death',{...at,element:el,scale:sc,radius:.7});
    else if(e.k==='spawn'){const sp=SB.spawnPt(e.team,e.lane);if(Math.abs(sp.y-e.y)<40)FX.play('summon_arrive',{...at,y:3.5,to:{...at,y:0},element:el,team:e.team,scale:sc})}}
  E.length=0}
@@ -241,7 +243,7 @@ function drawFx(G,me){projs.end(0);balls.end(0);
     else f._own=true}
    else if(f.k==='t'){f._ox=(Math.random()-.5)*1.3;f._oy=Math.random()*.5;if(f.t[0]==='+')FX.play('seed_pickup',{...at,element:'heal'})}}   // numbers from hits that land together fan out so they can be read
   if(f.k==='r'&&f._own)ringAt(f.x,f.y,f.r*(1.15-k*.4),f.col,k);
-  else if(f.k==='t'){const el=texts.get(nt++),p=project(wx(f.x)+(f._ox||0),1.2+(f._oy||0)+(1-f.life/.8)*1.1,wz(f.y));if(el.textContent!==f.t)el.textContent=f.t;el.style.color=f.col;el.style.opacity=k;el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`}}
+  else if(f.k==='t'){const el=texts.get(nt++),p=project(wx(f.x)+(f._ox||0),2.1+(f._oy||0)+(1-f.life/.8)*1.1,wz(f.y));if(el.textContent!==f.t)el.textContent=f.t;el.style.color=f.col;el.style.opacity=k;el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`}}
  texts.end(nt)}
 function drawTransient(){const G=SB.G,me=G.me;nR=nD=nS=nC=nV=0;let i=0;
  for(const s of G.seeds){const m=seeds.get(i++);m.position.set(wx(s.x),0,wz(s.y));W.tickAll(m,G.t,0)}seeds.end(i);
@@ -301,8 +303,10 @@ function groundAt(sx,sy){ray.setFromCamera(new THREE.Vector2(sx/VW*2-1,-(sy/VH)*
 function autoAim(me,range){let best=null,bd=range*1.15;for(const e of[...SB.G.heroes,...SB.G.units]){if(e.dead||e.team===me.team||e.invisT>0)continue;const d=Math.hypot(e.x-me.x,e.y-me.y)-(e.isHero?40:0);if(d<bd){bd=d;best=e}}return best?{a:Math.atan2(best.y-me.y,best.x-me.x),d:Math.hypot(best.x-me.x,best.y-me.y)}:{a:me.aimA,d:range*.7}}
 function fire(a,d){I.fireA=a;I.fireD=d;I.fire=true}
 function castSup(a,d){const me=SB.G.me,sp=me.def.sup,r=sp.range||0,q=sp.shape==='circle'?Math.min(r,d):Math.max(60,r);SB.castSuper(me,me.x+Math.cos(a)*q,me.y+Math.sin(a)*q)}
-function doSummon(slot){const G=SB.G;if(!G||G.over)return;const el=$('hand').children[slot];if(!el)return;if(!SB.playCard(G.me,slot)){el.animate([{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'none'}],{duration:160});return}playS('button_tap');drawHud()}
-function pickLane(l){const G=SB.G;if(!G||G.over)return;SB.setLane(G.me,l);drawHud()}
+// a card that costs more than the seeds carried shakes, and so do the seeds, with the missing ones lit red: the cost is in seeds
+function doSummon(slot){const G=SB.G;if(!G||G.over||paused)return;const el=$('hand').children[slot];if(!el)return;if(!SB.playCard(G.me,slot)){el.animate([{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'none'}],{duration:160});lackSeeds(G.me,slot);SND.play('ui_tap',{ui:true});return}playS('button_tap');coach.summoned=true;drawHud()}
+function lackSeeds(me,slot){const c=me.hand[slot];if(!c)return;const need=SB.costOf(c.tier),s=$('seeds');drawHud();[...s.children].forEach((u,i)=>u.classList.toggle('miss',i>=me.seeds&&i<need));s.classList.remove('lack');void s.offsetWidth;s.classList.add('lack');clearTimeout(lackSeeds.h);lackSeeds.h=setTimeout(()=>{s.classList.remove('lack');for(const u of s.children)u.classList.remove('miss')},650)}
+function pickLane(l){const G=SB.G;if(!G||G.over||paused)return;SB.setLane(G.me,l);coach.laned=true;drawHud()}
 const LANEKEYS='zxcvb';
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k===' ')e.preventDefault();if(e.repeat||!SB.G||!started)return;keys[k]=true;
  if(k>='1'&&k<=String(SB.HAND))doSummon(+k-1);if(k==='e')pickLane(SB.G.me.lane+1);const li=LANEKEYS.indexOf(k);if(li>=0&&li<SB.NL)pickLane(li);
@@ -334,19 +338,19 @@ function readInput(){const me=SB.G.me;let mx=(keys.d||keys.arrowright?1:0)-(keys
  else if(mx||my)I.aimA=Math.atan2(my,mx)}
 
 // ---- HUD: seeds carried, the lane picker (a small live map), the three creeps in hand and the next one
-const fmt=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};let hudT=0,lastTick=99,hudCards=[];
+const fmt=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};let hudT=0,lastTick=99,hudCards=[],hudSeeds=-1,hudRectN=0;
 const unitPics={};UNITS.load(GP+'assets/units/',()=>{for(const k in unitPics)delete unitPics[k];hudCards=[]});
 function unitPic(kind,ti){const key=kind+'_'+ti;if(unitPics[key])return unitPics[key];const sc=new THREE.Scene();LOOK.addLights(sc);const body=UNITS.single(kind,ti,PAL.team.blue);body.userData.tick=null;const w=W.UNIT_WIDTH[ti];
  sc.add(body);body.rotation.y=.5;const bx=new THREE.Box3().setFromObject(body),h=Math.max(.3,bx.max.y-bx.min.y),cy=(bx.max.y+bx.min.y)/2,c=new THREE.PerspectiveCamera(26,1,.05,50),d=Math.max(h,w*1.2)*2.6;
  c.position.set(0,cy+h*.35,d);c.lookAt(0,cy,0);const bg=scene.background;renderer.setSize(112,112,false);LOOK.setOutlineViewport(112,112);renderer.setClearColor(0,0);renderer.render(sc,c);const url=gl.toDataURL('image/png');resize();return unitPics[key]=url}
 // hand slots keep a fixed label (Card 1..3) for the iOS test taps; the creep's own name is on the card
-function buildDock(){const el=$('hand');el.innerHTML='';for(let i=0;i<SB.HAND;i++){const b=document.createElement('div');b.className='card';b.innerHTML='<img alt=""><kbd>'+(i+1)+'</kbd><em></em><span><small></small><b></b></span>';b.setAttribute('role','button');b.setAttribute('aria-label','Card '+(i+1));b.addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;doSummon(i)});el.appendChild(b)}}
+function buildDock(){const el=$('hand');el.innerHTML='';for(let i=0;i<SB.HAND;i++){const b=document.createElement('div');b.className='card';b.innerHTML='<img alt=""><kbd>'+(i+1)+'</kbd><em></em><span><small></small><b></b></span>';b.setAttribute('role','button');b.setAttribute('aria-label','Card '+(i+1));b.addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;doSummon(i)});b.addEventListener('animationend',e=>{if(e.target===b)b.classList.remove('ready','deal')});el.appendChild(b)}}
 // what a card shows: the creep's picture, its body and kind, its seed cost; redrawn only when the slot holds a new card
 function drawCards(me){const els=$('hand').children,cards=me.hand.concat([SB.nextCard(me)]);
  cards.forEach((c,i)=>{if(!c)return;const el=i<SB.HAND?els[i]:$('next'),key=c.kind+'_'+c.tier;if(hudCards[i]!==c||el.dataset.k!==key){const fresh=hudCards[i]!==undefined&&hudCards[i]!==c;hudCards[i]=c;el.dataset.k=key;
   el.querySelector('img').src=unitPic(c.kind,c.tier-1);el.querySelector('em').textContent=SB.costOf(c.tier);
   if(i<SB.HAND){el.querySelector('b').textContent=SB.BODIES[c.tier];el.querySelector('small').textContent=SB.KINDS[c.kind].name;if(fresh){el.classList.remove('deal');void el.offsetWidth;el.classList.add('deal')}}}
-  if(i<SB.HAND)el.classList.toggle('off',!SB.canPlay(me,i))})}
+  if(i<SB.HAND){const off=!SB.canPlay(me,i);if(el.classList.contains('off')&&!off){el.classList.remove('ready');void el.offsetWidth;el.classList.add('ready')}el.classList.toggle('off',off)}})}
 const lc=$('lanes'),lx=lc.getContext('2d');
 function drawLanes(){const G=SB.G,me=G.me,w=lc.width,h=lc.height,sx=w/SB.W,sy=h/SB.H;lx.clearRect(0,0,w,h);
  for(let i=0;i<SB.NL;i++){const x0=SB.laneL(i)*sx,x1=SB.laneR(i)*sx,on=i===me.lane;lx.fillStyle=on?'#4c6b55':'#2f4237';lx.fillRect(x0,0,x1-x0,h);
@@ -357,22 +361,70 @@ function drawLanes(){const G=SB.G,me=G.me,w=lc.width,h=lc.height,sx=w/SB.W,sy=h/
  for(const hh of G.heroes){if(hh.dead||(hh.invisT>0&&hh.team!==me.team))continue;lx.beginPath();lx.arc(hh.x*sx,hh.y*sy,hh===me?7:5.5,0,6.283);lx.fillStyle=hh===me?'#fff':hh.team===1?'#2a8cff':'#ff4d4d';lx.fill();lx.lineWidth=2;lx.strokeStyle='#1a1320';lx.stroke()}}
 function drawHud(){const G=SB.G;if(!G)return;const me=G.me;{const c=Math.ceil(G.time);if(c<=10&&c>0&&c<lastTick){lastTick=c;playS('countdown_tick')}}
  $('clock').textContent=fmt(G.time);$('clock').classList.toggle('late',!!G.lateOn);$('sb').textContent=Math.max(0,Math.ceil(G.base[1].hp));$('sr').textContent=Math.max(0,Math.ceil(G.base[2].hp));
- $('seeds').innerHTML=Array.from({length:SB.CFG.carry},(_,i)=>'<u class="'+(i<me.seeds?'on':'')+'"></u>').join('');
+ {const s=$('seeds');if(s.children.length!==SB.CFG.carry){s.innerHTML='<u></u>'.repeat(SB.CFG.carry);hudSeeds=-1}
+  for(let i=0;i<s.children.length;i++){const u=s.children[i],on=i<me.seeds;if(on!==u.classList.contains('on')){u.classList.toggle('on',on);if(on&&hudSeeds>=0){u.classList.remove('new');void u.offsetWidth;u.classList.add('new')}}}hudSeeds=me.seeds}
  $('ammo').innerHTML=[0,1,2].map(i=>'<u class="'+(i<Math.floor(me.ammo)?'on':'')+'"></u>').join('');
  $('supArc').style.strokeDashoffset=100.5*(1-me.sup);$('btnSup').classList.toggle('cd',me.sup<1);$('supName').textContent=me.def.sup.name;
  drawCards(me);
- drawLanes();if(me.dead)toast('Back in '+Math.max(1,Math.ceil(me.respawn)),.4)}
+ if(++hudRectN%10===0&&stick.id===null)hudRects=null;   // the control boxes the world labels keep clear of, measured again once a second
+ drawLanes();if(me.dead)toast('Back in '+Math.max(1,Math.ceil(me.respawn)),.4);drawCoach(G,me)}
+// ---- the first match teaches by pointing, never by words: a hand and a glow on the one thing to touch next.
+// 1) a card you can pay for (or, with too few seeds, the seeds filling up), until you summon; 2) the lane map, until you pick a lane.
+const coach={on:false,summoned:false,laned:false,t:0,tgt:null},HAND_SVG='<svg viewBox="0 0 54 54"><path d="M20 30V10a4 4 0 018 0v14l9 2c4 1 6 4 5 8l-3 12H22l-9-11c-2-3 1-6 4-4z" fill="#fff8e8" stroke="#1a1320" stroke-width="3.5" stroke-linejoin="round"/></svg>';
+$('coach').innerHTML=HAND_SVG;
+function stageRect(el){const r=el.getBoundingClientRect();return ROT?{x:r.top,y:innerWidth-r.right,w:r.height,h:r.width}:{x:r.left,y:r.top,w:r.width,h:r.height}}
+function coachAt(el){const c=$('coach');if(coach.tgt&&coach.tgt!==el)coach.tgt.classList.remove('glow');coach.tgt=el;
+ if(!el){c.hidden=true;return}el.classList.add('glow');const r=stageRect(el);c.hidden=false;c.style.transform=`translate(${r.x+r.w/2-30}px,${r.y+r.h*.45-50}px) rotate(180deg)`}
+function drawCoach(G,me){if(!coach.on||G.over||paused||me.dead)return coachAt(null);coach.t+=.1;
+ if(!coach.summoned){const i=[0,1,2].find(j=>SB.canPlay(me,j));return coachAt(i===undefined?$('seeds'):$('hand').children[i])}
+ if(!coach.laned){if((coach.lt=(coach.lt||coach.t))&&coach.t-coach.lt>1.2&&coach.t-coach.lt<9)return coachAt($('lanes'));if(coach.t-coach.lt>=9)coach.laned=true}
+ coachAt(null);if(coach.laned)coach.on=false}
+// ---- pause: the button at the top left, Escape, or the app going to the background stops the match; Leave ends it as a loss
+let paused=false,leaveArm=0;
+const TROPHY_SVG='<svg viewBox="0 0 40 40"><path d="M11 6h18v6c0 7-4 12-9 12s-9-5-9-12z" fill="#ffc83d" stroke="#1a1320" stroke-width="3" stroke-linejoin="round"/><path d="M11 9H5c0 6 3 9 7 9M29 9h6c0 6-3 9-7 9" fill="none" stroke="#1a1320" stroke-width="3" stroke-linecap="round"/><path d="M17 24h6l1 6h-8z" fill="#ffc83d" stroke="#1a1320" stroke-width="3" stroke-linejoin="round"/><rect x="11" y="30" width="18" height="6" rx="2" fill="#ffc83d" stroke="#1a1320" stroke-width="3"/></svg>';
+function setSw(){const s=(window.SBL_META&&window.SBL_META.state&&window.SBL_META.state.settings)||SET;$('pMusic').classList.toggle('on',s.music!==false);$('pSound').classList.toggle('on',s.sound!==false)}
+function pauseMatch(){if(!started||!SB.G||SB.G.over||paused)return;paused=true;stick.id=null;stick.x=stick.y=0;sl.firstChild.style.transform='';sl.style.left=sl.style.bottom='';aim=null;I.fire=false;I.mx=I.my=0;
+ for(const b of[$('btnAtk'),$('btnSup')])b.classList.remove('on');leaveArm=0;drawLeave();setSw();$('pause').hidden=false;coachAt(null)}
+function resumeMatch(){if(!paused)return;paused=false;$('pause').hidden=true;clock.getDelta()}
+function drawLeave(){const b=$('pLeave');b.classList.toggle('arm',!!leaveArm);let chip='';
+ if(leaveArm&&MENU_FLOW){const M=window.SBL_META,s=M.state,d=Math.max(M.floor(s.best),s.trophies-M.TABLE.trophies.loss)-s.trophies;if(d<0)chip='<span class="tr">'+TROPHY_SVG+d+'</span>'}
+ b.innerHTML='<span>Leave</span>'+chip}
+function leaveMatch(){const G=SB.G;paused=false;$('pause').hidden=true;if(!G||G.over)return;
+ if(MENU_FLOW){const me=G.me.team,w=me===1?2:1;G.over=w===1?'Blue wins':'Red wins';G.result={winner:w,by:'leave',base:[G.base[1].hp,G.base[2].hp],mine:false};G._left=true}else showPick()}
+function tapOn(el,fn){el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();soundOn=true;fn(e)})}
+tapOn($('pauseBtn'),()=>{SND.play('ui_tap',{ui:true});pauseMatch()});
+tapOn($('pResume'),()=>{SND.play('ui_play',{ui:true});resumeMatch()});
+tapOn($('pause').firstChild,()=>{if(leaveArm){leaveArm=0;drawLeave()}});
+tapOn($('pLeave'),()=>{SND.play('ui_tap',{ui:true});if(!leaveArm||performance.now()-leaveArm>4000){leaveArm=performance.now();drawLeave();return}leaveMatch()});
+for(const[id,k]of[['pMusic','music'],['pSound','sound']])tapOn($(id),()=>{const M=window.SBL_META,s=M&&M.state?M.state.settings:SET;s[k]=s[k]===false;try{M&&M.save()}catch(e){}
+ try{k==='music'?SND.setMusic(s.music):SND.setSound(s.sound)}catch(e){}setSw();SND.play('menu_tap',{ui:true})});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseMatch()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&started&&SB.G&&!SB.G.over&&!(window.SBL_MENU&&window.SBL_MENU.active)){paused?resumeMatch():pauseMatch()}});
+// world labels (seed farms, bases, hero names) fade where they would sit under the stick, a button, the dock or the score
+function hudBoxes(){if(hudRects&&stick.id===null)return hudRects;if(stick.id!==null&&hudRects)return hudRects;
+ const r=[];for(const id of['stickL','btnAtk','btnSup','row','seeds','top','pauseBtn']){const el=$(id);if(el&&el.offsetWidth){const b=stageRect(el);r.push({x:b.x-6,y:b.y-6,w:b.w+12,h:b.h+12})}}
+ const pb=$('pauseBtn');hudBand=0;if(pb&&pb.offsetWidth){const L=stageRect(pb).x-4;if(L>14)hudBand=L}   // the Dynamic Island band (the pause button sits just inside it): labels slide out of it
+ return hudRects=r}
+let hudBand=0;const clampX=(x,w)=>Math.max(x,hudBand+w/2+2);
+function underHud(x,y,w,h){if($('hud').hidden)return false;for(const b of hudBoxes())if(x<b.x+b.w&&x+w>b.x&&y<b.y+b.h&&y+h>b.y)return true;return false}
 function drawHit(){const me=SB.G.me,el=$('hitdir'),f=me.hitFrom,age=f?SB.G.t-f.t:9;if(!f||age>.6||me.dead){el.style.opacity=0;$('hurt').style.opacity=0;return}
  const a=project(wx(me.x),.6,wz(me.y)),b=project(wx(f.x),.6,wz(f.y)),ang=Math.atan2(b.y-a.y,b.x-a.x);el.style.opacity=1-age/.6;el.style.transform=`translate(${a.x}px,${a.y}px) rotate(${ang}rad)`;$('hurt').style.opacity=Math.max(0,.55-age*1.4)}
-function drawLabels(){for(const f of farmViews){const s=project(wx(f.x),f.h,wz(f.y));f.lab.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-100%)`}
- for(const v of baseViews){const b=SB.G.base[v.t],t=String(Math.max(0,Math.ceil(b.hp)));if(v.txt!==t){v.txt=t;v.lab.textContent=t}const s=project(wx(v.p.x),.1,wz(v.p.y)+1.9);v.lab.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-50%)`}}
+const labSize=l=>l._w?l:(l._w=l.offsetWidth||40,l._h=l.offsetHeight||16,l);
+const heroBoxes=[];
+function drawLabels(){if(!$('hud').hidden)hudBoxes();heroBoxes.length=0;
+ for(const v of heroViews){if(v.lab.style.display==='none')continue;const h=v.h,s=project(wx(h.x),v.ht+.35,wz(h.y)),l=labSize(v.lab),cx=clampX(s.x,l._w);if(cx!==s.x)v.lab.style.transform=`translate(${cx}px,${s.y}px) translate(-50%,-100%)`;if(underHud(cx-l._w/2,s.y-l._h,l._w,l._h))v.lab.style.opacity=0;heroBoxes.push({x:cx-l._w/2,y:s.y-l._h,w:l._w,h:l._h})}
+ for(const f of farmViews){const s=project(wx(f.x),f.h,wz(f.y)),l=labSize(f.lab);s.x=clampX(s.x,l._w);f.lab.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-100%)`;   // a hero's label on top of the farm's: the farm's steps aside
+  const x=s.x-l._w/2,y=s.y-l._h;f.lab.style.opacity=underHud(x,y,l._w,l._h)||heroBoxes.some(b=>x<b.x+b.w&&x+l._w>b.x&&y<b.y+b.h&&y+l._h>b.y)?0:1}
+ for(const v of baseViews){const b=SB.G.base[v.t],t=String(Math.max(0,Math.ceil(b.hp)));if(v.txt!==t){v.txt=t;v.lab.textContent=t;v.lab._w=0}const s=project(wx(v.p.x),.1,wz(v.p.y)+1.9),l=labSize(v.lab);v.lab.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-50%)`;v.lab.style.opacity=underHud(s.x-l._w/2,s.y-l._h/2,l._w,l._h)?0:1}}
 
 // ---- screens and loop
 let started=false,myPick=0,busy=false;
 // opts.deck: six {kind, tier} the player brings (the menu sets it); with none the hero's default deck
 let myOpts={};async function startMatch(i,auto,opts){if(busy)return;busy=true;myPick=i;if(opts)myOpts=opts;started=false;for(const v of heroViews){scene.remove(v.grp);v.lab.remove()}heroViews=[];
  SB.start(i,!!auto,myOpts);fxReset();buildWorld();heroViews=await Promise.all(SB.G.heroes.map(makeHero));$('pick').hidden=true;$('over').hidden=true;$('hud').hidden=false;hudCards=[];started=true;busy=false;playS('match_start');lastTick=99;I.fire=false;aim=null;
- toast('Pick a lane, then spend seeds on units.',5);focus.z=wz(SB.G.me.y);drawHud()}
+ paused=false;$('pause').hidden=true;$('endStamp').hidden=true;hudRects=null;
+ coach.on=/[?&]coach\b/.test(location.search)||(MENU_FLOW&&!!window.SBL_META&&window.SBL_META.state.played===0);coach.summoned=coach.laned=false;coach.t=coach.lt=0;
+ focus.z=wz(SB.G.me.y);drawHud()}
 function toast(t,sec){const el=$('toast');if(el.textContent!==t)el.textContent=t;el.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>{el.style.opacity=0},sec*1000)}
 const portraits={};
 async function portrait(id){if(portraits[id])return portraits[id];const H=await LOOK.loadHero(id,{ring:false,shadow:false}),sc=new THREE.Scene();sc.background=new THREE.Color(0x3a5244);LOOK.addLights(sc);sc.add(H.root);
@@ -390,16 +442,18 @@ async function showPick(){started=false;$('hud').hidden=true;$('over').hidden=tr
 $('again').onclick=()=>startMatch(myPick);$('swap').onclick=showPick;
 const clock=new THREE.Clock();let fpsN=0,fpsT=performance.now();
 function frame(_,__,fdt){const dt=fdt||Math.min(.05,clock.getDelta());
- if(started&&SB.G){const G=SB.G,me=G.me;readInput();SB.update(dt);
+ if(started&&SB.G&&!paused){const G=SB.G,me=G.me;readInput();SB.update(dt);
   const ahead=.8,tz=wz(me.y)-(me.team===1?ahead:-ahead),lim=SB.H*K/2-1.5,xl=Math.max(0,10.5-SPAN/2);
   focus.set(Math.max(-xl,Math.min(xl,focus.x+(wx(me.x)-focus.x)*Math.min(1,dt*6))),0,Math.max(-lim,Math.min(lim,focus.z+(tz-focus.z)*Math.min(1,dt*6))));
   shake=Math.max(0,shake-dt);const sx=shake?(Math.random()-.5)*shake*1.2:0,sz=shake?(Math.random()-.5)*shake*1.2:0;cam.position.set(focus.x+sx,Math.sin(PITCH)*camDist,focus.z+Math.cos(PITCH)*camDist+sz);cam.lookAt(focus.x+sx,0,focus.z+sz);cam.updateMatrixWorld();W.tickAll(world,G.t,dt);
   for(const v of heroViews)tickHero(v,dt);drawUnits(G.t);drawTransient();drawEvents(G);if(fxOn)FX.tick(dt);drawParts(dt);drawLabels();drawHit();if((hudT+=dt)>.1){hudT=0;drawHud()}
-  if(G.over&&$('over').hidden){$('overT').textContent=G.over==='Draw'?'Draw':G.over==='Blue wins'?'You win':'You lose';$('over').hidden=false;$('hud').hidden=true;playS(G.over==='Blue wins'?'win':'lose')}}
+  if(G.over&&$('over').hidden){$('overT').textContent=G.over==='Draw'?'Draw':G.over==='Blue wins'?'You win':'You lose';$('over').hidden=false;$('hud').hidden=true;coachAt(null);playS(G.over==='Blue wins'?'win':'lose');
+   if(MENU_FLOW&&!G._left){const out=G.over==='Draw'?'draw':G.over===(me.team===1?'Blue wins':'Red wins')?'win':'loss',st=$('endStamp');st.className=out;st.textContent=out==='win'?'Victory!':out==='loss'?'Defeat':'Draw';st.hidden=false}}}
  renderer.render(scene,cam);if(++fpsN===60){const t=performance.now();window.SBFPS=Math.round(60000/(t-fpsT));fpsT=t;fpsN=0}}
-await LOOK.heroRoster();buildDock();
+await LOOK.heroRoster();buildDock();BOOT(.7);
 const qs=new URLSearchParams(location.search);if(qs.has('hero'))await startMatch(+qs.get('hero')||0,qs.has('auto'));else showPick();
 renderer.setAnimationLoop(frame);window.GAME={startMatch,showPick,scene,cam,renderer,SB,step(n,dt){for(let i=0;i<n;i++)frame(0,0,dt||1/30)},hold(v){renderer.setAnimationLoop(v?null:frame)},heroView:h=>heroViews.find(v=>v.h===h)};   // step and hold are for tests and the clip recorder
 // ==== MENU (shell branch): the app screens around the match live in menu.js; it gets the renderer, the hero pose code and the match start, and runs the frame while a screen is up. Keep this block whole when merging.
 {const MENU=await import('./menu.js');await MENU.init({THREE,LOOK,W,UNITS,renderer,resize,CAST,rigOf,setBone,pose,startMatch,frame});}
 // ==== /MENU
+BOOT(1);   // loaded: the loading screen fades into the first screen (the first-run title, Home, or the match)
