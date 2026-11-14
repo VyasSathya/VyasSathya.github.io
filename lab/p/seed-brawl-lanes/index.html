@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<title>Seed Brawl Lanes</title>
+<link rel="stylesheet" href="lanes.css">
+<script type="importmap">{"imports":{"three":"./game/vendor/three.module.js","three/addons/":"./game/vendor/addons/"}}</script>
+</head><body>
+<canvas id="gl"></canvas>
+<div id="labels"></div>
+<div id="hud" hidden>
+ <div id="top"><span id="sb" class="pill blue">0</span><span id="clock">5:00</span><span id="sr" class="pill red">0</span></div>
+ <div id="stickL" class="stick"><i></i></div>
+ <div id="btnAtk" class="btn atk"><i></i><b id="ammo"></b></div>
+ <div id="btnSup" class="btn sup"><i></i><svg viewBox="0 0 36 36"><circle id="supArc" cx="18" cy="18" r="16"/></svg><span id="supName"></span></div>
+ <div id="dock">
+  <div id="seeds"></div>
+  <div id="row">
+   <canvas id="lanes" width="192" height="112"></canvas>
+   <div id="btnSeed" class="sq kind"><img alt=""><span id="seedName">Thorn</span></div>
+   <div id="bodies"></div>
+  </div>
+ </div>
+ <div id="toast"></div><div id="hurt"></div><div id="hitdir"><i></i></div>
+</div>
+<div id="pick"></div>
+<div id="over" hidden><h1 id="overT"></h1><button id="again">Play again</button><button id="swap">Change hero</button></div>
+<script src="config.js"></script>
+<script src="core.js"></script>
+<script type="module" src="main.js"></script>
+</body></html>
