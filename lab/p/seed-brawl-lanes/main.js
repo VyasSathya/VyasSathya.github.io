@@ -134,7 +134,8 @@ const pv=new THREE.Vector3();function project(x,y,z){pv.set(x,y,z).project(cam);
 const UMAX=200,USET=UNITS.sets();UNITS.init(scene,UMAX);
 const ringGeo=new THREE.RingGeometry(.42,.6,14);ringGeo.rotateX(-Math.PI/2);
 const uDiscGeo=new THREE.CircleGeometry(.62,20);uDiscGeo.rotateX(-Math.PI/2);   // with ink outlines the team is a filled disc under the feet, not a thin ring
-const uRing=new THREE.InstancedMesh(UNITS.OUTLINE==='black'?uDiscGeo:ringGeo,new THREE.MeshBasicMaterial({color:0xffffff,depthWrite:false,transparent:UNITS.OUTLINE==='black',opacity:UNITS.OUTLINE==='black'?.8:1}),UMAX*2);uRing.frustumCulled=false;uRing.count=0;scene.add(uRing);
+const DISC=/[?&]disc=1/.test(location.search);   // the team now sits on each creep's body (its team part), so the floor mark is the thin ring again; ?disc=1 shows the filled disc
+const uRing=new THREE.InstancedMesh(DISC?uDiscGeo:ringGeo,new THREE.MeshBasicMaterial({color:0xffffff,depthWrite:false,transparent:DISC,opacity:DISC?.8:1}),UMAX*2);uRing.frustumCulled=false;uRing.count=0;scene.add(uRing);
 const M=new THREE.Matrix4(),Q=new THREE.Quaternion(),P=new THREE.Vector3(),S=new THREE.Vector3(),C=new THREE.Color(),E3=new THREE.Euler();
 // Creeps: where they are comes from the rules; how they move is drawn here. An attack is seen the moment the rules
 // land it (the cooldown jumps back up): a fast lunge out, then a slower settle. A hit flashes the body white.

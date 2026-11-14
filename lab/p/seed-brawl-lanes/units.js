@@ -27,17 +27,20 @@ function skinned(vs) {
     .replace('#include <begin_vertex>', '#include <begin_vertex>' + SKIN_P);
 }
 // the game's toon material plus the bend and the flash (and the skinning when opts.bones is a baked bone texture)
+// Team part: the model's second UV layer (u) marks it (tools/creep_rig.py: Brute shells, Splasher pod, Flyer wings, Grunt
+// and Colossus band); 1 = recoloured to the team keeping the texel's light and dark, 2 = flat team colour. opts.team sets it.
 function creepMaterial(opts) {
-  const m = LOOK.toonMaterial(opts), base = m.onBeforeCompile, top = { value: opts.top || 1.2 };   // top: the body's height, for the lit-top gradient (lighter at the head, darker at the feet)
+  const m = LOOK.toonMaterial(opts), base = m.onBeforeCompile, top = { value: opts.top || 1.2 }, tc = { value: new THREE.Color(opts.team === undefined ? 0xffffff : opts.team) };   // top: the body's height, for the lit-top gradient (lighter at the head, darker at the feet)
   m.onBeforeCompile = (s) => {
     base(s); s.uniforms.uTop = top; if (opts.bones) { s.uniforms.uBones = { value: opts.bones }; s.vertexShader = skinned(s.vertexShader); }
-    s.vertexShader = s.vertexShader.replace('#include <common>', '#include <common>\nvarying float vFlash; varying float vH; uniform float uTop;' + BEND)
-      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvH = clamp(position.y / uTop, 0.0, 1.0); transformed = creepBend(transformed, aAnim); vFlash = aAnim.w;');
-    s.fragmentShader = s.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vFlash; varying float vH;')
-      .replace('#include <map_fragment>', '#include <map_fragment>\ndiffuseColor.rgb *= mix(0.8, 1.1, vH);')
+    s.uniforms.uTeamCol = tc;
+    s.vertexShader = s.vertexShader.replace('#include <common>', '#include <common>\nvarying float vFlash; varying float vH; varying float vTeam; attribute float aTeam; uniform float uTop;' + BEND)
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvH = clamp(position.y / uTop, 0.0, 1.0); transformed = creepBend(transformed, aAnim); vFlash = aAnim.w; vTeam = aTeam;');
+    s.fragmentShader = s.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vFlash; varying float vH; varying float vTeam; uniform vec3 uTeamCol;')
+      .replace('#include <map_fragment>', '#include <map_fragment>\n' + (opts.team === undefined ? '' : 'float tLum = vTeam > 1.5 ? 0.62 : dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114)); diffuseColor.rgb = mix(diffuseColor.rgb, uTeamCol * clamp(0.45 + 0.9 * tLum, 0.45, 1.15), smoothstep(0.4, 0.6, vTeam));\n') + 'diffuseColor.rgb *= mix(0.8, 1.1, vH);')
       .replace('#include <opaque_fragment>', 'outgoingLight = mix(outgoingLight, vec3(1.0), vFlash * 0.6);\n#include <opaque_fragment>');
   };
-  m.customProgramCacheKey = () => opts.bones ? 'seedtoon-creep-skin' : 'seedtoon-creep';
+  m.customProgramCacheKey = () => (opts.bones ? 'seedtoon-creep-skin' : 'seedtoon-creep') + (opts.team === undefined ? '' : '-team');
   return m;
 }
 // Real models keep their own colours, so their team is carried by the outline (and the floor ring): a team-coloured
@@ -63,7 +66,8 @@ function instanced(geo, anim, pose) {
   return g;
 }
 
-export const OUTLINE = new URLSearchParams(location.search).get('outline') || 'team';   // 'team': team-coloured line around real models; 'black': the game's ink line, team shown by the floor disc
+const NOTEAM = /[?&]noteam=1/.test(location.search);   // ?noteam=1: no team part (the look before it, for comparison)
+export const OUTLINE = new URLSearchParams(location.search).get('outline') || 'black';   // 'team': team-coloured line around real models; 'black': the game's ink line, team shown by the floor disc
 const MODELS = {}, SETS = {}, procMat = creepMaterial({ vertexColors: true });
 let scene = null, MAX = 80, info = { units: {} };
 export function init(sc, max) { scene = sc; MAX = max; }
@@ -74,7 +78,7 @@ export const meta = (kind, ti) => info.units[KEYS[kind] + '_' + BODY[ti]] || nul
 export function set(kind, ti, team, teamCol) {
   const key = kind + '_' + ti + '_' + team; if (SETS[key]) return SETS[key];
   const md = model(kind, ti); let geo, hull, mat;
-  let line; if (md) { geo = md.geo; hull = md.hull; mat = md.mat; line = OUTLINE === 'black' ? outlineMat(undefined, 1.6, md) : outlineMat(new THREE.Color(teamCol).multiplyScalar(0.85).getHex(), 1.9, md); }
+  let line; if (md) { geo = md.geo; hull = md.hull; mat = md.matFor(teamCol); line = OUTLINE === 'black' ? outlineMat(undefined, 1.6, md) : outlineMat(new THREE.Color(teamCol).multiplyScalar(0.85).getHex(), 1.9, md); }
   else { W.unit(W.UNIT_KINDS[kind], ti, teamCol).children[0].traverse((o) => { if (o.isMesh) { if (o.userData.isHull) hull = o.geometry; else geo = o.geometry; } }); mat = procMat; }
   const anim = new THREE.InstancedBufferAttribute(new Float32Array(MAX * 4), 4); anim.setUsage(THREE.DynamicDrawUsage);
   const pose = md && md.bones ? new THREE.InstancedBufferAttribute(new Float32Array(MAX), 1) : null; if (pose) pose.setUsage(THREE.DynamicDrawUsage);
@@ -88,7 +92,9 @@ function drop(prefix) { for (const k in SETS) if (k.startsWith(prefix)) { const 
 // a single creep as its own object (the dock pictures)
 export function single(kind, ti, teamCol) {
   const md = model(kind, ti); if (!md) return W.unit(W.UNIT_KINDS[kind], ti, teamCol).children[0];
-  const g = new THREE.Group(), m = new THREE.Mesh(md.geo, LOOK.toonMaterial({ map: md.mat.map })); g.add(m); LOOK.addOutline(g, 1.6); return g;
+  const geo = new THREE.BufferGeometry(); for (const k of Object.keys(md.geo.attributes)) geo.setAttribute(k, md.geo.attributes[k]); if (md.geo.index) geo.setIndex(md.geo.index);
+  geo.setAttribute('aAnim', new THREE.BufferAttribute(new Float32Array(md.geo.attributes.position.count * 4), 4));   // a missing attribute reads w = 1 in WebGL: the whole picture would flash white
+  const g = new THREE.Group(), m = new THREE.Mesh(geo, creepMaterial({ map: md.mat.map, team: teamCol })); g.add(m); LOOK.addOutline(g, 1.6); return g;
 }
 
 // every clip sampled at 30 fps into bone matrices in the space of the creep's geometry (scale and turn applied), one
@@ -134,10 +140,12 @@ export async function load(base, onReady) {
       const g = await L.loadAsync(base + d.file); let mesh = null; g.scene.updateMatrixWorld(true); g.scene.traverse((o) => { if (o.isMesh && !mesh) mesh = o; });
       const geo = mesh.geometry.clone(); geo.applyMatrix4(mesh.matrixWorld); if (d.scale) geo.scale(d.scale, d.scale, d.scale); if (d.turn) geo.rotateY(d.turn);
       let bake = null; if (mesh.isSkinnedMesh && g.animations.length && !NOBAKE) { try { bake = bakeClips(g, mesh, d); } catch (e) { console.warn('creep clips', key, e.message); } }
-      for (const k of Object.keys(geo.attributes)) if (!['position', 'normal', 'uv'].concat(bake ? ['skinIndex', 'skinWeight'] : []).includes(k)) geo.deleteAttribute(k);
+      const tuv = geo.attributes.uv1; if (tuv) { const a = new Float32Array(tuv.count); for (let i = 0; i < tuv.count; i++) a[i] = tuv.getX(i); geo.setAttribute('aTeam', new THREE.BufferAttribute(a, 1)); }
+      for (const k of Object.keys(geo.attributes)) if (!['position', 'normal', 'uv', 'aTeam'].concat(bake ? ['skinIndex', 'skinWeight'] : []).includes(k)) geo.deleteAttribute(k);
       const map = mesh.material.map; if (map) { map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4; }
-      MODELS[key] = { key, geo, hull: LOOK.hullGeometry(geo), bones: bake && bake.tex, clips: bake && bake.clips,
-        mat: creepMaterial({ map, sat: d.sat, contrast: d.contrast, top: (d.height || 1.2) * (d.scale || 1), bones: bake && bake.tex }) };
+      const mo = { map, sat: d.sat, contrast: d.contrast, top: (d.height || 1.2) * (d.scale || 1), bones: bake && bake.tex }, mats = {};
+      MODELS[key] = { key, geo, hull: LOOK.hullGeometry(geo), bones: bake && bake.tex, clips: bake && bake.clips, mat: creepMaterial(mo),
+        matFor: (col) => NOTEAM ? MODELS[key].mat : mats[col] || (mats[col] = creepMaterial(Object.assign({}, mo, { team: col }))) };   // one material per team: the team part's colour
       const [kn, bn] = key.split('_'); drop(KEYS.indexOf(kn) + '_' + BODY.indexOf(bn) + '_'); n++; if (onReady) onReady(key);
     } catch (e) { console.warn('creep model', key, e.message); }
   }));
