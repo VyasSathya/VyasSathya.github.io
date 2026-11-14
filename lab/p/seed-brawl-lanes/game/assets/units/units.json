@@ -1,5 +1,5 @@
 {
- "about": "Creep models for lanes/units.js. Key <kind>_<body>. Model: width 1.0 (x), feet at y=0, origin at the ground centre, facing +Z; the game scales it to UNIT_WIDTH[body] x 1.5. height and muzzle are in model units before scale (muzzle = where a projectile leaves the body, x y z). Sources: SOURCES.md.",
+ "about": "Creep models for lanes/units.js. Key <kind>_<body>. Model: width 1.0 (x), feet at y=0, origin at the ground centre, facing +Z; the game scales it to UNIT_WIDTH[body] x 1.5. height and muzzle are in model units before scale (muzzle = where a projectile leaves the body, x y z). Sources: SOURCES.md. Since 2026-11-14 every file carries a skeleton and clips walk, attack, death, idle, hit (tools/creep_rig.py; clips[name].hit = seconds into the attack where the hit lands); lanes/units.js bakes them to a float bone texture at load. The unrigged models are in static/.",
  "units": {
   "thorn_grunt": {
    "file": "thorn_grunt.glb",
@@ -11,7 +11,7 @@
     0.334
    ],
    "tris": 2450,
-   "bytes": 112208,
+   "bytes": 196064,
    "source": "D:/SeedBrawl/meshy/thorn_grunt_t6",
    "meshy": {
     "preview": "01a1d8c5-48bb-706e-9669-c31520de0653",
@@ -19,7 +19,56 @@
     "credits": 15
    },
    "tilt": 25.0,
-   "texsize": 512
+   "texsize": 512,
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/thorn_grunt.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 1.79,
+     "death": 1.37,
+     "hit": 1.28,
+     "idle": 1.09,
+     "walk": 1.62
+    }
+   }
   },
   "thorn_brute": {
    "file": "thorn_brute.glb",
@@ -32,7 +81,7 @@
     0.432
    ],
    "tris": 2912,
-   "bytes": 146640,
+   "bytes": 239892,
    "meshy": {
     "preview": "01a1d8c9-6761-72e3-9ce2-3fb8fc3cf844",
     "refine": "01a1d8c9-c11c-759f-a991-03195b24feaa",
@@ -40,7 +89,56 @@
    },
    "tilt": 25.0,
    "texsize": 512,
-   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/thorn_brute.report.json"
+   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/thorn_brute.report.json",
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/thorn_brute.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 4.82,
+     "death": 4.6,
+     "hit": 2.12,
+     "idle": 1.81,
+     "walk": 2.35
+    }
+   }
   },
   "thorn_splasher": {
    "file": "thorn_splasher.glb",
@@ -53,7 +151,7 @@
     -0.858
    ],
    "tris": 2990,
-   "bytes": 154880,
+   "bytes": 251968,
    "meshy": {
     "preview": "01a1d8c9-698b-718a-b685-0e4e66f1b1c6",
     "refine": "01a1d8c9-ebd6-724e-a2f7-c6757c761368",
@@ -62,7 +160,57 @@
    "tilt": 25.0,
    "texsize": 512,
    "pod": true,
-   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/thorn_splasher.report.json"
+   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/thorn_splasher.report.json",
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.27
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/thorn_splasher.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "pod",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 1.26,
+     "death": 1.89,
+     "hit": 1.44,
+     "idle": 1.27,
+     "walk": 2.44
+    }
+   }
   },
   "thorn_flyer": {
    "file": "thorn_flyer.glb",
@@ -75,7 +223,7 @@
     0.108
    ],
    "tris": 2374,
-   "bytes": 130524,
+   "bytes": 212140,
    "meshy": {
     "preview": "01a1d8c9-6af4-75b1-9169-6c8aa8caca1d",
     "refine": "01a1d8ca-3abb-7202-bbdf-f4e8f5587fcd",
@@ -83,7 +231,56 @@
    },
    "tilt": 25.0,
    "texsize": 512,
-   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/thorn_flyer.report.json"
+   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/thorn_flyer.report.json",
+   "clips": {
+    "walk": {
+     "frames": 13,
+     "seconds": 0.4,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/thorn_flyer.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "wing_L",
+     "wing_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 1.51,
+     "death": 1.04,
+     "hit": 1.05,
+     "idle": 1.02,
+     "walk": 1.34
+    }
+   }
   },
   "thorn_colossus": {
    "file": "thorn_colossus.glb",
@@ -96,14 +293,63 @@
     0.234
    ],
    "tris": 4900,
-   "bytes": 276144,
+   "bytes": 397504,
    "meshy": {
     "preview": "01a1d8c9-6cd2-7257-9045-c59a3209d5d5",
     "refine": "01a1d8c9-c6a6-7220-8078-dccd4e7ddcde",
     "credits": 15
    },
    "tilt": 25.0,
-   "texsize": 1024
+   "texsize": 1024,
+   "clips": {
+    "walk": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "attack": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false,
+     "hit": 0.4
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/thorn_colossus.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 2.28,
+     "death": 2.07,
+     "hit": 1.43,
+     "idle": 1.32,
+     "walk": 2.22
+    }
+   }
   },
   "spitter_grunt": {
    "file": "spitter_grunt.glb",
@@ -116,14 +362,63 @@
     0.225
    ],
    "tris": 2447,
-   "bytes": 122128,
+   "bytes": 212212,
    "meshy": {
     "preview": "01a1d94e-7d80-75ee-a574-2c2dc3e62246",
     "refine": "01a1d94e-dde3-7778-829b-028582d3e792",
     "credits": 15
    },
    "tilt": 30.0,
-   "texsize": 512
+   "texsize": 512,
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/spitter_grunt.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 1.8,
+     "death": 1.2,
+     "hit": 1.25,
+     "idle": 1.07,
+     "walk": 1.51
+    }
+   }
   },
   "spitter_brute": {
    "file": "spitter_brute.glb",
@@ -136,7 +431,7 @@
     0.307
    ],
    "tris": 2892,
-   "bytes": 128020,
+   "bytes": 219504,
    "meshy": {
     "preview": "01a1d8cb-1aa4-7731-94ef-7e95be2db68b",
     "refine": "01a1d8cb-9e06-7141-b1ae-c5b84686c119",
@@ -144,7 +439,56 @@
    },
    "tilt": 45.0,
    "texsize": 512,
-   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/spitter_brute.report.json"
+   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/spitter_brute.report.json",
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/spitter_brute.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 3.53,
+     "death": 5.73,
+     "hit": 1.74,
+     "idle": 1.85,
+     "walk": 2.2
+    }
+   }
   },
   "spitter_splasher": {
    "file": "spitter_splasher.glb",
@@ -157,7 +501,7 @@
     -0.75
    ],
    "tris": 2854,
-   "bytes": 130192,
+   "bytes": 225568,
    "meshy": {
     "preview": "01a1d8cb-1d9b-73e4-a37b-b311bc513f36",
     "refine": "01a1d8cb-cb66-76a9-befe-53f3df1932dc",
@@ -166,7 +510,57 @@
    "tilt": 30.0,
    "texsize": 512,
    "pod": true,
-   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/spitter_splasher.report.json"
+   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/spitter_splasher.report.json",
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.27
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/spitter_splasher.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "pod",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 1.29,
+     "death": 1.32,
+     "hit": 1.16,
+     "idle": 1.08,
+     "walk": 1.49
+    }
+   }
   },
   "spitter_flyer": {
    "file": "spitter_flyer.glb",
@@ -179,14 +573,63 @@
     0.247
    ],
    "tris": 2450,
-   "bytes": 121608,
+   "bytes": 213416,
    "meshy": {
     "preview": "01a1d8d7-0a7e-7716-b3d0-85c2092abae6",
     "refine": "01a1d8d7-641b-71a7-8b7d-4156f5dae49d",
     "credits": 15
    },
    "tilt": 30.0,
-   "texsize": 512
+   "texsize": 512,
+   "clips": {
+    "walk": {
+     "frames": 13,
+     "seconds": 0.4,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/spitter_flyer.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 3.09,
+     "death": 2.08,
+     "hit": 1.43,
+     "idle": 1.86,
+     "walk": 2.17
+    }
+   }
   },
   "spitter_colossus": {
    "file": "spitter_colossus.glb",
@@ -199,14 +642,63 @@
     0.1
    ],
    "tris": 4899,
-   "bytes": 221768,
+   "bytes": 346636,
    "meshy": {
     "preview": "01a1d8e1-662a-77c9-baad-e901d2b7bc87",
     "refine": "01a1d8e2-10a1-7351-946b-6382853c9a60",
     "credits": 15
    },
    "tilt": 25.0,
-   "texsize": 1024
+   "texsize": 1024,
+   "clips": {
+    "walk": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "attack": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false,
+     "hit": 0.4
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/spitter_colossus.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 3.11,
+     "death": 1.31,
+     "hit": 2.03,
+     "idle": 1.34,
+     "walk": 2.05
+    }
+   }
   },
   "runner_grunt": {
    "file": "runner_grunt.glb",
@@ -219,14 +711,63 @@
     0.214
    ],
    "tris": 2450,
-   "bytes": 126888,
+   "bytes": 211072,
    "meshy": {
     "preview": "01a1d8cb-253e-70d3-b167-8716846c50d3",
     "refine": "01a1d8cb-ceda-7529-85c4-2e16d1305217",
     "credits": 15
    },
    "tilt": 30.0,
-   "texsize": 512
+   "texsize": 512,
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/runner_grunt.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 2.17,
+     "death": 1.85,
+     "hit": 1.6,
+     "idle": 1.19,
+     "walk": 1.97
+    }
+   }
   },
   "runner_brute": {
    "file": "runner_brute.glb",
@@ -239,7 +780,7 @@
     0.179
    ],
    "tris": 2892,
-   "bytes": 152256,
+   "bytes": 246060,
    "meshy": {
     "preview": "01a1d8e4-22cf-775e-a96b-2c253342d5c8",
     "refine": "01a1d8e4-7cc3-764c-ba25-d187505eec94",
@@ -247,7 +788,56 @@
    },
    "tilt": 30.0,
    "texsize": 512,
-   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/runner_brute.report.json"
+   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/runner_brute.report.json",
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/runner_brute.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 2.12,
+     "death": 1.12,
+     "hit": 1.39,
+     "idle": 1.14,
+     "walk": 1.62
+    }
+   }
   },
   "runner_splasher": {
    "file": "runner_splasher.glb",
@@ -260,7 +850,7 @@
     -0.753
    ],
    "tris": 2882,
-   "bytes": 156100,
+   "bytes": 256712,
    "meshy": {
     "preview": "01a1d8d7-0693-7555-ac8c-380e76995e1d",
     "refine": "01a1d8d7-b072-76e1-95a2-03dfbef4d991",
@@ -269,7 +859,57 @@
    "tilt": 30.0,
    "texsize": 512,
    "pod": true,
-   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/runner_splasher.report.json"
+   "parts": "tools/creep_parts.py via work/creeps/build_v3.sh, report work/creeps/v3/runner_splasher.report.json",
+   "clips": {
+    "walk": {
+     "frames": 21,
+     "seconds": 0.667,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.27
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/runner_splasher.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "pod",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 1.13,
+     "death": 1.31,
+     "hit": 1.17,
+     "idle": 1.11,
+     "walk": 1.41
+    }
+   }
   },
   "runner_flyer": {
    "file": "runner_flyer.glb",
@@ -282,14 +922,63 @@
     0.163
    ],
    "tris": 2450,
-   "bytes": 121872,
+   "bytes": 208748,
    "meshy": {
     "preview": "01a1d8cd-2a86-7566-a57b-7e0b48d03a80",
     "refine": "01a1d8cd-ac7e-769d-8a19-33ae3aff8258",
     "credits": 15
    },
    "tilt": 30.0,
-   "texsize": 512
+   "texsize": 512,
+   "clips": {
+    "walk": {
+     "frames": 13,
+     "seconds": 0.4,
+     "loop": true
+    },
+    "attack": {
+     "frames": 19,
+     "seconds": 0.6,
+     "loop": false,
+     "hit": 0.3
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/runner_flyer.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 1.67,
+     "death": 1.35,
+     "hit": 1.61,
+     "idle": 1.62,
+     "walk": 1.72
+    }
+   }
   },
   "runner_colossus": {
    "file": "runner_colossus.glb",
@@ -302,14 +991,63 @@
     0.047
    ],
    "tris": 4897,
-   "bytes": 331088,
+   "bytes": 492416,
    "meshy": {
     "preview": "01a1d8cd-2e37-719e-a7d7-4089e29e6f30",
     "refine": "01a1d8cd-d730-72c1-b0af-a635ea15df72",
     "credits": 15
    },
    "tilt": 30.0,
-   "texsize": 1024
+   "texsize": 1024,
+   "clips": {
+    "walk": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "attack": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false,
+     "hit": 0.4
+    },
+    "death": {
+     "frames": 25,
+     "seconds": 0.8,
+     "loop": false
+    },
+    "idle": {
+     "frames": 31,
+     "seconds": 1.0,
+     "loop": true
+    },
+    "hit": {
+     "frames": 9,
+     "seconds": 0.267,
+     "loop": false
+    }
+   },
+   "rig": {
+    "tool": "tools/creep_rig.py",
+    "source": "static/runner_colossus.glb",
+    "bones": [
+     "root",
+     "hips",
+     "spine",
+     "head",
+     "arm_L",
+     "arm_R",
+     "leg_L",
+     "leg_R"
+    ],
+    "max_stretch": {
+     "attack": 2.17,
+     "death": 1.29,
+     "hit": 1.49,
+     "idle": 1.13,
+     "walk": 2.16
+    }
+   }
   }
  }
 }

@@ -52,37 +52,78 @@ let heroViews=[];
 async function makeHero(h){const mine=h===SB.G.me,H=await LOOK.loadHero(CAST[h.def.id]||'cat',{team:mine?PAL.team.you:TEAM[h.team]});scene.add(H.root);
  const lab=document.createElement('div');lab.className='lab hero';lab.innerHTML='<div class="pips"></div><div class="hp'+(h.team===SB.G.me.team?'':' foe')+'"><i></i></div><div class="nm"></div>';lab.lastChild.textContent=h.def.name;$('labels').appendChild(lab);
  return{h,grp:H.root,body:H.body,s0:H.body.scale.x,rig:rigOf(H),by0:H.body.position.y,bz0:H.body.position.z,rx0:H.body.rotation.x,wk:0,ph:Math.random()*6,at:0,su:0,dd:0,cd:0,sd:Math.random()*9,lx:h.x,ly:h.y,face:h.team===1?Math.PI:0,lab,w:H.size.width,ht:H.size.height,fire:0,seeds:-1,hp:h.hp,pop:0}}
-// hero motion: poses set in code on the shared skeleton (the shipped clips hold a T-pose)
+// hero motion: a hand pose set in code on the shared skeleton, with the model's own clips laid over it where they look
+// better. The clips move (Idle, Walk, Attack, Hit, Death) but are authored from the arms-out bind pose, so a clip is
+// applied as its change from the bind pose on top of the hand pose (bone = rest * hand * clip): the arms stay down, a
+// punch or a flinch plays over a walking body, and a clip and the hand pose cross-fade by weight.
 const POSE_B=['Hips','Spine','Chest','Head','UpperArm_L','UpperArm_R','Forearm_L','Forearm_R','Thigh_L','Thigh_R','Shin_L','Shin_R','Tail'];
-const qa=new THREE.Quaternion(),eu=new THREE.Euler();
+const UPPER=new Set(['Spine','Chest','Neck','Head','Shoulder_L','Shoulder_R','UpperArm_L','UpperArm_R','Forearm_L','Forearm_R','Hand_L','Hand_R']);
+// per model: which clip plays for a state (null = hand pose), where the Attack clip starts so its strike lands on the
+// frame the rules fire (core.js attack() fires the shot the moment it sets fireT), and how fast it plays
+// Looked at in strips (work/heroanim): Idle and Walk clips barely move at the game camera (legs swing 0.45 rad, arms stay
+// out), so the hand idle and walk stay. The one-arm Attack clip lifts the arm toward the head and hardly reads from above,
+// so the hand thrust stays for the punchers; the two-arm clips (owl bow draw, penguin throw, panda push) read and play,
+// with the hand body lunge under them. Hit plays the clip (upper body, 1.8x) over the hand flinch; Death plays the clip.
+const ANIM_ALL={atk:null,hit:{gain:1.8},death:{speed:1.3}};
+const ANIM={owl:{atk:{from:.33,speed:1.25,gain:1.3,up:true}},penguin:{atk:{from:.22,speed:1.25,gain:1.3,up:true}},panda:{atk:{from:.33,speed:1.25,gain:1.4,up:true}}};
+const ANIM_Q=(location.search.match(/[?&]anim=(\w+)/)||[])[1];   // test override: anim=hand (no clips) or anim=clip (every clip, Idle and Walk too)
+const qa=new THREE.Quaternion(),eu=new THREE.Euler(),qd=new THREE.Quaternion(),qe=new THREE.Quaternion(),QI=new THREE.Quaternion();
 function rigOf(H){const rig={},rq=new THREE.Quaternion();H.root.updateMatrixWorld(true);H.root.getWorldQuaternion(rq).invert();
  H.root.traverse(o=>{if(o.isBone&&POSE_B.includes(o.name)&&!rig[o.name]){const w=new THREE.Quaternion();o.getWorldQuaternion(w).premultiply(rq);rig[o.name]={b:o,q0:o.quaternion.clone(),w,wi:w.clone().invert()}}});
- const a=new THREE.Vector3(),b=new THREE.Vector3();for(const sd of['L','R']){const u=rig['UpperArm_'+sd],f=rig['Forearm_'+sd];let dr=0;if(u&&f){u.b.getWorldPosition(a);f.b.getWorldPosition(b);dr=Math.atan2(a.y-b.y,Math.abs(b.x-a.x))}rig['dn'+sd]=Math.max(.25,1.12-Math.max(0,dr-.17))}return rig}
+ const a=new THREE.Vector3(),b=new THREE.Vector3();for(const sd of['L','R']){const u=rig['UpperArm_'+sd],f=rig['Forearm_'+sd];let dr=0;if(u&&f){u.b.getWorldPosition(a);f.b.getWorldPosition(b);dr=Math.atan2(a.y-b.y,Math.abs(b.x-a.x))}rig['dn'+sd]=Math.max(.25,1.12-Math.max(0,dr-.17))}
+ // the clips: one sampler per bone track (rotations; position only for Root, the other position keys are the bind pose)
+ const bones={};H.body.traverse(o=>{if(o.isBone&&!bones[o.name])bones[o.name]=o});rig.rest=Object.values(bones).map(b=>({b,q:b.quaternion.clone(),p:b.position.clone()}));rig.cl={};
+ for(const n in H.clips||{}){const c=H.clips[n],tr=[];for(const k of c.tracks){const i=k.name.lastIndexOf('.'),bn=k.name.slice(0,i),pr=k.name.slice(i+1),bo=bones[bn];if(!bo)continue;
+   if(pr==='quaternion')tr.push({b:bo,q:k.createInterpolant(),qi:bo.quaternion.clone().invert(),up:UPPER.has(bn)});else if(pr==='position'&&bn==='Root')tr.push({b:bo,p:k.createInterpolant(),p0:bo.position.clone(),up:false})}
+  rig.cl[n]={dur:c.duration,tr}}
+ const id=H.info&&H.info.id;rig.set=ANIM_Q==='hand'?{}:Object.assign({},ANIM_ALL,ANIM[id]);if(ANIM_Q==='clip')Object.assign(rig.set,{idle:true,walk:true,atk:rig.set.atk||{from:.3,speed:1.25,gain:1}});return rig}
 function setBone(r,n,x,y,z){const o=r[n];if(!o)return;qa.setFromEuler(eu.set(x,y,z,'XYZ'));o.b.quaternion.copy(o.q0).multiply(o.wi).multiply(qa).multiply(o.w)}
-function pose(v,dt,sp,t){const h=v.h,r=v.rig,k=Math.min(1,dt*10);
- if(v.fire<=0&&h.fireT>0)v.at=1;if((h.supT||0)>v.cd+.2)v.su=1;v.cd=h.supT||0;
+// lay clip `name` at time t over the bones as they are (hand pose), weight w; up: only the upper body
+function layer(r,name,t,w,up){const c=r.cl&&r.cl[name];if(!c||w<=.001)return;t=Math.max(0,Math.min(t,c.dur));
+ for(const k of c.tr){if(up&&!k.up)continue;const o=(k.q||k.p).evaluate(t);
+  if(k.q){qd.set(o[0],o[1],o[2],o[3]).premultiply(k.qi);if(w<1)qd.copy(qe.copy(QI).slerp(qd,w));k.b.quaternion.multiply(qd)}
+  else k.b.position.set(k.b.position.x+(o[0]-k.p0.x)*w,k.b.position.y+(o[1]-k.p0.y)*w,k.b.position.z+(o[2]-k.p0.z)*w)}}
+function pose(v,dt,sp,t){const h=v.h,r=v.rig,S=r.set||{},k=Math.min(1,dt*10);
+ if(!v.ck)v.ck={A:-1,H:-1,D:-1,W:0,wD:0};const ck=v.ck;
+ if(v.fire<=0&&h.fireT>0){v.at=1;if(S.atk)ck.A=S.atk.from}if((h.supT||0)>v.cd+.2)v.su=1;v.cd=h.supT||0;
+ if(v.hitNew){v.hitNew=0;if(S.hit&&!(ck.H>=0&&ck.H<.18))ck.H=0}
+ if(h.dead){if(S.death&&ck.D<0)ck.D=0}else ck.D=-1;
  v.wk+=((sp>12&&sp<900&&!h.dead?1:0)-v.wk)*k;v.ph+=dt*Math.min(16,Math.max(7,sp*.06));v.at=Math.max(0,v.at-dt/.34);v.su=Math.max(0,v.su-dt/.7);v.dd+=((h.dead?1:0)-v.dd)*Math.min(1,dt*7);
- const s=Math.sin(v.ph),c=Math.cos(v.ph),w=v.wk,br=Math.sin((t+v.sd)*2.2)*.05*(1-w),a=v.at>0?Math.sin(Math.min(1,(1-v.at)*1.7)*Math.PI):0,u=v.su>0?Math.sin(Math.min(1,(1-v.su)*1.5)*Math.PI):0,hit=v.pop/.14,D=v.dd;
- setBone(r,'Hips',.05*w-hit*.1,s*.14*w+a*.25,0);
- setBone(r,'Spine',.18*w+br+a*.22-u*.3-hit*.3,-s*.1*w+a*.35,0);
- setBone(r,'Chest',br,-s*.14*w+a*.3,s*.04*w);
- setBone(r,'Head',-.12*w-br*2+u*.35+hit*.25,-a*.5,0);
- setBone(r,'UpperArm_L',s*.75*w+a*.5-u*.3,0,-(r.dnL-D*.7)+br+u*2.3);
- setBone(r,'UpperArm_R',(-s*.75*w)*(1-a)-a*1.55-u*.3,0,(r.dnR-D*.7)-br-u*2.3);
- setBone(r,'Forearm_L',0,-(.3+.45*w+a*.5)*(1-u),0);
- setBone(r,'Forearm_R',0,(.3+.45*w)*(1-a)*(1-u),0);
- setBone(r,'Thigh_L',-s*.8*w-a*.25,0,0);setBone(r,'Thigh_R',s*.8*w+a*.3,0,0);
- setBone(r,'Shin_L',Math.max(0,c)*1.1*w,0,0);setBone(r,'Shin_R',Math.max(0,-c)*1.1*w+a*.3,0,0);
- setBone(r,'Tail',-s*.1*w,Math.sin((t+v.sd)*3)*.3*(1-w)+s*.3*w,0);
- v.body.position.y=v.by0+(Math.abs(c)*.07*w+u*.45)*v.ht*(1-D)+D*.12*v.ht;v.body.position.z=v.bz0+a*.28*v.ht;v.body.rotation.x=v.rx0-D*1.45+w*.06}
+ const cA=r.cl.Attack,cH=r.cl.Hit,cD=r.cl.Death;
+ if(ck.A>=0){ck.A+=dt*S.atk.speed;if(!cA||ck.A>=cA.dur)ck.A=-1}if(ck.H>=0){ck.H+=dt;if(!cH||ck.H>=cH.dur)ck.H=-1}if(ck.D>=0&&cD)ck.D=Math.min(cD.dur,ck.D+dt*S.death.speed);
+ ck.wD+=((ck.D>=0?1:0)-ck.wD)*Math.min(1,dt*25);
+ // the hand thrust: the rules fire on the frame fireT is set, so the arm is fully out 0.05 s later (2 to 3 frames, the
+ // release), holds to 0.1 s and is back by 0.34 s, inside the shortest gap between shots (0.25 s) it restarts cleanly
+ const tA=(1-v.at)*.34,a0=v.at>0?(tA<.05?Math.sin(tA/.05*Math.PI/2):Math.max(0,1-Math.pow(Math.max(0,tA-.1)/.24,1.4))):0;
+ const s=Math.sin(v.ph),c=Math.cos(v.ph),w=v.wk,br=Math.sin((t+v.sd)*2.2)*.05*(1-w),a=S.atk?0:a0,ab=S.atk?a0*.6:a0,u=v.su>0?Math.sin(Math.min(1,(1-v.su)*1.5)*Math.PI):0,hit=v.pop/.14,D=S.death?0:v.dd,wl=S.walk?0:w,ib=S.idle?0:1;
+ for(const o of r.rest){o.b.quaternion.copy(o.q);o.b.position.copy(o.p)}
+ setBone(r,'Hips',.05*wl-hit*.1,s*.14*wl+ab*.25,0);
+ setBone(r,'Spine',.18*wl+br*ib+ab*.22-u*.3-hit*.3,-s*.1*wl+ab*.35,0);
+ setBone(r,'Chest',br*ib,-s*.14*wl+ab*.3,s*.04*wl);
+ setBone(r,'Head',-.12*wl-br*2*ib+u*.35+hit*.25,-ab*.5,0);
+ setBone(r,'UpperArm_L',s*.75*wl+a*.5-u*.3,0,-(r.dnL-D*.7)+br*ib+u*2.3);
+ setBone(r,'UpperArm_R',(-s*.75*wl)*(1-a)-a*1.55-u*.3,0,(r.dnR-D*.7)-br*ib-u*2.3);
+ setBone(r,'Forearm_L',0,-(.3+.45*wl+a*.5)*(1-u),0);
+ setBone(r,'Forearm_R',0,(.3+.45*wl)*(1-a)*(1-u),0);
+ setBone(r,'Thigh_L',-s*.8*wl-ab*.25*(1-w),0,0);setBone(r,'Thigh_R',s*.8*wl+ab*.3*(1-w),0,0);
+ setBone(r,'Shin_L',Math.max(0,c)*1.1*wl,0,0);setBone(r,'Shin_R',Math.max(0,-c)*1.1*wl+ab*.3*(1-w),0,0);
+ setBone(r,'Tail',-s*.1*w,(S.idle?0:Math.sin((t+v.sd)*3)*.3*(1-w))+s*.3*w,0);
+ if(S.idle)layer(r,'Idle',(t+v.sd)%2,(1-w)*(1-ck.wD));
+ if(S.walk&&r.cl.Walk){ck.W=(ck.W+dt*Math.max(.7,sp/120))%r.cl.Walk.dur;layer(r,'Walk',ck.W,w*(1-ck.wD))}
+ if(ck.A>=0)layer(r,'Attack',ck.A,Math.min(1,(cA.dur-ck.A)/.15)*(1-ck.wD)*(S.atk.gain||1),S.atk.up||w>.3);
+ if(ck.H>=0)layer(r,'Hit',ck.H,(1-ck.wD)*(S.hit.gain||1),true);
+ if(cD&&ck.wD>.001)layer(r,'Death',Math.max(0,ck.D),ck.wD);
+ // a hit also knocks the whole body back a step and tips it back (0.35 s), so it reads at the game camera
+ const kb=ck.H>=0&&ck.H<.35?Math.sin(ck.H/.35*Math.PI)*(1-ck.wD):0;
+ v.body.position.y=v.by0+(Math.abs(c)*.07*wl+u*.45)*v.ht*(1-v.dd)+D*.12*v.ht;v.body.position.z=v.bz0+(ab*.28*(1-w*.5)-kb*.14)*v.ht;v.body.rotation.x=v.rx0-D*1.45+wl*.06+kb*.3}
 function tickHero(v,dt){const h=v.h,me=SB.G.me,vis=!(h.invisT>0&&h.team!==me.team);v.grp.visible=vis;
  const dx=h.x-v.lx,dy=h.y-v.ly,sp=Math.hypot(dx,dy)/Math.max(dt,.001);v.lx=h.x;v.ly=h.y;
  v.grp.position.set(wx(h.x),0,wz(h.y));
  let want=v.face;if(h.fireT>0||h.supT>0)want=Math.atan2(Math.cos(h.aimA),Math.sin(h.aimA));else if(sp>12&&sp<900)want=Math.atan2(dx,dy);
- let d=want-v.face;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;v.face+=d*Math.min(1,dt*14);v.grp.rotation.y=v.face;
+ let d=want-v.face;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;v.face+=d*Math.min(1,dt*(h.fireT>0||h.supT>0?30:14));v.grp.rotation.y=v.face;   // a shot or a cast turns the body fast: the rules release it on the same frame
  pose(v,dt,sp,SB.G.t);
  v.fire=h.fireT||0;
- if(h.hp<v.hp-1&&!h.dead){v.pop=.14;if(fxOn&&vis&&SB.G.t-(v.hitT||0)>.15){v.hitT=SB.G.t;FX.play('hero_hit',{x:wx(h.x),z:wz(h.y),element:'default'})}}v.hp=h.hp;
+ if(h.hp<v.hp-1&&!h.dead){v.pop=.14;v.hitNew=1;if(fxOn&&vis&&SB.G.t-(v.hitT||0)>.15){v.hitT=SB.G.t;FX.play('hero_hit',{x:wx(h.x),z:wz(h.y),element:'default'})}}v.hp=h.hp;
  if(fxOn&&v.dead!==undefined&&v.dead!==!!h.dead)FX.play(h.dead?'hero_down':'respawn',{x:wx(h.x),z:wz(h.y),element:h.dead?(HEL[h.def.id]||'default'):'seed',team:h.team});v.dead=!!h.dead;v.pop=Math.max(0,v.pop-dt);v.body.scale.setScalar(v.s0*(1+v.pop*1.6));
  const top=project(wx(h.x),v.ht+.35,wz(h.y));v.lab.style.display=!h.dead&&vis?'':'none';v.lab.style.opacity=h.invisT>0?.5:1;v.lab.style.transform=`translate(${top.x}px,${top.y}px) translate(-50%,-100%)`;
  v.lab.children[1].firstChild.style.width=Math.max(0,h.hp/h.maxhp*100)+'%';
@@ -96,15 +137,26 @@ const uRing=new THREE.InstancedMesh(ringGeo,new THREE.MeshBasicMaterial({color:0
 const M=new THREE.Matrix4(),Q=new THREE.Quaternion(),P=new THREE.Vector3(),S=new THREE.Vector3(),C=new THREE.Color(),E3=new THREE.Euler();
 // Creeps: where they are comes from the rules; how they move is drawn here. An attack is seen the moment the rules
 // land it (the cooldown jumps back up): a fast lunge out, then a slower settle. A hit flashes the body white.
+// Rigged creeps (their set has baked clips, lanes/units.js) play clips instead of the bend: walk while moving, the attack
+// timed so its hit frame lands on the rules' hit (the windup starts when the cooldown falls under the hit time while the
+// creep stands engaged; the rest plays after), a flinch when hurt, idle when standing, and death on a short-lived copy
+// (the rules drop a dead creep at once).
 const env=ta=>ta<0?0:ta<.07?ta/.07:Math.max(0,1-(ta-.07)/.26),ease=k=>k<0?0:k>1?1:1-(1-k)*(1-k);
-function drawUnits(t){for(const k in USET)USET[k].n=0;let nr=0;for(const u of SB.G.units){if(u.dead)continue;const ti=Math.max(0,Math.min(4,u.tier-1)),s=UNITS.set(u.kind,ti,u.team,TEAM[u.team]);if(s.n>=UMAX)continue;
+let uPrev=new Set();const ghosts=[];
+function clipRow(s,u,t,mv){const C=s.clips,A=C.attack,ha=A?(A.hit!==undefined?A.hit:A.sec*.5):0,since=t-u._at;
+ if(A&&since>=0&&since<A.sec-ha)return UNITS.row(C,'attack',ha+since);
+ if(A&&u.atkCd>0&&u.atkCd<ha&&mv<.5)return UNITS.row(C,'attack',ha-u.atkCd);
+ if(u._fl>0&&C.hit)return UNITS.row(C,'hit',.12-u._fl);
+ return mv>.3?UNITS.row(C,'walk',(t+u._s)*(u.kind===2?1.35:1)):UNITS.row(C,'idle',t+u._s)}
+function drawUnits(t){for(const k in USET)USET[k].n=0;let nr=0;const now=new Set();for(const u of SB.G.units){if(u.dead)continue;now.add(u);const ti=Math.max(0,Math.min(4,u.tier-1)),s=UNITS.set(u.kind,ti,u.team,TEAM[u.team]);if(s.n>=UMAX)continue;
   if(u._x===undefined){u._x=u.x;u._y=u.y;u._f=u.team===1?Math.PI:0;u._s=Math.random()*6;u._cd=u.atkCd;u._hp=u.hp;u._born=t;u._at=-9;u._fl=0;u._mv=0}
   const dx=u.x-u._x,dy=u.y-u._y,sp2=dx*dx+dy*dy;u._x=u.x;u._y=u.y;u._mv+=((sp2>.02?1:0)-u._mv)*.2;
   if(sp2>.02){let d=Math.atan2(dx,dy)-u._f;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;u._f+=d*.25}
   if(u.atkCd>u._cd+.4)u._at=t;u._cd=u.atkCd;if(u.hp<u._hp-.5)u._fl=.12;u._hp=u.hp;u._fl=Math.max(0,u._fl-1/60);
   const w=s.w*1.5,ph=t+u._s,mv=u._mv,A=env(t-u._at),R=Math.max(0,1-(t-u._at)/.5),born=ease((t-u._born)/.22),pop=1+.22*Math.sin(Math.min(1,(t-u._born)/.3)*Math.PI);
   let y=0,sx=1,sy=1,rx=0,rz=0,fw=0,lean=0,sway=0,flap=0;
-  if(ti===0){const k=Math.abs(Math.sin(ph*(u.kind===2?7:4.5)))*mv;y=k*w*.16;sy=1+(k-.5)*.14*mv;sway=Math.sin(ph*4.5)*.05;lean=.95*A-.2*R*(1-A);fw=A*w*.4;sy*=1-.12*A}                 // grunt: hop, headbutt
+  if(s.clips){if(ti===3)y=1.15+Math.sin(ph*2.4)*.08;if(ti===4&&A>.9&&Math.abs(wz(u.y)-focus.z)<7)shake=Math.min(.1,shake+.012);s.pose.setX(s.n,clipRow(s,u,t,mv))}   // rigged: the clip carries the motion
+  else if(ti===0){const k=Math.abs(Math.sin(ph*(u.kind===2?7:4.5)))*mv;y=k*w*.16;sy=1+(k-.5)*.14*mv;sway=Math.sin(ph*4.5)*.05;lean=.95*A-.2*R*(1-A);fw=A*w*.4;sy*=1-.12*A}                 // grunt: hop, headbutt
   else if(ti===1){rz=Math.sin(ph*3.2)*.13*mv;y=Math.abs(Math.sin(ph*3.2))*w*.05*mv;sway=Math.sin(ph*3.2)*.07*mv;lean=.06+.9*A;fw=A*w*.25;sy=1-.2*A;sx=1+.14*A}                              // brute: waddle, slam
   else if(ti===2){y=Math.abs(Math.sin(ph*3.6))*w*.07*mv;sway=Math.sin(ph*3.6)*.05;lean=-.7*A+.25*R*(1-A);fw=-A*w*.22;sy=1-.28*A;sx=1+.2*A}                                                // splasher: recoil
   else if(ti===3){y=1.15+Math.sin(ph*2.4)*.12-A*.75;flap=Math.sin(ph*17)*.3;rx=.3+.5*A;lean=.4*A;fw=A*w*.5;sway=Math.sin(ph*2.4)*.05}                                                     // flyer: flap, dive
@@ -112,7 +164,12 @@ function drawUnits(t){for(const k in USET)USET[k].n=0;let nr=0;for(const u of SB
   const sc=w*born*pop;P.set(wx(u.x)+Math.sin(u._f)*fw,y,wz(u.y)+Math.cos(u._f)*fw);Q.setFromEuler(E3.set(rx,u._f,rz,'YXZ'));S.set(sc*sx/Math.sqrt(sy),sc*sy,sc*sx/Math.sqrt(sy));M.compose(P,Q,S);s.b.setMatrixAt(s.n,M);s.o.setMatrixAt(s.n,M);
   s.anim.setXYZW(s.n,lean,sway,flap,u._fl/.12);s.n++;
   P.set(wx(u.x),.02,wz(u.y));Q.identity();S.setScalar((ti===3?w*.7:w)*born);M.compose(P,Q,S);uRing.setMatrixAt(nr,M);uRing.setColorAt(nr,C.set(TEAM[u.team]));nr++}
- for(const k in USET){const s=USET[k];s.b.count=s.o.count=s.n;s.b.visible=s.o.visible=s.n>0;s.b.instanceMatrix.needsUpdate=s.o.instanceMatrix.needsUpdate=true;s.anim.needsUpdate=true}
+ for(const u of uPrev)if(!now.has(u)&&u._x!==undefined){const ti=Math.max(0,Math.min(4,u.tier-1)),s=UNITS.set(u.kind,ti,u.team,TEAM[u.team]);if(s.clips&&s.clips.death)ghosts.push({u,ti,t0:t})}
+ uPrev=now;
+ for(let i=ghosts.length-1;i>=0;i--){const g=ghosts[i],u=g.u,s=UNITS.set(u.kind,g.ti,u.team,TEAM[u.team]),D=s.clips&&s.clips.death,a=t-g.t0;if(!D||a>D.sec+.45||s.n>=UMAX){ghosts.splice(i,1);continue}
+  const sc=s.w*1.5*Math.min(1,Math.max(0,1-(a-D.sec-.15)/.3));P.set(wx(u._x),g.ti===3?1.15*Math.max(0,1-a/D.sec):0,wz(u._y));Q.setFromEuler(E3.set(0,u._f,0,'YXZ'));S.setScalar(sc);M.compose(P,Q,S);   // lie still a moment, then shrink away
+  s.b.setMatrixAt(s.n,M);s.o.setMatrixAt(s.n,M);s.anim.setXYZW(s.n,0,0,0,a<.1?1:0);s.pose.setX(s.n,UNITS.row(s.clips,'death',a));s.n++}
+ for(const k in USET){const s=USET[k];s.b.count=s.o.count=s.n;s.b.visible=s.o.visible=s.n>0;s.b.instanceMatrix.needsUpdate=s.o.instanceMatrix.needsUpdate=true;s.anim.needsUpdate=true;if(s.pose)s.pose.needsUpdate=true}
  uRing.count=nr;uRing.instanceMatrix.needsUpdate=true;if(uRing.instanceColor)uRing.instanceColor.needsUpdate=true}
 
 // ---- transient things, redrawn from state every frame
@@ -342,7 +399,7 @@ function frame(_,__,fdt){const dt=fdt||Math.min(.05,clock.getDelta());
  renderer.render(scene,cam);if(++fpsN===60){const t=performance.now();window.SBFPS=Math.round(60000/(t-fpsT));fpsT=t;fpsN=0}}
 await LOOK.heroRoster();buildDock();
 const qs=new URLSearchParams(location.search);if(qs.has('hero'))await startMatch(+qs.get('hero')||0,qs.has('auto'));else showPick();
-renderer.setAnimationLoop(frame);window.GAME={startMatch,showPick,scene,cam,renderer,SB,step(n,dt){for(let i=0;i<n;i++)frame(0,0,dt||1/30)},hold(v){renderer.setAnimationLoop(v?null:frame)}};   // step and hold are for tests and the clip recorder
+renderer.setAnimationLoop(frame);window.GAME={startMatch,showPick,scene,cam,renderer,SB,step(n,dt){for(let i=0;i<n;i++)frame(0,0,dt||1/30)},hold(v){renderer.setAnimationLoop(v?null:frame)},heroView:h=>heroViews.find(v=>v.h===h)};   // step and hold are for tests and the clip recorder
 // ==== MENU (shell branch): the app screens around the match live in menu.js; it gets the renderer, the hero pose code and the match start, and runs the frame while a screen is up. Keep this block whole when merging.
 {const MENU=await import('./menu.js');await MENU.init({THREE,LOOK,W,UNITS,renderer,resize,CAST,rigOf,setBone,pose,startMatch,frame});}
 // ==== /MENU
