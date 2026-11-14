@@ -2,11 +2,35 @@
  "items": [
   {
    "id": "wall-jump-tower",
+   "key": "wall-jump-tower?m=over&s=ember",
+   "title": "Tower look: night keep",
+   "url": "p/wall-jump-tower/index.html?m=over&s=ember",
+   "added": "2026-11-13",
+   "v": "20261113184856"
+  },
+  {
+   "id": "wall-jump-tower",
+   "key": "wall-jump-tower?m=over&s=garden",
+   "title": "Tower look: sky garden",
+   "url": "p/wall-jump-tower/index.html?m=over&s=garden",
+   "added": "2026-11-13",
+   "v": "20261113184856"
+  },
+  {
+   "id": "wall-jump-tower",
+   "key": "wall-jump-tower?m=over&s=neon",
+   "title": "Tower look: neon arcade",
+   "url": "p/wall-jump-tower/index.html?m=over&s=neon",
+   "added": "2026-11-13",
+   "v": "20261113184856"
+  },
+  {
+   "id": "wall-jump-tower",
    "key": "wall-jump-tower?m=steps",
    "title": "Tower: up and right",
    "url": "p/wall-jump-tower/index.html?m=steps",
    "added": "2026-11-13",
-   "v": "20261113180326"
+   "v": "20261113184856"
   },
   {
    "id": "wall-jump-tower",
@@ -14,7 +38,7 @@
    "title": "Tower: up, over, drop",
    "url": "p/wall-jump-tower/index.html?m=over",
    "added": "2026-11-13",
-   "v": "20261113180326"
+   "v": "20261113184856"
   },
   {
    "id": "wall-jump-tower",
@@ -22,7 +46,7 @@
    "title": "Tower: side towers",
    "url": "p/wall-jump-tower/index.html?m=sides",
    "added": "2026-11-13",
-   "v": "20261113180326"
+   "v": "20261113184856"
   },
   {
    "id": "six-base-games",
