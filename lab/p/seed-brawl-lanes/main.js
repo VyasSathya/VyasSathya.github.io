@@ -143,10 +143,12 @@ const ZFX={'Briar ring':'zone_briar','Nursery':'zone_nursery','Blade trap':'zone
 const elOf=o=>o&&o.def?HEL[o.def.id]||'default':'default',near=y=>Math.abs(wz(y)-focus.z)<10,W2=(x,y)=>({x:wx(x),z:wz(y)});
 let shotsLive=[],zonesLive=[],seedsPrev=[];const seenP=new WeakSet(),seenL=new WeakSet(),muzT=new WeakMap();
 function fxReset(){FX.clear();shotsLive=[];zonesLive=[];seedsPrev=[]}
+// where a creep's shot leaves its body: the muzzle point its model carries (units.json), turned toward the target
+function muzzleOf(e,to){const m=UNITS.meta(e.kind,e.tier-1),at=W2(e.x,e.y);if(!m||!m.muzzle)return at;const s=W.UNIT_WIDTH[e.tier-1]*1.5*(m.scale||1),dx=to.x-at.x,dz=to.z-at.z,d=Math.hypot(dx,dz)||1;return{x:at.x+dx/d*m.muzzle[2]*s,z:at.z+dz/d*m.muzzle[2]*s,y:m.muzzle[1]*s}}
 function drawEvents(G){const E=G.ev;if(!E)return;if(fxOn)for(const e of E){if(!near(e.y))continue;const el=KEL[e.kind]||'default',sc=TSC[e.tier]||1,at=W2(e.x,e.y);
    if(e.k==='uatk'){const to=W2(e.tx,e.ty);
-    if(e.tier===3)FX.play('splasher_lob',{...at,to,radius:46*K,element:el,team:e.team});
-    else if(SB.KINDS[e.kind].range>60)FX.play('spit_shot',{...at,to,element:el});
+    if(e.tier===3)FX.play('splasher_lob',{...muzzleOf(e,to),to,radius:46*K,element:el,team:e.team});
+    else if(SB.KINDS[e.kind].range>60)FX.play('spit_shot',{...muzzleOf(e,to),to,element:el});
     else if(e.tier===4)FX.play('flyer_dive',{...at,to,element:el});
     else{if(e.tier===5)FX.play('colossus_stomp',{...at,radius:(SB.KINDS[e.kind].range+30)*K,element:'dust'});FX.play('creep_hit',{...at,to,dir:Math.atan2(e.ty-e.y,e.tx-e.x),element:el,scale:sc})}}
    else if(e.k==='udie')FX.play(e.tier===5?'colossus_split':'creep_death',{...at,element:el,scale:sc,radius:.7});

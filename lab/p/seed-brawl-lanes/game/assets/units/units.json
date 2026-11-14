@@ -3,7 +3,7 @@
  "units": {
   "thorn_grunt": {
    "file": "thorn_grunt.glb",
-   "scale": 0.84,
+   "scale": 0.92,
    "height": 1.411,
    "muzzle": [
     0.0,
@@ -23,7 +23,7 @@
   },
   "thorn_brute": {
    "file": "thorn_brute.glb",
-   "scale": 1.12,
+   "scale": 1.23,
    "source": "D:/SeedBrawl/meshy/thorn_brute",
    "height": 1.383,
    "muzzle": [
@@ -43,47 +43,50 @@
   },
   "thorn_splasher": {
    "file": "thorn_splasher.glb",
-   "scale": 0.78,
+   "scale": 0.94,
    "source": "D:/SeedBrawl/meshy/thorn_splasher",
-   "height": 1.628,
+   "height": 1.329,
    "muzzle": [
-    0.0,
-    1.628,
-    -0.405
+    0.181,
+    1.031,
+    -0.363
    ],
-   "tris": 2450,
-   "bytes": 146028,
+   "tris": 2998,
+   "bytes": 155272,
    "meshy": {
     "preview": "01a1d8c9-698b-718a-b685-0e4e66f1b1c6",
     "refine": "01a1d8c9-ebd6-724e-a2f7-c6757c761368",
     "credits": 15
    },
    "tilt": 25.0,
-   "texsize": 512
+   "texsize": 512,
+   "pod": true,
+   "parts": "tools/creep_parts.py, report work/creeps/v2/thorn_splasher.report.json"
   },
   "thorn_flyer": {
    "file": "thorn_flyer.glb",
-   "scale": 1.02,
+   "scale": 1.56,
    "source": "D:/SeedBrawl/meshy/thorn_flyer",
-   "height": 1.219,
+   "height": 1.088,
    "muzzle": [
     0.0,
-    0.911,
-    0.117
+    0.878,
+    0.113
    ],
-   "tris": 2450,
-   "bytes": 140048,
+   "tris": 2374,
+   "bytes": 130828,
    "meshy": {
     "preview": "01a1d8c9-6af4-75b1-9169-6c8aa8caca1d",
     "refine": "01a1d8ca-3abb-7202-bbdf-f4e8f5587fcd",
     "credits": 15
    },
    "tilt": 25.0,
-   "texsize": 512
+   "texsize": 512,
+   "parts": "tools/creep_parts.py, report work/creeps/v2/thorn_flyer.report.json"
   },
   "thorn_colossus": {
    "file": "thorn_colossus.glb",
-   "scale": 1.22,
+   "scale": 1.38,
    "source": "D:/SeedBrawl/meshy/thorn_colossus",
    "height": 1.436,
    "muzzle": [
@@ -103,7 +106,7 @@
   },
   "spitter_grunt": {
    "file": "spitter_grunt.glb",
-   "scale": 0.65,
+   "scale": 0.69,
    "source": "D:/SeedBrawl/meshy/spitter_grunt",
    "height": 1.737,
    "muzzle": [
@@ -123,7 +126,7 @@
   },
   "spitter_brute": {
    "file": "spitter_brute.glb",
-   "scale": 1.33,
+   "scale": 1.31,
    "source": "D:/SeedBrawl/meshy/spitter_brute",
    "height": 0.909,
    "muzzle": [
@@ -143,27 +146,29 @@
   },
   "spitter_splasher": {
    "file": "spitter_splasher.glb",
-   "scale": 0.82,
+   "scale": 1.0,
    "source": "D:/SeedBrawl/meshy/spitter_splasher",
-   "height": 1.557,
+   "height": 1.194,
    "muzzle": [
-    0.0,
-    1.557,
-    -0.687
+    0.181,
+    0.997,
+    -0.369
    ],
-   "tris": 2450,
-   "bytes": 120752,
+   "tris": 2818,
+   "bytes": 129160,
    "meshy": {
     "preview": "01a1d8cb-1d9b-73e4-a37b-b311bc513f36",
     "refine": "01a1d8cb-cb66-76a9-befe-53f3df1932dc",
     "credits": 15
    },
    "tilt": 30.0,
-   "texsize": 512
+   "texsize": 512,
+   "pod": true,
+   "parts": "tools/creep_parts.py, report work/creeps/v2/spitter_splasher.report.json"
   },
   "spitter_flyer": {
    "file": "spitter_flyer.glb",
-   "scale": 1.33,
+   "scale": 1.41,
    "source": "D:/SeedBrawl/meshy/spitter_flyer_r2",
    "height": 0.805,
    "muzzle": [
@@ -183,7 +188,7 @@
   },
   "spitter_colossus": {
    "file": "spitter_colossus.glb",
-   "scale": 1.37,
+   "scale": 1.48,
    "source": "D:/SeedBrawl/meshy/spitter_colossus_r2",
    "height": 1.383,
    "muzzle": [
@@ -203,7 +208,7 @@
   },
   "runner_grunt": {
    "file": "runner_grunt.glb",
-   "scale": 0.8,
+   "scale": 0.92,
    "source": "D:/SeedBrawl/meshy/runner_grunt",
    "height": 1.308,
    "muzzle": [
@@ -223,7 +228,7 @@
   },
   "runner_brute": {
    "file": "runner_brute.glb",
-   "scale": 1.08,
+   "scale": 1.1,
    "source": "D:/SeedBrawl/meshy/runner_brute_r2",
    "height": 1.42,
    "muzzle": [
@@ -243,27 +248,29 @@
   },
   "runner_splasher": {
    "file": "runner_splasher.glb",
-   "scale": 0.72,
+   "scale": 0.95,
    "source": "D:/SeedBrawl/meshy/runner_splasher_r2",
-   "height": 1.648,
+   "height": 1.264,
    "muzzle": [
-    0.0,
-    1.648,
-    -0.752
+    0.181,
+    1.04,
+    -0.407
    ],
-   "tris": 2478,
-   "bytes": 148584,
+   "tris": 2846,
+   "bytes": 154968,
    "meshy": {
     "preview": "01a1d8d7-0693-7555-ac8c-380e76995e1d",
     "refine": "01a1d8d7-b072-76e1-95a2-03dfbef4d991",
     "credits": 15
    },
    "tilt": 30.0,
-   "texsize": 512
+   "texsize": 512,
+   "pod": true,
+   "parts": "tools/creep_parts.py, report work/creeps/v2/runner_splasher.report.json"
   },
   "runner_flyer": {
    "file": "runner_flyer.glb",
-   "scale": 1.06,
+   "scale": 1.23,
    "source": "D:/SeedBrawl/meshy/runner_flyer",
    "height": 1.008,
    "muzzle": [
@@ -283,7 +290,7 @@
   },
   "runner_colossus": {
    "file": "runner_colossus.glb",
-   "scale": 1.35,
+   "scale": 1.31,
    "source": "D:/SeedBrawl/meshy/runner_colossus",
    "height": 1.256,
    "muzzle": [
