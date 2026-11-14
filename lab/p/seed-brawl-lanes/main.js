@@ -14,9 +14,13 @@ const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,alpha:true
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene();scene.background=new THREE.Color(PAL.sky);
 const cam=new THREE.PerspectiveCamera(30,1,.1,300),PITCH=58*Math.PI/180,focus=new THREE.Vector3();
-let camDist=20,VW=1,VH=1,shake=0,SPAN=21,TALL=false;
-function resize(){VW=innerWidth;VH=innerHeight;cam.aspect=VW/VH;cam.updateProjectionMatrix();renderer.setSize(VW,VH,false);LOOK.setOutlineViewport(VW,VH);
- TALL=cam.aspect<.8;SPAN=TALL?13:21;                          // a phone held upright looks at 13 tiles of width and follows the hero sideways
+let camDist=20,VW=1,VH=1,shake=0,ROT=false;const SPAN=21,stage=document.getElementById('stage');   // the whole 21 tile width is always on screen; the camera only follows the hero up and down the map
+// Landscape always. A touch screen held upright (the Web Lab frame, a phone browser) gets the stage turned a quarter turn, so the game is played with the phone on its side.
+const px=e=>ROT?e.clientY:e.clientX,py=e=>ROT?innerWidth-e.clientX:e.clientY;
+function resize(){ROT=innerHeight>innerWidth&&matchMedia('(pointer:coarse)').matches;VW=ROT?innerHeight:innerWidth;VH=ROT?innerWidth:innerHeight;
+ stage.style.width=VW+'px';stage.style.height=VH+'px';stage.style.transform=ROT?`translateX(${innerWidth}px) rotate(90deg)`:'';stage.style.setProperty('--H',VH+'px');
+ stage.classList.toggle('rot',ROT);stage.classList.toggle('short',VH<=480);
+ cam.aspect=VW/VH;cam.updateProjectionMatrix();renderer.setSize(VW,VH,false);LOOK.setOutlineViewport(VW,VH);
  const hf=2*Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);camDist=SPAN/2/Math.tan(hf/2)}
 addEventListener('resize',resize);resize();LOOK.addLights(scene);
 
@@ -183,25 +187,25 @@ addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k===' ')e.preventD
  if(k===' ')aim={sup:true,a:SB.G.me.aimA,d:300,mouse:true}});
 addEventListener('keyup',e=>{const k=e.key.toLowerCase();keys[k]=false;if(k===' '&&aim&&aim.sup){castSup(aim.a,aim.d);aim=null}});
 const gl=$('gl');
-gl.addEventListener('pointerdown',e=>{soundOn=true;if(!SB.G||e.pointerType!=='mouse')return;mouse.x=e.clientX;mouse.y=e.clientY;if(e.button===0){mouse.down=true}else if(e.button===2)aim={sup:true,a:0,d:300,mouse:true}});
-addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){mouse.x=e.clientX;mouse.y=e.clientY;mouse.seen=true}});
+gl.addEventListener('pointerdown',e=>{soundOn=true;if(!SB.G||e.pointerType!=='mouse')return;mouse.x=px(e);mouse.y=py(e);if(e.button===0){mouse.down=true}else if(e.button===2)aim={sup:true,a:0,d:300,mouse:true}});
+addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){mouse.x=px(e);mouse.y=py(e);mouse.seen=true}});
 addEventListener('pointerup',e=>{if(e.pointerType!=='mouse')return;if(e.button===0)mouse.down=false;else if(e.button===2&&aim&&aim.sup){castSup(aim.a,aim.d);aim=null}});
 gl.addEventListener('contextmenu',e=>e.preventDefault());
 // touch: the left half of the screen is a floating move stick; attack and super are drag-to-aim buttons
 const stick={id:null,ox:0,oy:0,x:0,y:0},sl=$('stickL');
-gl.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'||!SB.G||stick.id!==null||e.clientX>VW*.5)return;stick.id=e.pointerId;stick.ox=e.clientX;stick.oy=e.clientY;stick.x=stick.y=0;sl.style.left=(e.clientX-59)+'px';sl.style.bottom=(VH-e.clientY-59)+'px'});
-addEventListener('pointermove',e=>{if(e.pointerId!==stick.id)return;let dx=e.clientX-stick.ox,dy=e.clientY-stick.oy;const m=Math.hypot(dx,dy),R=46;if(m>R){dx*=R/m;dy*=R/m}stick.x=dx/R;stick.y=dy/R;sl.firstChild.style.transform=`translate(${dx}px,${dy}px)`});
+gl.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'||!SB.G||stick.id!==null||px(e)>VW*.5)return;stick.id=e.pointerId;stick.ox=px(e);stick.oy=py(e);stick.x=stick.y=0;sl.style.left=(px(e)-59)+'px';sl.style.bottom=(VH-py(e)-59)+'px'});
+addEventListener('pointermove',e=>{if(e.pointerId!==stick.id)return;let dx=px(e)-stick.ox,dy=py(e)-stick.oy;const m=Math.hypot(dx,dy),R=46;if(m>R){dx*=R/m;dy*=R/m}stick.x=dx/R;stick.y=dy/R;sl.firstChild.style.transform=`translate(${dx}px,${dy}px)`});
 const endStick=e=>{if(e.pointerId!==stick.id)return;stick.id=null;stick.x=stick.y=0;sl.firstChild.style.transform='';sl.style.left='';sl.style.bottom=''};addEventListener('pointerup',endStick);addEventListener('pointercancel',endStick);
 function dragButton(el,sup){let id=null,ox=0,oy=0;
- el.addEventListener('pointerdown',e=>{soundOn=true;if(!SB.G||id!==null)return;e.preventDefault();id=e.pointerId;el.setPointerCapture(id);ox=e.clientX;oy=e.clientY;el.classList.add('on');const me=SB.G.me,t=autoAim(me,(sup?me.def.sup:me.def.atk).range||200);aim={sup,a:t.a,d:t.d,auto:true}});
- el.addEventListener('pointermove',e=>{if(e.pointerId!==id||!aim)return;const dx=e.clientX-ox,dy=e.clientY-oy,m=Math.hypot(dx,dy);el.firstElementChild.style.transform=`translate(${Math.max(-30,Math.min(30,dx))}px,${Math.max(-30,Math.min(30,dy))}px)`;
+ el.addEventListener('pointerdown',e=>{soundOn=true;if(!SB.G||id!==null)return;e.preventDefault();id=e.pointerId;el.setPointerCapture(id);ox=px(e);oy=py(e);el.classList.add('on');const me=SB.G.me,t=autoAim(me,(sup?me.def.sup:me.def.atk).range||200);aim={sup,a:t.a,d:t.d,auto:true}});
+ el.addEventListener('pointermove',e=>{if(e.pointerId!==id||!aim)return;const dx=px(e)-ox,dy=py(e)-oy,m=Math.hypot(dx,dy);el.firstElementChild.style.transform=`translate(${Math.max(-30,Math.min(30,dx))}px,${Math.max(-30,Math.min(30,dy))}px)`;
   if(m>12){aim.a=Math.atan2(dy,dx);aim.auto=false;const d=sup?SB.G.me.def.sup:SB.G.me.def.atk;aim.d=(d.range||200)*Math.min(1,m/70)}else if(aim.auto){const me=SB.G.me,t=autoAim(me,(sup?me.def.sup:me.def.atk).range||200);aim.a=t.a;aim.d=t.d}});
  const up=e=>{if(e.pointerId!==id)return;id=null;el.classList.remove('on');el.firstElementChild.style.transform='';if(!aim)return;const me=SB.G.me,d=sup?me.def.sup:me.def.atk,r=d.range||200,t=aim.auto?autoAim(me,r):aim;
   if(e.type==='pointerup'){if(sup)castSup(t.a,t.d);else fire(t.a,d.shape==='circle'?t.d:r)}aim=null};
  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)}
 dragButton($('btnAtk'),false);dragButton($('btnSup'),true);
 $('btnSeed').addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;nextKind()});
-$('lanes').addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;const r=e.currentTarget.getBoundingClientRect();pickLane(SB.laneOf((e.clientX-r.left)/r.width*SB.W))});
+$('lanes').addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;const r=e.currentTarget.getBoundingClientRect();pickLane(SB.laneOf((ROT?(e.clientY-r.top)/r.height:(e.clientX-r.left)/r.width)*SB.W))});
 function readInput(){const me=SB.G.me;let mx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0),my=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0);
  if(stick.id!==null){mx=stick.x;my=stick.y}const m=Math.hypot(mx,my);if(m>1){mx/=m;my/=m}if(m<.18){mx=my=0}I.mx=mx;I.my=my;
  I.aimA=null;if(aim){if(aim.mouse){const g=groundAt(mouse.x,mouse.y);aim.a=Math.atan2(g.y-me.y,g.x-me.x);aim.d=Math.hypot(g.x-me.x,g.y-me.y)}I.aimA=aim.a}
@@ -214,7 +218,7 @@ const unitPics={};
 function unitPic(kind,ti){const key=kind+'_'+ti;if(unitPics[key])return unitPics[key];const sc=new THREE.Scene();LOOK.addLights(sc);const g=W.unit(W.UNIT_KINDS[kind],ti,PAL.team.blue);g.children[0].userData.tick=null;const w=W.UNIT_WIDTH[ti];
  const body=g.children[0];sc.add(body);body.rotation.y=.5;const bx=new THREE.Box3().setFromObject(body),h=Math.max(.3,bx.max.y-bx.min.y),cy=(bx.max.y+bx.min.y)/2,c=new THREE.PerspectiveCamera(26,1,.05,50),d=Math.max(h,w*1.2)*2.6;
  c.position.set(0,cy+h*.35,d);c.lookAt(0,cy,0);const bg=scene.background;renderer.setSize(112,112,false);LOOK.setOutlineViewport(112,112);renderer.setClearColor(0,0);renderer.render(sc,c);const url=gl.toDataURL('image/png');resize();return unitPics[key]=url}
-function buildDock(){const el=$('bodies');el.innerHTML='';for(let t=1;t<=5;t++){const b=document.createElement('div');b.className='sq';b.innerHTML='<img alt=""><kbd>'+t+'</kbd><em>'+SB.costOf(t)+'</em><span></span>';b.lastChild.textContent=SB.BODIES[t];b.addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;doSummon(t)});el.appendChild(b)}
+function buildDock(){const el=$('bodies');el.innerHTML='';for(let t=1;t<=5;t++){const b=document.createElement('div');b.className='sq';b.innerHTML='<img alt=""><kbd>'+t+'</kbd><em>'+SB.costOf(t)+'</em><span></span>';b.lastChild.textContent=SB.BODIES[t];b.setAttribute('role','button');b.setAttribute('aria-label',SB.BODIES[t]);b.addEventListener('pointerdown',e=>{e.preventDefault();soundOn=true;doSummon(t)});el.appendChild(b)}
  const k=document.createElement('kbd');k.textContent='Q';$('btnSeed').appendChild(k)}
 const lc=$('lanes'),lx=lc.getContext('2d');
 function drawLanes(){const G=SB.G,me=G.me,w=lc.width,h=lc.height,sx=w/SB.W,sy=h/SB.H;lx.clearRect(0,0,w,h);
@@ -248,15 +252,19 @@ async function portrait(id){if(portraits[id])return portraits[id];const H=await 
  const r=rigOf(H);setBone(r,'UpperArm_L',0,0,-r.dnL);setBone(r,'UpperArm_R',0,0,r.dnR);setBone(r,'Forearm_L',0,-.3,0);setBone(r,'Forearm_R',0,.3,0);
  const c=new THREE.PerspectiveCamera(28,1,.1,50),h=H.size.height;c.position.set(.9*h,h*1.0,2.9*h);c.lookAt(0,h*.56,0);
  renderer.setSize(192,192,false);LOOK.setOutlineViewport(192,192);renderer.render(sc,c);const url=gl.toDataURL('image/jpeg',.85);resize();return portraits[id]=url}
-async function showPick(){started=false;$('hud').hidden=true;$('over').hidden=true;const el=$('pick');el.hidden=false;el.innerHTML='';
- for(const[i,h]of SB.HEROES.entries()){const c=document.createElement('div');c.className='card';
-  c.innerHTML='<img alt=""><div><h3><span></span><small></small></h3><p></p><p></p></div>';c.querySelector('h3 span').textContent=h.name;c.querySelector('h3 small').textContent=SB.hpOf(h)+' health';const ps=c.querySelectorAll('p');ps[0].textContent=SB.say(h,h.adesc);ps[1].textContent=SB.say(h,h.sup.desc);c.addEventListener('click',()=>{soundOn=true;startMatch(i)});el.appendChild(c);
-  portrait(CAST[h.id]).then(u=>{c.querySelector('img').src=u})}}
+let picked=0;
+async function showPick(){started=false;$('hud').hidden=true;$('over').hidden=true;const el=$('pick');el.hidden=false;
+ el.innerHTML='<div id="heroes"></div><div id="info"><h2><span></span><small></small></h2><p></p><p></p><button id="play">Play</button></div>';
+ const info=el.querySelector('#info'),ps=info.querySelectorAll('p'),tiles=[];
+ const show=i=>{picked=i;const h=SB.HEROES[i];info.querySelector('h2 span').textContent=h.name;info.querySelector('h2 small').textContent=SB.hpOf(h)+' health';ps[0].textContent=SB.say(h,h.adesc);ps[1].textContent=SB.say(h,h.sup.desc);tiles.forEach((c,j)=>c.classList.toggle('on',j===i))};
+ for(const[i,h]of SB.HEROES.entries()){const c=document.createElement('button');c.className='tile';c.innerHTML='<img alt=""><span></span>';c.querySelector('span').textContent=h.name;c.addEventListener('click',()=>{soundOn=true;show(i)});tiles.push(c);el.firstChild.appendChild(c);
+  portrait(CAST[h.id]).then(u=>{c.querySelector('img').src=u})}
+ show(picked);el.querySelector('#play').addEventListener('click',()=>{soundOn=true;startMatch(picked)})}
 $('again').onclick=()=>startMatch(myPick);$('swap').onclick=showPick;
 const clock=new THREE.Clock();let fpsN=0,fpsT=performance.now();
 function frame(_,__,fdt){const dt=fdt||Math.min(.05,clock.getDelta());
  if(started&&SB.G){const G=SB.G,me=G.me;readInput();SB.update(dt);
-  const ahead=TALL?5.5:2.2,tz=wz(me.y)-(me.team===1?ahead:-ahead),lim=SB.H*K/2-(TALL?8:1.5),xl=Math.max(0,10.5-SPAN/2);
+  const ahead=.8,tz=wz(me.y)-(me.team===1?ahead:-ahead),lim=SB.H*K/2-1.5,xl=Math.max(0,10.5-SPAN/2);
   focus.set(Math.max(-xl,Math.min(xl,focus.x+(wx(me.x)-focus.x)*Math.min(1,dt*6))),0,Math.max(-lim,Math.min(lim,focus.z+(tz-focus.z)*Math.min(1,dt*6))));
   shake=Math.max(0,shake-dt);const sx=shake?(Math.random()-.5)*shake*1.2:0,sz=shake?(Math.random()-.5)*shake*1.2:0;cam.position.set(focus.x+sx,Math.sin(PITCH)*camDist,focus.z+Math.cos(PITCH)*camDist+sz);cam.lookAt(focus.x+sx,0,focus.z+sz);cam.updateMatrixWorld();W.tickAll(world,G.t,dt);
   for(const v of heroViews)tickHero(v,dt);drawUnits(G.t);drawTransient();drawParts(dt);drawLabels();drawHit();if((hudT+=dt)>.1){hudT=0;drawHud()}
