@@ -129,9 +129,15 @@ function create(opt) {
   P.setMusic = on => { P.musicOn = !!on; ramp(musGain, on ? MUSIC_GAIN : 0, 0.3); };
   // ---- music: one track at a time on the tier 5 bus (ducked under tier 1 with the rest), loops crossfade, stingers once.
   // A track that is not made yet (no file in the cue list) is silence, so its file can drop in later with no code change.
+  // one sound file as bytes. In the iPhone app the page is served by Capacitor's scheme handler, which answers .wav and .m4a
+  // with no HTTP status, so fetch reports status 0 and ok false with the whole file in the body (runs 14 and 15: every file
+  // 'failed' and the app was silent). Status 0 is read as a success; an empty body falls back to XMLHttpRequest.
+  const grabX = url => new Promise((ok, bad) => { const x = new XMLHttpRequest(); x.open('GET', url); x.responseType = 'arraybuffer';
+    x.onload = () => x.response && x.response.byteLength ? ok(x.response) : bad(new Error('empty ' + url)); x.onerror = () => bad(new Error('xhr ' + url)); x.send(); });
+  const grab = url => fetch(url).then(r => { if (!r.ok && r.status !== 0) throw new Error(r.status + ' ' + url); return r.arrayBuffer(); }).then(ab => ab && ab.byteLength ? ab : grabX(url), e => { if (/^[45]\d\d /.test(e && e.message || '')) throw e; return grabX(url); });
   const M = P.music = { want: null, cur: null, name: null, missing: [], log: [] };
   const mload = {};
-  const trackBuf = name => { const tr = P.tracks[name]; if (!tr) return Promise.resolve(null); return mload[name] || (mload[name] = fetch(mbase + tr.file).then(r => { if (!r.ok) throw new Error(r.status + ' ' + tr.file); return r.arrayBuffer(); }).then(decode).catch(e => { P.errors.push(tr.file + ': ' + (e && e.message || e)); return null; })); };
+  const trackBuf = name => { const tr = P.tracks[name]; if (!tr) return Promise.resolve(null); return mload[name] || (mload[name] = grab(mbase + tr.file).then(decode).catch(e => { P.errors.push(tr.file + ': ' + (e && e.message || e)); return null; })); };
   const fadeOut = (node, sec) => { if (!node) return; const t = ctx.currentTime; try { node.g.gain.cancelScheduledValues(t); node.g.gain.setValueAtTime(node.g.gain.value, t); node.g.gain.linearRampToValueAtTime(0, t + sec); node.src.stop(t + sec + 0.05); } catch (e) { } };
   const startTrack = (name, buf, once, sec) => { const tr = P.tracks[name], src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = buf;
     if (!once) { src.loop = true; src.loopStart = tr.offset || 0; src.loopEnd = (tr.offset || 0) + (tr.loop || buf.duration); }
@@ -175,17 +181,31 @@ function create(opt) {
   // ---- the self-report: one SOUND_REPORT line a few seconds into the menu and into the first match, from an analyser on the
   // master output (before the agent mute), so a build nobody can hear still proves it makes sound (app/ci/mac_run.py reads it)
   const R = P.reports = []; const an = ctx.createAnalyser(), anSink = ctx.createGain(); an.fftSize = 1024; anSink.gain.value = 0; master.connect(an); an.connect(anSink); anSink.connect(ctx.destination);   // the silent sink keeps WebKit pulling the analyser
-  const abuf = new Float32Array(an.fftSize), WIN = 3, SETTLE = 3, GIVEUP = 60;
+  const abuf = new Float32Array(an.fftSize), WIN = 3, SETTLE = 3, LONG = 20, GIVEUP = 60;   // report after SETTLE s once something was heard, after LONG s of silence at the latest
   let rep = null;   // { where, armed, ranFor, peaks: [[t, peak]] } while a report is pending
-  const emit = r => { const pk = r.peaks.reduce((m, p) => Math.max(m, p[1]), 0), mus = P.music && P.music.cur ? 1 : 0;
-    const plays = Object.values(mixer.stats).reduce((a, st) => a + st.plays, 0);
-    const line = 'SOUND_REPORT where=' + r.where + ' ctx=' + ctx.state + ' peak=' + pk.toFixed(3) + ' music=' + mus + ' cues=' + plays + ' sound=' + (P.soundOn ? 1 : 0) + ' musicsw=' + (P.musicOn ? 1 : 0) + ' muted=' + (muted ? 1 : 0) + ' atload=' + P.stateAtLoad + ' session=' + ((root.navigator && root.navigator.audioSession && root.navigator.audioSession.type) || 'none');
+  const emit = r => { const pk = Math.max(r.best || 0, r.peaks.reduce((m, p) => Math.max(m, p[1]), 0)), mus = P.music && P.music.cur ? 1 : 0;
+    const sumOf = k => Object.values(mixer.stats).reduce((a, st) => a + (st[k] || 0), 0), plays = sumOf('plays');
+    const line = 'SOUND_REPORT where=' + r.where + ' ctx=' + ctx.state + ' peak=' + pk.toFixed(3) + ' music=' + mus + ' cues=' + plays + ' sound=' + (P.soundOn ? 1 : 0) + ' musicsw=' + (P.musicOn ? 1 : 0) + ' muted=' + (muted ? 1 : 0) + ' atload=' + P.stateAtLoad + ' session=' + ((root.navigator && root.navigator.audioSession && root.navigator.audioSession.type) || 'none')
+      + ' files=' + P.files + ' decoded=' + P.decoded + ' errs=' + P.errors.length + ' notready=' + sumOf('notReady') + ' unknown=' + sumOf('unknown') + ' t=' + ctx.currentTime.toFixed(1) + ' tracks=' + Object.keys(P.tracks).length + ' mstarts=' + M.log.length
+      + (P.errors.length ? ' err0=' + String(P.errors[0]).replace(/\s+/g, '_').slice(0, 90) : '');   // why a silent build is silent: files that did not decode, cues asked for before they were ready, a clock that does not run
     R.push(line); try { console.log(line); } catch (e) { } try { root.webkit && root.webkit.messageHandlers && root.webkit.messageHandlers.sbSound && root.webkit.messageHandlers.sbSound.postMessage(line); } catch (e) { } };
   P.reportAt = where => { if (rep && rep.where === where) return; if (rep && rep.ranFor >= 1) emit(rep);   // left early: report what was measured
     rep = R.some(l => l.indexOf('where=' + where + ' ') >= 0) ? null : { where, armed: Date.now(), ranFor: 0, peaks: [] }; };
   setInterval(() => { if (!rep) return; const t = Date.now() / 1000;
-    if (ctx.state === 'running') { an.getFloatTimeDomainData(abuf); let m = 0; for (let i = 0; i < abuf.length; i++) { const v = Math.abs(abuf[i]); if (v > m) m = v; } rep.peaks.push([t, m]); rep.peaks = rep.peaks.filter(p => t - p[0] <= WIN); rep.ranFor += 0.25; }
-    if (rep.ranFor >= SETTLE + 0.01 || Date.now() - rep.armed > GIVEUP * 1000) { emit(rep); rep = null; } }, 250);
+    if (ctx.state === 'running') { an.getFloatTimeDomainData(abuf); let m = 0; for (let i = 0; i < abuf.length; i++) { const v = Math.abs(abuf[i]); if (v > m) m = v; } rep.peaks.push([t, m]); rep.peaks = rep.peaks.filter(p => t - p[0] <= WIN); rep.best = Math.max(rep.best || 0, m); rep.ranFor += 0.25; }
+    const heard = (rep.best || 0) > 0;
+    if ((rep.ranFor >= SETTLE + 0.01 && heard) || rep.ranFor >= LONG || Date.now() - rep.armed > GIVEUP * 1000) { emit(rep); rep = null; } }, 250);
+  // ---- the release gate's in-app sound proof (C:/Dev/toybox/release-kit/checks/soundproof/README.md): only when the app was
+  // launched with `-soundproof 1` (the wrapper then has a `soundproof` handler). One JSON line every 250 ms with the context
+  // state and the level of the master output, scene 'play' while a match loop is wanted and 'menu' otherwise.
+  const sp = root.webkit && root.webkit.messageHandlers && root.webkit.messageHandlers.soundproof;
+  if (sp) { const t0 = root.performance.now(), big = new Float32Array(an.fftSize);
+    const post = o => { try { sp.postMessage(JSON.stringify(Object.assign({ t: (root.performance.now() - t0) / 1000 }, o))); } catch (e) { } };
+    for (const ev of ['touchend', 'click']) root.addEventListener(ev, () => post({ event: 'tap' }), true);
+    post({ event: 'launch', state: ctx.state });
+    setInterval(() => { an.getFloatTimeDomainData(big); let q = 0; for (let i = 0; i < big.length; i++) q += big[i] * big[i]; const rms = Math.sqrt(q / big.length);
+      post({ event: 'sample', state: ctx.state, rms_db: rms > 0 ? Math.round(200 * Math.log10(rms)) / 10 : -200, scene: M.want === 'match' || M.want === 'match_late' ? 'play' : 'menu',
+        decoded: P.decoded, files: P.files, errs: P.errors.length, music: M.cur ? M.cur.name : null, clock: Math.round(ctx.currentTime * 10) / 10 }); }, 250); }
   const decode = ab => new Promise((ok, bad) => { const p = ctx.decodeAudioData(ab, ok, bad); if (p && p.then) p.then(ok, bad); });
   P.loading = fetch(base + 'cues.json').then(r => r.json()).then(doc => {
     const files = new Set();
@@ -195,7 +215,7 @@ function create(opt) {
     P.cuesLoaded = true; if (M.want) apply();
     P.files = files.size; const list = [...files]; let i = 0;
     const next = () => { if (i >= list.length) return Promise.resolve(); const f = list[i++];
-      return fetch(base + f).then(r => { if (!r.ok) throw new Error(r.status + ' ' + f); return r.arrayBuffer(); }).then(decode).then(b => { P.buffers[f] = b; P.decoded++; }, e => { P.errors.push(f + ': ' + (e && e.message || e)); }).then(next); };
+      return grab(base + f).then(decode).then(b => { P.buffers[f] = b; P.decoded++; }, e => { P.errors.push(f + ': ' + (e && e.message || e)); }).then(next); };
     return Promise.all([0, 1, 2, 3, 4, 5].map(next));
   }).then(() => { P.ready = true; }, e => { P.errors.push('cues.json: ' + (e && e.message || e)); });
   return P;
