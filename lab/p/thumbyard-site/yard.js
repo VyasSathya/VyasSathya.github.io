@@ -239,6 +239,45 @@ async function start() {
   thumb.position.set(CX + 22, TOP_Y + R * 0.72, 4);
   world.add(thumb);
 
+  // his hello: a short talking clip (made from the same model, on blue) keyed into the scene in his place.
+  // Loaded on the first tap. Frame 1024 px, he stands 880 px tall with 40 px under his feet.
+  let talking = false, helloVideo = null, helloPlane = null;
+  function hello() {
+    if (talking) return true;
+    if (!helloVideo) {
+      const v = document.createElement('video');
+      v.src = new URL('models/hello.mp4', document.baseURI).href;
+      v.playsInline = true; v.preload = 'auto'; v.crossOrigin = 'anonymous';
+      const tex = new THREE.VideoTexture(v);
+      tex.colorSpace = THREE.NoColorSpace;   // passed straight through, the clip is already display colour
+      const mat = new THREE.ShaderMaterial({
+        uniforms: { map: { value: tex } }, transparent: true, depthWrite: false,
+        vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+        fragmentShader: `uniform sampler2D map; varying vec2 vUv;
+          void main(){
+            vec4 c = texture2D(map, vUv);
+            float other = max(c.r, c.g);
+            float a = 1.0 - smoothstep(0.03, 0.2, c.b - other);
+            c.b = min(c.b, other);
+            gl_FragColor = vec4(c.rgb, a);
+          }`,
+      });
+      helloPlane = new THREE.Mesh(new THREE.PlaneGeometry(1024 / 880, 1024 / 880), mat);
+      helloPlane.position.set(0, 512 / 880 - 40 / 880, 0.02);
+      helloPlane.visible = false;
+      thumb.add(helloPlane);
+      v.addEventListener('playing', () => { talking = true; });
+      const done = () => { if (talking) { talking = false; hop = 1; if (wave) { wave.reset(); wave.play(); } } };
+      v.addEventListener('ended', done); v.addEventListener('pause', done); v.addEventListener('error', done);
+      helloVideo = v;
+    }
+    try { helloVideo.currentTime = 0; } catch (e) { /* not loaded yet */ }
+    const p = helloVideo.play();
+    if (p && p.catch) p.catch(() => { talking = false; hop = 1; if (wave) { wave.reset(); wave.play(); } });
+    return true;
+  }
+  window.__hello = hello;
+
   const mixer = new THREE.AnimationMixer(model);
   const clip = gltf.animations[0];
   const wave = clip ? mixer.clipAction(clip) : null;
@@ -345,7 +384,7 @@ async function start() {
       if (Math.hypot(e.clientX - h.x, e.clientY - h.y) < 8 && h.flag.userData.href) location.href = h.flag.userData.href;
       return;
     }
-    if (h.moved < 6) { hop = 1; if (wave) { wave.reset(); wave.play(); } }
+    if (h.moved < 6) hello();
   }
   canvas.addEventListener('pointerup', release);
   canvas.addEventListener('pointercancel', () => { held = null; });
@@ -389,6 +428,8 @@ async function start() {
     const drop = land < 0 ? 1 : Math.max(0, 1 - ease(land));
     const squashIn = land > 0 && land < 1.6 ? Math.sin(Math.min(1, land / 1.6) * Math.PI * 2) * Math.exp(-land * 2.2) * 0.12 : 0;
     thumb.visible = land > -0.2;
+    root.visible = !talking;
+    if (helloPlane) helloPlane.visible = talking;
     if (!waved && land > 1 && wave) { waved = true; wave.play(); }
 
     for (const [b, q] of rest) b.quaternion.copy(q);
