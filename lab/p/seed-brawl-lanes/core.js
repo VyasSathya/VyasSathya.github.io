@@ -51,9 +51,12 @@ const CFG = Object.assign({
   handCheap: 2,             // cost: the hand always holds a card of this cost or less while one waits in the line
   respawnBack: true,        // come back to life behind the base (between it and the map edge) instead of in front of it
   handDear: null,           // cost: the hand holds at most one card of this cost or more while a cheaper card waits in the line, so something is always playable soon
+  creep: {},                // per creep multipliers on the kind x body numbers {'<kind id>_<tier>': {hp, dmg, spd, range}} (work/balance/creeps.md)
   hb: {}                    // per hero balance multipliers {id:{hp,dmg}}
 }, root.SBL_CFG || {});
 const TM = CFG.TM, THP = CFG.THP, TD = CFG.TD, TR = CFG.TR;
+// one creep's numbers: kind x body, times its own multipliers in CFG.creep. ST[kind][tier] = {hp, dmg, range, spd}; hp and dmg before unitHpMul / unitDmgMul
+const ST = KINDS.map(k => BODIES.map((b, t) => { const o = (CFG.creep && CFG.creep[k.id + '_' + t]) || {}; return { hp: k.hp * (THP[t] || 0) * (o.hp || 1), dmg: k.dmg * (TD[t] || 0) * (o.dmg || 1), range: k.range * (o.range || 1), spd: k.spd * (o.spd || 1) }; }));
 const rnd = (a, b) => a + Math.random() * (b - a), clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 
@@ -185,57 +188,60 @@ function shove(u, d) { if (u.isHero) return; u.y = clamp(u.y + back(u) * d * (u.
 
 // ---- heroes. hp, damage per hit, range (tiles x 47.6), reload, speed and hits-to-super follow the named Brawl Stars hero.
 const LP = [0, 1, 2, 3, 3, 5];   // what each body costs a Lure
+// a super's key (briar, heist ...) is what the rules and the effects look it up by; its name is only what the screen shows
+const supTag = h => ({ key: h.def.sup.key, label: h.def.sup.name });
 const HEROES = [
-{ id: 'bramble', name: 'Bramble', col: '#639922', ref: 'El Primo', hp: 6000, spd: 122, atkRange: 135,
-  adesc: 'Maul: short wide swipe, {1400}. Units it hits are knocked back down their lane.',
+{ id: 'bramble', name: 'Champ', col: '#639922', ref: 'El Primo', hp: 6000, spd: 122, atkRange: 135,
+  aname: 'Haymaker', adesc: 'short wide swipe, {1400}. Units it hits are knocked back down their lane.',
   atk: { dmg: 1400, reload: 0.9, gap: 0.35, shape: 'cone', range: 143, half: 0.8, fn(h, a) { cone(h, a, 143, 0.8, 1400, '#c0dd97', e => shove(e, 70)); } },
-  sup: { name: 'Briar ring', hits: 3, shape: 'circle', range: 250, r: 140, bot: 'cluster', desc: 'Briar ring: thorns close a stretch of lane for 8 seconds. Units inside are slowed and cut; a hero who walks in is rooted.',
-    fn(h, x, y) { zone(h, x, y, { r: 140, dur: 8, arm: 0.6, col: '#3b6d11', label: 'Briar ring', fn(z) { for (const e of foes(z.team, z.x, z.y, z.r)) { if (e.isHero) { if (!z.seen.has(e)) { z.seen.add(e); hurt(e, 600, h, { noCharge: true }); rootE(e, 0.6); } else { hurt(e, 150, h, { quiet: true, noCharge: true }); slow(e, 0.6, 0.3); } } else { hurt(e, 260, h, { quiet: true, noCharge: true }); slow(e, 0.6, 0.5); } } } }); } } },
-{ id: 'sow', name: 'Sow', col: '#ef9f27', ref: 'Jessie', hp: 3300, spd: 114, atkRange: 400,
-  adesc: 'Feed shot: long single shot, {1060}. It passes through her own units and heals them.',
+  sup: { key: 'briar', name: 'Ring Ropes', hits: 3, shape: 'circle', range: 250, r: 140, bot: 'cluster', desc: 'ropes close a stretch of lane for 8 seconds. Units inside are slowed and cut; a hero who walks in is rooted.',
+    fn(h, x, y) { zone(h, x, y, { r: 140, dur: 8, arm: 0.6, col: '#3b6d11', ...supTag(h), fn(z) { for (const e of foes(z.team, z.x, z.y, z.r)) { if (e.isHero) { if (!z.seen.has(e)) { z.seen.add(e); hurt(e, 600, h, { noCharge: true }); rootE(e, 0.6); } else { hurt(e, 150, h, { quiet: true, noCharge: true }); slow(e, 0.6, 0.3); } } else { hurt(e, 260, h, { quiet: true, noCharge: true }); slow(e, 0.6, 0.5); } } } }); } } },
+{ id: 'sow', name: 'Hoot', col: '#ef9f27', ref: 'Jessie', hp: 3300, spd: 114, atkRange: 400,
+  aname: 'Fire Arrow', adesc: 'long single shot, {1060}. It passes through her own units and heals them.',
   atk: { dmg: 1060, reload: 1.8, gap: 0.3, shape: 'line', range: 428, w: 8, fn(h, a) { shoot(h, a, { speed: 455, range: 428, dmg: 1060, healU: 350, col: '#fac775' }); } },
-  sup: { name: 'Nursery', hits: 5, shape: 'circle', range: 450, r: 120, bot: 'ownUnits', desc: 'Nursery: a patch on a lane for 10 seconds. Her team\'s units that walk through come out one body bigger.',
-    fn(h, x, y) { zone(h, x, y, { r: 120, dur: 10, arm: 0.4, every: 0.25, col: '#fac775', label: 'Nursery', fn(z) { for (const u of G.units) if (!u.dead && u.team === z.team && !u.grown && Math.hypot(u.x - z.x, u.y - z.y) < z.r) growUnit(u); } }); } } },
-{ id: 'mower', name: 'Mower', col: '#888780', ref: 'Shelly', hp: 4200, spd: 122, atkRange: 185,
-  adesc: 'Wide cut: hits everything in front of him, {1300}. Each unit he kills heals him.',
+  sup: { key: 'nursery', name: "Elder's Lesson", hits: 5, shape: 'circle', range: 450, r: 120, bot: 'ownUnits', desc: 'a patch on a lane for 10 seconds. Her team\'s units that walk through come out one body bigger.',
+    fn(h, x, y) { zone(h, x, y, { r: 120, dur: 10, arm: 0.4, every: 0.25, col: '#fac775', ...supTag(h), fn(z) { for (const u of G.units) if (!u.dead && u.team === z.team && !u.grown && Math.hypot(u.x - z.x, u.y - z.y) < z.r) growUnit(u); } }); } } },
+{ id: 'mower', name: 'Kero', col: '#888780', ref: 'Shelly', hp: 4200, spd: 122, atkRange: 185,
+  aname: 'Wide Cut', adesc: 'hits everything in front of him, {1300}. Each unit he kills heals him.',
   atk: { dmg: 1300, reload: 1.4, gap: 0.3, shape: 'cone', range: 200, half: 0.5, fn(h, a) { cone(h, a, 200, 0.5, 1300, '#d3d1c7'); } },
   onUnitKill(h) { heal(h, 150, true); },
-  sup: { name: 'Blade trap', hits: 3, shape: 'circle', range: 300, r: 90, bot: 'ahead', desc: 'Blade trap: spinning blades on a lane for 12 seconds. Ground units that walk in are cut down; every 5 it kills give him a seed. Flyers pass over.',
-    fn(h, x, y) { zone(h, x, y, { r: 90, dur: 12, arm: 1, every: 0.25, col: '#b4b2a9', label: 'Blade trap', kills: 0, fn(z) { for (const e of foes(z.team, z.x, z.y, z.r)) { if (e.isHero) hurt(e, 250, h, { quiet: true, noCharge: true }); else if (!e.fly) { hurt(e, 700, null, { quiet: true }); if (e.dead) { G.stats.heroUnitKills++; z.kills++; if (z.kills % 5 === 0 && h.seeds < CFG.carry) { h.seeds++; float(h.x, h.y - 40, '+1 seed', '#fac775'); if (h === G.me) snd('seed_pickup', h.x, h.y, h); } } } } } }); } } },
-{ id: 'magpie', name: 'Magpie', col: '#7f77dd', ref: 'Crow', hp: 3000, spd: 130, atkRange: 310,
-  adesc: 'Darts: two quick darts, {520} each. A hit knocks a seed off an enemy hero.',
+  sup: { key: 'blades', name: 'Thousand Cuts', hits: 3, shape: 'circle', range: 300, r: 90, bot: 'ahead', desc: 'spinning blades on a lane for 12 seconds. Ground units that walk in are cut down; every 5 it kills give him a seed. Flyers pass over.',
+    fn(h, x, y) { zone(h, x, y, { r: 90, dur: 12, arm: 1, every: 0.25, col: '#b4b2a9', ...supTag(h), kills: 0, fn(z) { for (const e of foes(z.team, z.x, z.y, z.r)) { if (e.isHero) hurt(e, 250, h, { quiet: true, noCharge: true }); else if (!e.fly) { hurt(e, 700, null, { quiet: true }); if (e.dead) { G.stats.heroUnitKills++; z.kills++; if (z.kills % 5 === 0 && h.seeds < CFG.carry) { h.seeds++; float(h.x, h.y - 40, '+1 seed', '#fac775'); if (h === G.me) snd('seed_pickup', h.x, h.y, h); } } } } } }); } } },
+{ id: 'magpie', name: 'Whiskers', col: '#7f77dd', ref: 'Crow', hp: 3000, spd: 130, atkRange: 310,
+  aname: 'Knife Toss', adesc: 'two quick knives, {520} each. A hit knocks a seed off an enemy hero.',
   atk: { dmg: 520, n: 2, reload: 1.4, gap: 0.25, shape: 'line', range: 333, w: 8, fn(h, a) { const st = { done: false }; for (const d of [-0.06, 0.06]) shoot(h, a + d, { speed: 620, range: 333, dmg: 520, r: 6, col: '#cecbf6', onHit(e) { if (e.isHero && e.seeds > 0 && !st.done) { st.done = true; e.seeds--; dropSeed(e.x + rnd(-70, 70), e.y + rnd(-70, 70), e.x, e.y); } } }); } },
-  sup: { name: 'Heist', hits: 5, shape: 'line', range: 300, w: 16, bot: 'heist', desc: 'Heist: she dashes, and every seed on the ground and on enemy heroes where she lands flies to her. Enemies there take {900} and are slowed.',
+  sup: { key: 'heist', name: 'Big Score', hits: 5, shape: 'line', range: 300, w: 16, bot: 'heist', desc: 'she dashes, and every seed on the ground and on enemy heroes where she lands flies to her. Enemies there take {900} and are slowed.',
     fn(h, x, y, a) { const st = 12; for (let i = 0; i < 300 / st; i++) { const nx = h.x + Math.cos(a) * st, ny = h.y + Math.sin(a) * st; if (inWall(nx, ny, h.r * 0.6) || nx < h.r || nx > W - h.r || ny < h.r || ny > H - h.r) break; h.x = nx; h.y = ny; } line(h.x - Math.cos(a) * 300, h.y - Math.sin(a) * 300, h.x, h.y, '#cecbf6'); ring(h.x, h.y, 220, '#cecbf6', 0.6); haste(h, 2, 1.4);
       for (const s of G.seeds) if (Math.hypot(s.x - h.x, s.y - h.y) < 220) s.to = h;
       for (const e of G.heroes) if (!e.dead && e.team !== h.team && dist(e, h) < 220 + e.r) { while (e.seeds > 0) { e.seeds--; G.seeds.push({ x: e.x, y: e.y, tx: e.x, ty: e.y, to: h }); } slow(e, 2, 0.5); hurt(e, 900, h, { noCharge: true }); } } } },
-{ id: 'drover', name: 'Drover', col: '#1d9e75', ref: 'Pam', hp: 4800, spd: 114, atkRange: 350,
-  adesc: 'Prod: three shots in a narrow fan, {420} each.',
+{ id: 'drover', name: 'Tusk', col: '#1d9e75', ref: 'Pam', hp: 4800, spd: 114, atkRange: 350,
+  aname: 'Cannon Volley', adesc: 'three cannonballs in a narrow fan, {420} each.',
   atk: { dmg: 420, n: 3, reload: 1.3, gap: 0.3, shape: 'line', range: 380, w: 14, fn(h, a) { for (const d of [-0.07, 0, 0.07]) shoot(h, a + d, { speed: 620, range: 380, dmg: 420, r: 7, col: '#9fe1cb' }); } },
-  sup: { name: 'Rally post', hits: 4, shape: 'circle', range: 400, r: 130, bot: 'ownUnits', desc: 'Rally post: a post on a lane for 10 seconds. Her team\'s units that pass it run 60 percent faster and hit the base twice as hard.',
-    fn(h, x, y) { zone(h, x, y, { r: 130, dur: 10, arm: 0.3, every: 0.25, col: '#9fe1cb', label: 'Rally post', fn(z) { for (const u of G.units) if (!u.dead && u.team === z.team && Math.hypot(u.x - z.x, u.y - z.y) < z.r) { haste(u, 6, 1.6); u.stampT = 6; } } }); } } },
-{ id: 'thistle', name: 'Thistle', col: '#d4537e', ref: 'Dynamike', hp: 2800, spd: 114, atkRange: 330,
-  adesc: 'Shell: lobbed over walls, lands after a moment, {1500} in a small blast.',
+  sup: { key: 'rally', name: 'War Horn', hits: 4, shape: 'circle', range: 400, r: 130, bot: 'ownUnits', desc: 'a war horn on a lane for 10 seconds. Her team\'s units that pass it run 60 percent faster and hit the base twice as hard.',
+    fn(h, x, y) { zone(h, x, y, { r: 130, dur: 10, arm: 0.3, every: 0.25, col: '#9fe1cb', ...supTag(h), fn(z) { for (const u of G.units) if (!u.dead && u.team === z.team && Math.hypot(u.x - z.x, u.y - z.y) < z.r) { haste(u, 6, 1.6); u.stampT = 6; } } }); } } },
+{ id: 'thistle', name: 'Presto', col: '#d4537e', ref: 'Dynamike', hp: 2800, spd: 114, atkRange: 330,
+  aname: 'Spell Orb', adesc: 'lobbed over walls, lands after a moment, {1500} in a small blast.',
   atk: { dmg: 1500, reload: 1.7, gap: 0.35, shape: 'circle', range: 349, r: 60, fn(h, a, x, y) { lob(h, x, y, { r: 60, delay: 0.8, dmg: 1500, snd: 'thistle_land' }); } },
-  sup: { name: 'Seed charge', hits: 3, shape: 'circle', range: 350, r: 150, bot: 'bomb', desc: 'Seed charge: a bomb thrown over walls. It sits for 1.5 seconds, then blows for {2600} in a wide blast.',
+  sup: { key: 'charge', name: 'Grand Finale', hits: 3, shape: 'circle', range: 350, r: 150, bot: 'bomb', desc: 'a bomb thrown over walls. It sits for 1.5 seconds, then blows for {2600} in a wide blast.',
     fn(h, x, y) { lob(h, x, y, { r: 150, delay: 1.5, dmg: 2600, big: true, noCharge: true, snd: 'thistle_sup_land' }); } } },
-{ id: 'shade', name: 'Nightshade', col: '#534ab7', ref: 'Leon', hp: 3600, spd: 130, atkRange: 118,
-  adesc: 'Slash: fast short cut, {1150}. Double from a bush or while unseen, and more for each seed the target carries.',
+{ id: 'shade', name: 'Kuro', col: '#534ab7', ref: 'Leon', hp: 3600, spd: 130, atkRange: 118,
+  aname: 'Kunai Cross', adesc: 'fast short cut, {1150}. Double from a bush or while unseen, and more for each seed the target carries.',
   atk: { dmg: 1150, reload: 1.0, gap: 0.25, shape: 'cone', range: 128, half: 0.6, fn(h, a) { const b = h.invisT > 0 || h.ambT > 0 ? 2 : 1; h.ambT = 0; cone(h, a, 128, 0.6, e => 1150 * b * (e.isHero ? 1 + 0.1 * Math.min(6, e.seeds) : 1), '#afa9ec'); } },
-  sup: { name: 'Vanish', hits: 4, shape: 'self', r: 90, bot: 'ambush', desc: 'Vanish: unseen and 45 percent faster for 4 seconds. Her next slash hits double.',
+  sup: { key: 'vanish', name: 'Smoke Step', hits: 4, shape: 'self', r: 90, bot: 'ambush', desc: 'unseen and 45 percent faster for 4 seconds. Her next cut hits double.',
     fn(h) { h.invisT = 4; h.ambT = 5; haste(h, 4, 1.45); ring(h.x, h.y, 90, '#afa9ec', 0.4); } } },
-{ id: 'foxglove', name: 'Foxglove', col: '#d85a30', ref: 'Nita', hp: 3800, spd: 122, atkRange: 335,
-  adesc: 'Charm shot: {1000} and a slow. A unit it hits walks back the way it came for a second.',
+{ id: 'foxglove', name: 'Sly', col: '#d85a30', ref: 'Nita', hp: 3800, spd: 122, atkRange: 335,
+  aname: 'Ember Dagger', adesc: '{1000} and a slow. A unit it hits walks back the way it came for a second.',
   atk: { dmg: 1000, reload: 1.5, gap: 0.3, shape: 'line', range: 357, w: 8, fn(h, a) { shoot(h, a, { speed: 600, range: 357, dmg: 1000, col: '#f0997b', onHit(e) { if (e.isHero) slow(e, 1.2, 0.35); else e.backT = 1; } }); } },
-  sup: { name: 'Lure', hits: 5, shape: 'circle', range: 400, r: 120, bot: 'ahead', desc: 'Lure: a patch on a lane for 10 seconds. Enemy units that stay in it 1.5 seconds switch to her team. It turns 6 points of bodies (Grunt 1, Brute 2, Splasher 3, Flyer 3, Colossus 5).',
-    fn(h, x, y) { zone(h, x, y, { r: 120, dur: 10, arm: 1, every: 0.25, col: '#f0997b', label: 'Lure', pts: 6, fn(z) { for (const u of G.units) { if (u.dead || u.team === z.team || Math.hypot(u.x - z.x, u.y - z.y) > z.r) continue; u.lureT = (u.lureT || 0) + z.every; if (u.lureT >= 1.5 && z.pts >= LP[u.tier]) { z.pts -= LP[u.tier]; u.team = z.team; u.lureT = 0; u.backT = 0; G.stats.turned++; ring(u.x, u.y, 22, '#f0997b', 0.4); float(u.x, u.y - 20, 'turned', '#f0997b'); if (z.pts <= 0) z.dur = 0; } } } }); } } },
-{ id: 'bamboo', name: 'Bamboo', col: '#5dcaa5', ref: 'Poco', hp: 5000, spd: 114, atkRange: 300,
-  adesc: 'Gourd: lobbed over walls, {900} to enemies. It leaves a puddle for 3 seconds that heals his team and slows enemy units.',
+  sup: { key: 'lure', name: 'Turncoat', hits: 5, shape: 'circle', range: 400, r: 120, bot: 'ahead', desc: 'a patch on a lane for 10 seconds. Enemy units that stay in it 1.5 seconds switch to her team. It turns 6 points of bodies (Grunt 1, Brute 2, Splasher 3, Flyer 3, Colossus 5).',
+    fn(h, x, y) { zone(h, x, y, { r: 120, dur: 10, arm: 1, every: 0.25, col: '#f0997b', ...supTag(h), pts: 6, fn(z) { for (const u of G.units) { if (u.dead || u.team === z.team || Math.hypot(u.x - z.x, u.y - z.y) > z.r) continue; u.lureT = (u.lureT || 0) + z.every; if (u.lureT >= 1.5 && z.pts >= LP[u.tier]) { z.pts -= LP[u.tier]; u.team = z.team; u.lureT = 0; u.backT = 0; G.stats.turned++; ring(u.x, u.y, 22, '#f0997b', 0.4); float(u.x, u.y - 20, 'turned', '#f0997b'); if (z.pts <= 0) z.dur = 0; } } } }); } } },
+{ id: 'bamboo', name: 'Bao', col: '#5dcaa5', ref: 'Poco', hp: 5000, spd: 114, atkRange: 300,
+  aname: 'Salt Throw', adesc: 'thrown over walls, {900} to enemies. It leaves salted ground for 3 seconds that heals his team and slows enemy units.',
   atk: { dmg: 900, reload: 1.6, gap: 0.3, shape: 'circle', range: 320, r: 70, fn(h, a, x, y) { lob(h, x, y, { r: 70, delay: 0.6, dmg: 900, snd: 'bamboo_land', onLand(l) { zone(h, l.x, l.y, { r: 70, dur: 3, col: '#5dcaa5', puddle: true, fn(z) { for (const e of pals(z.team, z.x, z.y, z.r)) heal(e, e.isHero ? 200 : 75, true); for (const e of foes(z.team, z.x, z.y, z.r, true)) if (!e.isHero) slow(e, 0.6, 0.3); } }); } }); } },
-  sup: { name: 'Shelter', hits: 4, shape: 'circle', range: 400, r: 220, bot: 'ally', desc: 'Shelter: a dome for 6 seconds. His team inside takes 40 percent less damage and heals; a hero who dies inside keeps his seeds.',
-    fn(h, x, y) { zone(h, x, y, { r: 220, dur: 6, every: 0.25, col: '#9fe1cb', label: 'Shelter', dome: true, fn(z) { for (const e of pals(z.team, z.x, z.y, z.r)) { e.shelterT = 0.3; if (e.isHero) heal(e, 75, true); } } }); } } }
+  sup: { key: 'shelter', name: 'Iron Stance', hits: 4, shape: 'circle', range: 400, r: 220, bot: 'ally', desc: 'a dome for 6 seconds. His team inside takes 40 percent less damage and heals; a hero who dies inside keeps his seeds.',
+    fn(h, x, y) { zone(h, x, y, { r: 220, dur: 6, every: 0.25, col: '#9fe1cb', ...supTag(h), dome: true, fn(z) { for (const e of pals(z.team, z.x, z.y, z.r)) { e.shelterT = 0.3; if (e.isHero) heal(e, 75, true); } } }); } } }
 ];
-function growUnit(u) { u.grown = true; if (u.tier >= 5) { u.hp = u.maxhp; return; } const f = u.hp / u.maxhp; u.tier++; u.fly = u.tier === 4; u.r = TR[u.tier]; u.maxhp *= THP[u.tier] / THP[u.tier - 1]; u.hp = u.maxhp * f; ring(u.x, u.y, 26, '#fac775', 0.4); G.stats.grown++; }
+for (const d of HEROES) { d.adesc = d.aname + ': ' + d.adesc; d.sup.desc = d.sup.name + ': ' + d.sup.desc; }   // the panel text starts with the attack's or the super's name; nothing looks either up by name
+function growUnit(u) { u.grown = true; if (u.tier >= 5) { u.hp = u.maxhp; return; } const f = u.hp / u.maxhp; u.tier++; u.fly = u.tier === 4; u.r = TR[u.tier]; u.maxhp *= ST[u.kind][u.tier].hp / ST[u.kind][u.tier - 1].hp; u.hp = u.maxhp * f; ring(u.x, u.y, 26, '#fac775', 0.4); G.stats.grown++; }
 
 function mkHero(def, team, bot, idx) {
   const b = BASEPOS[team], hp = def.hp * (CFG.hb[def.id] && CFG.hb[def.id].hp || 1);
@@ -244,12 +250,21 @@ function mkHero(def, team, bot, idx) {
 // ---- decks. A creep is a card {kind, tier}; each hero brings 6, holds 3 in the hand and sees the next one. Playing a card puts it
 // at the back of the line and the next one takes its place (Clash Royale's cycle, 8 and 4 sized down to 6 and 3).
 // Default deck (picked by Claude): mixed costs (1, 1, 2, 3, 5, 8: 20 seeds, 3.3 a card), one Colossus, three cards that hit flyers.
-// Every hero brings the same one for now: the creeps are not even with each other yet (measured 2026-11-14: decks heavy in Runner
-// Splashers, Flyers and Colossi lose about two matches in three), so a deck per hero would move hero balance by 30 points.
+// It is the deck of a player who brings none and of a bot whose hero has none; each hero has its own below.
 const C = (kind, tier) => ({ kind, tier }), TH = 0, SP = 1, RU = 2;
 const BASE_DECK = [C(TH, 1), C(SP, 1), C(RU, 2), C(SP, 3), C(SP, 4), C(TH, 5)];
-const DECKS = { _: BASE_DECK };
-for (const id of ['bramble', 'sow', 'mower', 'magpie', 'drover', 'thistle', 'shade', 'foxglove', 'bamboo']) DECKS[id] = BASE_DECK;
+// 2026-11-14: each hero's own deck (picked by Claude, reasons in work/balance/creeps.md), measured with the creeps evened out in
+// CFG.creep. Every deck: 18 to 22 seeds, at most one Colossus, at least two cards that hit flyers, at least two of cost 2 or less.
+const DECKS = { _: BASE_DECK,
+  bramble: [C(TH, 1), C(RU, 1), C(TH, 2), C(TH, 3), C(SP, 4), C(TH, 5)],    // the wall: Thorn bodies hold the lane behind his knockback
+  sow: [C(TH, 1), C(SP, 1), C(RU, 2), C(SP, 3), C(TH, 4), C(SP, 5)],        // many bodies for Nursery to grow, Spitters her shot keeps alive
+  mower: [C(TH, 1), C(RU, 1), C(TH, 2), C(RU, 3), C(SP, 4), C(TH, 5)],      // close-range ground brawl beside his cut and blade trap
+  magpie: [C(RU, 1), C(SP, 1), C(RU, 2), C(RU, 3), C(RU, 4), C(RU, 5)],     // the fast thief: a Runner pack
+  drover: [C(TH, 1), C(RU, 2), C(TH, 2), C(SP, 3), C(SP, 4), C(TH, 5)],     // Brutes walk straight to the base through her rally post
+  thistle: [C(SP, 1), C(TH, 1), C(SP, 2), C(SP, 3), C(SP, 4), C(SP, 5)],    // artillery: ranged Spitters behind his shells
+  shade: [C(RU, 1), C(SP, 2), C(RU, 2), C(SP, 3), C(RU, 4), C(TH, 4)],      // the unseen flank: fast and flying, no Colossus
+  foxglove: [C(TH, 1), C(SP, 1), C(SP, 2), C(TH, 3), C(TH, 4), C(SP, 5)],   // control: ranged cards hit what her charm and Lure hold
+  bamboo: [C(TH, 1), C(SP, 1), C(TH, 2), C(TH, 3), C(TH, 4), C(TH, 5)] };   // tough Thorn bodies that last in his puddles and Shelter
 const HAND = 3, cardName = c => KINDS[c.kind].name + ' ' + BODIES[c.tier];
 function deckOk(d) { return Array.isArray(d) && d.length === 6 && d.every(c => c && KINDS[c.kind] && c.tier >= 1 && c.tier <= 5); }
 function dealDeck(h, deck) {   // shuffled with the match's own random source, so seeded bot matches repeat
@@ -331,7 +346,7 @@ function newGame(pi, auto, lineup, opts) {
 }
 function finish(winner, by) { G.over = winner === BLUE ? 'Blue wins' : winner === RED ? 'Red wins' : 'Draw'; G.stats.endBy = by; G.result = { winner, by, base: [G.base[1].hp, G.base[2].hp], mine: winner === G.me.team }; }
 function spawnUnit(team, kind, tier, lane, x, y) {
-  const ug = CFG.unitGrow, k = KINDS[kind], hp = k.hp * THP[tier] * CFG.unitHpMul * (ug ? 1 + ug.hp * Math.min(ug.max, Math.floor(G.t / ug.every)) : 1);   // later waves are tougher, so the match ends at a base
+  const ug = CFG.unitGrow, hp = ST[kind][tier].hp * CFG.unitHpMul * (ug ? 1 + ug.hp * Math.min(ug.max, Math.floor(G.t / ug.every)) : 1);   // later waves are tougher, so the match ends at a base
   const u = ent({ team, kind, tier, fly: tier === 4, lane, x, y, r: TR[tier], hp, maxhp: hp, atkCd: rnd(0, 1), ox: laneX(lane) + rnd(-LW * 0.3, LW * 0.3), stampT: 0, backT: 0 });
   G.units.push(u); ev({ k: 'spawn', x, y, tier, kind, team, lane }); return u;
 }
@@ -349,7 +364,7 @@ function castSuper(h, x, y) {
   const sp = h.def.sup; if (h.dead || h.sup < 1) return false;
   let a = Math.atan2(y - h.y, x - h.x);
   if (sp.shape === 'circle') { const d = Math.hypot(x - h.x, y - h.y); if (d > sp.range) { x = h.x + Math.cos(a) * sp.range; y = h.y + Math.sin(a) * sp.range; } }
-  h.aimA = a; h.supT = 0.5; sp.fn(h, x, y, a); h.sup = 0; h.invisT = sp.name === 'Vanish' ? h.invisT : 0;
+  h.aimA = a; h.supT = 0.5; sp.fn(h, x, y, a); h.sup = 0; h.invisT = sp.key === 'vanish' ? h.invisT : 0;
   G.stats.casts[h.def.id] = (G.stats.casts[h.def.id] || 0) + 1; float(h.x, h.y - 46, sp.name, '#fac775'); snd(h.def.id + '_sup', h.x, h.y, h); return true;
 }
 function attack(h, x, y) {
@@ -379,7 +394,7 @@ function waypoint(h, gx, gy) { // next point to walk to, around the wall strips
   if (Math.abs(h.y - best.y) < 16 && (h.x - near.x) * s > -18) return far;
   return near;
 }
-const hitsAir = c => KINDS[c.kind].range > 60 || c.tier === 3 || c.tier === 4;
+const hitsAir = c => ST[c.kind][c.tier].range > 60 || c.tier === 3 || c.tier === 4;
 function sendWave(h, lane, defend, air) { // play the hand into one lane until nothing in it is affordable. A defending wave skips Brutes
   h.lane = lane; let guard = 0;                                              // (they walk past fights) and wants something that hits flyers
   while (guard++ < 12) {
@@ -496,20 +511,20 @@ function update(dt) {
     if (e && b.gunT <= 0) { b.gunT = bg.every / (1 + (gr ? gr.every * lost : 0)); b.shotT = G.t; line(b.x, b.y, e.x, e.y, TCOL[b.team]); hurt(e, bg.dmg * (1 + (gr ? gr.dmg * lost : 0)), null, { from: b }); snd('base_shot', b.x, b.y, b); }
   }
   for (const u of G.units) {
-    if (u.dead) continue; tickStatus(u, dt); u.atkCd -= dt; const k = KINDS[u.kind];
-    let foe = null, fd = k.range + 60; const air = k.range > 60 || u.tier === 3 || u.fly;
+    if (u.dead) continue; tickStatus(u, dt); u.atkCd -= dt; const k = KINDS[u.kind], cs = ST[u.kind][u.tier];
+    let foe = null, fd = cs.range + 60; const air = cs.range > 60 || u.tier === 3 || u.fly;
     if (u.tier !== 2 && !(u.backT > 0)) {
       for (const e of G.units) if (!e.dead && e.team !== u.team && (air || !e.fly)) { const d = dist(e, u) - e.r; if (d < fd && (e.lane === u.lane || !blocked(u.x, u.y, e.x, e.y))) { fd = d; foe = e; } }
       for (const e of G.heroes) if (!e.dead && e.team !== u.team && e.invisT <= 0) { const d = dist(e, u) - e.r; if (d < fd && !blocked(u.x, u.y, e.x, e.y)) { fd = d; foe = e; } }
     }
     if (foe) {
-      if (fd <= k.range) { if (u.atkCd <= 0) { u.atkCd = 1; hurt(foe, k.dmg * TD[u.tier] * CFG.unitDmgMul, null, { quiet: true, from: u }); snd(k.id + '_' + bodyId(u) + '_atk', u.x, u.y, u);
-          if (u.tier === 3) { ring(foe.x, foe.y, 46, k.col, 0.3); for (const e of G.units) if (e !== foe && !e.dead && e.team !== u.team && Math.hypot(e.x - foe.x, e.y - foe.y) < 46) hurt(e, k.dmg * TD[3] * CFG.unitDmgMul * 0.6, null, { quiet: true }); }
-          if (k.range > 60) line(u.x, u.y, foe.x, foe.y, k.col); } }
-      else { const d = dist(foe, u) || 1, s = spd(u, k.spd); moveUnit(u, (foe.x - u.x) / d * s, (foe.y - u.y) / d * s, dt); }
+      if (fd <= cs.range) { if (u.atkCd <= 0) { u.atkCd = 1; hurt(foe, cs.dmg * CFG.unitDmgMul, null, { quiet: true, from: u }); snd(k.id + '_' + bodyId(u) + '_atk', u.x, u.y, u);
+          if (u.tier === 3) { ring(foe.x, foe.y, 46, k.col, 0.3); for (const e of G.units) if (e !== foe && !e.dead && e.team !== u.team && Math.hypot(e.x - foe.x, e.y - foe.y) < 46) hurt(e, cs.dmg * CFG.unitDmgMul * 0.6, null, { quiet: true }); }
+          if (cs.range > 60) line(u.x, u.y, foe.x, foe.y, k.col); } }
+      else { const d = dist(foe, u) || 1, s = spd(u, cs.spd); moveUnit(u, (foe.x - u.x) / d * s, (foe.y - u.y) / d * s, dt); }
       continue;
     }
-    const eb = G.base[3 - u.team], s = spd(u, k.spd), fwd = -back(u) * (u.backT > 0 ? -1 : 1);
+    const eb = G.base[3 - u.team], s = spd(u, cs.spd), fwd = -back(u) * (u.backT > 0 ? -1 : 1);
     const past = u.team === BLUE ? u.y < Y0 + 6 : u.y > Y1 - 6;
     if (past && !(u.backT > 0)) {
       const d = dist(eb, u);
@@ -542,5 +557,5 @@ function update(dt) {
   for (const f of G.fx) f.life -= dt; G.fx = G.fx.filter(f => f.life > 0);
 }
 
-root.SBL = { get G() { return G; }, start: newGame, update, spawnUnit, HEROES, KINDS, BODIES, CFG, TM, castSuper, attack, summon, canSummon, playCard, canPlay, nextCard, cardName, DECKS, HAND, setLane, costOf, laneX, laneL, laneR, laneOf, spawnPt, blocked, WALLS, GAPS, FARMS, BUSHES, BASEPOS, W, H, T, NL, LW, Y0, Y1, BLUE, RED, hlv, say, hpOf };
+root.SBL = { get G() { return G; }, start: newGame, update, spawnUnit, HEROES, KINDS, BODIES, CFG, TM, ST, hitsAir, castSuper, attack, summon, canSummon, playCard, canPlay, nextCard, cardName, DECKS, HAND, setLane, costOf, laneX, laneL, laneR, laneOf, spawnPt, blocked, WALLS, GAPS, FARMS, BUSHES, BASEPOS, W, H, T, NL, LW, Y0, Y1, BLUE, RED, hlv, say, hpOf };
 })(typeof window !== 'undefined' ? window : globalThis);

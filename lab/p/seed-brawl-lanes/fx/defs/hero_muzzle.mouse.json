@@ -1,0 +1,5 @@
+{"id": "hero_muzzle.mouse", "about": "Mouse thief flicks his knives: a green glint and steel sparks at the hand. x,z = hero, dir = aim.", "element": "mouse", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "mouse_l", "mouse"], "at": 0, "size": 0.6, "sizeCurve": "snap", "life": 0.06, "height": 0.55, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5},
+    {"name": "sparks", "tex": "fx_core_dot", "blend": "glow", "tokens": ["white", "steel_l", "mouse"], "emit": {"burst": 4}, "size": [0.35, 0.5], "life": [0.12, 0.2], "height": 0.55, "dir": "aimfan", "cone": 0.6, "speed": [2.5, 3.5], "drag": 3, "bright": 1.4, "toCam": 0.5},
+    {"name": "wisp", "tex": "fx_p_frost_mist", "blend": "smoke", "tokens": ["mouse_l", "mouse_m", "mouse_d"], "size": 0.55, "life": 0.3, "height": 0.5, "lift": 0.4, "alpha": 0.35, "fadeOut": 0.6}
+  ]}

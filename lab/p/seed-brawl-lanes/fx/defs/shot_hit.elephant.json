@@ -1,0 +1,8 @@
+{"id": "shot_hit.elephant", "about": "Elephant general cannonball lands: a small blast (flash, fire burst), grey smoke rolling up, grit and a brief scorch.", "element": "elephant", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "ele_l", "ele"], "at": 0, "size": [0.9, 1.0], "sizeCurve": "snap", "life": 0.08, "height": 0.5, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5},
+    {"name": "fire", "tex": "fx_p_impact_seq", "tiles": 4, "blend": "flame", "tokens": ["ele_l", "ele", "ele_d"], "size": [0.8, 0.9], "life": 0.24, "height": 0.5, "upright": true, "toCam": 0.5},
+    {"name": "smoke", "tex": "fx_smoke_seq", "tiles": 4, "blend": "smoke", "tokens": ["smoke_l", "smoke", "smoke_d"], "at": 0.03, "emit": {"burst": 2}, "shape": "disc", "spread": 0.2, "size": [0.8, 1.0], "life": [0.6, 0.8], "height": 0.5, "lift": 0.5, "alpha": 0.55, "fadeOut": 0.6},
+    {"name": "grit", "tex": "fx_p_rocks", "tiles": 2, "frames": "random", "blend": "matter", "tokens": ["smoke_l", "smoke_d", "smoke_dd"], "emit": {"burst": 4}, "size": [0.18, 0.26], "life": [0.4, 0.6], "height": 0.45, "dir": "fan", "speed": [2.2, 3.2], "gravity": 1.1, "spin": 500, "fadeOut": 0.3, "toCam": 0.35},
+    {"name": "sparks", "tex": "fx_core_dot", "blend": "glow", "tokens": ["white", "ele_l", "ele"], "emit": {"burst": 5}, "size": [0.4, 0.55], "life": [0.25, 0.4], "height": 0.5, "dir": "fan", "speed": [2.4, 3.4], "drag": 3, "bright": 1.5, "toCam": 0.5},
+    {"name": "scorch", "tex": "fx_char", "ground": true, "blend": "matter", "tokens": ["smoke_d", "smoke_dd", "ink"], "size": 0.9, "life": 0.9, "height": 0.02, "alpha": 0.55, "fadeIn": 0.03, "fadeOut": 0.5}
+  ]}

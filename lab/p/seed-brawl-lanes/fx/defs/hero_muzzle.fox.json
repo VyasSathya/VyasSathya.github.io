@@ -1,0 +1,5 @@
+{"id": "hero_muzzle.fox", "about": "Fox bandit throws a fox-fire dagger: an orange flash and a lick of flame at the hand, yellow sparks. x,z = hero, dir = aim.", "element": "fox", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "foxf_l", "foxf"], "at": 0, "size": 0.8, "sizeCurve": "snap", "life": 0.07, "height": 0.55, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5},
+    {"name": "lick", "tex": "fx_lick_seq", "tiles": 4, "blend": "flame", "tokens": ["foxf_l", "foxf", "foxf_d"], "size": 0.6, "life": 0.2, "height": 0.55, "upright": true, "forward": 0.25, "toCam": 0.5},
+    {"name": "sparks", "tex": "fx_core_dot", "blend": "glow", "tokens": ["white", "foxf_l", "foxf"], "emit": {"burst": 5}, "size": [0.4, 0.55], "life": [0.15, 0.25], "height": 0.55, "dir": "aimfan", "cone": 0.6, "speed": [2.6, 3.6], "drag": 3, "bright": 1.5, "toCam": 0.5}
+  ]}

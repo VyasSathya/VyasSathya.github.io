@@ -38,8 +38,9 @@
   const KEY = 'seedbrawl.meta.v1', KINDS = ['thorn', 'spitter', 'runner'];
   const clone = o => JSON.parse(JSON.stringify(o));
   const startRow = () => TABLE.road[0];
+  const okDeck = (ids, own) => Array.isArray(ids) && ids.length === TABLE.deckSize && new Set(ids).size === ids.length && ids.every(id => own.includes(id));
   function fresh() {
-    return { v: 1, trophies: 0, best: 0, hero: TABLE.startHero, deck: startRow().creeps.slice(0, TABLE.deckSize), seen: [...(startRow().heroes || []), ...(startRow().creeps || [])],
+    return { v: 1, trophies: 0, best: 0, hero: TABLE.startHero, deck: startRow().creeps.slice(0, TABLE.deckSize), decks: {}, seen: [...(startRow().heroes || []), ...(startRow().creeps || [])],
       played: 0, wins: 0, losses: 0, draws: 0, lossRun: 0, ease: 0, firstRun: true, settings: { music: true, sound: true, vibrate: true }, last: null };
   }
   let store = null; try { store = root.localStorage || null; } catch (e) { store = null; }
@@ -69,6 +70,8 @@
     const deck = []; for (const id of Array.isArray(s.deck) ? s.deck : []) if (u.creeps.includes(id) && !deck.includes(id)) deck.push(id);
     for (const id of u.creeps) if (deck.length < TABLE.deckSize && !deck.includes(id)) deck.push(id);
     s.deck = deck.slice(0, TABLE.deckSize);
+    if (!s.decks || typeof s.decks !== 'object' || Array.isArray(s.decks)) s.decks = {};
+    for (const h of Object.keys(s.decks)) if (!okDeck(s.decks[h], u.creeps)) delete s.decks[h];
     if (!Array.isArray(s.seen)) s.seen = d.seen;
     s.settings = Object.assign({}, d.settings, s.settings || {});
     return s;
@@ -78,11 +81,18 @@
   M.reset = () => { M.state = fresh(); M.save(); return M.state; };
 
   // ---- choices
-  M.setHero = id => { if (!M.isUnlocked(id)) return false; M.state.hero = id; M.save(); return true; };
+  // each hero keeps its own deck: picking a hero brings back the deck last saved with him; a hero with none gets his own default
+  // deck (SBL.DECKS, work/balance/creeps.md) once every creep in it is owned, else keeps the deck in hand
+  M.heroDefault = id => { const D = root.SBL && root.SBL.DECKS; const d = D && D[id]; return Array.isArray(d) ? d.map(c => KINDS[c.kind] + '_' + c.tier) : null; };
+  M.setHero = id => {
+    if (!M.isUnlocked(id)) return false; const s = M.state, own = M.unlocked().creeps;
+    if (id !== s.hero) { s.decks[s.hero] = s.deck.slice(); const mine = s.decks[id], def = M.heroDefault(id);
+      if (okDeck(mine, own)) s.deck = mine.slice(); else if (okDeck(def, own)) s.deck = def; }
+    s.hero = id; M.save(); return true;
+  };
   M.setDeck = ids => {
-    if (!Array.isArray(ids) || ids.length !== TABLE.deckSize || new Set(ids).size !== ids.length) return false;
-    const u = M.unlocked().creeps; if (!ids.every(id => u.includes(id))) return false;
-    M.state.deck = ids.slice(); M.save(); return true;
+    if (!okDeck(ids, M.unlocked().creeps)) return false;
+    M.state.deck = ids.slice(); M.state.decks[M.state.hero] = ids.slice(); M.save(); return true;
   };
   M.swap = (slot, id) => { const d = M.state.deck.slice(); if (slot < 0 || slot >= d.length || !M.unlocked().creeps.includes(id)) return false; const j = d.indexOf(id); if (j >= 0) d[j] = d[slot]; d[slot] = id; return M.setDeck(d); };
   M.markSeen = id => { if (!M.state.seen.includes(id)) { M.state.seen.push(id); M.save(); } };

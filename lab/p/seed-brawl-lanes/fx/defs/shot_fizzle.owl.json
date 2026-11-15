@@ -1,0 +1,4 @@
+{"id": "shot_fizzle.owl", "about": "Owl archer arrow ends without a hit: a small flame puff and a few feathers.", "element": "owl", "layers": [
+    {"name": "puff", "tex": "fx_lick_seq", "tiles": 4, "blend": "flame", "tokens": ["owl_l", "owl", "owl_d"], "size": 0.45, "life": 0.25, "height": 0.5, "upright": true, "toCam": 0.3},
+    {"name": "feathers", "tex": "fx_p_leaves", "tiles": 2, "frames": "random", "blend": "matter", "tokens": ["feath_l", "feath", "feath_dd"], "emit": {"burst": 2}, "size": [0.2, 0.26], "life": [0.5, 0.7], "height": 0.5, "dir": "fan", "speed": [0.8, 1.4], "gravity": 0.2, "spin": 300, "fadeOut": 0.4}
+  ]}

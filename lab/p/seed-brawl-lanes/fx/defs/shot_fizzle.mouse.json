@@ -1,0 +1,4 @@
+{"id": "shot_fizzle.mouse", "about": "Mouse thief knife ends without a hit: a steel glint and a green wisp.", "element": "mouse", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "steel_l", "mouse"], "at": 0, "size": 0.35, "sizeCurve": "snap", "life": 0.06, "height": 0.5, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5},
+    {"name": "wisp", "tex": "fx_p_frost_mist", "blend": "smoke", "tokens": ["mouse_l", "mouse_m", "mouse_d"], "size": 0.45, "life": 0.35, "height": 0.45, "lift": 0.3, "alpha": 0.35, "fadeOut": 0.6}
+  ]}

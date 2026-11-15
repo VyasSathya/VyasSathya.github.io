@@ -5,6 +5,7 @@ import * as LOOK from './game/src/look.js';
 import * as W from './game/src/world.js';
 import * as UNITS from './units.js';
 import * as FX from './fx.js';
+import * as HA from './heroanim.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
@@ -84,8 +85,12 @@ function buildWorld(){if(built)return;built=true;const L=SB.H*K;
 
 // ---- heroes
 let heroViews=[];
-async function makeHero(h){const mine=h===SB.G.me,H=await LOOK.loadHero(CAST[h.def.id]||'cat',{team:mine?PAL.team.you:TEAM[h.team]});scene.add(H.root);
- const lab=document.createElement('div');lab.className='lab hero';lab.innerHTML='<div class="pips"></div><div class="hp'+(h.team===SB.G.me.team?'':' foe')+'"><i></i></div><div class="nm"></div>';lab.lastChild.textContent=h.def.name;$('labels').appendChild(lab);
+// hero or creep at a glance (work/herocreep/notes.md): a hero stands on a filled team disc with a thick ring and carries the
+// big bar with his name; a creep has only the thin ring and a short thin bar that shows only once it is hurt. Me: green, my team: blue, foes: red.
+function heroMark(w,col){const g=new THREE.Group(),r=w*.74,mk=(geo,c,op)=>{const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:c,transparent:op<1,opacity:op,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3}));m.rotation.x=-Math.PI/2;m.position.y=.018;m.renderOrder=2;m.userData.noOutline=true;g.add(m)};
+ mk(new THREE.CircleGeometry(r*.8,40),col,.3);mk(new THREE.RingGeometry(r*.8,r,48),col,1);mk(new THREE.RingGeometry(r,r*1.07,48),PAL.outline,1);g.userData.noOutline=true;return g}
+async function makeHero(h){const mine=h===SB.G.me,H=await LOOK.loadHero(CAST[h.def.id]||'cat',{ring:false});H.root.add(heroMark(H.size.width,mine?PAL.team.you:TEAM[h.team]));scene.add(H.root);
+ const lab=document.createElement('div');lab.className='lab hero';lab.innerHTML='<div class="pips"></div><div class="hp'+(mine?' me':h.team===SB.G.me.team?'':' foe')+'"><i></i></div><div class="nm"></div>';lab.lastChild.textContent=h.def.name;$('labels').appendChild(lab);
  return{h,grp:H.root,body:H.body,s0:H.body.scale.x,rig:rigOf(H),by0:H.body.position.y,bz0:H.body.position.z,rx0:H.body.rotation.x,wk:0,ph:Math.random()*6,at:0,su:0,dd:0,cd:0,sd:Math.random()*9,lx:h.x,ly:h.y,face:h.team===1?Math.PI:0,lab,w:H.size.width,ht:H.size.height,fire:0,seeds:-1,hp:h.hp,pop:0}}
 // hero motion: a hand pose set in code on the shared skeleton, with the model's own clips laid over it where they look
 // better. The clips move (Idle, Walk, Attack, Hit, Death) but are authored from the arms-out bind pose, so a clip is
@@ -111,7 +116,8 @@ function rigOf(H){const rig={},rq=new THREE.Quaternion();H.root.updateMatrixWorl
  for(const n in H.clips||{}){const c=H.clips[n],tr=[];for(const k of c.tracks){const i=k.name.lastIndexOf('.'),bn=k.name.slice(0,i),pr=k.name.slice(i+1),bo=bones[bn];if(!bo)continue;
    if(pr==='quaternion')tr.push({b:bo,q:k.createInterpolant(),qi:bo.quaternion.clone().invert(),up:UPPER.has(bn)});else if(pr==='position'&&bn==='Root')tr.push({b:bo,p:k.createInterpolant(),p0:bo.position.clone(),up:false})}
   rig.cl[n]={dur:c.duration,tr}}
- const id=H.info&&H.info.id;rig.set=ANIM_Q==='hand'?{}:Object.assign({},ANIM_ALL,ANIM[id]);if(ANIM_Q==='clip')Object.assign(rig.set,{idle:true,walk:true,atk:rig.set.atk||{from:.3,speed:1.25,gain:1}});return rig}
+ const id=H.info&&H.info.id;rig.set=ANIM_Q==='hand'?{}:Object.assign({},ANIM_ALL,ANIM[id]);if(ANIM_Q==='clip')Object.assign(rig.set,{idle:true,walk:true,atk:rig.set.atk||{from:.3,speed:1.25,gain:1}});
+ rig.id=id;rig.ha=ANIM_Q==='hand'||ANIM_Q==='clip'||ANIM_Q==='old'?{}:(HA.CLIPS[id]||{});rig.X={};rig.T={};return rig}
 function setBone(r,n,x,y,z){const o=r[n];if(!o)return;qa.setFromEuler(eu.set(x,y,z,'XYZ'));o.b.quaternion.copy(o.q0).multiply(o.wi).multiply(qa).multiply(o.w)}
 // lay clip `name` at time t over the bones as they are (hand pose), weight w; up: only the upper body
 function layer(r,name,t,w,up){const c=r.cl&&r.cl[name];if(!c||w<=.001)return;t=Math.max(0,Math.min(t,c.dur));
@@ -120,7 +126,7 @@ function layer(r,name,t,w,up){const c=r.cl&&r.cl[name];if(!c||w<=.001)return;t=M
   else k.b.position.set(k.b.position.x+(o[0]-k.p0.x)*w,k.b.position.y+(o[1]-k.p0.y)*w,k.b.position.z+(o[2]-k.p0.z)*w)}}
 function pose(v,dt,sp,t){const h=v.h,r=v.rig,S=r.set||{},k=Math.min(1,dt*10);
  if(!v.ck)v.ck={A:-1,H:-1,D:-1,W:0,wD:0};const ck=v.ck;
- if(v.fire<=0&&h.fireT>0){v.at=1;if(S.atk)ck.A=S.atk.from}if((h.supT||0)>v.cd+.2)v.su=1;v.cd=h.supT||0;
+ if(v.fire<=0&&h.fireT>0){v.at=1;if(S.atk)ck.A=S.atk.from}if((h.supT||0)>v.cd+.2){v.su=1;v.cn=1}v.cd=h.supT||0;
  if(v.hitNew){v.hitNew=0;if(S.hit&&!(ck.H>=0&&ck.H<.18))ck.H=0}
  if(h.dead){if(S.death&&ck.D<0)ck.D=0}else ck.D=-1;
  v.wk+=((sp>12&&sp<900&&!h.dead?1:0)-v.wk)*k;v.ph+=dt*Math.min(16,Math.max(7,sp*.06));v.at=Math.max(0,v.at-dt/.34);v.su=Math.max(0,v.su-dt/.7);v.dd+=((h.dead?1:0)-v.dd)*Math.min(1,dt*7);
@@ -130,19 +136,31 @@ function pose(v,dt,sp,t){const h=v.h,r=v.rig,S=r.set||{},k=Math.min(1,dt*10);
  // the hand thrust: the rules fire on the frame fireT is set, so the arm is fully out 0.05 s later (2 to 3 frames, the
  // release), holds to 0.1 s and is back by 0.34 s, inside the shortest gap between shots (0.25 s) it restarts cleanly
  const tA=(1-v.at)*.34,a0=v.at>0?(tA<.05?Math.sin(tA/.05*Math.PI/2):Math.max(0,1-Math.pow(Math.max(0,tA-.1)/.24,1.4))):0;
- const s=Math.sin(v.ph),c=Math.cos(v.ph),w=v.wk,br=Math.sin((t+v.sd)*2.2)*.05*(1-w),a=S.atk?0:a0,ab=S.atk?a0*.6:a0,u=v.su>0?Math.sin(Math.min(1,(1-v.su)*1.5)*Math.PI):0,hit=v.pop/.14,D=S.death?0:v.dd,wl=S.walk?0:w,ib=S.idle?0:1;
+ // hand-keyed clips (lanes/heroanim.js): the idle loop while standing, a walk overlay, the super cast. The cast takes
+ // over from the idle and walk overlays; a shot (hand thrust or clip) takes the arms back from them while it plays.
+ const HC=r.ha||{},X=HA.clear(r.X);let cw=0;
+ if(HC.cast){const mine=SB.G&&h===SB.G.me&&aim&&aim.sup&&!aim.cancel&&!h.dead;if(mine){v.ah=(v.ah||0)+dt;v.ao=0}else if((v.ao=(v.ao||0)+dt)>.12)v.ah=0;
+  if(v.cn){v.cn=0;v.cs=(v.ah||0)>=.1?HC.cast.rel-HC.cast.pre:0}
+  if(v.cs>=0){v.cs+=dt;if(v.cs>=HC.cast.dur||h.dead)v.cs=-1}
+  if(v.cs>=0){cw=Math.max(0,Math.min(1,v.cs/.04,(HC.cast.dur-v.cs)/.12));HA.addTo(X,HA.sample(HC.cast,v.cs,r.T),cw)}
+  else if(mine&&v.ah>0){cw=Math.min(1,v.ah/.12);HA.addTo(X,HA.sample(HC.cast,Math.min(v.ah,HC.cast.rel-HC.cast.pre),r.T),cw)}}
+ v.aw=(v.aw||0)+((ck.A>=0?1:0)-(v.aw||0))*Math.min(1,dt*20);const ov=(1-cw)*(1-Math.max(a0,v.aw))*(1-v.dd);
+ if(HC.idle)HA.addTo(X,HA.sample(HC.idle,t+v.sd,r.T),(1-v.wk)*ov);
+ if(HC.walk)HA.addTo(X,HA.sample(HC.walk,v.ph/6.2832*HC.walk.dur,r.T),v.wk*ov);
+ const sb=(n,x,y,z)=>{const e=X[n];if(e)setBone(r,n,x+e[0],y+e[1],z+e[2]);else setBone(r,n,x,y,z)},XB=X.Body||[0,0,0];
+ const s=Math.sin(v.ph),c=Math.cos(v.ph),w=v.wk,br=HC.idle?0:Math.sin((t+v.sd)*2.2)*.05*(1-w),a=S.atk?0:a0,ab=S.atk?a0*.6:a0,u=HC.cast?0:v.su>0?Math.sin(Math.min(1,(1-v.su)*1.5)*Math.PI):0,hit=v.pop/.14,D=S.death?0:v.dd,wl=S.walk?0:w,ib=S.idle?0:1;
  for(const o of r.rest){o.b.quaternion.copy(o.q);o.b.position.copy(o.p)}
- setBone(r,'Hips',.05*wl-hit*.1,s*.14*wl+ab*.25,0);
- setBone(r,'Spine',.18*wl+br*ib+ab*.22-u*.3-hit*.3,-s*.1*wl+ab*.35,0);
- setBone(r,'Chest',br*ib,-s*.14*wl+ab*.3,s*.04*wl);
- setBone(r,'Head',-.12*wl-br*2*ib+u*.35+hit*.25,-ab*.5,0);
- setBone(r,'UpperArm_L',s*.75*wl+a*.5-u*.3,0,-(r.dnL-D*.7)+br*ib+u*2.3);
- setBone(r,'UpperArm_R',(-s*.75*wl)*(1-a)-a*1.55-u*.3,0,(r.dnR-D*.7)-br*ib-u*2.3);
- setBone(r,'Forearm_L',0,-(.3+.45*wl+a*.5)*(1-u),0);
- setBone(r,'Forearm_R',0,(.3+.45*wl)*(1-a)*(1-u),0);
- setBone(r,'Thigh_L',-s*.8*wl-ab*.25*(1-w),0,0);setBone(r,'Thigh_R',s*.8*wl+ab*.3*(1-w),0,0);
- setBone(r,'Shin_L',Math.max(0,c)*1.1*wl,0,0);setBone(r,'Shin_R',Math.max(0,-c)*1.1*wl+ab*.3*(1-w),0,0);
- setBone(r,'Tail',-s*.1*w,(S.idle?0:Math.sin((t+v.sd)*3)*.3*(1-w))+s*.3*w,0);
+ sb('Hips',.05*wl-hit*.1,s*.14*wl+ab*.25,0);
+ sb('Spine',.18*wl+br*ib+ab*.22-u*.3-hit*.3,-s*.1*wl+ab*.35,0);
+ sb('Chest',br*ib,-s*.14*wl+ab*.3,s*.04*wl);
+ sb('Head',-.12*wl-br*2*ib+u*.35+hit*.25,-ab*.5,0);
+ sb('UpperArm_L',s*.75*wl+a*.5-u*.3,0,-(r.dnL-D*.7)+br*ib+u*2.3);
+ sb('UpperArm_R',(-s*.75*wl)*(1-a)-a*1.55-u*.3,0,(r.dnR-D*.7)-br*ib-u*2.3);
+ sb('Forearm_L',0,-(.3+.45*wl+a*.5)*(1-u),0);
+ sb('Forearm_R',0,(.3+.45*wl)*(1-a)*(1-u),0);
+ sb('Thigh_L',-s*.8*wl-ab*.25*(1-w),0,0);sb('Thigh_R',s*.8*wl+ab*.3*(1-w),0,0);
+ sb('Shin_L',Math.max(0,c)*1.1*wl,0,0);sb('Shin_R',Math.max(0,-c)*1.1*wl+ab*.3*(1-w),0,0);
+ sb('Tail',-s*.1*w,(S.idle?0:Math.sin((t+v.sd)*3)*.3*(1-w))+s*.3*w,0);
  if(S.idle)layer(r,'Idle',(t+v.sd)%2,(1-w)*(1-ck.wD));
  if(S.walk&&r.cl.Walk){ck.W=(ck.W+dt*Math.max(.7,sp/120))%r.cl.Walk.dur;layer(r,'Walk',ck.W,w*(1-ck.wD))}
  if(ck.A>=0)layer(r,'Attack',ck.A,Math.min(1,(cA.dur-ck.A)/.15)*(1-ck.wD)*(S.atk.gain||1),S.atk.up||w>.3);
@@ -150,7 +168,7 @@ function pose(v,dt,sp,t){const h=v.h,r=v.rig,S=r.set||{},k=Math.min(1,dt*10);
  if(cD&&ck.wD>.001)layer(r,'Death',Math.max(0,ck.D),ck.wD);
  // a hit also knocks the whole body back a step and tips it back (0.35 s), so it reads at the game camera
  const kb=ck.H>=0&&ck.H<.35?Math.sin(ck.H/.35*Math.PI)*(1-ck.wD):0;
- v.body.position.y=v.by0+(Math.abs(c)*.07*wl+u*.45)*v.ht*(1-v.dd)+D*.12*v.ht;v.body.position.z=v.bz0+(ab*.28*(1-w*.5)-kb*.14)*v.ht;v.body.rotation.x=v.rx0-D*1.45+wl*.06+kb*.3}
+ v.body.position.y=v.by0+(Math.abs(c)*.07*wl+u*.45+XB[0])*v.ht*(1-v.dd)+D*.12*v.ht;v.body.position.z=v.bz0+(ab*.28*(1-w*.5)-kb*.14+XB[1])*v.ht;v.body.rotation.x=v.rx0-D*1.45+wl*.06+kb*.3+XB[2]}
 function tickHero(v,dt){const h=v.h,me=SB.G.me,vis=!(h.invisT>0&&h.team!==me.team);v.grp.visible=vis;
  const dx=h.x-v.lx,dy=h.y-v.ly,sp=Math.hypot(dx,dy)/Math.max(dt,.001);v.lx=h.x;v.ly=h.y;
  v.grp.position.set(wx(h.x),0,wz(h.y));
@@ -168,7 +186,7 @@ const pv=new THREE.Vector3();function project(x,y,z){pv.set(x,y,z).project(cam);
 
 // ---- units: one instanced body + outline per kind, body and team (the circles version's models), one instanced team ring
 const UMAX=200,USET=UNITS.sets();UNITS.init(scene,UMAX);
-const ringGeo=new THREE.RingGeometry(.42,.6,14);ringGeo.rotateX(-Math.PI/2);
+const ringGeo=new THREE.RingGeometry(.5,.6,18);ringGeo.rotateX(-Math.PI/2);   // thin: the thick ring and disc are the heroes' mark
 const uDiscGeo=new THREE.CircleGeometry(.62,20);uDiscGeo.rotateX(-Math.PI/2);   // with ink outlines the team is a filled disc under the feet, not a thin ring
 const DISC=/[?&]disc=1/.test(location.search);   // the team now sits on each creep's body (its team part), so the floor mark is the thin ring again; ?disc=1 shows the filled disc
 const uRing=new THREE.InstancedMesh(DISC?uDiscGeo:ringGeo,new THREE.MeshBasicMaterial({color:0xffffff,depthWrite:false,transparent:DISC,opacity:DISC?.8:1}),UMAX*2);uRing.frustumCulled=false;uRing.count=0;scene.add(uRing);
@@ -186,7 +204,8 @@ function clipRow(s,u,t,mv){const C=s.clips,A=C.attack,ha=A?(A.hit!==undefined?A.
  if(A&&u.atkCd>0&&u.atkCd<ha&&mv<.5)return UNITS.row(C,'attack',ha-u.atkCd);
  if(u._fl>0&&C.hit)return UNITS.row(C,'hit',.12-u._fl);
  return mv>.3?UNITS.row(C,'walk',(t+u._s)*(u.kind===2?1.35:1)):UNITS.row(C,'idle',t+u._s)}
-function drawUnits(t){for(const k in USET)USET[k].n=0;let nr=0;const now=new Set();for(const u of SB.G.units){if(u.dead)continue;now.add(u);const ti=Math.max(0,Math.min(4,u.tier-1)),s=UNITS.set(u.kind,ti,u.team,TEAM[u.team]);if(s.n>=UMAX)continue;
+const ubars=domPool('ubar'),UBW=[15,19,19,19,26],UBH=[.75,1.05,.95,1.0,1.6];   // creep bar width (px) and height above the feet (tiles, times the body width) per body
+function drawUnits(t){for(const k in USET)USET[k].n=0;let nr=0,nb=0;const now=new Set(),myT=SB.G.me.team;for(const u of SB.G.units){if(u.dead)continue;now.add(u);const ti=Math.max(0,Math.min(4,u.tier-1)),s=UNITS.set(u.kind,ti,u.team,TEAM[u.team]);if(s.n>=UMAX)continue;
   if(u._x===undefined){u._x=u.x;u._y=u.y;u._f=u.team===1?Math.PI:0;u._s=Math.random()*6;u._cd=u.atkCd;u._hp=u.hp;u._born=t;u._at=-9;u._fl=0;u._mv=0}
   const dx=u.x-u._x,dy=u.y-u._y,sp2=dx*dx+dy*dy;u._x=u.x;u._y=u.y;u._mv+=((sp2>.02?1:0)-u._mv)*.2;
   if(sp2>.02){let d=Math.atan2(dx,dy)-u._f;while(d>Math.PI)d-=6.283;while(d<-Math.PI)d+=6.283;u._f+=d*.25}
@@ -201,14 +220,15 @@ function drawUnits(t){for(const k in USET)USET[k].n=0;let nr=0;const now=new Set
   else{const k=Math.sin(ph*1.9);y=Math.abs(k)*w*.05*mv;rz=k*.06*mv;sway=k*.04*mv;lean=.5*A;sy=1-.22*A+.08*R*(1-A);sx=1+.16*A;if(A>.9&&Math.abs(wz(u.y)-focus.z)<7)shake=Math.min(.1,shake+.012)} // colossus: stomp
   const sc=w*born*pop;P.set(wx(u.x)+Math.sin(u._f)*fw,y,wz(u.y)+Math.cos(u._f)*fw);Q.setFromEuler(E3.set(rx,u._f,rz,'YXZ'));S.set(sc*sx/Math.sqrt(sy),sc*sy,sc*sx/Math.sqrt(sy));M.compose(P,Q,S);s.b.setMatrixAt(s.n,M);s.o.setMatrixAt(s.n,M);
   s.anim.setXYZW(s.n,lean,sway,flap,u._fl/.12);s.n++;
-  P.set(wx(u.x),.02,wz(u.y));Q.identity();S.setScalar((ti===3?w*.7:w)*born);M.compose(P,Q,S);uRing.setMatrixAt(nr,M);uRing.setColorAt(nr,C.set(TEAM[u.team]));nr++}
+  if(u.hp<u.maxhp*.98&&Math.abs(wz(u.y)-focus.z)<9){const b=ubars.get(nb++),p=project(wx(u.x),(ti===3?y:0)+w*UBH[ti]*born*1.5,wz(u.y)),c=u.team===myT?'ubar':'ubar foe';if(!b.firstChild)b.innerHTML='<i></i>';if(b.className!=='lab '+c)b.className='lab '+c;b.style.width=UBW[ti]+'px';b.firstChild.style.width=Math.max(0,u.hp/u.maxhp*100)+'%';b.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-100%)`}
+  if(!s.glow){P.set(wx(u.x),.02,wz(u.y));Q.identity();S.setScalar((ti===3?w*.7:w)*born);M.compose(P,Q,S);uRing.setMatrixAt(nr,M);uRing.setColorAt(nr,C.set(TEAM[u.team]));nr++}}   // a creep with a soft glow ring (units.json "glow", lanes/units.js) skips the hard ring
  for(const u of uPrev)if(!now.has(u)&&u._x!==undefined){const ti=Math.max(0,Math.min(4,u.tier-1)),s=UNITS.set(u.kind,ti,u.team,TEAM[u.team]);if(s.clips&&s.clips.death)ghosts.push({u,ti,t0:t})}
  uPrev=now;
  for(let i=ghosts.length-1;i>=0;i--){const g=ghosts[i],u=g.u,s=UNITS.set(u.kind,g.ti,u.team,TEAM[u.team]),D=s.clips&&s.clips.death,a=t-g.t0;if(!D||a>D.sec+.45||s.n>=UMAX){ghosts.splice(i,1);continue}
   const sc=s.w*1.5*Math.min(1,Math.max(0,1-(a-D.sec-.15)/.3));P.set(wx(u._x),g.ti===3?1.15*Math.max(0,1-a/D.sec):0,wz(u._y));Q.setFromEuler(E3.set(0,u._f,0,'YXZ'));S.setScalar(sc);M.compose(P,Q,S);   // lie still a moment, then shrink away
   s.b.setMatrixAt(s.n,M);s.o.setMatrixAt(s.n,M);s.anim.setXYZW(s.n,0,0,0,a<.1?1:0);s.pose.setX(s.n,UNITS.row(s.clips,'death',a));s.n++}
  for(const k in USET){const s=USET[k];s.b.count=s.o.count=s.n;s.b.visible=s.o.visible=s.n>0;s.b.instanceMatrix.needsUpdate=s.o.instanceMatrix.needsUpdate=true;s.anim.needsUpdate=true;if(s.pose)s.pose.needsUpdate=true}
- uRing.count=nr;uRing.instanceMatrix.needsUpdate=true;if(uRing.instanceColor)uRing.instanceColor.needsUpdate=true}
+ ubars.end(nb);uRing.count=nr;uRing.instanceMatrix.needsUpdate=true;if(uRing.instanceColor)uRing.instanceColor.needsUpdate=true}
 
 // ---- transient things, redrawn from state every frame
 const seeds=pool(()=>W.seedPickup()),projs=pool(()=>outlined(new THREE.SphereGeometry(1,10,8),toon({color:0xffffff})));
@@ -235,8 +255,9 @@ function chevAt(x,y,s,col,op){const m=chevs.get(nV++);m.position.set(wx(x),.03,w
 const BOOT=k=>{try{window.SBL_BOOT&&(k>=1?window.SBL_BOOT.done():window.SBL_BOOT.step(k))}catch(e){}};BOOT(.15);
 let fxOn=false;try{await FX.init(THREE,scene,cam,{base:'./fx/',max:600});fxOn=true}catch(e){console.warn('effects did not load, plain shapes stay',e)}
 BOOT(.45);
-const HEL={bramble:'leaf',sow:'seed',mower:'blade',magpie:'shade',drover:'gourd',thistle:'bloom',shade:'shade',foxglove:'fox',bamboo:'gourd'},KEL=['thorn','spit','runner'],TSC=[0,1,1.3,1.1,1,1.8];
-const ZFX={'Briar ring':'zone_briar','Nursery':'zone_nursery','Blade trap':'zone_blades','Rally post':'zone_rally','Lure':'zone_lure','Shelter':'zone_shelter'};
+// each hero plays his own effects, themed to the animal he is (work/fx/heroes/looks.md): the def `<base>.<animal>` when it exists, else the shared base
+const HEL={bramble:'bear',sow:'owl',mower:'frog',magpie:'mouse',drover:'elephant',thistle:'penguin',shade:'cat',foxglove:'fox',bamboo:'panda'},HX=(b,id)=>{const k=b+'.'+(HEL[id&&id.def?id.def.id:id]||''),d=FX.defs();return d&&d[k]?k:b},KEL=['thorn','spit','runner'],TSC=[0,1,1.3,1.1,1,1.8];
+const ZFX={briar:'zone_briar',nursery:'zone_nursery',blades:'zone_blades',rally:'zone_rally',lure:'zone_lure',shelter:'zone_shelter'};   // by the super's key, never its on-screen name
 const elOf=o=>o&&o.def?HEL[o.def.id]||'default':'default',near=y=>Math.abs(wz(y)-focus.z)<10,W2=(x,y)=>({x:wx(x),z:wz(y)});
 let shotsLive=[],zonesLive=[],seedsPrev=[];const seenP=new WeakSet(),seenL=new WeakSet(),muzT=new WeakMap();
 function fxReset(){FX.clear();shotsLive=[];zonesLive=[];seedsPrev=[]}
@@ -253,14 +274,14 @@ function drawEvents(G){const E=G.ev;if(!E)return;if(fxOn)for(const e of E){if(!n
  E.length=0}
 function drawFx(G,me){projs.end(0);balls.end(0);
  // hero shots: a painted head with a trail while it flies, a flash where it left, a hit or a fizzle where it ended
- for(const p of G.projs)if(!seenP.has(p)){seenP.add(p);const el=elOf(p.owner);shotsLive.push(p);FX.attach('shot_trail',()=>p.left>0?W2(p.x,p.y):null,{element:el});
-   const o=p.owner||p;if(muzT.get(o)!==G.t){muzT.set(o,G.t);FX.play('hero_muzzle',{...W2(p.x,p.y),dir:Math.atan2(p.vy,p.vx),element:el})}}
- for(let i=shotsLive.length-1;i>=0;i--){const p=shotsLive[i];if(p.left>0)continue;shotsLive[i]=shotsLive[shotsLive.length-1];shotsLive.pop();if(near(p.y))FX.play(p.hit&&p.hit.size?'shot_hit':'shot_fizzle',{...W2(p.x,p.y),dir:Math.atan2(p.vy,p.vx),element:elOf(p.owner)})}
+ for(const p of G.projs)if(!seenP.has(p)){seenP.add(p);const el=elOf(p.owner);shotsLive.push(p);FX.attach(HX('shot_trail',p.owner),()=>p.left>0?W2(p.x,p.y):null,{element:el,dir:Math.atan2(p.vy,p.vx)});
+   const o=p.owner||p;if(muzT.get(o)!==G.t){muzT.set(o,G.t);FX.play(HX('hero_muzzle',p.owner),{...W2(p.x,p.y),dir:Math.atan2(p.vy,p.vx),element:el})}}
+ for(let i=shotsLive.length-1;i>=0;i--){const p=shotsLive[i];if(p.left>0)continue;shotsLive[i]=shotsLive[shotsLive.length-1];shotsLive.pop();if(near(p.y))FX.play(HX(p.hit&&p.hit.size?'shot_hit':'shot_fizzle',p.owner),{...W2(p.x,p.y),dir:Math.atan2(p.vy,p.vx),element:elOf(p.owner)})}
  // lobbed things: the arc, the landing spot at its real radius, the blast
  for(const l of G.lobs){if(l.t<.04&&Math.hypot(l.x-me.x,l.y-me.y)<l.r+40)shake=Math.min(.12,shake+.05);if(seenL.has(l))continue;seenL.add(l);
-  FX.play(l.big?'seed_charge':'hero_lob',{...W2(l.sx,l.sy),to:W2(l.x,l.y),radius:l.r*K,travel:l.max,duration:l.max,element:l.big?'bloom':elOf(l.owner),team:l.team})}
+  FX.play(HX(l.big?'seed_charge':'hero_lob',l.owner),{...W2(l.sx,l.sy),to:W2(l.x,l.y),radius:l.r*K,travel:l.max,duration:l.max,element:elOf(l.owner),team:l.team})}
  // zones on the ground: painted moving surfaces at the real radius, until the rules end them
- let nz=0;for(const z of G.zones){if(!z._fx){z._fx=FX.play(ZFX[z.label]||'puddle',{...W2(z.x,z.y),radius:z.r*K,duration:z.max,arm:z.arm,team:z.team,element:elOf(z.owner)})||{stop(){}};zonesLive.push(z)}
+ let nz=0;for(const z of G.zones){if(!z._fx){z._fx=FX.play(HX(ZFX[z.key]||'puddle',z.owner),{...W2(z.x,z.y),radius:z.r*K,duration:z.max,arm:z.arm,team:z.team,element:elOf(z.owner)})||{stop(){}};zonesLive.push(z)}
   if(z.label){const el=zlabs.get(nz++),p=project(wx(z.x),.1,wz(z.y));if(el.textContent!==z.label)el.textContent=z.label;el.style.transform=`translate(${p.x}px,${p.y}px) translate(-50%,-50%)`}}
  zlabs.end(nz);for(let i=zonesLive.length-1;i>=0;i--){const z=zonesLive[i];if(z.dur>0&&G.zones.includes(z))continue;z._fx.stop&&z._fx.stop();zonesLive[i]=zonesLive[zonesLive.length-1];zonesLive.pop()}
  // seeds picked up (a seed that was there last frame and is gone)
@@ -268,12 +289,12 @@ function drawFx(G,me){projs.end(0);balls.end(0);
  // what the rules flagged this step: cones, the base gun, hero spells; the few plain rings left are match events (level up, base awake)
  let nt=0;for(const f of G.fx){const k=Math.max(0,Math.min(1,f.life/(f.max||.8)));
   if(!seenFx.has(f)){seenFx.add(f);const at=W2(f.x,f.y);
-   if(f.k==='c')FX.play(f.src==='mower'?'hero_cone_blast':'hero_cone_slash',{...at,dir:f.a,radius:f.r*K,half:f.half,element:HEL[f.src]||'default',team:f.team});
+   if(f.k==='c')FX.play(HX(f.src==='mower'?'hero_cone_blast':'hero_cone_slash',f.src),{...at,dir:f.a,radius:f.r*K,half:f.half,element:HEL[f.src]||'default',team:f.team});
    else if(f.k==='l'){const b=G.base[1].x===f.x&&G.base[1].y===f.y?G.base[1]:G.base[2].x===f.x&&G.base[2].y===f.y?G.base[2]:null;
-    if(b)FX.play('base_shot',{...at,to:W2(f.x2,f.y2),element:'seed',team:b.team});else if(f.col==='#cecbf6')FX.play('heist',{...at,to:W2(f.x2,f.y2),radius:220*K,element:'shade'})}
+    if(b)FX.play('base_shot',{...at,to:W2(f.x2,f.y2),element:'seed',team:b.team});else if(f.col==='#cecbf6')FX.play(HX('heist','magpie'),{...at,to:W2(f.x2,f.y2),radius:220*K,element:HEL.magpie})}
    else if(f.k==='r'){f._own=false;
     if(f.r===60&&f.max===.3)FX.play('base_hit',{x:wx(f.x),z:wz(f.y)-.6,element:'seed',team:f.col==='#378add'?1:2});
-    else if(f.r===90&&f.col==='#afa9ec')FX.play('vanish',{...at,radius:90*K,element:'shade'});
+    else if(f.r===90&&f.col==='#afa9ec')FX.play(HX('vanish','shade'),{...at,radius:90*K,element:HEL.shade});
     else if(f.r===22&&f.col==='#f0997b')FX.play('seed_pickup',{...at,element:'fox'});
     else if(f.r===26&&f.col==='#fac775')FX.play('seed_pickup',{...at,element:'seed'});
     else if(f.r===16&&f.col==='#c0dd97')FX.play('seed_pickup',{...at,element:'heal'});
@@ -316,7 +337,7 @@ function drawTransient(){const G=SB.G,me=G.me;nR=nD=nS=nC=nV=0;let i=0;
   else if(d.shape==='line'){const L=reach(me.x,me.y,a,r),ex=me.x+Math.cos(a)*L,ey=me.y+Math.sin(a)*L;strip(strips.get(nS++),me.x,me.y,ex,ey,(d.w||10)*2*K+.24,col,.45);ringAt(ex,ey,(d.w||10)+10,col,.9,.06)}
   else if(d.shape==='circle'){const dd=Math.min(r,aim.d);discAt(me.x+Math.cos(a)*dd,me.y+Math.sin(a)*dd,d.r||60,col,.38);ringAt(me.x+Math.cos(a)*dd,me.y+Math.sin(a)*dd,d.r||60,col,.95,.06);ringAt(me.x,me.y,r,col,.45)}
   else if(d.shape==='self')discAt(me.x,me.y,d.r||200,col,.3);
-  if(aim.sup&&me.def.sup.name==='Heist'){const L=reach(me.x,me.y,a,r),ex=me.x+Math.cos(a)*L,ey=me.y+Math.sin(a)*L;ringAt(ex,ey,220,col,.6,.06)}}
+  if(aim.sup&&me.def.sup.key==='heist'){const L=reach(me.x,me.y,a,r),ex=me.x+Math.cos(a)*L,ey=me.y+Math.sin(a)*L;ringAt(ex,ey,220,col,.6,.06)}}
  rings.end(nR);discs.end(nD);strips.end(nS);cones.end(nC);chevs.end(nV)}
 
 // ---- sound: one player for every cue (lanes/sound.js; ids, tiers and levels in lanes/sfx/cues.json)
@@ -465,7 +486,9 @@ function drawHit(){const me=SB.G.me,el=$('hitdir'),f=me.hitFrom,age=f?SB.G.t-f.t
 const labSize=l=>l._w?l:(l._w=l.offsetWidth||40,l._h=l.offsetHeight||16,l);
 const heroBoxes=[];
 function drawLabels(){if(!$('hud').hidden)hudBoxes();heroBoxes.length=0;
- for(const v of heroViews){if(v.lab.style.display==='none')continue;const h=v.h,s=project(wx(h.x),v.ht+.35,wz(h.y)),l=labSize(v.lab),cx=clampX(s.x,l._w);if(cx!==s.x)v.lab.style.transform=`translate(${cx}px,${s.y}px) translate(-50%,-100%)`;if(underHud(cx-l._w/2,s.y-l._h,l._w,l._h))v.lab.style.opacity=0;heroBoxes.push({x:cx-l._w/2,y:s.y-l._h,w:l._w,h:l._h})}
+ for(const v of heroViews){if(v.lab.style.display==='none')continue;const h=v.h,s=project(wx(h.x),v.ht+.35,wz(h.y)),l=labSize(v.lab),cx=clampX(s.x,l._w);if(cx!==s.x)v.lab.style.transform=`translate(${cx}px,${s.y}px) translate(-50%,-100%)`;let ly=s.y-l._h;
+  if(underHud(cx-l._w/2,ly,l._w,l._h)){const f=project(wx(h.x),0,wz(h.y));ly=f.y+4;if(underHud(cx-l._w/2,ly,l._w,l._h))v.lab.style.opacity=0;else v.lab.style.transform=`translate(${cx}px,${ly}px) translate(-50%,0)`}   // under the score: the bar and name go under the feet instead, so a hero never loses his mark
+  heroBoxes.push({x:cx-l._w/2,y:ly,w:l._w,h:l._h})}
  for(const f of farmViews){const s=project(wx(f.x),f.h,wz(f.y)),l=labSize(f.lab);s.x=clampX(s.x,l._w);f.lab.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-100%)`;   // a hero's label on top of the farm's: the farm's steps aside
   const x=s.x-l._w/2,y=s.y-l._h;f.lab.style.opacity=underHud(x,y,l._w,l._h)||heroBoxes.some(b=>x<b.x+b.w&&x+l._w>b.x&&y<b.y+b.h&&y+l._h>b.y)?0:1}
  for(const v of baseViews){const b=SB.G.base[v.t],t=String(Math.max(0,Math.ceil(b.hp)));if(v.txt!==t){v.txt=t;v.lab.textContent=t;v.lab._w=0}const s=project(wx(v.p.x),.1,wz(v.p.y)+1.9),l=labSize(v.lab);v.lab.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-50%)`;v.lab.style.opacity=underHud(s.x-l._w/2,s.y-l._h/2,l._w,l._h)?0:1}}

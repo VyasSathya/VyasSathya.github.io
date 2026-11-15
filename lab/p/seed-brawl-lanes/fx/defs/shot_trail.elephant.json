@@ -1,0 +1,6 @@
+{"id": "shot_trail.elephant", "about": "Elephant general cannonball in flight (attach): a dark iron ball, a hot glow at its back, a grey smoke trail and sparks.", "element": "elephant", "proof": {"times": [0.02, 0.06, 0.12, 0.2, 0.3, 0.45, 0.6]}, "layers": [
+    {"name": "heat", "tex": "fx_glow_soft", "blend": "glow", "tokens": ["ele_l", "ele", "ele_d"], "size": 0.8, "life": 0.11, "height": 0.55, "alpha": 0.55, "anchor": "move", "follow": true, "emit": {"every": 0.1}, "fadeIn": 0, "fadeOut": 0.1},
+    {"name": "ball", "tex": "fx_p_rocks", "tiles": 2, "frame": 0, "blend": "matter", "tokens": ["smoke_d", "smoke_dd", "ink"], "size": 0.42, "life": 0.07, "height": 0.55, "rot": [0, 360], "toCam": 0.3, "anchor": "move", "follow": true, "emit": {"every": 0.03}, "fadeIn": 0, "fadeOut": 0.1},
+    {"name": "smoke trail", "tex": "fx_smoke_seq", "tiles": 4, "anchor": "move", "blend": "smoke", "tokens": ["smoke_l", "smoke", "smoke_d"], "emit": {"rate": 14}, "size": [0.42, 0.58], "life": [0.3, 0.45], "height": 0.55, "sizeCurve": "swell", "alpha": 0.5, "fadeOut": 0.6},
+    {"name": "sparks", "tex": "fx_core_dot", "anchor": "move", "blend": "glow", "tokens": ["white", "ele_l", "ele"], "emit": {"rate": 15}, "size": [0.3, 0.45], "life": [0.12, 0.2], "height": 0.55, "dir": "random", "speed": [0.4, 0.8], "bright": 1.3}
+  ]}

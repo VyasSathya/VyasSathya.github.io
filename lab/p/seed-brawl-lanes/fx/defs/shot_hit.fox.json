@@ -1,0 +1,7 @@
+{"id": "shot_hit.fox", "about": "Fox bandit dagger hits: a fox-fire burst, flame licks, embers and yellow sparks, a puff of smoke.", "element": "fox", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "foxf_l", "foxf"], "at": 0, "size": [0.9, 1.0], "sizeCurve": "snap", "life": 0.08, "height": 0.5, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5},
+    {"name": "burst", "tex": "fx_p_impact_seq", "tiles": 4, "blend": "flame", "tokens": ["foxf_l", "foxf", "foxf_d"], "size": [0.85, 0.95], "life": 0.24, "height": 0.5, "upright": true, "toCam": 0.5},
+    {"name": "licks", "tex": "fx_lick_seq", "tiles": 4, "blend": "flame", "tokens": ["foxf_l", "foxf", "foxf_d"], "emit": {"burst": 3}, "shape": "disc", "spread": 0.25, "size": [0.45, 0.6], "life": [0.3, 0.45], "height": 0.4, "upright": true, "toCam": 0.45},
+    {"name": "embers", "tex": "fx_core_dot", "blend": "glow", "tokens": ["white", "foxf_l", "foxf"], "emit": {"burst": 7}, "size": [0.4, 0.6], "life": [0.3, 0.5], "height": 0.55, "dir": "fan", "speed": [2.4, 3.4], "drag": 3, "gravity": 0.3, "bright": 1.5, "toCam": 0.5},
+    {"name": "smoke", "tex": "fx_smoke_seq", "tiles": 4, "blend": "smoke", "tokens": ["smoke_l", "smoke", "smoke_d"], "at": 0.05, "size": 0.8, "life": 0.55, "height": 0.55, "lift": 0.5, "alpha": 0.35, "fadeOut": 0.6}
+  ]}

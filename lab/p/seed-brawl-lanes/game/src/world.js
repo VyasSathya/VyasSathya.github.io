@@ -56,10 +56,12 @@ export function ground(w = 21, h = 33) {
   const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
   const hex = (n) => '#' + n.toString(16).padStart(6, '0');
   x.fillStyle = hex(P.grassA); x.fillRect(0, 0, 128, 128);
-  x.fillStyle = hex(P.grassB); x.fillRect(0, 0, 64, 64); x.fillRect(64, 64, 64, 64);
+  // ?ground=flat (proof pictures only): one calm flat colour, no checker and no flecks
+  const flat = typeof location !== 'undefined' && /[?&]ground=flat/.test(location.search);
+  if (!flat) { x.fillStyle = hex(P.grassB); x.fillRect(0, 0, 64, 64); x.fillRect(64, 64, 64, 64); }
   // a few painted grass flecks, low contrast
   const r = rng(7); x.fillStyle = 'rgba(255,255,230,0.07)';
-  for (let i = 0; i < 40; i++) { const px = r() * 128, py = r() * 128; x.fillRect(px, py, 3, 1.5); }
+  if (!flat) for (let i = 0; i < 40; i++) { const px = r() * 128, py = r() * 128; x.fillRect(px, py, 3, 1.5); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(w / 2, h / 2); t.anisotropy = 4; t.magFilter = THREE.NearestFilter;
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t }));

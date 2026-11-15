@@ -83,9 +83,9 @@ function creepPic(id, size = 200) {
 const heroPicP = {};
 function heroPic(id) {
   if (heroPicP[id]) return heroPicP[id];
-  return heroPicP[id] = LOOK.loadHero(V.CAST[id] || 'cat', { ring: false, shadow: false }).then(H => {
+  return heroPicP[id] = LOOK.loadHero(V.CAST[id] || 'cat', { ring: false, shadow: false }).then(async H => {
     const sc = new THREE.Scene(); LOOK.addLights(sc); sc.add(H.root);
-    const r = V.rigOf(H); V.setBone(r, 'UpperArm_L', 0, 0, -r.dnL); V.setBone(r, 'UpperArm_R', 0, 0, r.dnR); V.setBone(r, 'Forearm_L', 0, -.3, 0); V.setBone(r, 'Forearm_R', 0, .3, 0);
+    const HA = await import('./heroanim.js'), r = HA.standRig(H); r.ph = 0; HA.stand(r, 0);   // the hero's idle pose (lanes/heroanim.js)
     const c = new THREE.PerspectiveCamera(28, 1, .1, 50), h = H.size.height; c.position.set(.7 * h, h * .95, 2.9 * h); c.lookAt(0, h * .55, 0);
     return snapScene(sc, c, 240);
   });

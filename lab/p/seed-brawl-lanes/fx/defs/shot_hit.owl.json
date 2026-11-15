@@ -1,0 +1,8 @@
+{"id": "shot_hit.owl", "about": "Owl archer arrow hits: amber flash, a flame burst, licks, feathers and embers thrown out, a puff of smoke.", "element": "owl", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "owl_l", "owl"], "at": 0, "size": [0.9, 1.0], "sizeCurve": "snap", "life": 0.08, "height": 0.5, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5},
+    {"name": "burst", "tex": "fx_p_impact_seq", "tiles": 4, "blend": "matter", "tokens": ["owl_l", "owl", "owl_d"], "size": [0.8, 0.9], "life": 0.24, "height": 0.5, "upright": true, "fadeIn": 0.02, "fadeOut": 0.4, "toCam": 0.5},
+    {"name": "licks", "tex": "fx_lick_seq", "tiles": 4, "blend": "flame", "tokens": ["owl_l", "owl", "owl_d"], "emit": {"burst": 3}, "shape": "disc", "spread": 0.25, "size": [0.45, 0.6], "life": [0.3, 0.4], "height": 0.4, "upright": true, "toCam": 0.45},
+    {"name": "feathers", "tex": "fx_p_leaves", "tiles": 2, "frames": "random", "blend": "matter", "tokens": ["feath_l", "feath", "feath_dd"], "emit": {"burst": 4}, "size": [0.25, 0.32], "life": [0.6, 0.9], "height": 0.55, "dir": "fan", "speed": [1.6, 2.6], "gravity": 0.3, "drag": 1.5, "spin": 500, "fadeOut": 0.3, "toCam": 0.35},
+    {"name": "embers", "tex": "fx_core_dot", "blend": "glow", "tokens": ["white", "owl_l", "owl"], "emit": {"burst": 6}, "size": [0.4, 0.6], "life": [0.3, 0.5], "height": 0.55, "dir": "fan", "speed": [2.4, 3.4], "drag": 3, "gravity": 0.3, "bright": 1.5, "toCam": 0.5},
+    {"name": "smoke", "tex": "fx_smoke_seq", "tiles": 4, "blend": "smoke", "tokens": ["smoke_l", "smoke", "smoke_d"], "at": 0.04, "size": 0.9, "life": 0.55, "height": 0.5, "lift": 0.5, "alpha": 0.4, "fadeOut": 0.6}
+  ]}

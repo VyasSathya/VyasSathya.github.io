@@ -1,0 +1,6 @@
+{"id": "hero_muzzle.owl", "about": "Owl archer looses an arrow: amber flash at the bow, the string snap ring, a puff of feathers. x,z = hero, dir = aim.", "element": "owl", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "owl_l", "owl"], "at": 0, "size": 0.8, "sizeCurve": "snap", "life": 0.07, "height": 0.6, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5},
+    {"name": "string snap", "tex": "fx_p_shock_ring", "blend": "glow", "tokens": ["white", "owl_l", "owl"], "size": 0.7, "sizeCurve": [0, 0.4, 1, 1.3], "life": 0.14, "height": 0.6, "alpha": 0.7, "bright": 1, "fadeIn": 0, "fadeOut": 0.7, "toCam": 0.5},
+    {"name": "feathers", "tex": "fx_p_leaves", "tiles": 2, "frames": "random", "blend": "matter", "tokens": ["feath_l", "feath", "feath_dd"], "emit": {"burst": 4}, "size": [0.22, 0.3], "life": [0.5, 0.8], "height": 0.6, "dir": "aimfan", "cone": 0.9, "speed": [1.2, 2.2], "gravity": 0.25, "drag": 2, "spin": 300, "fadeIn": 0, "fadeOut": 0.4, "toCam": 0.4},
+    {"name": "embers", "tex": "fx_core_dot", "blend": "glow", "tokens": ["white", "owl_l", "owl"], "emit": {"burst": 4}, "size": [0.4, 0.6], "life": [0.15, 0.25], "height": 0.6, "dir": "aimfan", "cone": 0.5, "speed": [2.5, 3.5], "drag": 3, "bright": 1.5, "toCam": 0.5}
+  ]}

@@ -213,6 +213,7 @@ function spawn(fx, ly, i, n) {
     : L.rot !== undefined ? L.rot * Math.PI / 180 : (L.upright || L.standing) ? R(-7, 7) * Math.PI / 180 : R(0, TAU);
   if ((L.rot === 'aim' || aimOff !== null) && L.rotJitter) rot += R(-L.rotJitter, L.rotJitter) * Math.PI / 180;
   if (L.rot === 'out') rot = Math.atan2(oz, ox);
+  else if (typeof L.rot === 'string' && L.rot.slice(0, 4) === 'out:') rot = Math.atan2(oz, ox) + +L.rot.slice(4) * Math.PI / 180;   // "out:90": a ground piece laid along the ring (rope segments)
   q.alive = true; q.ly = ly; q.fx = fx; q.p[0] = px; q.p[1] = py; q.p[2] = pz; q.v[0] = vx; q.v[1] = vy; q.v[2] = vz; q.o[0] = px - c[0]; q.o[1] = py - c[1]; q.o[2] = pz - c[2];
   q.size = size; q.aspect = aspect; q.life = Math.max(.02, V(L, 'life', 1, a)); q.age = 0; q.rot = rot; q.spin = L.spin ? R(-L.spin, L.spin) * Math.PI / 180 : 0;
   q.fr = L.frame !== undefined ? L.frame : Math.floor(rnd() * ly.tiles * ly.tiles); q.hold = ly.hold; q.swing = L.swing === -1 ? -1 : L.swing === 1 ? 1 : rnd() < .5 ? -1 : 1;
@@ -266,4 +267,5 @@ function write(q) {
   A[o + 17] = ly.emit; A[o + 18] = ly.add; A[o + 19] = ly.arc; A[o + 20] = ly.sweep ? u : -1; A[o + 21] = q.swing; A[o + 22] = L.toCam !== undefined ? L.toCam : 0;
   const c = ly.c; A[o + 23] = c[0][0]; A[o + 24] = c[0][1]; A[o + 25] = c[0][2]; A[o + 26] = c[1][0]; A[o + 27] = c[1][1]; A[o + 28] = c[1][2]; A[o + 29] = c[2][0]; A[o + 30] = c[2][1]; A[o + 31] = c[2][2];
 }
+export function countBy() { const m = {}; for (const q of live) m[q.fx.id] = (m[q.fx.id] || 0) + 1; return m; }   // live sprites per effect id (bench)
 export function count() { let draws = 0, sprites = 0; for (const b of batches.values()) if (b.n > 0) { draws++; sprites += b.n; } return { sprites, draws, effects: effects.length, live: live.length, dropped, cap: MAXP }; }

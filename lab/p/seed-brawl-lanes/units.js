@@ -40,18 +40,36 @@ function ramp(name) {
   t.minFilter = t.magFilter = name === 'two' ? THREE.NearestFilter : THREE.LinearFilter; t.needsUpdate = true;
   return RAMPS[name] = t;
 }
+// Optional round shading (units.json "round": {shade, top, rim, wrap, grad: [bottom, top] multipliers over the height}): replaces the toon bands with one smooth light-to-shadow
+// gradient per surface, the shadow side multiplied by a deeper hue-shifted colour (shade, sRGB hex) rather than grey, a soft
+// light on the top of each form (top) and a soft rim (rim). Absent = the toon bands, unchanged.
+const ROUND = `{ vec3 rn = normalize(normal); vec3 rl = normalize((viewMatrix * vec4(uRKey, 0.0)).xyz);
+  float rd = clamp(dot(rn, rl) * (1.0 - uRWrap) + uRWrap, 0.0, 1.0); float rs = smoothstep(0.0, 1.0, rd);
+  vec3 rsh = mix(uRShade, uRWarm, clamp((diffuseColor.r - diffuseColor.b) * 2.5, 0.0, 1.0));   // warm parts (orange thorns) shade to a deeper orange, not brown
+  vec3 rc = diffuseColor.rgb * mix(rsh, vec3(1.0), rs);
+  float ru = dot(rn, normalize((viewMatrix * vec4(0.0, 1.0, 0.0, 0.0)).xyz)); rc += diffuseColor.rgb * smoothstep(0.35, 1.0, ru) * uRTop;
+  float rf = 1.0 - clamp(dot(rn, normalize(vViewPosition)), 0.0, 1.0); rc += mix(diffuseColor.rgb, vec3(1.0), 0.5) * smoothstep(0.55, 0.95, rf) * uRRim * (0.4 + 0.6 * rs);
+  rc *= mix(uRGrad.x, uRGrad.y, vH) * mix(uRGradHue, vec3(1.0), vH);   // grad: darker toward the feet, tinted gradHue there
+  outgoingLight = rc; }
+`;
 function creepMaterial(opts) {
+  const R = opts.round ? { uRKey: { value: new THREE.Vector3(-4, 10, 7).normalize() }, uRShade: { value: new THREE.Color(parseInt(opts.round.shade || '6a5aa8', 16)) },
+    uRTop: { value: opts.round.top !== undefined ? opts.round.top : 0.18 }, uRRim: { value: opts.round.rim !== undefined ? opts.round.rim : 0.25 }, uRWrap: { value: opts.round.wrap !== undefined ? opts.round.wrap : 0.35 },
+    uRGrad: { value: new THREE.Vector2(...(opts.round.grad || [1, 1])) },
+    uRWarm: { value: new THREE.Color(parseInt(opts.round.warm || '' + (opts.round.shade || '6a5aa8'), 16)) },
+    uRGradHue: { value: (() => { const c = new THREE.Color(parseInt(opts.round.gradHue || 'ffffff', 16)), m = Math.max(c.r, c.g, c.b) || 1; return new THREE.Vector3(c.r / m, c.g / m, c.b / m); })() } } : null;
   const m = LOOK.toonMaterial(opts), base = m.onBeforeCompile, top = { value: opts.top || 1.2 }, tc = { value: new THREE.Color(opts.team === undefined ? 0xffffff : opts.team) };   // top: the body's height, for the lit-top gradient (lighter at the head, darker at the feet)
   m.onBeforeCompile = (s) => {
     base(s); s.uniforms.uTop = top; if (opts.bones) { s.uniforms.uBones = { value: opts.bones }; s.vertexShader = skinned(s.vertexShader); }
     s.uniforms.uTeamCol = tc;
     s.vertexShader = s.vertexShader.replace('#include <common>', '#include <common>\nvarying float vFlash; varying float vH; varying float vTeam; attribute float aTeam; uniform float uTop;' + BEND)
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvH = clamp(position.y / uTop, 0.0, 1.0); transformed = creepBend(transformed, aAnim); vFlash = aAnim.w; vTeam = aTeam;');
-    s.fragmentShader = s.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vFlash; varying float vH; varying float vTeam; uniform vec3 uTeamCol;')
+    s.fragmentShader = s.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vFlash; varying float vH; varying float vTeam; uniform vec3 uTeamCol;' + (R ? '\nuniform vec3 uRKey; uniform vec3 uRShade; uniform float uRTop; uniform float uRRim; uniform float uRWrap; uniform vec2 uRGrad; uniform vec3 uRGradHue; uniform vec3 uRWarm;' : ''))
       .replace('#include <map_fragment>', '#include <map_fragment>\n' + (opts.team === undefined ? '' : 'float tLum = vTeam > 1.5 ? 0.62 : dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114)); diffuseColor.rgb = mix(diffuseColor.rgb, uTeamCol * clamp(0.45 + 0.9 * tLum, 0.45, 1.15), smoothstep(0.4, 0.6, vTeam));\n') + 'diffuseColor.rgb *= mix(0.8, 1.1, vH);')
-      .replace('#include <opaque_fragment>', 'outgoingLight = mix(outgoingLight, vec3(1.0), vFlash * 0.6);\n#include <opaque_fragment>');
+      .replace('#include <opaque_fragment>', (R ? ROUND : '') + 'outgoingLight = mix(outgoingLight, vec3(1.0), vFlash * 0.6);\n#include <opaque_fragment>');
+    if (R) Object.assign(s.uniforms, R);
   };
-  m.customProgramCacheKey = () => (opts.bones ? 'seedtoon-creep-skin' : 'seedtoon-creep') + (opts.team === undefined ? '' : '-team');
+  m.customProgramCacheKey = () => (opts.bones ? 'seedtoon-creep-skin' : 'seedtoon-creep') + (opts.team === undefined ? '' : '-team') + (R ? '-round' : '');
   if (opts.ramp) m.gradientMap = ramp(opts.ramp);
   return m;
 }
@@ -97,7 +115,7 @@ export function set(kind, ti, team, teamCol) {
   // units.json "line" (optional, per creep): a number = that width; "edge" = the outer silhouette only (lineW, linePush);
   // "none" = no ink line (the outline mesh is kept but hidden). Absent = today's line.
   const ln = md && md.info.line, lw = typeof ln === 'number' ? ln : (md && md.info.lineW) || 1.6, push = ln === 'edge' ? (md.info.linePush || 0.3) : 0;
-  let line; if (md) { geo = md.geo; hull = md.hull; mat = md.matFor(teamCol); line = OUTLINE === 'black' ? outlineMat(undefined, lw, md, push) : outlineMat(new THREE.Color(teamCol).multiplyScalar(0.85).getHex(), lw === 1.6 ? 1.9 : lw * 1.19, md, push); }
+  let line; if (md) { geo = md.geo; hull = md.hull; mat = md.matFor(teamCol); line = OUTLINE === 'black' ? outlineMat(md.info.lineCol ? parseInt(md.info.lineCol, 16) : undefined, lw, md, push) : outlineMat(new THREE.Color(teamCol).multiplyScalar(0.85).getHex(), lw === 1.6 ? 1.9 : lw * 1.19, md, push); }
   else { W.unit(W.UNIT_KINDS[kind], ti, teamCol).children[0].traverse((o) => { if (o.isMesh) { if (o.userData.isHull) hull = o.geometry; else geo = o.geometry; } }); mat = procMat; }
   const anim = new THREE.InstancedBufferAttribute(new Float32Array(MAX * 4), 4); anim.setUsage(THREE.DynamicDrawUsage);
   const pose = md && md.bones ? new THREE.InstancedBufferAttribute(new Float32Array(MAX), 1) : null; if (pose) pose.setUsage(THREE.DynamicDrawUsage);
@@ -110,18 +128,32 @@ export function set(kind, ti, team, teamCol) {
     sh = new THREE.InstancedMesh(sg, shadowMat(), MAX); sh.instanceMatrix = b.instanceMatrix; sh.frustumCulled = false; sh.count = 0; sh.renderOrder = 1; scene.add(sh);
     b.onBeforeRender = () => { sh.count = b.count; };
   }
-  return SETS[key] = { b, o, sh, n: 0, w: W.UNIT_WIDTH[ti], anim, pose, clips: md && md.bones ? md.clips : null, real: !!md };
+  let gl = null;   // units.json "glow": a soft glowing ring in the team colour under the feet (share of the model width); lanes/main.js then skips the hard ring
+  if (md && md.info.glow) {
+    const gg = new THREE.PlaneGeometry(md.info.glow * md.w0, md.info.glow * md.w0); gg.rotateX(-Math.PI / 2); gg.translate(0, 0.015, 0);
+    gl = new THREE.InstancedMesh(gg, glowMat(teamCol), MAX); gl.instanceMatrix = b.instanceMatrix; gl.frustumCulled = false; gl.count = 0; gl.renderOrder = 2; scene.add(gl);
+    const prev = b.onBeforeRender; b.onBeforeRender = (...a) => { if (sh) prev(...a); gl.count = b.count; };
+  }
+  return SETS[key] = { b, o, sh, gl, glow: !!gl, n: 0, w: W.UNIT_WIDTH[ti], anim, pose, clips: md && md.bones ? md.clips : null, real: !!md };
 }
 export const sets = () => SETS;
-function drop(prefix) { for (const k in SETS) if (k.startsWith(prefix)) { const s = SETS[k]; scene.remove(s.b, s.o); s.b.dispose(); s.o.dispose(); if (s.sh) { scene.remove(s.sh); s.sh.dispose(); } delete SETS[k]; } }
+function drop(prefix) { for (const k in SETS) if (k.startsWith(prefix)) { const s = SETS[k]; scene.remove(s.b, s.o); s.b.dispose(); s.o.dispose(); if (s.sh) { scene.remove(s.sh); s.sh.dispose(); } if (s.gl) { scene.remove(s.gl); s.gl.dispose(); } delete SETS[k]; } }
 let _shMat = null;
 function shadowMat() {
   if (_shMat) return _shMat;
   const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
-  g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.6, 'rgba(255,255,255,0.85)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  g.addColorStop(0, '#fff'); g.addColorStop(0.6, '#d9d9d9'); g.addColorStop(1, '#000'); x.fillStyle = '#000'; x.fillRect(0, 0, 64, 64); x.fillStyle = g;   // grey: alphaMap reads the green channel x.fillRect(0, 0, 64, 64);
   return _shMat = new THREE.MeshBasicMaterial({ color: 0x1d2410, alphaMap: new THREE.CanvasTexture(c), transparent: true, opacity: 0.38, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
 }
 
+const _glMats = {};
+function glowMat(col) {
+  if (_glMats[col]) return _glMats[col];
+  const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'), g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, '#292929'); g.addColorStop(0.5, '#4d4d4d'); g.addColorStop(0.72, '#f2f2f2'); g.addColorStop(0.84, '#737373'); g.addColorStop(1, '#000');   // grey: alphaMap reads the green channel
+  x.fillStyle = '#000'; x.fillRect(0, 0, 128, 128); x.fillStyle = g; x.fillRect(0, 0, 128, 128);
+  return _glMats[col] = new THREE.MeshBasicMaterial({ color: col, alphaMap: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 });
+}
 // a single creep as its own object (the dock pictures)
 export function single(kind, ti, teamCol) {
   const md = model(kind, ti); if (!md) return W.unit(W.UNIT_KINDS[kind], ti, teamCol).children[0];
@@ -181,7 +213,7 @@ export async function load(base, onReady) {
       for (const k of Object.keys(geo.attributes)) if (!['position', 'normal', 'uv', 'aTeam'].concat(bake ? ['skinIndex', 'skinWeight'] : []).includes(k)) geo.deleteAttribute(k);
       const map = mesh.material.map; if (map) { map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4; }
       const mo = { map, sat: d.sat, contrast: d.contrast, top: (d.height || 1.2) * (d.scale || 1), bones: bake && bake.tex }, mats = {};
-      if (d.ramp) mo.ramp = d.ramp; if (d.rim !== undefined) mo.rim = d.rim;   // optional light switches (see ramp() and set())
+      if (d.ramp) mo.ramp = d.ramp; if (d.rim !== undefined) mo.rim = d.rim; if (d.round) mo.round = d.round;   // optional light switches (see ramp() and set())
       MODELS[key] = { key, info: d, w0: d.scale || 1, geo, hull: LOOK.hullGeometry(geo), bones: bake && bake.tex, clips: bake && bake.clips, mat: creepMaterial(mo),
         matFor: (col) => NOTEAM ? MODELS[key].mat : mats[col] || (mats[col] = creepMaterial(Object.assign({}, mo, { team: col }))) };   // one material per team: the team part's colour
       const [kn, bn] = key.split('_'); drop(KEYS.indexOf(kn) + '_' + BODY.indexOf(bn) + '_'); n++; if (onReady) onReady(key);

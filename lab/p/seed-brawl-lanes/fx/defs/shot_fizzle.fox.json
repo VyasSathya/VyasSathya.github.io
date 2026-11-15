@@ -1,0 +1,4 @@
+{"id": "shot_fizzle.fox", "about": "Fox bandit dagger ends without a hit: a small flame puff and sparks.", "element": "fox", "layers": [
+    {"name": "puff", "tex": "fx_lick_seq", "tiles": 4, "blend": "flame", "tokens": ["foxf_l", "foxf", "foxf_d"], "size": 0.45, "life": 0.25, "height": 0.5, "upright": true, "toCam": 0.3},
+    {"name": "sparks", "tex": "fx_core_dot", "blend": "glow", "tokens": ["white", "foxf_l", "foxf"], "emit": {"burst": 3}, "size": [0.35, 0.45], "life": [0.2, 0.3], "height": 0.5, "dir": "fan", "speed": [1.4, 2], "drag": 3, "bright": 1.4}
+  ]}

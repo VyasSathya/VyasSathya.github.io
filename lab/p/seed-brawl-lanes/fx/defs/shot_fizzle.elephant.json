@@ -1,0 +1,4 @@
+{"id": "shot_fizzle.elephant", "about": "Elephant general cannonball ends without a hit: a thud of grey smoke and grit.", "element": "elephant", "layers": [
+    {"name": "smoke", "tex": "fx_smoke_seq", "tiles": 4, "blend": "smoke", "tokens": ["smoke_l", "smoke", "smoke_d"], "size": 0.6, "life": 0.45, "height": 0.4, "lift": 0.4, "alpha": 0.5, "fadeOut": 0.6},
+    {"name": "grit", "tex": "fx_p_rocks", "tiles": 2, "frames": "random", "blend": "matter", "tokens": ["smoke_l", "smoke_d", "smoke_dd"], "emit": {"burst": 2}, "size": [0.16, 0.22], "life": [0.35, 0.5], "height": 0.4, "dir": "fan", "speed": [1.4, 2], "gravity": 1, "spin": 400, "fadeOut": 0.3}
+  ]}

@@ -1,0 +1,8 @@
+{"id": "shot_hit.mouse", "about": "Mouse thief knife hits: green flash, steel chips, gold coin glints and nuggets thrown out, a green wisp.", "element": "mouse", "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "mouse_l", "mouse"], "at": 0, "size": [0.7, 0.8], "sizeCurve": "snap", "life": 0.08, "height": 0.5, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.5},
+    {"name": "burst", "tex": "fx_p_impact_seq", "tiles": 4, "blend": "matter", "tokens": ["mouse_l", "mouse", "mouse_d"], "size": [0.6, 0.7], "life": 0.2, "height": 0.5, "upright": true, "fadeIn": 0.02, "fadeOut": 0.4, "toCam": 0.5},
+    {"name": "chips", "tex": "fx_p_ice_shatter", "tiles": 2, "frames": "random", "blend": "matter", "tokens": ["steel_l", "steel", "steel_dd"], "emit": {"burst": 3}, "size": [0.22, 0.3], "life": [0.4, 0.6], "height": 0.5, "dir": "fan", "speed": [2.4, 3.4], "gravity": 1, "spin": 600, "fadeOut": 0.3, "toCam": 0.35},
+    {"name": "coins", "tex": "fx_p_rocks", "tiles": 2, "frames": "random", "blend": "matter", "tokens": ["gold_l", "gold", "gold_dd"], "emit": {"burst": 3}, "size": [0.18, 0.24], "life": [0.5, 0.7], "height": 0.5, "dir": "fan", "speed": [1.8, 2.8], "lift": 1, "gravity": 0.9, "spin": 700, "fadeOut": 0.3, "toCam": 0.35},
+    {"name": "coin glints", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "gold_l", "gold"], "emit": {"burst": 4}, "size": [0.18, 0.26], "life": [0.3, 0.45], "height": 0.55, "dir": "fan", "speed": [2, 3], "drag": 3, "spin": 300, "bright": 1.5, "toCam": 0.5},
+    {"name": "wisp", "tex": "fx_p_frost_mist", "blend": "smoke", "tokens": ["mouse_l", "mouse_m", "mouse_d"], "at": 0.03, "size": 0.7, "life": 0.45, "height": 0.45, "lift": 0.4, "alpha": 0.35, "fadeOut": 0.6}
+  ]}
