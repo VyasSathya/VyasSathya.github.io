@@ -11,7 +11,8 @@ function recTick(r,inp){const b=(inp.press?1:0)|(inp.release?2:0)|(inp.hold?4:0)
 function recPack(r){let o='',last=0;for(let i=0;i<r.ev.length;i+=2){let v=(r.ev[i]-last)*8+r.ev[i+1];last=r.ev[i];do{const c=v&31;v=Math.floor(v/32);o+=B64[c|(v?32:0)]}while(v)}return o}
 function recUnpack(str){const ev=[];let t=0,v=0,m=1;for(const ch of str){const c=B64.indexOf(ch);if(c<0)return null;v+=(c&31)*m;m*=32;if(!(c&32)){t+=Math.floor(v/8);ev.push(t,v&7);v=0;m=1}}return m==1?ev:null}
 /* a level's fingerprint: a run made on another version of the level is not replayed */
-function lvHash(L){const s=JSON.stringify(L)+RUN+JV+AJ+GAP;let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
+function lvHash(L){let s=JSON.stringify(L)+RUN+JV+AJ+GAP;if(s.includes('rings'))s+='r2';   /* ring rule 2 (2026-11-14): a run saved under the old rule does not replay on a level with rings */
+ let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
 /* play a run back on the real step(): where the body was after every step. st bits: 1 on ground, 2 on a wall,
    4 facing right, 8 rising, 16 died on this step. null if the run does not win on exactly its last step. */
 function ghostRun(g,ev,n){if(!ev||!(n>0)||n>120*1200)return null;let s=newState(g);s.ev=null;const xs=new Float32Array(n),ys=new Float32Array(n),st=new Uint8Array(n);let k=0,hold=false;

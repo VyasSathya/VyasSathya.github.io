@@ -110,14 +110,17 @@ function step(g,s,dt,inp){
   if(lq.sp){p.vy=-1050;p.g=false;p.sq=-.3;lq.spt=.25;E('spring',p.x,p.y+10)}
   if(lq.cp&&lq.cv>s.cv&&!lq.goal&&!(lq.need&&!s.key)){s.cv=lq.cv;s.snap=clone(s);E('cp',p.x,p.y)}
   if(lq.goal){s.win=true;E('win',p.x,p.y)}};
- let ri=-1;if(s.jb>0&&!p.g)for(let i=0;i<g.rings.length;i++){const q=g.rings[i];if(s.rg[i]<=0&&Math.abs(q.x-p.x)<q.r+8&&Math.abs(q.y-p.y)<q.r+10){ri=i;break}}
+ /* rings forgive the press: a held press fires one, a press just before one waits for it instead of spending the air jump, and letting go cuts neither the way in nor the boost */
+ let ri=-1,rn=0;if(!p.g&&!p.wall)for(let i=0;i<g.rings.length;i++){const q=g.rings[i];if(s.rg[i]>0)continue;const dx=(q.x-p.x)*p.dir,dy=Math.abs(q.y-p.y);
+  if(Math.abs(dx)<q.r+8&&dy<q.r+10){if(s.jb>0||inp.hold){ri=i;break}}else if(dx>0&&dx<q.r+40&&dy<q.r+50)rn=1}
+ if(ri>=0||s.jb<=0)rn=0;if(rn)s.jb=.14;if(p.nc>0)p.nc-=dt;
  for(let i=0;i<s.rg.length;i++)if(s.rg[i]>0)s.rg[i]-=dt;if(p.stk>0)p.stk-=dt;
- if(inp.release&&!p.g&&!p.wall&&p.vy<-250&&!p.inw)p.vy=-250;
+ if(inp.release&&!p.g&&!p.wall&&p.vy<-250&&!p.inw&&!rn&&!(p.nc>0))p.vy=-250;
  for(const q of s.pl)if(q.vx){q.x+=q.vx*dt;if(q.x<q.a||q.x+q.w>q.b)q.vx=-q.vx}
  if(p.g||p.wall){p.coy=.1;p.lw=p.wall}else p.coy-=dt;p.sq*=Math.pow(.0004,dt);
  if(s.jb>0&&p.coy>0){const w=p.wall||(p.g?0:p.lw);if(w){p.dir=-w;p.wall=0}p.vy=-JV;p.g=false;p.air=p.airMax;p.coy=0;p.lw=0;s.jb=0;p.sq=-.22;E(w?'kick':'jump',p.x,p.y+10,w)}
- else if(ri>=0&&!p.wall){p.vy=-JV;s.rg[ri]=.45;s.jb=0;p.sq=-.2;E('ring',g.rings[ri].x,g.rings[ri].y)}
- else if(s.jb>0&&p.air>0&&!p.g){p.air--;p.vy=-AJ;s.jb=0;p.sq=-.16;E('air',p.x,p.y+10)}
+ else if(ri>=0&&!p.wall){p.vy=-JV;s.rg[ri]=.45;s.jb=0;p.nc=.4;p.sq=-.2;E('ring',g.rings[ri].x,g.rings[ri].y)}
+ else if(s.jb>0&&p.air>0&&!p.g&&!rn){p.air--;p.vy=-AJ;s.jb=0;p.sq=-.16;E('air',p.x,p.y+10)}
  const so=s.key?g.open:g.solids;
  if(!p.wall){const px=p.x,nx=px+p.dir*RUN*dt;let hit=null;
   for(const q of so)if(p.y+10>q.y+1&&p.y-10<q.y+q.h-1){

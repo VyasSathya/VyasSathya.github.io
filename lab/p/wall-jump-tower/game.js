@@ -149,9 +149,14 @@ function chev(x,y,fn){ctx.strokeStyle=C.text;ctx.lineWidth=2.5;ctx.lineCap='roun
 function levels(){cam.y=-H-200;backdrop();shade(.55);chev(24,TOP+30,()=>{scr='title'});
  let x=24;const ty=TOP+84;for(let i=0;i<CHAPTERS.length;i++){ctx.font='600 13.5px Inter,system-ui,sans-serif';const w=ctx.measureText(CHAPTERS[i]).width;txt(CHAPTERS[i],x,ty,13.5,i==tab?C.text:C.dim,'left',600);if(i==tab){ctx.fillStyle=C.accent;rr(x,ty+13,w,2.5,1.2);ctx.fill()}const k=i;btns.push({x:x-7,y:ty-22,w:w+14,h:44,fn:()=>{tab=k}});x+=w+16}
  for(let i=0;i<5;i++){const n=tab*5+i,L=LEVELS[n],y=TOP+124+i*62,d=SV.done[L.id];ctx.fillStyle=C.line;ctx.fillRect(24,y+61.5,VW-48,1);
-  txt(L.name,24,y+31,18,C.text,'left',500);if(d){if(d.t<1e8)txt(tm2(d.t),VW-40-(d.n||1)*16.25,y+31,13,C.dim,'right');pips(VW-30,y+31,d.n||1,d.g,1.25,1);ctx.fillStyle=C.accent;ctx.beginPath();ctx.arc(14,y+31,2.5,0,6.3);ctx.fill()}btns.push({x:0,y,w:VW,h:62,fn:()=>startLevel(n)})}}
+  txt(L.name,24,y+31,18,C.text,'left',500);if(d){if(d.t<1e8)txt(tm2(d.t),VW-40-(d.n||1)*16.25,y+31,13,C.dim,'right');pips(VW-30,y+31,d.n||1,d.g,1.25,1);ctx.fillStyle=C.accent;ctx.beginPath();ctx.arc(14,y+31,2.5,0,6.3);ctx.fill()}btns.push({x:0,y,w:VW,h:62,fn:()=>startLevel(n)})}more(H-BOT-124)}
+/* More from Thumbyard (C:/Dev/toybox/app-kit/more-from-thumbyard): one row on the pause screen and the level list; the
+   panel opens only from a tap on it. In the app the row shows only when the build has the "mft" handler (builds up
+   to 0.2 (5) do not, and a Get tap would do nothing there). tools/mft.py refreshes web/mft. */
+let MFTOK=false;try{if(window.MFT&&(!window.__app||window.webkit.messageHandlers.mft))MFT.load('mft/products.json',{from:'wall-jump-tower',base:'mft/',theme:'dark'}).then(()=>{MFTOK=!!MFT.available()},()=>{})}catch(e){}
+function more(y){if(MFTOK)btn('More from Thumbyard',VW/2-102,y,204,44,3,()=>MFT.show(),1)}  /* 204 wide: Enter picks the 200 wide button */
 function pauseS(){shade(.72);const y=H*.34;btn('Resume',VW/2-100,y,200,54,1,()=>{scr='play'});btn('Restart',VW/2-100,y+70,200,48,2,()=>startLevel(LV));btn('Levels',VW/2-100,y+128,200,48,2,toLevels);
- switches(y+190)}
+ switches(y+190);more(y+240)}
 /* Sound and Music, each its own switch, kept between launches (SV.mute, SV.nomus) */
 function switches(y,k){btn(SV.mute?'Sound off':'Sound on',VW/2-98,y,94,44,k||0,()=>{SV.mute=SV.mute?0:1;save();gains()});btn(SV.nomus?'Music off':'Music on',VW/2+4,y,94,44,k||0,()=>{SV.nomus=SV.nomus?0:1;save();gains()})}
 const toLevels=()=>{VS=null;tab=Math.floor(LV/5);scr='levels'};
@@ -186,11 +191,11 @@ function down(x,y){auInit();if(scr=='play'){if(x<56&&y<TOP+52&&!S.win&&!S.dead){
  for(let i=btns.length-1;i>=0;i--){const b=btns[i];if(x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h){sfx('ui_tap',.6);if(b.up)pend=b.fn;else b.fn();return}}}
 function up(){if(AU.c&&AU.c.state!='running')AU.c.resume();hold=false;release=true;if(pend){const f=pend;pend=null;f()}}
 cv.addEventListener('pointerdown',e=>{e.preventDefault();const r=cv.getBoundingClientRect();down((e.clientX-r.left)/SC,(e.clientY-r.top)/SC)});addEventListener('pointerup',up);addEventListener('pointercancel',up);
-addEventListener('keydown',e=>{if(e.repeat)return;if(e.key==' '||e.key=='Enter'){e.preventDefault();if(scr=='play')down(180,400);else if(btns.length){auInit();(btns.find(b=>b.w==200)||btns[0]).fn()}}else if(e.key=='Escape'&&scr=='play')scr='pause'});
+addEventListener('keydown',e=>{if(e.repeat||document.querySelector('.mft-root'))return;if(e.key==' '||e.key=='Enter'){e.preventDefault();if(scr=='play')down(180,400);else if(btns.length){auInit();(btns.find(b=>b.w==200)||btns[0]).fn()}}else if(e.key=='Escape'&&scr=='play')scr='pause'});
 addEventListener('keyup',e=>{if(e.key==' ')up()});addEventListener('resize',resize);
 /* the simulator check (app launched with -taplog): what the page gets of each touch, and what screen it is on after */
 if(window.__taplog){const tl=m=>{try{webkit.messageHandlers.qa.postMessage(m)}catch(e){}};tl('QA_PAGE '+location.protocol+' scr '+scr);
- addEventListener('pointerdown',e=>{tl('QA_TAP '+Math.round(e.clientX)+' '+Math.round(e.clientY)+' scr '+scr+' btns '+btns.length+' target '+(e.target&&e.target.tagName));setTimeout(()=>tl('QA_AFTER scr '+scr),1200)},true);
+ addEventListener('pointerdown',e=>{tl('QA_TAP '+Math.round(e.clientX)+' '+Math.round(e.clientY)+' scr '+scr+' btns '+btns.length+' target '+(e.target&&e.target.tagName));setTimeout(()=>{const g=document.querySelector('.mft-get'),q=g&&g.getBoundingClientRect();tl('QA_AFTER scr '+scr+(q?' mft open get '+Math.round(q.left+q.width/2)+' '+Math.round(q.top+q.height/2):''))},1200)},true);
  addEventListener('touchstart',e=>tl('QA_TOUCHSTART '+e.touches.length),true);addEventListener('resize',()=>tl('QA_RESIZE '+innerWidth+'x'+innerHeight));
  document.addEventListener('visibilitychange',()=>tl('QA_VIS '+document.visibilityState));addEventListener('pageshow',()=>tl('QA_PAGESHOW'))}
 auInit();
