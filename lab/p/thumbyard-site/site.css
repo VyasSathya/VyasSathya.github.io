@@ -29,7 +29,9 @@ h1,h2{margin:0;font-weight:700;letter-spacing:-.015em}
 .top nav a:hover{color:var(--moss)}
 
 /* home: the yard on the left, the plots on the right */
-.home{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);min-height:calc(100svh - 68px)}
+.home{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);min-height:calc(100svh - 68px);
+  max-width:1760px;margin:0 auto}   /* very wide screens: the page stays one piece in the middle */
+.top{padding-inline:max(var(--pad),calc((100vw - 1760px) / 2 + var(--pad)))}
 .yard{position:sticky;top:68px;height:calc(100svh - 68px);min-height:520px;overflow:hidden;container-type:size;
   border-right:1px solid var(--hair)}
 .hill{position:absolute;left:calc((100cqw - var(--hw)) / 2);bottom:0;width:var(--hw);height:auto;color:var(--ridge)}
@@ -51,11 +53,12 @@ h1,h2{margin:0;font-weight:700;letter-spacing:-.015em}
 .plot.hot .stake i{animation:wave .7s ease-in-out 2}
 
 .shelf{padding:clamp(28px,5vh,56px) var(--pad) 40px}
+.shelf section{max-width:760px}
 .shelf section+section{margin-top:44px}
 .shelf h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .plots{list-style:none;margin:0;padding:0}
 .plot{position:relative;display:grid;grid-template-columns:22px 72px minmax(0,1fr) auto;align-items:center;gap:18px;padding:22px 0 24px}
-.plot .furrow{position:absolute;left:-26px;right:0;bottom:0;width:calc(100% + 26px);height:16px;fill:none;stroke:var(--furrow);stroke-width:1.5}
+.plot .furrow{position:absolute;left:0;right:0;bottom:0;width:100%;height:16px;fill:none;stroke:var(--furrow);stroke-width:1.5}
 .stake{position:relative;height:44px;align-self:center}
 .stake::before{content:"";position:absolute;left:4px;top:2px;bottom:0;width:2px;border-radius:2px;background:var(--fg)}
 .stake i{position:absolute;left:6px;top:3px;width:16px;height:13px;background:var(--flag);
@@ -149,3 +152,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--moss);outline-offse
   .rail img{width:200px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* very wide screens: footer lines up with the page, and the hill fades out instead of ending at a hard edge */
+.foot{padding-inline:max(var(--pad),calc((100vw - 1760px) / 2 + var(--pad)))}
+@media (min-width:1761px){.yard{-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%);mask-image:linear-gradient(90deg,transparent,#000 14%)}}
