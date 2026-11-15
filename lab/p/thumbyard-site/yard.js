@@ -34,6 +34,7 @@ const SVG_SCALE = 2.35;                // hill_svg() in build_site.py
 const ease = (x) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
 const back = (x) => { x = Math.min(1, Math.max(0, x)); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
 
+let wakeYard = null;
 async function start() {
   const THREE = await import('three');
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
@@ -48,6 +49,8 @@ async function start() {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const canvas = renderer.domElement;
   canvas.className = 'yard3d';
+  canvas.setAttribute('role', 'img');
+  canvas.setAttribute('aria-label', 'The thumbling on the Thumbyard hill, with a flag for each game and app');
   const scene = new THREE.Scene();
   const cam = new THREE.PerspectiveCamera(18, 1, 10, 6000);
 
@@ -83,7 +86,7 @@ async function start() {
   const mossMat = new THREE.MeshStandardMaterial({ color: MOSS, roughness: 0.82, metalness: 0 });
   const inkMat = new THREE.MeshStandardMaterial({ color: tok('--ridge', '#2A231C'), roughness: 0.7, metalness: 0 });
   const paint = () => inkMat.color.set(getComputedStyle(document.documentElement).getPropertyValue('--ridge').trim() || '#2A231C');
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paint);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { paint(); if (wakeYard) wakeYard(1); });
   new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   class ArcCurve3 extends THREE.Curve {
@@ -266,7 +269,7 @@ async function start() {
       helloPlane.position.set(0, 512 / 880 - 40 / 880, 0.02);
       helloPlane.visible = false;
       thumb.add(helloPlane);
-      v.addEventListener('playing', () => { talking = true; });
+      v.addEventListener('playing', () => { talking = true; if (wakeYard) wakeYard(6); });
       const done = () => { if (talking) { talking = false; hop = 1; if (wave) { wave.reset(); wave.play(); } } };
       v.addEventListener('ended', done); v.addEventListener('pause', done); v.addEventListener('error', done);
       helloVideo = v;
@@ -308,10 +311,12 @@ async function start() {
     cam.updateProjectionMatrix();
     // he fills the sky above the crest without leaving the frame
     const room = crestY / ppu;
-    thumb.scale.setScalar(Math.max(96, Math.min(214, room * 0.8)));
+    // 0.6, not 0.8: the wave, the hop and the leaf reach past his resting box; at 0.8 the top was cut off
+    // on wide screens and phones (2026-11-15)
+    thumb.scale.setScalar(Math.max(96, Math.min(214, room * 0.6)));
   }
   fit();
-  new ResizeObserver(fit).observe(yard);
+  new ResizeObserver(() => { fit(); if (typeof wakeYard === 'function') wakeYard(1); }).observe(yard);
 
   // ---- pointer: he looks at it, the hill leans a little toward it, flags answer
   const look = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -393,7 +398,7 @@ async function start() {
   let rowFlag = null;
   for (const f of flags) {
     const li = f.userData.li;
-    const on = () => { rowFlag = f; f.userData.bounce = 1; };
+    const on = () => { rowFlag = f; f.userData.bounce = 1; if (wakeYard) wakeYard(2); };
     const off = () => { if (rowFlag === f) rowFlag = null; };
     li.addEventListener('pointerenter', on); li.addEventListener('pointerleave', off);
     li.addEventListener('focusin', on); li.addEventListener('focusout', off);
@@ -401,9 +406,18 @@ async function start() {
 
   // ---- run
   let visible = true, running = false, last = performance.now(), t = 0, born = -1, waved = false;
+  // the yard rests: after the intro it draws only while something is happening (a pointer, a touch, a scroll,
+  // a row under the pointer, his hello), then settles and stops within a few seconds
+  let awakeUntil = 0;
+  wakeYard = (sec) => wake(sec);
+  const wake = (sec = 4) => { awakeUntil = Math.max(awakeUntil, performance.now() + sec * 1000); kick(); };
+  for (const ev of ['pointermove', 'pointerdown', 'touchstart', 'scroll', 'keydown', 'focusin'])
+    addEventListener(ev, () => wake(), { passive: true });
   new IntersectionObserver((en) => { visible = en[0].isIntersecting; kick(); }).observe(yard);
   document.addEventListener('visibilitychange', kick);
-  function kick() { if (!running && visible && !document.hidden) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
+  function kick() {
+    if (!running && visible && !document.hidden) { running = true; last = performance.now(); requestAnimationFrame(frame); }
+  }
 
   function frame(now) {
     if (!visible || document.hidden) { running = false; return; }
@@ -458,7 +472,8 @@ async function start() {
     pivot.rotation.x = lean.y;
 
     renderer.render(scene, cam);
-    requestAnimationFrame(frame);
+    if (age < 6 || talking || held || rowFlag || hop > 0 || now < awakeUntil) { requestAnimationFrame(frame); return; }
+    running = false;   // resting; wake() starts it again
   }
   kick();
 }

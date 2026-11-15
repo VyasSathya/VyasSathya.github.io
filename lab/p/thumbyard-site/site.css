@@ -22,10 +22,10 @@ h1,h2{margin:0;font-weight:700;letter-spacing:-.015em}
 .top{position:sticky;top:0;z-index:5;height:68px;display:flex;align-items:center;justify-content:space-between;
   padding:0 var(--pad);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--hair)}
-.brand{display:flex;color:var(--fg)}
+.brand{display:flex;align-items:center;min-height:44px;color:var(--fg)}
 .logo{height:40px;width:auto}
 .top nav{display:flex;gap:clamp(14px,3vw,32px)}
-.top nav a{text-decoration:none;font-weight:550;font-size:15px}
+.top nav a{text-decoration:none;font-weight:550;font-size:15px;padding:12px 2px}
 .top nav a:hover{color:var(--moss)}
 
 /* home: the yard on the left, the plots on the right */
@@ -35,7 +35,10 @@ h1,h2{margin:0;font-weight:700;letter-spacing:-.015em}
 .hill{position:absolute;left:calc((100cqw - var(--hw)) / 2);bottom:0;width:var(--hw);height:auto;color:var(--ridge)}
 .hill .flag{transform-origin:350px 330px;animation:flap 5s ease-in-out infinite}
 @keyframes flap{0%,100%{transform:none}50%{transform:skewY(-2deg)}}
-.yard{--hw:128cqw;--crest:calc(var(--hw) * .76 * 460 / 760)}
+/* the hill follows the column width, but never so wide that its crest leaves no sky for the thumbling
+   (wide, short windows: ultrawide monitors, laptops with a short browser) */
+/* 115cqh: his smallest size (96 units, yard.js) then still fits 60% of the sky above the crest */
+.yard{--hw:min(128cqw,115cqh);--crest:calc(var(--hw) * .76 * 460 / 760)}
 .stage{position:absolute;left:50%;bottom:calc(var(--crest) - 6px);height:min(calc(100cqh - var(--crest) - 36px),78cqw);aspect-ratio:1;
   transform:translateX(-44%)}
 .stage .poster{position:absolute;inset:0;width:100%;height:100%;top:auto;height:85%}
@@ -65,19 +68,24 @@ h1,h2{margin:0;font-weight:700;letter-spacing:-.015em}
 .name:hover{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
 .what p{margin:2px 0 0;color:var(--muted);font-size:15px}
 .get{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;background:var(--btn);color:var(--btn-fg);
-  text-decoration:none;font-weight:600;font-size:14px;line-height:1;padding:11px 16px 11px 13px;border-radius:999px;
+  text-decoration:none;font-weight:600;font-size:14px;line-height:1;padding:12px 18px;min-height:44px;border-radius:999px;
   transition:transform .15s ease,background .15s}
-.get svg{width:16px;height:16px;fill:currentColor;margin-top:-2px}
 .get:hover{transform:translateY(-1px)}
 .get:active{transform:translateY(1px)}
-.get.big{font-size:16px;padding:14px 22px 14px 18px;margin-top:18px}
-.get.big svg{width:19px;height:19px}
+.get.big{font-size:16px;padding:15px 24px;margin-top:18px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--moss);outline-offset:3px;border-radius:6px}
+.get:focus-visible{border-radius:999px}
 
 /* footer */
-.foot{display:flex;flex-wrap:wrap;gap:8px 24px;padding:26px var(--pad) calc(26px + env(safe-area-inset-bottom));
-  border-top:1px solid var(--hair);color:var(--muted);font-size:14px}
-.foot a{text-decoration:none}.foot a:hover{color:var(--fg)}
-.foot span{margin-right:auto}
+.foot{padding:26px var(--pad) calc(26px + env(safe-area-inset-bottom));border-top:1px solid var(--hair);
+  color:var(--muted);font-size:14px}
+.foot a{text-decoration:none;padding:12px 0}.foot a:hover{color:var(--fg)}
+.foot .all,.foot .fine{display:flex;flex-wrap:wrap;gap:0 24px}
+.foot .all{color:var(--fg);font-weight:550;margin-bottom:10px}
+.foot span{margin-right:auto;padding:12px 0}
+.does{margin:14px 0 0;padding:0;list-style:none;font-size:17px;line-height:1.5}
+.does li{position:relative;padding:0 0 0 22px;margin:0 0 8px}
+.does li::before{content:"";position:absolute;left:2px;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--flag,var(--moss))}
 
 /* product page */
 .product{max-width:1120px;margin:0 auto;padding:clamp(28px,6vh,64px) var(--pad) 40px}
@@ -132,7 +140,7 @@ h1,h2{margin:0;font-weight:700;letter-spacing:-.015em}
   .shelf{padding-top:18px}
   .plot{grid-template-columns:14px 60px minmax(0,1fr);grid-template-areas:"s i w" "s i g";gap:2px 14px;padding:14px 0 16px}
   .stake{grid-area:s;height:36px}.stake i{width:12px;height:10px}
-  .icon{grid-area:i}.what{grid-area:w}.plot .get{grid-area:g;justify-self:start;margin-top:8px;padding:9px 14px 9px 11px;font-size:13.5px}
+  .icon{grid-area:i}.what{grid-area:w}.plot .get{grid-area:g;justify-self:start;margin-top:8px;padding:11px 16px;font-size:14px}
   .icon img{width:60px;height:60px}
   .name{font-size:17px}.what p{font-size:14px}
   .logo{height:28px}
