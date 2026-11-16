@@ -1,6 +1,46 @@
 {
  "items": [
   {
+   "id": "loop-games",
+   "key": "loop-games?g=0",
+   "title": "Loop Survivors",
+   "url": "p/loop-games/index.html?g=0",
+   "added": "2026-11-15",
+   "v": "20261115222131"
+  },
+  {
+   "id": "loop-games",
+   "key": "loop-games?g=1",
+   "title": "Lasso Herd",
+   "url": "p/loop-games/index.html?g=1",
+   "added": "2026-11-15",
+   "v": "20261115222131"
+  },
+  {
+   "id": "loop-games",
+   "key": "loop-games?g=2",
+   "title": "Splitter",
+   "url": "p/loop-games/index.html?g=2",
+   "added": "2026-11-15",
+   "v": "20261115222131"
+  },
+  {
+   "id": "loop-games",
+   "key": "loop-games?g=3",
+   "title": "Ring Wall",
+   "url": "p/loop-games/index.html?g=3",
+   "added": "2026-11-15",
+   "v": "20261115222131"
+  },
+  {
+   "id": "loop-games",
+   "key": "loop-games?g=4",
+   "title": "Loop Golf",
+   "url": "p/loop-games/index.html?g=4",
+   "added": "2026-11-15",
+   "v": "20261115222131"
+  },
+  {
    "id": "thumbyard-site",
    "key": "thumbyard-site",
    "title": "Thumbyard site",

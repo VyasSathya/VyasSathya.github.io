@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Loop Games</title>
+<style>
+:root{--bg:#f4f4f2;--field:#fff;--ink:#16181d;--mute:#6b7080;--line:rgba(0,0,0,.09);--acc:#119c80;--panel:rgba(255,255,255,.86)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1014;--field:#151820;--ink:#e8eaee;--mute:#8a90a0;--line:rgba(255,255,255,.08);--acc:#4fd1b5;--panel:rgba(21,24,32,.86)}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+body{display:flex;flex-direction:column}
+#hud{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--line);flex:none}
+#name{font-weight:600;font-size:15px;letter-spacing:-.01em}
+#stats{display:flex;gap:14px;font-variant-numeric:tabular-nums}
+#stats span{font-size:15px;font-weight:600}
+#stats i{font-style:normal;font-size:12px;color:var(--mute);font-weight:500;margin-right:4px}
+#stage{position:relative;flex:1;min-height:0}
+canvas{display:block;touch-action:none}
+#ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#ov .p{pointer-events:auto;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:22px 24px;text-align:center;min-width:240px;width:360px;max-width:86%}
+#ov .t{font-size:22px;font-weight:650;letter-spacing:-.02em}
+#ov .s{font-size:14px;color:var(--mute);margin-top:6px;line-height:1.4}
+button{font:inherit;border:1px solid var(--line);background:var(--field);color:var(--ink);border-radius:10px;padding:10px 18px;font-size:15px;font-weight:600}
+#ov button{margin-top:16px;background:var(--acc);color:#fff;border:0;width:100%}
+#tray{position:absolute;left:0;right:0;bottom:0;height:72px;display:none;align-items:center;justify-content:space-between;padding:0 16px;pointer-events:none}
+#tray button{pointer-events:auto;min-width:88px}
+nav{display:flex;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);flex:none}
+nav button{flex:1;border:0;border-radius:0;background:none;color:var(--mute);font-size:13px;font-weight:600;padding:14px 0}
+nav button.on{color:var(--ink);box-shadow:inset 0 2px 0 var(--acc)}
+</style>
+</head>
+<body>
+<div id="hud"><div id="name"></div><div id="stats"></div></div>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="tray"><button id="rot">Rotate</button><button id="fight">Fight</button></div>
+  <div id="ov"><div class="p"><div class="t"></div><div class="s"></div><button>Play</button></div></div>
+</div>
+<nav id="nav"></nav>
+<script>
+"use strict";
+const dark=matchMedia('(prefers-color-scheme: dark)').matches;
+const P=dark?{bg:'#0e1014',field:'#151820',grass:'#141d18',dot:'rgba(255,255,255,.05)',ink:'#e8eaee',mute:'#8a90a0',line:'rgba(255,255,255,.08)',acc:'#4fd1b5',acc2:'#f5b544',blue:'#8b9bff',bad:'#f0606e',wall:'#3a4152',fill:'#262c3a',sheep:'#f3f1ea',wolf:'#6b7080'}
+             :{bg:'#f4f4f2',field:'#ffffff',grass:'#eaf1e5',dot:'rgba(0,0,0,.06)',ink:'#16181d',mute:'#6b7080',line:'rgba(0,0,0,.09)',acc:'#119c80',acc2:'#d98a0b',blue:'#5566e0',bad:'#d9384a',wall:'#9aa0ad',fill:'#dfe3ea',sheep:'#ffffff',wolf:'#4b505c'};
+const cv=document.getElementById('c'),g=cv.getContext('2d');
+let W=0,H=0,DPR=1;
+
+// ---------- helpers
+const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>v<a?a:v>b?b:v,ri=n=>Math.floor(Math.random()*n);
+function segX(a,b,c,d){const den=(b.x-a.x)*(d.y-c.y)-(b.y-a.y)*(d.x-c.x);if(!den)return null;
+  const t=((c.x-a.x)*(d.y-c.y)-(c.y-a.y)*(d.x-c.x))/den,u=((c.x-a.x)*(b.y-a.y)-(c.y-a.y)*(b.x-a.x))/den;
+  return t>0&&t<1&&u>0&&u<1?{x:a.x+t*(b.x-a.x),y:a.y+t*(b.y-a.y)}:null}
+function inPoly(p,poly){let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];
+  if((a.y>p.y)!==(b.y>p.y)&&p.x<(b.x-a.x)*(p.y-a.y)/(b.y-a.y)+a.x)c=!c}return c}
+function segDist(p,a,b){const dx=b.x-a.x,dy=b.y-a.y,l=dx*dx+dy*dy;const t=l?clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/l,0,1):0;return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy)}
+function pathLen(pts){let s=0;for(let i=1;i<pts.length;i++)s+=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);return s}
+function centroid(poly){let x=0,y=0;for(const p of poly){x+=p.x;y+=p.y}return{x:x/poly.length,y:y/poly.length}}
+// adding q to the end of pts: if the new segment crosses an older one, return the closed loop
+function closeLoop(pts,q,skip){const n=pts.length;if(n<3)return null;const a=pts[n-1];
+  for(let i=0;i<=n-2-skip;i++){const X=segX(a,q,pts[i],pts[i+1]);if(X){const poly=[X];for(let k=i+1;k<n;k++)poly.push(pts[k]);poly.push(q);return{poly,i}}}
+  // forgiving close: the head comes back within 14px of an older point
+  for(let i=0;i<n-10;i++){if(Math.hypot(q.x-pts[i].x,q.y-pts[i].y)<14&&pathLen(pts.slice(i))>120){const poly=pts.slice(i);poly.push(q);return{poly,i}}}
+  return null}
+function circle(x,y,r,col){g.fillStyle=col;g.beginPath();g.arc(x,y,r,0,7);g.fill()}
+function pathOf(pts,close){g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));if(close)g.closePath()}
+function drawFlash(list){for(const f of list){const a=Math.max(0,f.t/f.T);g.globalAlpha=a*.28;g.fillStyle=f.col;pathOf(f.poly,true);g.fill();
+  g.globalAlpha=a;g.strokeStyle=f.col;g.lineWidth=3;g.lineJoin='round';g.stroke();g.globalAlpha=1}}
+function drawFx(list){g.textAlign='center';g.textBaseline='middle';for(const f of list){g.globalAlpha=Math.max(0,Math.min(1,f.t*2));g.fillStyle=f.col||P.ink;
+  g.font=`700 ${f.big?26:18}px Inter,system-ui,sans-serif`;g.fillText(f.text,f.x,f.y-(1-f.t)*24)}g.globalAlpha=1}
+function tick(list,dt){for(const f of list)f.t-=dt;return list.filter(f=>f.t>0)}
+function fillBg(col){g.fillStyle=col;g.fillRect(0,0,W,H)}
+function dots(){g.fillStyle=P.dot;for(let x=16;x<W;x+=32)for(let y=16;y<H;y+=32)g.fillRect(x-1,y-1,2,2)}
+const fmtT=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+
+// a rope drawn with the finger; closes when it crosses itself or ends near its start
+class Rope{
+  constructor(max){this.max=max;this.pts=[];this.on=false;this.ghost=null}
+  down(x,y){this.pts=[{x,y}];this.on=true}
+  move(x,y){if(!this.on)return null;const tr=this.pts,l=tr[tr.length-1],q={x,y};if(Math.hypot(x-l.x,y-l.y)<6)return null;
+    const c=closeLoop(tr,q,1);if(c){this.on=false;this.pts=[];return c.poly}
+    tr.push(q);if(pathLen(tr)>this.max){this.on=false;this.ghost={pts:tr,t:.4};this.pts=[]}return null}
+  up(){if(!this.on)return null;this.on=false;const tr=this.pts;this.pts=[];
+    if(tr.length>8&&Math.hypot(tr[0].x-tr[tr.length-1].x,tr[0].y-tr[tr.length-1].y)<42)return tr;
+    if(tr.length>2)this.ghost={pts:tr,t:.3};return null}
+  head(){return this.on?this.pts[this.pts.length-1]:null}
+  update(dt){if(this.ghost&&(this.ghost.t-=dt)<=0)this.ghost=null}
+  draw(col){g.lineCap='round';g.lineJoin='round';
+    if(this.ghost){g.globalAlpha=this.ghost.t*1.5;g.strokeStyle=P.mute;g.lineWidth=3;pathOf(this.ghost.pts);g.stroke();g.globalAlpha=1}
+    if(!this.on||this.pts.length<2)return;const used=pathLen(this.pts)/this.max,s=this.pts[0];
+    g.strokeStyle=P.line;g.lineWidth=2;g.setLineDash([4,5]);g.beginPath();g.arc(s.x,s.y,42,0,7);g.stroke();g.setLineDash([]);
+    g.strokeStyle=used>.8?P.bad:col;g.lineWidth=4;pathOf(this.pts);g.stroke();
+    const h=this.head();g.strokeStyle=P.line;g.lineWidth=3;g.beginPath();g.arc(h.x,h.y,14,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-used));g.stroke()}
+}
+
+// ================= 1. Loop Survivors
+const Survive={key:'Survive',name:'Loop Survivors',hint:'Drag anywhere to move. Your trail is the weapon: close a loop and everything inside dies. They cut the trail when they touch it.',
+  reset(){this.p={x:W/2,y:H/2};this.hp=3;this.inv=0;this.trail=[{x:W/2,y:H/2}];this.en=[];this.t=0;this.sp=1.5;this.kills=0;this.fx=[];this.flash=[];this.drag=null;this.over=false;this.maxLen=clamp((W+H)*1.05,700,1300)},
+  down(x,y){this.drag={x,y}},
+  move(x,y){if(!this.drag)return;const dx=(x-this.drag.x)*1.3,dy=(y-this.drag.y)*1.3;this.drag={x,y};
+    this.p.x=clamp(this.p.x+dx,10,W-10);this.p.y=clamp(this.p.y+dy,10,H-10);this.addPt()},
+  up(){this.drag=null},
+  addPt(){const tr=this.trail,l=tr[tr.length-1],q={x:this.p.x,y:this.p.y};if(Math.hypot(q.x-l.x,q.y-l.y)<7)return;
+    const c=closeLoop(tr,q,2);if(c){this.loop(c.poly);this.trail=[q];return}
+    tr.push(q);let L=pathLen(tr);while(L>this.maxLen&&tr.length>2){L-=Math.hypot(tr[1].x-tr[0].x,tr[1].y-tr[0].y);tr.shift()}},
+  loop(poly){let n=0;for(const e of this.en)if(inPoly(e,poly)){e.hp--;e.hit=.2;if(e.hp<=0){e.dead=true;n++}else e.r*=.75}
+    this.en=this.en.filter(e=>!e.dead);this.kills+=n;this.flash.push({poly,t:.45,T:.45,col:n?P.acc:P.mute});
+    if(n){const c=centroid(poly);this.fx.push({x:c.x,y:c.y,text:n>=3?'x'+n:String(n),t:1,big:n>=5,col:n>=5?P.acc2:P.ink});
+      if(n>=8&&this.hp<3){this.hp++;this.fx.push({x:this.p.x,y:this.p.y-24,text:'+1 life',t:1.2,col:P.acc})}}},
+  wave(){return 1+Math.floor(this.t/20)},
+  spawnOne(w){const s=ri(4),m=20;let x,y;if(s===0){x=rnd(0,W);y=-m}else if(s===1){x=W+m;y=rnd(0,H)}else if(s===2){x=rnd(0,W);y=H+m}else{x=-m;y=rnd(0,H)}
+    const r=Math.random();let e;if(w>=3&&r<.14)e={r:16,sp:36+w*2,hp:2,type:2};else if(r<.38)e={r:7,sp:92+w*4,hp:1,type:1};else e={r:10,sp:52+w*3,hp:1,type:0};
+    e.x=x;e.y=y;e.hit=0;this.en.push(e)},
+  update(dt){this.t+=dt;if(this.inv>0)this.inv-=dt;const w=this.wave();
+    this.sp-=dt;if(this.sp<=0){this.sp=Math.max(.16,1.05-w*.09);const k=1+Math.floor(w/3);for(let i=0;i<k;i++)this.spawnOne(w)}
+    const p=this.p,tr=this.trail;
+    for(const e of this.en){let dx=p.x-e.x,dy=p.y-e.y,d=Math.hypot(dx,dy)||1;e.x+=dx/d*e.sp*dt;e.y+=dy/d*e.sp*dt;if(e.hit>0)e.hit-=dt;
+      for(const o of this.en){if(o===e)continue;const ox=e.x-o.x,oy=e.y-o.y,od=Math.hypot(ox,oy),mn=e.r+o.r;if(od>0&&od<mn){const k=(mn-od)/od*.5;e.x+=ox*k;e.y+=oy*k}}
+      for(let j=0;j<tr.length-3;j++){if(segDist(e,tr[j],tr[j+1])<e.r+2){this.fx.push({x:tr[j].x,y:tr[j].y,text:'cut',t:.6,col:P.bad});this.trail=tr.slice(j+1);break}}
+      if(d<e.r+9&&this.inv<=0){this.hp--;this.inv=1.2;e.x-=dx/d*50;e.y-=dy/d*50;if(this.hp<=0)this.over=true}}
+    this.fx=tick(this.fx,dt);this.flash=tick(this.flash,dt)},
+  stats(){return[['Wave',this.wave()],['Kills',this.kills],['Lives',this.hp]]},
+  result(){return this.kills+' kills'},
+  draw(){fillBg(P.field);dots();drawFlash(this.flash);const tr=this.trail,p=this.p;
+    if(tr.length){g.lineCap='round';g.lineJoin='round';g.strokeStyle=P.acc;g.lineWidth=4;pathOf(tr.concat([p]));g.stroke();circle(tr[0].x,tr[0].y,3,P.acc)}
+    for(const e of this.en){circle(e.x,e.y,e.r,e.hit>0?P.ink:P.bad);if(e.type===2&&e.hp>1){g.strokeStyle=P.field;g.lineWidth=2;g.beginPath();g.arc(e.x,e.y,e.r*.55,0,7);g.stroke()}}
+    if(!(this.inv>0&&Math.floor(this.inv*10)%2)){circle(p.x,p.y,13,P.acc+'44');circle(p.x,p.y,8,P.ink)}
+    drawFx(this.fx)}
+};
+
+// ================= 2. Lasso Herd
+const Herd={key:'Herd',name:'Lasso Herd',hint:'Draw a loop around sheep to pen them all at once. A wolf inside snaps the rope. 60 seconds.',
+  reset(){this.sheep=[];this.wolves=[];this.rope=new Rope(clamp((W+H)*.85,600,1000));this.time=60;this.penned=0;this.fx=[];this.flash=[];this.fly=[];this.sp=0;this.over=false;
+    this.pen={x:W/2-64,y:12,w:128,h:46};for(let i=0;i<14;i++)this.sheep.push(this.mk(false));for(let i=0;i<2;i++)this.wolves.push({x:rnd(40,W-40),y:rnd(H*.4,H-40),a:rnd(0,7),rest:0})},
+  mk(edge){const s={a:rnd(0,7),x:rnd(30,W-30),y:rnd(90,H-30)};if(edge){s.x=Math.random()<.5?-10:W+10;s.a=s.x<0?0:Math.PI}return s},
+  down(x,y){this.rope.down(x,y)},move(x,y){const p=this.rope.move(x,y);if(p)this.catch(p)},up(){const p=this.rope.up();if(p)this.catch(p)},
+  catch(poly){if(this.wolves.some(w=>inPoly(w,poly))){this.flash.push({poly,t:.5,T:.5,col:P.bad});const c=centroid(poly);this.time-=3;this.fx.push({x:c.x,y:c.y,text:'wolf  -3s',t:1,col:P.bad});return}
+    const got=this.sheep.filter(s=>inPoly(s,poly));this.flash.push({poly,t:.45,T:.45,col:got.length?P.acc:P.mute});if(!got.length)return;
+    this.sheep=this.sheep.filter(s=>!got.includes(s));for(const s of got)this.fly.push({x:s.x,y:s.y,sx:s.x,sy:s.y,t:0});
+    this.penned+=got.length;const c=centroid(poly);this.fx.push({x:c.x,y:c.y,text:got.length>=4?'x'+got.length+'  +2s':String(got.length),t:1,big:got.length>=4,col:got.length>=4?P.acc2:P.ink});
+    if(got.length>=4)this.time+=2},
+  update(dt){this.time-=dt;if(this.time<=0){this.time=0;this.over=true}this.rope.update(dt);const h=this.rope.head(),pen=this.pen;
+    for(const s of this.sheep){s.a+=rnd(-1,1)*dt*2.5;let sp=22,vx=Math.cos(s.a),vy=Math.sin(s.a);
+      if(h){const dx=s.x-h.x,dy=s.y-h.y,d=Math.hypot(dx,dy);if(d<75&&d>0){vx=dx/d;vy=dy/d;sp=68;s.a=Math.atan2(dy,dx)}}
+      for(const w of this.wolves){const dx=s.x-w.x,dy=s.y-w.y,d=Math.hypot(dx,dy);if(d<60&&d>0){vx=dx/d;vy=dy/d;sp=55;s.a=Math.atan2(dy,dx)}}
+      s.x+=vx*sp*dt;s.y+=vy*sp*dt;
+      if(s.x<12||s.x>W-12){s.a=Math.PI-s.a;s.x=clamp(s.x,12,W-12)}if(s.y<pen.y+pen.h+20||s.y>H-12){s.a=-s.a;s.y=clamp(s.y,pen.y+pen.h+20,H-12)}}
+    for(const w of this.wolves){if(w.rest>0){w.rest-=dt;continue}let best=null,bd=1e9;for(const s of this.sheep){const d=Math.hypot(s.x-w.x,s.y-w.y);if(d<bd){bd=d;best=s}}
+      if(best){const dx=best.x-w.x,dy=best.y-w.y;w.x+=dx/bd*36*dt;w.y+=dy/bd*36*dt;if(bd<12){this.sheep.splice(this.sheep.indexOf(best),1);w.rest=2;this.fx.push({x:w.x,y:w.y-16,text:'eaten',t:.8,col:P.bad})}}}
+    this.sp-=dt;if(this.sp<=0&&this.sheep.length<16){this.sp=1.1;this.sheep.push(this.mk(true))}
+    for(const f of this.fly)f.t+=dt*1.6;this.fly=this.fly.filter(f=>f.t<1);
+    this.fx=tick(this.fx,dt);this.flash=tick(this.flash,dt)},
+  stats(){return[['Penned',this.penned],['Time',fmtT(this.time)]]},
+  result(){return this.penned+' penned'},
+  draw(){fillBg(P.grass);const pen=this.pen;g.fillStyle=P.field;g.strokeStyle=P.wall;g.lineWidth=2;g.beginPath();g.roundRect(pen.x,pen.y,pen.w,pen.h,10);g.fill();g.stroke();
+    g.fillStyle=P.ink;g.font='700 18px Inter,system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(this.penned,pen.x+pen.w/2,pen.y+pen.h/2);
+    drawFlash(this.flash);
+    const sheep=(x,y)=>{circle(x,y,9,P.wolf);circle(x,y,8,P.sheep)};
+    for(const s of this.sheep){sheep(s.x,s.y);circle(s.x+Math.cos(s.a)*6,s.y+Math.sin(s.a)*6,3.2,P.wolf)}
+    for(const f of this.fly){const e=1-Math.pow(1-f.t,3),tx=pen.x+pen.w/2,ty=pen.y+pen.h/2;sheep(f.sx+(tx-f.sx)*e,f.sy+(ty-f.sy)*e-Math.sin(f.t*Math.PI)*40)}
+    for(const w of this.wolves){circle(w.x,w.y,11,P.wolf);circle(w.x-4,w.y-3,1.8,P.bad);circle(w.x+4,w.y-3,1.8,P.bad)}
+    this.rope.draw(P.acc2);drawFx(this.fx)}
+};
+
+// ================= 3. Splitter
+const Split={key:'Split',name:'Splitter',hint:'Swipe across or down to shoot a wall from your finger. Rooms with no balls get filled. Fill 75%. A ball that hits a wall still growing costs a life.',
+  reset(lvl,score){this.lvl=lvl||1;this.score=score||0;this.cols=28;this.rows=clamp(Math.round(28*(H-16)/(W-16)),24,64);
+    const C=this.cols,R=this.rows;this.cells=new Uint8Array(C*R);for(let c=0;c<C;c++){this.cells[c]=1;this.cells[(R-1)*C+c]=1}for(let r=0;r<R;r++){this.cells[r*C]=1;this.cells[r*C+C-1]=1}
+    this.lives=this.lvl+2;this.balls=[];const sp=8+this.lvl*.4;for(let i=0;i<this.lvl+1;i++)this.balls.push({x:rnd(3,C-3),y:rnd(3,R-3),vx:(Math.random()<.5?-1:1)*sp*.707,vy:(Math.random()<.5?-1:1)*sp*.707});
+    this.arms=[];this.pct=0;this.fx=[];this.banner=null;this.over=false;this.sw=null;this.layout()},
+  layout(){this.cs=Math.min((W-16)/this.cols,(H-16)/this.rows);this.ox=(W-this.cs*this.cols)/2;this.oy=(H-this.cs*this.rows)/2},
+  at(x,y){const c=Math.floor(x),r=Math.floor(y);if(c<0||r<0||c>=this.cols||r>=this.rows)return 1;return this.cells[r*this.cols+c]},
+  down(x,y){this.sw={x,y,x2:x,y2:y}},move(x,y){if(this.sw){this.sw.x2=x;this.sw.y2=y}},
+  up(){const s=this.sw;this.sw=null;if(!s||this.arms.length||this.banner)return;const dx=s.x2-s.x,dy=s.y2-s.y;if(Math.hypot(dx,dy)<12)return;
+    const c=Math.floor((s.x-this.ox)/this.cs),r=Math.floor((s.y-this.oy)/this.cs);if(this.at(c+.5,r+.5)!==0)return;
+    const hz=Math.abs(dx)>Math.abs(dy),C=this.cols;this.cells[r*C+c]=2;
+    this.arms=[{id:2,cells:[[c,r]],h:[c,r],d:hz?[-1,0]:[0,-1],st:'grow',acc:0},{id:3,cells:[],h:[c,r],d:hz?[1,0]:[0,1],st:'grow',acc:0}]},
+  hitArm(id){const a=this.arms.find(a=>a.id===id);if(!a||a.st!=='grow')return;a.st='broken';for(const[c,r]of a.cells)this.cells[r*this.cols+c]=0;this.lives--;
+    const[c,r]=a.h;this.fx.push({x:this.ox+(c+.5)*this.cs,y:this.oy+(r+.5)*this.cs,text:'-1 life',t:1,col:P.bad})},
+  update(dt){this.fx=tick(this.fx,dt);if(this.banner){if((this.banner.t-=dt)<=0)this.reset(this.lvl+1,this.score);return}
+    const C=this.cols,R=.36;
+    for(const b of this.balls){const steps=Math.ceil(Math.hypot(b.vx,b.vy)*dt/.25),h=dt/steps;for(let k=0;k<steps;k++){
+      let nx=b.x+b.vx*h,v=this.at(nx+Math.sign(b.vx)*R,b.y);if(v){if(v>=2)this.hitArm(v);b.vx=-b.vx}else b.x=nx;
+      let ny=b.y+b.vy*h;v=this.at(b.x,ny+Math.sign(b.vy)*R);if(v){if(v>=2)this.hitArm(v);b.vy=-b.vy}else b.y=ny}}
+    for(const a of this.arms){if(a.st!=='grow')continue;a.acc+=dt*20;while(a.acc>=1&&a.st==='grow'){a.acc--;const n=[a.h[0]+a.d[0],a.h[1]+a.d[1]];
+        if(this.at(n[0]+.5,n[1]+.5)!==0){a.st='done';for(const[c,r]of a.cells)this.cells[r*C+c]=1;break}
+        if(this.balls.some(b=>Math.abs(b.x-(n[0]+.5))<.5+R&&Math.abs(b.y-(n[1]+.5))<.5+R)){this.hitArm(a.id);break}
+        this.cells[n[1]*C+n[0]]=a.id;a.cells.push(n);a.h=n}}
+    if(this.arms.length&&this.arms.every(a=>a.st!=='grow')){const any=this.arms.some(a=>a.st==='done');this.arms=[];if(any)this.fill();if(this.lives<=0)this.over=true}},
+  fill(){const C=this.cols,Rw=this.rows,seen=new Uint8Array(C*Rw),q=[];
+    for(const b of this.balls){const i=Math.floor(b.y)*C+Math.floor(b.x);if(!seen[i]&&this.cells[i]===0){seen[i]=1;q.push(i)}}
+    while(q.length){const i=q.pop();for(const j of[i-1,i+1,i-C,i+C])if(j>=0&&j<C*Rw&&!seen[j]&&this.cells[j]===0){seen[j]=1;q.push(j)}}
+    let got=0,filled=0;for(let i=0;i<C*Rw;i++){if(this.cells[i]===0&&!seen[i]){this.cells[i]=1;got++}}
+    for(let r=1;r<Rw-1;r++)for(let c=1;c<C-1;c++)if(this.cells[r*C+c]===1)filled++;
+    this.pct=filled/((C-2)*(Rw-2));this.score+=got;
+    if(got>0){this.fx.push({x:W/2,y:H/2,text:'+'+got,t:.9,big:got>80,col:P.acc})}
+    if(this.pct>=.75)this.banner={t:1.4,text:'Level '+(this.lvl+1)}},
+  stats(){return[['Level',this.lvl],['Filled',Math.round(this.pct*100)+'%'],['Lives',this.lives]]},
+  result(){return'Level '+this.lvl+', '+this.score+' cells'},
+  draw(){fillBg(P.bg);const C=this.cols,cs=this.cs,ox=this.ox,oy=this.oy;
+    g.fillStyle=P.wall;g.fillRect(ox,oy,cs*C,cs*this.rows);
+    for(let r=0;r<this.rows;r++)for(let c=0;c<C;c++){const v=this.cells[r*C+c];if(v===1)continue;g.fillStyle=v===0?P.field:P.acc;g.fillRect(ox+c*cs,oy+r*cs,cs+.5,cs+.5)}
+    if(this.sw){const s=this.sw,dx=s.x2-s.x,dy=s.y2-s.y;if(Math.hypot(dx,dy)>=12){g.strokeStyle=P.acc;g.globalAlpha=.4;g.lineWidth=2;g.setLineDash([5,5]);g.beginPath();
+      if(Math.abs(dx)>Math.abs(dy)){g.moveTo(ox,s.y);g.lineTo(ox+cs*C,s.y)}else{g.moveTo(s.x,oy);g.lineTo(s.x,oy+cs*this.rows)}g.stroke();g.setLineDash([]);g.globalAlpha=1}}
+    for(const b of this.balls)circle(ox+b.x*cs,oy+b.y*cs,Math.max(4,cs*.36),P.acc2);
+    drawFx(this.fx);if(this.banner){g.fillStyle=P.ink;g.font='700 28px Inter,system-ui,sans-serif';g.textAlign='center';g.fillText(this.banner.text,W/2,H/2-30)}}
+};
+
+// ================= 4. Ring Wall
+const SHAPES=[[[0,0]],[[0,0],[1,0]],[[0,0],[1,0],[2,0]],[[0,0],[0,1],[1,1]],[[0,0],[1,0],[2,0],[1,1]],[[0,0],[0,1],[0,2],[1,2]],[[0,0],[1,0],[1,1],[2,1]],[[0,0],[1,0],[2,0],[3,0]],[[0,0],[1,0],[2,0],[2,1],[2,2]]];
+const Ring={key:'Wall',name:'Ring Wall',hint:'Drag on the board to place wall pieces. Only ground inside a closed ring is yours, and it shoots raiders. When the fight starts, the keep must be closed in.',
+  reset(){this.cols=13;this.rows=clamp(Math.round(13*(H-84)/(W-12)),14,26);const C=this.cols,R=this.rows;this.grid=new Uint8Array(C*R);
+    this.kc=Math.floor(C/2)-1;this.kr=Math.floor(R/2)-1;for(let r=0;r<2;r++)for(let c=0;c<2;c++)this.grid[(this.kr+r)*C+this.kc+c]=2;
+    const ring=[];for(let c=this.kc-2;c<=this.kc+3;c++)for(let r=this.kr-2;r<=this.kr+3;r++){const edge=c===this.kc-2||c===this.kc+3||r===this.kr-2||r===this.kr+3;if(edge){this.grid[r*C+c]=1;const corner=(c===this.kc-2||c===this.kc+3)&&(r===this.kr-2||r===this.kr+3);if(!corner)ring.push(r*C+c)}}
+    for(let i=0;i<3;i++){const k=ri(ring.length);this.grid[ring.splice(k,1)[0]]=0}
+    this.phase='build';this.timer=25;this.round=1;this.score=0;this.piece=this.newPiece();this.ghost=null;this.raiders=[];this.arrows=[];this.queue=0;this.qt=0;this.fire=0;this.fx=[];this.over=false;this.why='';this.layout();this.encl();this.field()},
+  layout(){this.cs=Math.min((W-12)/this.cols,(H-84-12)/this.rows);this.ox=(W-this.cs*this.cols)/2;this.oy=6},
+  newPiece(){let s=SHAPES[ri(SHAPES.length)].map(p=>p.slice());for(let k=ri(4);k>0;k--)s=this.rot(s);return s},
+  rot(s){s=s.map(([x,y])=>[-y,x]);const mx=Math.min(...s.map(p=>p[0])),my=Math.min(...s.map(p=>p[1]));return s.map(([x,y])=>[x-mx,y-my])},
+  rotate(){if(this.phase==='build'){this.piece=this.rot(this.piece);if(this.ghost)this.place(this.ghost.fx,this.ghost.fy,false)}},
+  place(x,y,commit){const cs=this.cs,w=Math.max(...this.piece.map(p=>p[0]))+1,h=Math.max(...this.piece.map(p=>p[1]))+1;
+    const c0=Math.round((x-this.ox)/cs-w/2),r0=Math.round((y-cs*2.2-this.oy)/cs-h/2),cells=this.piece.map(([a,b])=>[c0+a,r0+b]);
+    const ok=cells.every(([c,r])=>c>=0&&r>=0&&c<this.cols&&r<this.rows&&this.grid[r*this.cols+c]===0);
+    this.ghost={cells,ok,fx:x,fy:y};if(commit&&ok){for(const[c,r]of cells)this.grid[r*this.cols+c]=1;this.piece=this.newPiece();this.ghost=null;this.encl();this.field()}},
+  down(x,y){if(this.phase==='build'&&y<H-76)this.place(x,y,false)},move(x,y){if(this.phase==='build'&&this.ghost)this.place(x,y,false)},
+  up(){if(this.ghost){this.place(this.ghost.fx,this.ghost.fy,true);this.ghost=null}},
+  encl(){const C=this.cols,R=this.rows,seen=new Uint8Array(C*R),q=[];
+    for(let i=0;i<C*R;i++){const c=i%C,r=(i/C)|0;if((c===0||r===0||c===C-1||r===R-1)&&this.grid[i]!==1){seen[i]=1;q.push(i)}}
+    while(q.length){const i=q.pop(),c=i%C;for(const j of[c>0?i-1:-1,c<C-1?i+1:-1,i-C,i+C])if(j>=0&&j<C*R&&!seen[j]&&this.grid[j]!==1){seen[j]=1;q.push(j)}}
+    this.inside=new Uint8Array(C*R);let n=0,keep=true;for(let i=0;i<C*R;i++){if(!seen[i]&&this.grid[i]===0){this.inside[i]=1;n++}if(this.grid[i]===2&&seen[i])keep=false}
+    this.ground=keep?n:0;this.keepSafe=keep},
+  field(){const C=this.cols,N=C*this.rows,D=new Float32Array(N).fill(1e9),done=new Uint8Array(N);for(let i=0;i<N;i++)if(this.grid[i]===2)D[i]=0;
+    for(;;){let b=-1,bd=1e9;for(let i=0;i<N;i++)if(!done[i]&&D[i]<bd){bd=D[i];b=i}if(b<0)break;done[b]=1;const c=b%C;
+      for(const j of[c>0?b-1:-1,c<C-1?b+1:-1,b-C,b+C])if(j>=0&&j<N&&!done[j]){const nd=bd+(this.grid[j]===1?7:1);if(nd<D[j])D[j]=nd}}this.D=D},
+  fight(){if(this.phase!=='build')return;this.ghost=null;this.encl();if(!this.keepSafe){this.over=true;this.why='The keep was open';return}
+    this.phase='fight';this.queue=3+this.round*2;this.qt=0;ui()},
+  spawn(){const C=this.cols,R=this.rows,opts=[];for(let c=0;c<C;c++){opts.push([c,0],[c,R-1])}for(let r=1;r<R-1;r++){opts.push([0,r],[C-1,r])}
+    const free=opts.filter(([c,r])=>this.grid[r*C+c]===0);if(!free.length)return;const[c,r]=free[ri(free.length)];
+    this.raiders.push({c,r,x:c+.5,y:r+.5,t:null,chew:0,hp:2+Math.floor(this.round/2),max:2+Math.floor(this.round/2)})},
+  update(dt){this.fx=tick(this.fx,dt);const C=this.cols;
+    if(this.phase==='build'){this.timer-=dt;if(this.timer<=0)this.fight();return}
+    this.qt-=dt;if(this.queue>0&&this.qt<=0){this.spawn();this.queue--;this.qt=1.1}
+    for(const rd of this.raiders){if(!rd.t){let best=null,bd=1e9;for(const[dc,dr]of[[1,0],[-1,0],[0,1],[0,-1]]){const c=rd.c+dc,r=rd.r+dr;if(c<0||r<0||c>=C||r>=this.rows)continue;const d=this.D[r*C+c];if(d<bd){bd=d;best={c,r}}}rd.t=best}
+      if(!rd.t)continue;const ti=rd.t.r*C+rd.t.c;
+      if(this.grid[ti]===1){rd.chew+=dt;if(rd.chew>=1.3){rd.chew=0;this.grid[ti]=0;this.fx.push({x:this.ox+(rd.t.c+.5)*this.cs,y:this.oy+(rd.t.r+.5)*this.cs,text:'broken',t:.7,col:P.bad});this.encl();this.field()}continue}
+      const tx=rd.t.c+.5,ty=rd.t.r+.5,dx=tx-rd.x,dy=ty-rd.y,d=Math.hypot(dx,dy),st=1.5*dt;
+      if(d<=st){rd.x=tx;rd.y=ty;rd.c=rd.t.c;rd.r=rd.t.r;rd.t=null;if(this.grid[rd.r*C+rd.c]===2){this.over=true;this.why='Raiders reached the keep'}}else{rd.x+=dx/d*st;rd.y+=dy/d*st}}
+    this.fire+=dt*Math.max(.8,this.ground/14);const kx=this.kc+1,ky=this.kr+1;
+    while(this.fire>=1){this.fire--;let best=null,bd=1e9;for(const rd of this.raiders){const d=Math.hypot(rd.x-kx,rd.y-ky);if(d<bd){bd=d;best=rd}}if(!best){this.fire=0;break}this.arrows.push({x:kx,y:ky,tg:best})}
+    for(const a of this.arrows){const t=a.tg;if(t.hp<=0){a.dead=true;continue}const dx=t.x-a.x,dy=t.y-a.y,d=Math.hypot(dx,dy),st=13*dt;if(d<=st+.25){a.dead=true;t.hp--}else{a.x+=dx/d*st;a.y+=dy/d*st;a.a=Math.atan2(dy,dx)}}
+    this.arrows=this.arrows.filter(a=>!a.dead);this.raiders=this.raiders.filter(r=>r.hp>0);
+    if(!this.over&&this.queue===0&&!this.raiders.length){this.score+=this.ground*this.round;this.round++;this.phase='build';this.timer=20;this.arrows=[];this.fx.push({x:W/2,y:H/2,text:'Round '+this.round,t:1.3,big:true,col:P.acc});this.encl();ui()}},
+  stats(){return[['Round',this.round],['Ground',this.ground],this.phase==='build'?['Build',fmtT(this.timer)]:['Raiders',this.raiders.length+this.queue]]},
+  result(){return this.why},
+  draw(){fillBg(P.bg);const C=this.cols,cs=this.cs,ox=this.ox,oy=this.oy;
+    for(let r=0;r<this.rows;r++)for(let c=0;c<C;c++){const i=r*C+c,v=this.grid[i],x=ox+c*cs,y=oy+r*cs;
+      g.fillStyle=v===1?P.wall:v===2?P.acc2:this.inside[i]?(dark?'#1b3a34':'#d5efe8'):P.field;g.fillRect(x+.5,y+.5,cs-1,cs-1)}
+    if(this.ghost)for(const[c,r]of this.ghost.cells){g.fillStyle=this.ghost.ok?P.acc:P.bad;g.globalAlpha=.55;g.fillRect(ox+c*cs+.5,oy+r*cs+.5,cs-1,cs-1);g.globalAlpha=1}
+    for(const rd of this.raiders){const x=ox+rd.x*cs,y=oy+rd.y*cs;circle(x,y,cs*.32,P.bad);if(rd.chew>0){g.strokeStyle=P.ink;g.lineWidth=2;g.beginPath();g.arc(x,y,cs*.45,-1.57,-1.57+rd.chew/1.3*6.28);g.stroke()}
+      if(rd.hp<rd.max){g.fillStyle=P.ink;g.fillRect(x-cs*.3,y-cs*.5,cs*.6*rd.hp/rd.max,2)}}
+    g.strokeStyle=P.ink;g.lineWidth=2;for(const a of this.arrows){const x=ox+a.x*cs,y=oy+a.y*cs,an=a.a||0;g.beginPath();g.moveTo(x,y);g.lineTo(x-Math.cos(an)*8,y-Math.sin(an)*8);g.stroke()}
+    if(this.phase==='build'){const pc=14,w=(Math.max(...this.piece.map(p=>p[0]))+1)*pc,h=(Math.max(...this.piece.map(p=>p[1]))+1)*pc,bx=W/2-w/2,by=H-36-h/2;
+      g.fillStyle=P.wall;for(const[a,b]of this.piece)g.fillRect(bx+a*pc+.5,by+b*pc+.5,pc-1,pc-1)}
+    drawFx(this.fx)}
+};
+
+// ================= 5. Loop Golf
+const Golf={key:'Golf',name:'Loop Golf',hint:'Each loop is a stroke. A loop takes dots of one color only, and a bomb inside wastes the stroke. Clear the hole near par. 9 holes.',
+  reset(){this.hole=1;this.total=0;this.par=0;this.rope=new Rope(clamp((W+H)*.9,650,1100));this.fx=[];this.flash=[];this.banner=null;this.over=false;this.t=0;this.newHole()},
+  newHole(){const cols=[P.acc,P.acc2,P.blue],k=2+Math.min(4,this.hole),m=46;this.dots=[];this.bombs=[];
+    for(let i=0;i<k;i++){const cx=rnd(m,W-m),cy=rnd(m,H-m),col=cols[ri(Math.min(3,1+Math.ceil(this.hole/2)))],n=3+ri(4);
+      for(let j=0;j<n;j++){const a=rnd(0,7),d=rnd(6,30);this.dots.push({x:clamp(cx+Math.cos(a)*d,14,W-14),y:clamp(cy+Math.sin(a)*d,14,H-14),col,ph:rnd(0,7)})}}
+    for(let i=0;i<this.hole+1;i++){for(let tries=0;tries<40;tries++){const a=this.dots[ri(this.dots.length)],b=this.dots[ri(this.dots.length)],x=(a.x+b.x)/2+rnd(-20,20),y=(a.y+b.y)/2+rnd(-20,20);
+      if(this.dots.every(d=>Math.hypot(d.x-x,d.y-y)>20)&&this.bombs.every(b=>Math.hypot(b.x-x,b.y-y)>40)){this.bombs.push({x,y});break}}}
+    this.strokes=0;this.holePar=k},
+  down(x,y){if(!this.banner)this.rope.down(x,y)},move(x,y){const p=this.rope.move(x,y);if(p)this.catch(p)},up(){const p=this.rope.up();if(p)this.catch(p)},
+  catch(poly){this.strokes++;const c=centroid(poly);
+    if(this.bombs.some(b=>inPoly(b,poly))){this.flash.push({poly,t:.5,T:.5,col:P.bad});this.fx.push({x:c.x,y:c.y,text:'bomb',t:1,col:P.bad});return}
+    const got=this.dots.filter(d=>inPoly(d,poly));if(!got.length){this.flash.push({poly,t:.4,T:.4,col:P.mute});return}
+    if(new Set(got.map(d=>d.col)).size>1){this.flash.push({poly,t:.5,T:.5,col:P.mute});this.fx.push({x:c.x,y:c.y,text:'mixed',t:1,col:P.mute});return}
+    this.dots=this.dots.filter(d=>!got.includes(d));this.flash.push({poly,t:.45,T:.45,col:got[0].col});this.fx.push({x:c.x,y:c.y,text:String(got.length),t:.9,col:got[0].col});
+    if(!this.dots.length){const diff=this.strokes-this.holePar;this.total+=this.strokes;this.par+=this.holePar;
+      this.banner={t:1.5,text:diff<=-2?'Eagle':diff===-1?'Birdie':diff===0?'Par':diff===1?'Bogey':'+'+diff}}},
+  update(dt){this.t+=dt;this.rope.update(dt);this.fx=tick(this.fx,dt);this.flash=tick(this.flash,dt);
+    if(this.banner&&(this.banner.t-=dt)<=0){this.banner=null;if(this.hole>=9){this.over=true;return}this.hole++;this.newHole()}},
+  stats(){const d=this.total-this.par;return[['Hole',this.hole+'/9'],['Strokes',this.strokes],['Par',this.holePar],['Total',(d>0?'+':'')+d]]},
+  result(){const d=this.total-this.par;return(d===0?'Even':(d>0?'+':'')+d)+' over 9 holes'},
+  draw(){fillBg(P.field);dots();drawFlash(this.flash);
+    for(const d of this.dots)circle(d.x,d.y+Math.sin(this.t*2+d.ph)*1.2,7,d.col);
+    for(const b of this.bombs){circle(b.x,b.y,9,P.ink);g.strokeStyle=P.bad;g.lineWidth=2;g.beginPath();g.arc(b.x,b.y,13,0,7);g.stroke()}
+    this.rope.draw(P.ink);drawFx(this.fx);
+    if(this.banner){g.fillStyle=P.ink;g.font='700 30px Inter,system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(this.banner.text,W/2,H/2)}}
+};
+
+// ================= shell
+const MODES=[Survive,Herd,Split,Ring,Golf];
+let cur=null,running=false,last=0,statKey='';
+const nav=document.getElementById('nav'),ov=document.getElementById('ov'),tray=document.getElementById('tray');
+MODES.forEach((m,i)=>{const b=document.createElement('button');b.textContent=m.key;b.onclick=()=>pick(i);nav.appendChild(b)});
+function ui(){tray.style.display=cur===Ring&&running?'flex':'none';document.getElementById('fight').style.visibility=cur===Ring&&Ring.phase==='build'?'visible':'hidden'}
+function showOv(t,s,btn){ov.querySelector('.t').textContent=t;ov.querySelector('.s').textContent=s;ov.querySelector('button').textContent=btn;ov.style.display='flex'}
+function pick(i){cur=MODES[i];[...nav.children].forEach((b,j)=>b.classList.toggle('on',j===i));document.getElementById('name').textContent=cur.name;
+  cur.reset();running=false;statKey='';showOv(cur.name,cur.hint,'Play');ui();try{history.replaceState(null,'','?g='+i)}catch(e){}}
+function play(){cur.reset();running=true;ov.style.display='none';statKey='';ui()}
+ov.querySelector('button').onclick=play;
+document.getElementById('rot').onclick=()=>Ring.rotate();
+document.getElementById('fight').onclick=()=>Ring.fight();
+function resize(){const r=cv.parentElement.getBoundingClientRect();DPR=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
+  cv.style.width=W+'px';cv.style.height=H+'px';g.setTransform(DPR,0,0,DPR,0,0);if(cur&&cur.layout)cur.layout()}
+addEventListener('resize',resize);
+const pos=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
+let ptr=null;
+cv.addEventListener('pointerdown',e=>{if(!running||ptr!==null)return;ptr=e.pointerId;cv.setPointerCapture(e.pointerId);cur.down(...pos(e))});
+cv.addEventListener('pointermove',e=>{if(e.pointerId!==ptr)return;const ev=e.getCoalescedEvents?e.getCoalescedEvents():[e];for(const c of(ev.length?ev:[e]))cur.move(...pos(c))});
+const end=e=>{if(e.pointerId!==ptr)return;ptr=null;if(running)cur.up()};
+cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+function frame(t){const dt=Math.min(.033,(t-last)/1000||0);last=t;
+  if(running){cur.update(dt);if(cur.over){running=false;ptr=null;showOv(cur.result(),cur.name,'Play again');ui()}}
+  cur.draw();const st=cur.stats(),k=JSON.stringify(st);if(k!==statKey){statKey=k;document.getElementById('stats').innerHTML=st.map(([a,b])=>`<div><i>${a}</i><span>${b}</span></div>`).join('')}
+  requestAnimationFrame(frame)}
+resize();
+const q=parseInt(new URLSearchParams(location.search).get('g'));pick(q>=0&&q<MODES.length?q:0);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
