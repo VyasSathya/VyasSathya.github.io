@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rollybully</title>
+<link rel="icon" href="assets/ball.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--yel:#ffc629;--pink:#ff5fa8;--cyan:#2fd6f5;--navy:#141a3d;--ink:#111326;--paper:#fff8e8}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--yel)}
+body{font-family:Poppins,system-ui,sans-serif;color:var(--ink);overflow-x:hidden;position:relative;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.d{font-family:'Bowlby One',Poppins,sans-serif;font-weight:400;text-transform:uppercase;line-height:.84;letter-spacing:-.01em}
+section{position:relative;padding:clamp(48px,7vw,100px) clamp(16px,4vw,56px);overflow:hidden}
+.in{position:relative;z-index:3;max-width:1320px;margin:0 auto}
+#track{position:absolute;left:0;top:0;width:100%;z-index:2;pointer-events:none}
+#roller{position:absolute;left:0;top:0;z-index:6;pointer-events:none;width:var(--rs);height:var(--rs);will-change:transform}
+#roller img{width:100%;height:100%;filter:drop-shadow(0 10px 0 rgba(17,19,38,.25))}
+:root{--rs:clamp(84px,10vw,140px)}
+
+/* sticker look: white die-cut edge */
+.stk{filter:drop-shadow(5px 0 0 #fff) drop-shadow(-5px 0 0 #fff) drop-shadow(0 5px 0 #fff) drop-shadow(0 -5px 0 #fff) drop-shadow(6px 9px 0 rgba(17,19,38,.28))}
+.hit{animation:hit .7s cubic-bezier(.2,1.6,.4,1)}
+@keyframes hit{0%{translate:0 0}30%{translate:var(--hx,18px) -26px;rotate:calc(var(--r0,0deg) + var(--hr,14deg))}100%{translate:0 0}}
+
+/* 1 hero */
+.hero{background:var(--yel);min-height:100vh;padding-top:28px;padding-bottom:clamp(150px,24vh,260px)}
+.nav{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:7}
+.nav .logo{width:clamp(200px,24vw,320px)}
+.btn{display:inline-block;font-family:'Bowlby One',sans-serif;font-size:clamp(18px,1.8vw,24px);text-transform:uppercase;background:var(--ink);color:var(--yel);padding:14px 26px 12px;border-radius:999px;transform:rotate(-3deg);transition:transform .15s}
+.btn:hover{transform:rotate(0) scale(1.05)}
+.words{margin-top:clamp(30px,5vw,60px)}
+.words .d{font-size:clamp(70px,15.5vw,250px);display:block}
+.words .d:nth-child(2){padding-left:8vw}
+.words .d:nth-child(3){color:var(--paper);-webkit-text-stroke:clamp(3px,.5vw,8px) var(--ink);paint-order:stroke fill}
+.words .d:nth-child(4){padding-left:22vw;color:var(--pink);-webkit-text-stroke:clamp(3px,.5vw,8px) var(--ink);paint-order:stroke fill}
+.hero .s1{position:absolute;right:2vw;top:16vh;width:clamp(150px,22vw,330px);--r0:8deg}
+.hero .s2{position:absolute;right:12vw;bottom:2vh;width:clamp(120px,15vw,230px);--r0:-10deg}
+.hero .s3{position:absolute;left:2vw;bottom:4vh;width:clamp(90px,10vw,150px);--r0:-6deg}
+
+/* 2 roster */
+.roster{background:var(--pink)}
+.roster h2{font-size:clamp(64px,13vw,210px);color:var(--paper);-webkit-text-stroke:clamp(3px,.5vw,8px) var(--ink);paint-order:stroke fill}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,3vw,44px) clamp(10px,2vw,30px);margin-top:clamp(24px,4vw,56px)}
+.card{background:none;border:0;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;color:var(--ink);position:relative}
+.card:nth-child(odd){rotate:-4deg}.card:nth-child(even){rotate:5deg;margin-top:40px}
+.card .pic{position:relative;width:100%;aspect-ratio:1;display:grid;place-items:center}
+.card .pic img{position:absolute;max-width:92%;max-height:92%;transition:transform .45s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.card .pic .b{opacity:0;transform:scale(.3) rotate(-240deg)}
+.card.curl .s{opacity:0;transform:scale(.4,.2) translateY(60%)}
+.card.curl .b{opacity:1;transform:scale(.82) rotate(0)}
+.label{margin-top:8px;background:var(--paper);border:3px solid var(--ink);padding:6px 12px 5px;text-align:center;box-shadow:4px 4px 0 var(--ink)}
+.label b{font-family:'Bowlby One',sans-serif;font-weight:400;font-size:clamp(14px,1.6vw,24px);text-transform:uppercase;display:block;line-height:1}
+.label small{font-weight:800;font-size:clamp(10px,.9vw,13px);letter-spacing:.05em;text-transform:uppercase}
+.big-line{grid-column:span 1;align-self:center;font-weight:800;font-size:clamp(18px,1.7vw,24px);line-height:1.25;background:var(--ink);color:var(--paper);padding:20px;rotate:2deg}
+
+/* 3 modes */
+.modes{background:var(--cyan)}
+.mode{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:clamp(16px,3vw,40px);margin-bottom:clamp(30px,5vw,70px)}
+.mode:nth-child(even) .w{order:2;text-align:right}
+.mode .w .d{font-size:clamp(64px,11vw,180px)}
+.mode .w p{font-weight:800;font-size:clamp(16px,1.6vw,22px);margin-top:12px;max-width:26ch}
+.mode:nth-child(even) .w p{margin-left:auto}
+.mode .w small{display:inline-block;font-weight:900;letter-spacing:.08em;background:var(--ink);color:var(--cyan);padding:4px 10px;margin-bottom:10px}
+.photo{background:#fff;padding:10px 10px 10px;box-shadow:8px 10px 0 rgba(17,19,38,.3);position:relative}
+.photo::before{content:'';position:absolute;top:-16px;left:50%;width:110px;height:32px;translate:-50% 0;rotate:-4deg;background:rgba(255,248,232,.75);border:1px solid rgba(17,19,38,.12)}
+.mode:nth-child(odd) .photo{--r0:2.5deg}.mode:nth-child(even) .photo{--r0:-2.5deg}
+.photo img{width:100%;aspect-ratio:16/9;object-fit:cover}
+
+/* 4 get */
+.get{background:var(--navy);color:var(--paper);min-height:90vh;display:flex;align-items:center}
+.get .d{font-size:clamp(90px,20vw,330px);color:var(--yel)}
+.get p{font-weight:700;font-size:clamp(17px,1.7vw,22px);max-width:36ch;margin:22px 0 34px;color:#d8dcf3}
+.get .btn{background:var(--yel);color:var(--ink);font-size:clamp(24px,3vw,40px);padding:20px 40px 16px}
+.get .crowd{position:absolute;right:-4vw;bottom:-4vw;width:min(50vw,640px);--r0:-6deg;border:10px solid #fff;z-index:3}
+footer{background:var(--ink);color:#a7acd0;position:relative;z-index:3;padding:26px clamp(16px,4vw,56px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700;font-size:14px}
+footer b{color:var(--yel);font-family:'Bowlby One',sans-serif;font-weight:400;font-size:18px}
+
+@media (max-width:760px){
+  .hero{min-height:auto;padding-bottom:50vw}
+  .nav .btn{font-size:14px;padding:10px 16px 8px}
+  .hero .s1{top:auto;bottom:16px;right:6vw;width:36vw}
+  .hero .s2{display:none}
+  .hero .s3{left:4vw;bottom:30px;width:26vw}
+  .words .d:nth-child(2){padding-left:4vw}.words .d:nth-child(4){padding-left:10vw}
+  .board{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card:nth-child(even){margin-top:24px}
+  .big-line{grid-column:span 2;rotate:-1deg}
+  .mode{grid-template-columns:1fr}
+  .mode:nth-child(even) .w{order:0;text-align:left}
+  .mode:nth-child(even) .w p{margin-left:0}
+  .get{min-height:auto;padding-bottom:62vw}
+  .get .crowd{width:84vw;right:-6vw;bottom:-6vw}
+}
+/*alive*/
+.live{rotate:calc(var(--r0,0deg) + var(--lean,0deg));scale:var(--sx,1) var(--sy,1);translate:0 var(--hop,0px);transform-origin:50% 100%}
+.mag{translate:var(--mx,0px) var(--my,0px)}
+.mag:active{scale:.94 .9}
+.burst{position:fixed;z-index:99;pointer-events:none;width:0;height:0}
+.burst i{position:absolute;left:-40px;top:-40px;width:80px;height:80px;border-radius:50%;border:6px solid var(--burst,#2fd6f5);animation:bring .45s ease-out forwards}
+.burst b{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--burst,#2fd6f5);border:2px solid #111326;animation:bdot .5s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes bring{from{scale:.2;opacity:1}to{scale:1.6;opacity:0}}
+@keyframes bdot{to{translate:var(--dx) var(--dy);scale:.3;opacity:0}}
+@media (prefers-reduced-motion:reduce){.live{rotate:var(--r0,0deg);scale:1;translate:0}}
+/*/alive*/
+</style>
+</head>
+<body>
+<svg id="track"></svg>
+<div id="roller"><img id="rollimg" src="assets/pillbug-ball.webp" alt=""></div>
+
+<section class="hero" data-ball="pillbug">
+  <div class="in">
+    <div class="nav"><img class="logo" src="assets/logo.webp" alt="Rollybully"><a class="btn mag" href="https://get.thumbyard.com/bm/">Download</a></div>
+    <div class="words"><span class="d">Walk.</span><span class="d">Shoot.</span><span class="d">Curl up.</span><span class="d">Smash.</span></div>
+  </div>
+  <img class="s1 stk knock live" src="assets/woollybear-stand.webp" alt="">
+  <img class="s2 stk knock live" src="assets/boxmite-stand.webp" alt="">
+  <img class="s3 stk knock live" src="assets/ball.webp" alt="">
+</section>
+
+<section class="roster" data-ball="cockroach">
+  <div class="in">
+    <h2 class="d">The bullies</h2>
+    <div class="board" id="board"></div>
+  </div>
+</section>
+
+<section class="modes" data-ball="millipede">
+  <div class="in" id="modes"></div>
+</section>
+
+<section class="get" data-ball="wasp">
+  <div class="in">
+    <div class="d">Get it.</div>
+    <p>Free on Windows. Grab a controller, or don't. Pad and keyboard both work at once.</p>
+    <a class="btn mag" href="https://get.thumbyard.com/bm/">Download free</a>
+  </div>
+  <img class="crowd knock live" src="assets/crowd.jpg" alt="Every bully in the lobby">
+</section>
+
+<footer><b>Thumbyard</b><span>&copy; 2026 Thumbyard</span></footer>
+
+<script>
+const B=[
+ ['pillbug','Pill bug','Slug / Burst'],['woollybear','Woolly bear','Bolt / Pogo'],['millipede','Millipede','Charge / Quake'],
+ ['wheelspider','Wheel spider','Web / Pull'],['wasp','Cuckoo wasp','Sting / Burst'],['cockroach','Cockroach','Ricochet / Pogo'],['boxmite','Box mite','Mine / Quake']];
+const board=document.getElementById('board');
+B.forEach(([id,n,k],i)=>{
+  if(i===3){const l=document.createElement('div');l.className='big-line';l.textContent='Every one of them folds into a ball.';board.appendChild(l)}
+  const c=document.createElement('button');c.className='card';
+  c.innerHTML=`<span class="pic live"><img class="s stk knock" src="assets/${id}-stand.webp" alt="${n}"><img class="b stk" src="assets/${id}-ball.webp" alt=""></span><span class="label"><b>${n}</b><small>${k}</small></span>`;
+  c.onclick=()=>c.classList.toggle('curl');board.appendChild(c)});
+const M=[['Goal','3 v 3','still-goal.jpg','Ram the puck into their net. Shots push it too.'],
+ ['Zone','3 v 3','still-zone.jpg','Stand in the ring. Throw out anyone who tries.'],
+ ['Gems','3 v 3','still-gems.jpg','Grab gems, hold them, drop every one when you get smashed.'],
+ ['Free for all','4 players','still-ffa.jpg','Four of you, one floor. Most knock-outs wins.']];
+document.getElementById('modes').innerHTML=M.map(([n,s,im,l])=>`<div class="mode"><div class="w"><small>${s.toUpperCase()}</small><div class="d">${n}</div><p>${l}</p></div><div class="photo knock live"><img src="assets/${im}" alt="${n}"></div></div>`).join('');
+
+// ---- the roll: a ball rolls down a wavy track as you scroll, swapping bully per section, knocking what it touches
+const track=document.getElementById('track'),roller=document.getElementById('roller'),rimg=document.getElementById('rollimg');
+let docH,vw,vh,rs,pts=[];
+function X(y){const a=vw<760?vw*.30:vw*.36;return vw/2+Math.sin(y/(vh*.95)*Math.PI)*a}
+function layout(){vw=document.documentElement.clientWidth;vh=innerHeight;docH=document.documentElement.scrollHeight;rs=roller.offsetWidth;
+  track.setAttribute('height',docH);track.setAttribute('viewBox',`0 0 ${vw} ${docH}`);
+  let d='';for(let y=vh*.55;y<docH-vh*.45;y+=12){d+=(d?'L':'M')+X(y).toFixed(1)+' '+y.toFixed(1)}
+  track.innerHTML=`<path d="${d}" fill="none" stroke="#111326" stroke-opacity=".22" stroke-width="5" stroke-dasharray="2 16" stroke-linecap="round"/>`;
+  update(true)}
+let lastY=null,rot=0;
+function update(force){
+  const y=scrollY+vh*.55, x=X(y);
+  if(lastY!==null){const dy=y-lastY,dx=x-X(lastY);rot+=Math.sign(dy||1)*Math.hypot(dx,dy)/(rs/2)*57.3}
+  lastY=y;
+  roller.style.transform=`translate(${x-rs/2}px,${y-rs/2}px) rotate(${rot}deg)`;
+  // which section the ball is in
+  document.querySelectorAll('section').forEach(s=>{const r=s.getBoundingClientRect();if(r.top<vh*.55&&r.bottom>vh*.55){const id=s.dataset.ball;if(rimg.dataset.id!==id){rimg.dataset.id=id;rimg.src=`assets/${id}-ball.webp`}}});
+  // knock
+  const cx=x-scrollX,cy=vh*.55;
+  document.querySelectorAll('.knock').forEach(el=>{const r=el.getBoundingClientRect();
+    const inside=cx>r.left-rs*.3&&cx<r.right+rs*.3&&cy>r.top&&cy<r.bottom;
+    if(inside&&!el._in){el._in=true;el.style.setProperty('--hx',(cx<r.left+r.width/2?1:-1)*22+'px');el.style.setProperty('--hr',(cx<r.left+r.width/2?1:-1)*12+'deg');
+      el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit')}
+    if(!inside)el._in=false})}
+addEventListener('scroll',()=>update(),{passive:true});
+addEventListener('resize',layout);
+addEventListener('load',layout);layout();
+/*alive*/
+(function(){
+  const live=[...document.querySelectorAll('.live')],mag=[...document.querySelectorAll('.mag')];
+  let mx=-1e4,my=-1e4,still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
+  addEventListener('pointerleave',()=>{mx=my=-1e4});
+  function tick(t){
+    if(!still)for(const el of live){const r=el.getBoundingClientRect();if(r.bottom<-50||r.top>innerHeight+50||!r.width)continue;
+      const cx=r.left+r.width/2,cy=r.top+r.height*.55,dx=mx-cx,dy=my-cy,d=Math.hypot(dx,dy);
+      const k=mx<-1e3?0:Math.max(.35,1-d/1100),lean=Math.max(-1,Math.min(1,dx/420))*12*k;
+      const near=d<Math.max(r.width,r.height)*.75?1:0;
+      el._p??=Math.random()*6;el._l=(el._l||0)+(lean-(el._l||0))*.1;el._s=(el._s||0)+(near-(el._s||0))*.18;
+      const br=Math.sin(t/650+el._p)*.022;
+      el.style.setProperty('--lean',el._l.toFixed(2)+'deg');
+      el.style.setProperty('--sy',(1+br+el._s*.06).toFixed(3));
+      el.style.setProperty('--sx',(1-br*.6-el._s*.03).toFixed(3));
+      el.style.setProperty('--hop',(-el._s*(10+Math.abs(Math.sin(t/90))*6)).toFixed(1)+'px')}
+    for(const el of mag){const r=el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)continue;
+      const dx=mx-(r.left+r.width/2),dy=my-(r.top+r.height/2),d=Math.hypot(dx,dy),reach=Math.max(r.width,r.height)*.5+90;
+      const k=d<reach?(1-d/reach):0;el._x=(el._x||0)+(dx*k*.22-(el._x||0))*.2;el._y=(el._y||0)+(dy*k*.22-(el._y||0))*.2;
+      el.style.setProperty('--mx',el._x.toFixed(1)+'px');el.style.setProperty('--my',el._y.toFixed(1)+'px')}
+    requestAnimationFrame(tick)}
+  requestAnimationFrame(tick);
+  addEventListener('pointerdown',e=>{if(e.target.closest('a,button,canvas'))return;
+    const b=document.createElement('div');b.className='burst';b.style.left=e.clientX+'px';b.style.top=e.clientY+'px';
+    let h='<i></i>';for(let i=0;i<7;i++){const a=i/7*6.283+Math.random()*.4,s=44+Math.random()*30;h+=`<b style="--dx:${(Math.cos(a)*s).toFixed(0)}px;--dy:${(Math.sin(a)*s).toFixed(0)}px"></b>`}
+    b.innerHTML=h;document.body.appendChild(b);setTimeout(()=>b.remove(),600)});
+})();
+/*/alive*/
+</script>
+</body>
+</html>
