@@ -30,6 +30,11 @@ img{display:block;max-width:100%}
 .top .logo{width:min(46vw,460px);filter:drop-shadow(0 6px 0 rgba(20,23,44,.12))}
 .dl{pointer-events:auto;font-weight:900;font-size:18px;background:var(--cyan);border:4px solid var(--ink);border-radius:16px;padding:12px 22px;box-shadow:0 6px 0 var(--cyan2);white-space:nowrap}
 .dl:active{transform:translateY(4px);box-shadow:0 2px 0 var(--cyan2)}
+.btns{display:flex;gap:10px;pointer-events:auto}
+.dc{pointer-events:auto;font-weight:900;font-size:18px;background:#fff;color:var(--ink);border:4px solid var(--ink);border-radius:16px;padding:12px 18px;box-shadow:0 6px 0 rgba(20,23,44,.25);white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+.dc svg{width:22px;height:22px}
+.dc:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(20,23,44,.25)}
+.big.dc2{background:#fff;box-shadow:0 9px 0 rgba(20,23,44,.25);margin-left:12px}
 .chip{position:absolute;left:50%;bottom:40px;transform:translateX(-50%);display:flex;gap:16px;align-items:center;background:var(--ink);color:var(--cream);border-radius:14px;padding:9px 16px;font-weight:800;font-size:13px;letter-spacing:.04em;pointer-events:none;white-space:nowrap}
 .chip .t,.chip .p{display:none}
 .chip.touch .k{display:none}.chip.touch .t{display:inline}
@@ -89,7 +94,8 @@ footer b{color:var(--cream);font-weight:900}
   .over,#c{border-radius:26px}.over{inset:8px}
   .top{left:24px;right:24px;top:24px;flex-direction:column;align-items:center}
   .top .logo{width:82vw}
-  .dl{font-size:15px;padding:8px 16px;border-width:3px;box-shadow:0 4px 0 var(--cyan2)}
+  .dl,.dc{font-size:15px;padding:8px 14px;border-width:3px}.dl{box-shadow:0 4px 0 var(--cyan2)}.dc svg{width:18px;height:18px}
+  .big{display:block;text-align:center;font-size:24px;padding:14px 0}.big.dc2{margin:14px 0 0}.get>div{width:100%}
   .chip{bottom:24px;font-size:12px;gap:10px}
   .shelf{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:6px}
   .tag{min-height:4.6em;padding:4px 3px}
@@ -118,7 +124,7 @@ footer b{color:var(--cream);font-weight:900}
 <section class="pit">
   <canvas id="c"></canvas>
   <div class="over"></div>
-  <div class="top"><img class="logo" src="assets/logo.webp" alt="Rollybully"><a class="dl mag" href="early-access/">Early access</a></div>
+  <div class="top"><img class="logo" src="assets/logo.webp" alt="Rollybully"><span class="btns"><a class="dc mag" href="https://discord.gg/gz3RcapMBh" aria-label="Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.4C.6 9.1-.3 13.6.1 18.1a19.8 19.8 0 0 0 6 3l1.3-2a12.8 12.8 0 0 1-2-1l.5-.4a14 14 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2a19.7 19.7 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.7ZM8.5 15.3c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm7 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z"/></svg><span>Discord</span></a><a class="dl mag" href="early-access/">Early access</a></span></div>
   <div class="chip" id="chip"><span class="k"><i>WASD</i>Roll</span><span class="k"><i>SPACE</i>Smash</span><span class="t"><i>HOLD</i>Roll</span><span><i>DRAG</i>Throw</span><span class="t"><i>TAP</i>Smash</span><span class="p"><i>L</i>Roll</span><span class="p"><i>A</i>Smash</span></div>
   <div class="goal" id="goal">GOAL</div>
 </section>
@@ -159,7 +165,7 @@ footer b{color:var(--cream);font-weight:900}
 <section class="band" style="padding-top:0">
   <div class="wrap get">
     <div><h2>Early access</h2><p class="lede">On Windows, a few players at a time. Get on the list and we will let you in.</p></div>
-    <div><a class="big mag" href="early-access/">JOIN THE WAITLIST</a></div>
+    <div><a class="big mag" href="early-access/">JOIN THE WAITLIST</a><a class="big dc2 mag" href="https://discord.gg/gz3RcapMBh">DISCORD</a></div>
   </div>
 </section>
 
