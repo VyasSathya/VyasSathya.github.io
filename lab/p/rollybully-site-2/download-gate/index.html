@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Rollybully download</title>
+<link rel="icon" href="../assets/ball.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--floor:#e8e6df;--ink:#14172c;--cyan:#2fd6f5;--cyan2:#12a6c6;--muted:#6f6c62}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Poppins,system-ui,sans-serif;color:var(--ink);background:var(--floor);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;-webkit-font-smoothing:antialiased}
+.logo{width:min(320px,80vw);margin-bottom:28px}
+form{width:min(420px,100%);background:#fff;border:4px solid var(--ink);border-radius:24px;padding:24px;box-shadow:0 10px 0 rgba(20,23,44,.12)}
+label{display:block;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+input{width:100%;font:600 18px Poppins,sans-serif;color:var(--ink);background:var(--floor);border:3px solid var(--ink);border-radius:14px;padding:14px 16px;outline:none}
+input:focus{border-color:var(--cyan2);box-shadow:0 0 0 4px rgba(47,214,245,.35)}
+button{width:100%;margin-top:16px;font:900 20px Poppins,sans-serif;color:var(--ink);background:var(--cyan);border:4px solid var(--ink);border-radius:16px;padding:12px 0;box-shadow:0 7px 0 var(--cyan2);cursor:pointer}
+button:active{transform:translateY(4px);box-shadow:0 3px 0 var(--cyan2)}
+.err{display:none;color:#c8402f;font-weight:700;font-size:14px;margin-top:10px}
+.wrong .err{display:block}
+.alt{margin-top:22px;font-weight:700;font-size:14px;color:var(--muted)}
+.alt a{color:var(--ink);text-underline-offset:3px}
+</style>
+</head>
+<body>
+<a href="/"><img class="logo" src="../assets/logo.webp" alt="Rollybully"></a>
+<form method="post" action="/download" id="f">
+  <label for="p">Password</label>
+  <input id="p" name="p" type="password" autocomplete="off" autofocus required>
+  <button type="submit">OPEN</button>
+  <div class="err">That password did not match.</div>
+</form>
+<p class="alt">No password yet? <a href="/early-access/">Join the waitlist</a></p>
+<script>if(/[?&]wrong=1/.test(location.search))document.getElementById('f').classList.add('wrong')</script>
+</body>
+</html>
