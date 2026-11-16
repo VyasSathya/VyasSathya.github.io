@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rollybully</title>
+<link rel="icon" href="assets/ball.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16204a; --navy2:#0d1433; --navy3:#1d2a5e; --ink:#0e1124; --cream:#f6efdc; --cream2:#e6dcc2;
+  --cyan:#2fd6f5; --cyan2:#13a8c8; --mint:#3fd4a8; --text:#f6efdc; --muted:#8f9ac4;
+  --c:#3d8bff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--navy2)}
+body{font-family:Poppins,system-ui,sans-serif;color:var(--text);background:radial-gradient(1200px 700px at 30% 0%,#22306a 0%,var(--navy) 45%,var(--navy2) 100%) fixed;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* top bar: the menu's tab row */
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:14px clamp(16px,4vw,48px);background:linear-gradient(var(--navy2),rgba(13,20,51,.86));backdrop-filter:blur(8px);border-bottom:2px solid #0a0f28}
+.bar .mark{width:40px;height:40px}
+.tabs{display:flex;align-items:center;gap:6px;margin:0 auto}
+.tab{font-weight:800;font-size:15px;letter-spacing:.04em;padding:9px 18px;border-radius:12px;color:var(--muted);cursor:pointer;transition:background .15s,color .15s;border:0;background:none;font-family:inherit;text-transform:uppercase}
+.tab:hover{color:var(--text)}
+.tab.on{background:var(--cream);color:var(--ink);box-shadow:0 4px 0 var(--cream2)}
+.bump{font-size:11px;font-weight:800;color:var(--muted);border:2px solid #3a4677;border-radius:7px;padding:2px 6px;line-height:1.2}
+.get-s{font-weight:900;font-size:14px;background:var(--cyan);color:var(--ink);padding:10px 18px;border-radius:12px;border:3px solid var(--ink);box-shadow:0 4px 0 var(--cyan2);white-space:nowrap}
+
+section{padding:clamp(40px,6vw,88px) clamp(16px,4vw,48px);position:relative;scroll-margin-top:70px}
+.wrap{max-width:1280px;margin:0 auto}
+
+/* home */
+.home{display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:24px;min-height:calc(100vh - 150px)}
+#home{padding-top:12px;padding-bottom:40px}
+.stage{position:relative;height:min(68vh,620px);display:flex;align-items:flex-end;justify-content:center}
+.pedestal{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(82%,480px);aspect-ratio:3/1}
+.pedestal .top{position:absolute;inset:0 0 28% 0;border-radius:50%;background:radial-gradient(ellipse closest-side,var(--cream) 0 52%,var(--c) 52% 70%,var(--cream) 70% 100%);border:5px solid var(--ink);z-index:2}
+.pedestal .side{position:absolute;left:0;right:0;top:36%;bottom:0;border-radius:0 0 50% 50%/0 0 60% 60%;background:linear-gradient(#cfc4a6,#a89d80);border:5px solid var(--ink);border-top:0}
+.hero-fig{position:absolute;bottom:calc(min(82%,480px)/3*.42);left:50%;height:76%;aspect-ratio:1;display:flex;align-items:flex-end;justify-content:center;transform:translateX(-50%);z-index:3;transform-origin:50% 100%;filter:drop-shadow(0 18px 18px rgba(0,0,0,.35))}
+.hero-fig img{max-width:100%;max-height:100%;object-fit:contain}
+.hero-fig .b{position:absolute;bottom:0;left:18%;width:64%;opacity:0}
+.hero-fig.curl .s{animation:squash .32s ease-in forwards}
+.hero-fig.curl .b{animation:pop .3s .26s ease-out forwards, roll 1.4s .56s cubic-bezier(.45,0,.2,1) forwards}
+@keyframes squash{to{transform:scale(1.15,.25) translateY(40%);opacity:0}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@keyframes roll{0%{transform:translateX(0) rotate(0)}45%{transform:translateX(min(60vw,560px)) rotate(540deg)}46%{transform:translateX(-60vw) rotate(540deg)}100%{transform:translateX(0) rotate(1080deg)}}
+
+.menu{display:flex;flex-direction:column;align-items:center;gap:16px}
+.menu .logo{width:min(100%,560px);margin-bottom:10px}
+.play{display:block;width:min(100%,420px);text-align:center;font-weight:900;font-size:clamp(40px,6vw,64px);letter-spacing:.02em;color:var(--ink);background:var(--cyan);border:5px solid var(--ink);border-radius:20px;padding:10px 0 6px;box-shadow:0 0 0 5px var(--cream),0 10px 0 5px var(--cyan2);transition:transform .1s}
+.play:hover{transform:translateY(-3px)}
+.play:active{transform:translateY(4px)}
+.under{font-size:13px;color:var(--muted);font-weight:700;margin-top:4px;letter-spacing:.03em}
+.mbtn{width:min(100%,360px);text-align:center;font-weight:900;font-size:20px;color:var(--ink);background:var(--cream);border:4px solid var(--ink);border-radius:14px;padding:10px 0;box-shadow:0 6px 0 var(--cream2);cursor:pointer;font-family:inherit;transition:transform .1s}
+.mbtn:hover{transform:translateY(-2px)}
+
+/* hints bar */
+.hints{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:30;display:flex;gap:18px;align-items:center;background:#1a2147;border:3px solid var(--ink);border-radius:14px;padding:8px 16px;font-weight:800;font-size:13px;letter-spacing:.03em;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.hints span{display:flex;align-items:center;gap:7px}
+.g{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:50%;border:2px solid currentColor;font-size:11px;padding:0 5px}
+.g.sq{border-radius:7px}
+.g.a{color:#7fb2ff}.g.y{color:#ffd23f}.g.lr{color:#c7cdea}
+
+/* bullies (pick screen) */
+h2{font-weight:900;font-size:clamp(30px,4.4vw,52px);letter-spacing:.01em;line-height:1;margin-bottom:28px;text-transform:uppercase}
+.roster{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(8px,1.6vw,22px);margin-bottom:48px}
+.pick{background:none;border:0;cursor:pointer;color:var(--text);font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:10px}
+.pick .disc{width:100%;aspect-ratio:1;border-radius:50%;background:var(--cream);border:5px solid var(--ink);display:grid;place-items:center;overflow:hidden;transition:transform .15s, box-shadow .15s;position:relative}
+.pick .disc img{max-width:80%;max-height:80%;transition:transform .2s}
+.pick:hover .disc{transform:translateY(-4px)}
+.pick.on .disc{box-shadow:0 0 0 6px var(--cyan)}
+.pick.on .disc img{transform:scale(1.08)}
+.pick b{font-weight:800;font-size:clamp(10px,1.1vw,15px);letter-spacing:.04em;text-transform:uppercase;text-align:center;line-height:1.2;min-height:2.4em}
+.detail{display:grid;grid-template-columns:auto 1fr auto;gap:clamp(16px,3vw,40px);align-items:center}
+.big{width:clamp(150px,18vw,240px);aspect-ratio:1;border-radius:50%;background:var(--cream);border:6px solid var(--ink);display:grid;place-items:center;position:relative;overflow:hidden}
+.big img{position:absolute;max-width:80%;max-height:80%;transition:opacity .25s, transform .45s cubic-bezier(.3,1.6,.5,1)}
+.big .b{opacity:0;transform:scale(.3) rotate(-180deg)}
+.big.curl .s{opacity:0;transform:scale(.5) translateY(30%)}
+.big.curl .b{opacity:1;transform:scale(1) rotate(0)}
+.who h3{font-weight:900;font-size:clamp(34px,5.6vw,78px);line-height:.95;text-transform:uppercase}
+.who em{display:block;font-style:normal;font-weight:800;color:var(--muted);letter-spacing:.05em;font-size:clamp(13px,1.4vw,18px);margin-top:10px;text-transform:uppercase}
+.who p{margin-top:12px;font-weight:600;font-size:16px;max-width:46ch;color:#cfd5ef}
+.curlbtn{font-family:inherit;font-weight:900;font-size:clamp(18px,2vw,26px);color:var(--ink);background:var(--cyan);border:5px solid var(--ink);border-radius:16px;padding:16px 34px;box-shadow:0 0 0 4px var(--cream),0 8px 0 4px var(--cyan2);cursor:pointer;white-space:nowrap}
+
+/* modes */
+.modebar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.mtab{font-family:inherit;font-weight:800;font-size:15px;padding:9px 18px;border-radius:12px;color:var(--muted);background:none;border:0;cursor:pointer;letter-spacing:.04em}
+.mtab.on{background:var(--cream);color:var(--ink);box-shadow:0 4px 0 var(--cream2)}
+.mode{display:grid;grid-template-columns:1.5fr 1fr;border:5px solid var(--ink);border-radius:22px;overflow:hidden;background:var(--cream);color:var(--ink);box-shadow:0 0 0 5px var(--cream)}
+.mode .shot{position:relative;aspect-ratio:16/9;background:#c9c4b5;overflow:hidden}
+.mode .shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
+.mode .shot img.on{opacity:1}
+.mode .txt{padding:clamp(20px,3vw,40px);display:flex;flex-direction:column;justify-content:center}
+.mode .txt h3{font-weight:900;font-size:clamp(32px,4vw,54px);line-height:.95;text-transform:uppercase}
+.mode .txt small{font-weight:800;letter-spacing:.08em;color:#6c6553;margin:12px 0 14px;display:block}
+.mode .txt p{font-weight:600;font-size:17px;line-height:1.45;max-width:34ch}
+
+/* get */
+.get{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.get .crowd{border:5px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:0 0 0 5px var(--cream)}
+.get h2{margin-bottom:16px}
+.get p{font-weight:600;font-size:18px;color:#cfd5ef;max-width:40ch;margin-bottom:28px}
+.get .play{width:min(100%,460px);font-size:clamp(30px,4vw,44px);padding:14px 0 10px}
+.small{margin-top:14px;font-size:13px;font-weight:700;color:var(--muted)}
+
+footer{border-top:2px solid #0a0f28;background:var(--navy2);padding:28px clamp(16px,4vw,48px) 100px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-weight:700;font-size:14px;color:var(--muted)}
+footer b{color:var(--text);font-weight:900;letter-spacing:.02em}
+
+@media (max-width:860px){
+  .tabs{display:none}
+  .bar{justify-content:space-between}
+  .home{grid-template-columns:1fr;gap:0;min-height:auto}
+  .stage{height:58vh;order:2;margin-top:10px}
+  .menu{order:1}
+  .menu .mbtn{display:none}
+  .roster{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:14px}
+  .pick b{font-size:11px}
+  .detail{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .who p{margin-left:auto;margin-right:auto}
+  .mode{grid-template-columns:1fr}
+  .get{grid-template-columns:1fr}
+  .hints{display:none}
+  section{min-height:auto;padding-bottom:64px}
+  footer{padding-bottom:28px}
+}
+/*alive*/
+.live{rotate:calc(var(--r0,0deg) + var(--lean,0deg));scale:var(--sx,1) var(--sy,1);translate:0 var(--hop,0px);transform-origin:50% 100%}
+.mag{translate:var(--mx,0px) var(--my,0px)}
+.mag:active{scale:.94 .9}
+.burst{position:fixed;z-index:99;pointer-events:none;width:0;height:0}
+.burst i{position:absolute;left:-40px;top:-40px;width:80px;height:80px;border-radius:50%;border:6px solid var(--burst,#2fd6f5);animation:bring .45s ease-out forwards}
+.burst b{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--burst,#2fd6f5);border:2px solid #111326;animation:bdot .5s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes bring{from{scale:.2;opacity:1}to{scale:1.6;opacity:0}}
+@keyframes bdot{to{translate:var(--dx) var(--dy);scale:.3;opacity:0}}
+@media (prefers-reduced-motion:reduce){.live{rotate:var(--r0,0deg);scale:1;translate:0}}
+/*/alive*/
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <img class="mark" src="assets/ball.webp" alt="">
+  <nav class="tabs" id="tabs">
+    <span class="bump">L1</span>
+    <button class="tab on" data-go="home">Home</button>
+    <button class="tab" data-go="bullies">Bullies</button>
+    <button class="tab" data-go="modes">Modes</button>
+    <button class="tab" data-go="get">Get it</button>
+    <span class="bump">R1</span>
+  </nav>
+  <a class="get-s mag" href="https://get.thumbyard.com/bm/">Download</a>
+</header>
+
+<section id="home">
+  <div class="wrap home">
+    <div class="stage">
+      <div class="pedestal"><div class="side"></div><div class="top"></div></div>
+      <div class="hero-fig live" id="heroFig"><img class="s" id="heroS" src="assets/wasp-stand.webp" alt="Cuckoo wasp"><img class="b" id="heroB" src="assets/wasp-ball.webp" alt=""></div>
+    </div>
+    <div class="menu">
+      <img class="logo" src="assets/logo.webp" alt="Rollybully">
+      <a class="play mag" href="https://get.thumbyard.com/bm/">PLAY</a>
+      <div class="under">Free on Windows. Bring a controller.</div>
+      <button class="mbtn mag" data-go="bullies">BULLIES</button>
+      <button class="mbtn mag" data-go="modes">MODES</button>
+    </div>
+  </div>
+</section>
+
+<section id="bullies">
+  <div class="wrap">
+    <h2>Pick a bully</h2>
+    <div class="roster" id="roster"></div>
+    <div class="detail">
+      <div class="big live" id="big"><img class="s" id="bigS" alt=""><img class="b" id="bigB" alt=""></div>
+      <div class="who"><h3 id="name"></h3><em id="kit"></em><p id="line"></p></div>
+      <button class="curlbtn mag" id="curl">CURL UP</button>
+    </div>
+  </div>
+</section>
+
+<section id="modes">
+  <div class="wrap">
+    <h2>Modes</h2>
+    <div class="modebar" id="modebar"></div>
+    <div class="mode">
+      <div class="shot" id="shots"></div>
+      <div class="txt"><h3 id="mname"></h3><small id="msize"></small><p id="mline"></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="get">
+  <div class="wrap get">
+    <div class="crowd"><img src="assets/crowd.jpg" alt="All the bullies in the lobby"></div>
+    <div>
+      <h2>Get it</h2>
+      <p>Windows for now. Plug in any controller, or play on keyboard and mouse. Both work at once, so a friend can grab the pad.</p>
+      <a class="play mag" href="https://get.thumbyard.com/bm/">DOWNLOAD</a>
+      <div class="small">The launcher keeps the game up to date.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span><b>Thumbyard</b> made this.</span>
+  <span>&copy; 2026 Thumbyard</span>
+</footer>
+
+<div class="hints" id="hints">
+  <span><i class="g sq lr">L1 R1</i> Section</span>
+  <span><i class="g lr">&#8592;&#8594;</i> Choose</span>
+  <span><i class="g y">Y</i> Curl</span>
+  <span><i class="g a">A</i> Select</span>
+</div>
+
+<script>
+const B=[
+ {id:'pillbug',n:'Pill bug',k:'Slug shot / Burst smash',c:'#3d8bff',l:'Quick off the line, turns tight, hits hard when it lands.'},
+ {id:'woollybear',n:'Woolly bear',k:'Bolt shot / Pogo smash',c:'#ffcd28',l:'Bounces off walls harder than anyone. Use the walls.'},
+ {id:'millipede',n:'Millipede',k:'Charge shot / Quake smash',c:'#39d68a',l:'Slow to get going. Very hard to stop once it does.'},
+ {id:'wheelspider',n:'Wheel spider',k:'Web shot / Pull smash',c:'#a562ff',l:'Lobs webs over walls and drags you in.'},
+ {id:'wasp',n:'Cuckoo wasp',k:'Sting shot / Burst smash',c:'#ff8a1f',l:'Stings from range, then drops in on top of you.'},
+ {id:'cockroach',n:'Cockroach',k:'Ricochet shot / Pogo smash',c:'#ff60a8',l:'Shots bounce around corners. Nervous, never still.'},
+ {id:'boxmite',n:'Box mite',k:'Mine shot / Quake smash',c:'#f2333a',l:'Small, slow, lays mines, and the biggest smash in the box.'},
+];
+const M=[
+ {n:'Free-for-all',s:'4 PLAYERS \u00b7 RANKED',img:'still-ffa.jpg',l:'Four bullies, one arena. Knock everyone out more times than they knock you.'},
+ {n:'Goal',s:'3 V 3',img:'still-goal.jpg',l:'Ram the puck into their net. Shots push it too.'},
+ {n:'Zone',s:'3 V 3',img:'still-zone.jpg',l:'Stand in the ring and keep them out of it.'},
+ {n:'Gems',s:'3 V 3',img:'still-gems.jpg',l:'Grab gems, hold them, and get smashed and drop them all.'},
+];
+const $=s=>document.querySelector(s);
+const roster=$('#roster');
+B.forEach((b,i)=>{const e=document.createElement('button');e.className='pick';e.innerHTML=`<span class="disc"><img class="live" src="assets/${b.id}-stand.webp" alt=""></span><b>${b.n}</b>`;e.onclick=()=>pick(i);roster.appendChild(e)});
+let cur=4;
+function pick(i){
+  cur=(i+B.length)%B.length;const b=B[cur];
+  roster.querySelectorAll('.pick').forEach((e,j)=>e.classList.toggle('on',j===cur));
+  $('#big').classList.remove('curl');
+  $('#bigS').src=`assets/${b.id}-stand.webp`;$('#bigB').src=`assets/${b.id}-ball.webp`;
+  $('#name').textContent=b.n;$('#kit').textContent=b.k;$('#line').textContent=b.l;
+  $('#heroS').src=`assets/${b.id}-stand.webp`;$('#heroB').src=`assets/${b.id}-ball.webp`;
+  document.documentElement.style.setProperty('--c',b.c);document.documentElement.style.setProperty('--burst',b.c);
+}
+pick(cur);
+function curl(){
+  $('#big').classList.toggle('curl');
+  const h=$('#heroFig');h.classList.remove('curl');void h.offsetWidth;h.classList.add('curl');
+  clearTimeout(curl.t);curl.t=setTimeout(()=>h.classList.remove('curl'),2100);
+}
+$('#curl').onclick=curl;$('#heroFig').onclick=curl;
+
+const mb=$('#modebar'),shots=$('#shots');let mcur=0;
+M.forEach((m,i)=>{const t=document.createElement('button');t.className='mtab';t.textContent=m.n.toUpperCase();t.onclick=()=>mode(i);mb.appendChild(t);
+  const im=document.createElement('img');im.src='assets/'+m.img;im.alt=m.n;shots.appendChild(im)});
+function mode(i){mcur=(i+M.length)%M.length;const m=M[mcur];
+  mb.querySelectorAll('.mtab').forEach((e,j)=>e.classList.toggle('on',j===mcur));
+  shots.querySelectorAll('img').forEach((e,j)=>e.classList.toggle('on',j===mcur));
+  $('#mname').textContent=m.n;$('#msize').textContent=m.s;$('#mline').textContent=m.l}
+mode(0);
+
+const S=['home','bullies','modes','get'];
+document.querySelectorAll('[data-go]').forEach(e=>e.onclick=()=>go(S.indexOf(e.dataset.go)));
+function go(i){i=Math.max(0,Math.min(S.length-1,i));document.getElementById(S[i]).scrollIntoView({behavior:'smooth'})}
+function at(){let k=0;S.forEach((s,i)=>{if(document.getElementById(s).getBoundingClientRect().top<innerHeight*.4)k=i});return k}
+addEventListener('scroll',()=>{const k=at();document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===k))},{passive:true});
+
+function act(a){const k=S[at()];
+  if(a==='L')go(at()-1); if(a==='R')go(at()+1);
+  if(a==='left'){k==='modes'?mode(mcur-1):pick(cur-1)} if(a==='right'){k==='modes'?mode(mcur+1):pick(cur+1)}
+  if(a==='Y')curl();
+  if(a==='A'){if(k==='get'||k==='home')location.href='https://get.thumbyard.com/bm/';else curl()}
+}
+addEventListener('keydown',e=>{const m={q:'L',e:'R',ArrowLeft:'left',ArrowRight:'right',' ':'Y',Enter:'A'}[e.key];if(m){if(e.key===' ')e.preventDefault();act(m)}});
+// gamepad: bumpers change section, d-pad / stick choose, Y curls, A selects
+let prev={};
+function poll(){const p=[...(navigator.getGamepads?navigator.getGamepads():[])].find(Boolean);
+  if(p){const now={L:p.buttons[4]?.pressed,R:p.buttons[5]?.pressed,left:p.buttons[14]?.pressed||p.axes[0]<-.6,right:p.buttons[15]?.pressed||p.axes[0]>.6,Y:p.buttons[3]?.pressed,A:p.buttons[0]?.pressed};
+    for(const k in now)if(now[k]&&!prev[k])act(k);prev=now}
+  requestAnimationFrame(poll)}
+addEventListener('gamepadconnected',()=>{document.body.classList.add('pad');poll()});
+/*alive*/
+(function(){
+  const live=[...document.querySelectorAll('.live')],mag=[...document.querySelectorAll('.mag')];
+  let mx=-1e4,my=-1e4,still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
+  addEventListener('pointerleave',()=>{mx=my=-1e4});
+  function tick(t){
+    if(!still)for(const el of live){const r=el.getBoundingClientRect();if(r.bottom<-50||r.top>innerHeight+50||!r.width)continue;
+      const cx=r.left+r.width/2,cy=r.top+r.height*.55,dx=mx-cx,dy=my-cy,d=Math.hypot(dx,dy);
+      const k=mx<-1e3?0:Math.max(.35,1-d/1100),lean=Math.max(-1,Math.min(1,dx/420))*12*k;
+      const near=d<Math.max(r.width,r.height)*.75?1:0;
+      el._p??=Math.random()*6;el._l=(el._l||0)+(lean-(el._l||0))*.1;el._s=(el._s||0)+(near-(el._s||0))*.18;
+      const br=Math.sin(t/650+el._p)*.022;
+      el.style.setProperty('--lean',el._l.toFixed(2)+'deg');
+      el.style.setProperty('--sy',(1+br+el._s*.06).toFixed(3));
+      el.style.setProperty('--sx',(1-br*.6-el._s*.03).toFixed(3));
+      el.style.setProperty('--hop',(-el._s*(10+Math.abs(Math.sin(t/90))*6)).toFixed(1)+'px')}
+    for(const el of mag){const r=el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)continue;
+      const dx=mx-(r.left+r.width/2),dy=my-(r.top+r.height/2),d=Math.hypot(dx,dy),reach=Math.max(r.width,r.height)*.5+90;
+      const k=d<reach?(1-d/reach):0;el._x=(el._x||0)+(dx*k*.22-(el._x||0))*.2;el._y=(el._y||0)+(dy*k*.22-(el._y||0))*.2;
+      el.style.setProperty('--mx',el._x.toFixed(1)+'px');el.style.setProperty('--my',el._y.toFixed(1)+'px')}
+    requestAnimationFrame(tick)}
+  requestAnimationFrame(tick);
+  addEventListener('pointerdown',e=>{if(e.target.closest('a,button,canvas'))return;
+    const b=document.createElement('div');b.className='burst';b.style.left=e.clientX+'px';b.style.top=e.clientY+'px';
+    let h='<i></i>';for(let i=0;i<7;i++){const a=i/7*6.283+Math.random()*.4,s=44+Math.random()*30;h+=`<b style="--dx:${(Math.cos(a)*s).toFixed(0)}px;--dy:${(Math.sin(a)*s).toFixed(0)}px"></b>`}
+    b.innerHTML=h;document.body.appendChild(b);setTimeout(()=>b.remove(),600)});
+})();
+/*/alive*/
+</script>
+</body>
+</html>
