@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Beat Loops</title>
+<style>
+:root{--bg:#f4f4f2;--field:#fff;--ink:#16181d;--mute:#6b7080;--line:rgba(0,0,0,.09);--acc:#119c80;--panel:rgba(255,255,255,.88)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1014;--field:#151820;--ink:#e8eaee;--mute:#8a90a0;--line:rgba(255,255,255,.08);--acc:#4fd1b5;--panel:rgba(21,24,32,.88)}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+body{display:flex;flex-direction:column}
+#hud{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--line);flex:none}
+#name{font-weight:600;font-size:15px;letter-spacing:-.01em}
+#stats{display:flex;gap:14px;font-variant-numeric:tabular-nums}
+#stats span{font-size:15px;font-weight:600}
+#stats i{font-style:normal;font-size:12px;color:var(--mute);font-weight:500;margin-right:4px}
+#stage{position:relative;flex:1;min-height:0}
+canvas{display:block;touch-action:none}
+#ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#ov .p{pointer-events:auto;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:22px 24px;text-align:center;width:340px;max-width:86%}
+#ov .t{font-size:22px;font-weight:650;letter-spacing:-.02em}
+#ov .s{font-size:14px;color:var(--mute);margin-top:6px;line-height:1.45}
+button{font:inherit;border:1px solid var(--line);background:var(--field);color:var(--ink);border-radius:10px;padding:10px 18px;font-size:15px;font-weight:600}
+#ov button{margin-top:16px;background:var(--acc);color:#fff;border:0;width:100%}
+#tray{position:absolute;left:0;right:0;bottom:0;height:72px;display:none;align-items:center;justify-content:center;pointer-events:none}
+#tray button{pointer-events:auto;min-width:140px}
+#tray button.on{background:var(--acc);color:#fff;border-color:transparent}
+nav{display:flex;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);flex:none}
+nav button{flex:1;border:0;border-radius:0;background:none;color:var(--mute);font-size:13px;font-weight:600;padding:14px 0}
+nav button.on{color:var(--ink);box-shadow:inset 0 2px 0 var(--acc)}
+</style>
+</head>
+<body>
+<div id="hud"><div id="name"></div><div id="stats"></div></div>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="tray"><button id="ready">Ready</button></div>
+  <div id="ov"><div class="p"><div class="t"></div><div class="s"></div><button>Play</button></div></div>
+</div>
+<nav id="nav"></nav>
+<script>
+"use strict";
+const Q=new URLSearchParams(location.search);
+const dark=matchMedia('(prefers-color-scheme: dark)').matches;
+const P=dark?{bg:'#0e1014',tA:'#141821',tB:'#181d27',ink:'#e8eaee',mute:'#8a90a0',line:'rgba(255,255,255,.08)',acc:'#4fd1b5',bad:'#f0606e',gold:'#f5b544',wall:'#2c3344',
+  kick:'#f0606e',snare:'#f5b544',hat:'#8b9bff',bass:'#c08cff',lead:'#4fd1b5'}
+ :{bg:'#f4f4f2',tA:'#ffffff',tB:'#ebebe7',ink:'#16181d',mute:'#6b7080',line:'rgba(0,0,0,.09)',acc:'#119c80',bad:'#d9384a',gold:'#d98a0b',wall:'#cdd2db',
+  kick:'#d9384a',snare:'#d98a0b',hat:'#5566e0',bass:'#8a4fd8',lead:'#119c80'};
+const ri=n=>Math.floor(Math.random()*n),clamp=(v,a,b)=>v<a?a:v>b?b:v,lerp=(a,b,f)=>a+(b-a)*f,ease=f=>1-Math.pow(1-f,3);
+const stage=document.getElementById('stage'),cv=document.getElementById('c'),g=cv.getContext('2d');
+let W=0,H=0;
+
+// ---------------- audio
+let ac=null,out=null,noise=null;
+function audioInit(){
+  if(!ac){
+    try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+    ac=new (window.AudioContext||window.webkitAudioContext)();
+    const comp=ac.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;
+    out=ac.createGain();out.gain.value=Q.has('mute')?0:.8;out.connect(comp);comp.connect(ac.destination);
+    const n=ac.sampleRate;noise=ac.createBuffer(1,n,n);const d=noise.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
+  }
+  if(ac.state!=='running')ac.resume();
+}
+document.addEventListener('visibilitychange',()=>{if(!ac)return;if(document.hidden)ac.suspend();else ac.resume()});
+const mf=m=>440*Math.pow(2,(m-69)/12);
+function env(node,t,a,peak,d){const gn=ac.createGain();gn.gain.setValueAtTime(.0001,t);gn.gain.exponentialRampToValueAtTime(Math.max(.0002,peak),t+a);gn.gain.exponentialRampToValueAtTime(.0001,t+a+d);node.connect(gn);gn.connect(out);return gn}
+function osc(type,f,t,dur){const o=ac.createOscillator();o.type=type;o.frequency.setValueAtTime(f,t);o.start(t);o.stop(t+dur+.06);return o}
+function nz(t,dur){const s=ac.createBufferSource();s.buffer=noise;s.start(t,Math.random()*.5);s.stop(t+dur+.06);return s}
+function filt(type,f,q){const b=ac.createBiquadFilter();b.type=type;b.frequency.value=f;if(q)b.Q.value=q;return b}
+const S={
+  kick(t,v=1){const o=osc('sine',150,t,.35);o.frequency.exponentialRampToValueAtTime(42,t+.13);env(o,t,.002,.9*v,.3)},
+  snare(t,v=1){const n=nz(t,.2),f=filt('highpass',1400);n.connect(f);env(f,t,.002,.42*v,.16);const o=osc('triangle',190,t,.1);env(o,t,.002,.22*v,.08)},
+  hat(t,v=1){const n=nz(t,.06),f=filt('highpass',7500);n.connect(f);env(f,t,.001,.15*v,.035)},
+  clap(t,v=1){for(let i=0;i<3;i++){const tt=t+i*.011,n=nz(tt,.14),f=filt('bandpass',1300,1.2);n.connect(f);env(f,tt,.001,.38*v,i===2?.14:.02)}},
+  bass(t,m,dur,v=1){const o=osc('sawtooth',mf(m),t,dur),f=filt('lowpass',520,2);o.connect(f);env(f,t,.005,.3*v,dur)},
+  sub(t,m){const o=osc('sine',mf(m),t,.6);o.frequency.exponentialRampToValueAtTime(mf(m)/2,t+.5);env(o,t,.005,.7,.55);const n=nz(t,.3),f=filt('lowpass',900);n.connect(f);env(f,t,.002,.35,.25)},
+  lead(t,m,dur,v=1){const o=osc('square',mf(m),t,dur),f=filt('lowpass',2400);o.connect(f);env(f,t,.008,.12*v,dur);const o2=osc('triangle',mf(m+12),t,dur);env(o2,t,.008,.06*v,dur*.8)},
+  pluck(t,m,v=1){const o=osc('triangle',mf(m),t,.3);env(o,t,.003,.2*v,.24)},
+  wood(t,m=84,v=1){const o=osc('sine',mf(m),t,.08);env(o,t,.001,.25*v,.05)},
+  click(t,v=1){const o=osc('sine',1800,t,.03);env(o,t,.001,.07*v,.02)},
+  stab(t,ms,v=1){for(const m of ms){const o=osc('sawtooth',mf(m),t,.35),f=filt('lowpass',1800);o.connect(f);env(f,t,.004,.09*v,.3)}},
+  thud(t){const o=osc('sine',95,t,.3);o.frequency.exponentialRampToValueAtTime(40,t+.25);env(o,t,.002,.8,.25);const n=nz(t,.15),f=filt('lowpass',600);n.connect(f);env(f,t,.002,.4,.12)},
+  pad(t,ms,dur){for(const m of ms){const o=osc('triangle',mf(m),t,dur);env(o,t,.15,.05,dur)}}
+};
+
+// ---------------- clock: game logic resolves each beat a hair early so its sounds can be scheduled exactly on the beat
+const CLK={on:false,spb:.6,b:0,next:0,lastB:-1,lastT:0};
+const LOOK=.045;
+function clockStart(bpm){CLK.spb=60/bpm;CLK.b=0;CLK.next=ac.currentTime+.35;CLK.lastB=-1;CLK.lastT=0;CLK.on=true}
+function setBpm(bpm){CLK.spb=60/bpm}
+function tickClock(){if(!CLK.on)return;while(CLK.on&&ac.currentTime>=CLK.next-LOOK){const b=CLK.b,t=CLK.next;CLK.lastB=b;CLK.lastT=t;CLK.b++;CLK.next+=CLK.spb;game.onBeat(b,t)}}
+function vis(now){let b=CLK.lastB,t=CLK.lastT;if(b>=0&&now<t){b--;t-=CLK.spb}return{b,idx:((b%4)+4)%4,ph:CLK.on&&b>=0?clamp((now-t)/CLK.spb,0,1):1}}
+const later=[];function at(t,fn){later.push({t,fn})}
+
+// ---------------- drawing helpers
+function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function circle(x,y,r,col){g.fillStyle=col;g.beginPath();g.arc(x,y,r,0,7);g.fill()}
+function epos(o,now){let f=1;if(o.mt){f=now<o.mt?0:ease(clamp((now-o.mt)/.1,0,1))}return{x:lerp(o.px,o.x,f),y:lerp(o.py,o.y,f)}}
+function chev(cx,cy,dx,dy,s,col,a){g.globalAlpha=a;g.fillStyle=col;const px=-dy,py=dx;g.beginPath();g.moveTo(cx+dx*s,cy+dy*s);g.lineTo(cx-dx*s*.3+px*s*.8,cy-dy*s*.3+py*s*.8);g.lineTo(cx-dx*s*.3-px*s*.8,cy-dy*s*.3-py*s*.8);g.closePath();g.fill();g.globalAlpha=1}
+function beatDots(now,y,col){const v=vis(now);for(let i=0;i<4;i++){const x=W/2+(i-1.5)*20,on=CLK.on&&v.b>=0&&i===v.idx,k=on?Math.max(0,1-v.ph*2.2):0;
+  if(on)circle(x,y,4+3*k,col||P.acc);else{g.globalAlpha=.35;circle(x,y,3.5,P.mute);g.globalAlpha=1}}}
+function label(text,x,y,size,col,align,weight){g.fillStyle=col;g.font=`${weight||600} ${size}px Inter,system-ui,-apple-system,sans-serif`;g.textAlign=align||'center';g.textBaseline='middle';g.fillText(text,x,y)}
+function drawFx(list,now,bx,by,cs){for(let i=list.length-1;i>=0;i--){const f=list[i],a=now-f.t;if(a<0)continue;
+  if(f.k==='pop'){const T=.45;if(a>T){list.splice(i,1);continue}const k=a/T,cx=bx+(f.x+.5)*cs,cy=by+(f.y+.5)*cs;
+    g.globalAlpha=1-k;g.strokeStyle=f.col;g.lineWidth=3;g.beginPath();g.arc(cx,cy,cs*(.25+.45*k),0,7);g.stroke();
+    if(f.text)label(f.text,cx,cy-cs*.3-k*cs*.4,14,f.col,'center',700);g.globalAlpha=1}
+  else if(f.k==='tiles'){const T=.35;if(a>T){list.splice(i,1);continue}g.globalAlpha=(1-a/T)*.55;g.fillStyle=f.col;for(const q of f.tiles){rr(bx+q.x*cs+1,by+q.y*cs+1,cs-2,cs-2,6);g.fill()}g.globalAlpha=1}
+  else if(f.k==='text'){const T=1.1;if(a>T){list.splice(i,1);continue}g.globalAlpha=Math.min(1,(T-a)*3);label(f.text,W/2,by+cs*2-a*14,22,f.col||P.ink,'center',700);g.globalAlpha=1}}}
+
+// =====================================================================
+// shared: instruments as enemies (same rules as Band Room)
+const MEL=[76,null,74,72, 69,null,72,74, 76,79,76,null, 74,72,69,null];
+const CH=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]];          // Am F C G
+const COLT={thumper:'kick',snapper:'snare',ticker:'hat',rumbler:'bass',singer:'lead'};
+const D4=[[1,0],[0,1],[-1,0],[0,-1]];
+const same=(a,b)=>a.x===b.x&&a.y===b.y,adj=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y)===1;
+function acts(type,idx,b){switch(type){case'thumper':return idx%2===0;case'snapper':return idx%2===1;case'ticker':return true;case'rumbler':return idx<2;case'singer':return MEL[b%16]!=null}return false}
+function mkE(type,x,y){return{type,x,y,px:x,py:y,mt:0,dir:Math.random()<.5?[1,0]:[0,1],li:ri(4),ls:0,beatT:-9,lunge:null,bornT:-9}}
+function chaseE(e,ctx){const pl=ctx.pl,dx=pl.x-e.x,dy=pl.y-e.y,ax=[Math.sign(dx),0],ay=[0,Math.sign(dy)],o=[];
+  if(Math.abs(dx)>=Math.abs(dy)){if(dx)o.push(ax);if(dy)o.push(ay)}else{if(dy)o.push(ay);if(dx)o.push(ax)}
+  for(const d of o){const x=e.x+d[0],y=e.y+d[1];if(!ctx.blocked(x,y))return{x,y}}return null}
+function intentE(e,idx,b,ctx){
+  if(!acts(e.type,idx,b))return null;const pl=ctx.pl;
+  switch(e.type){
+    case'thumper':return chaseE(e,ctx);
+    case'rumbler':return idx===0?{blast:true}:chaseE(e,ctx);
+    case'snapper':{let x=e.x+e.dir[0],y=e.y+e.dir[1];if(!ctx.blocked(x,y))return{x,y};x=e.x-e.dir[0];y=e.y-e.dir[1];if(!ctx.blocked(x,y))return{x,y,rev:true};return null}
+    case'ticker':{const d=D4[e.li],x=e.x+d[0],y=e.y+d[1];return ctx.blocked(x,y)?{stuck:true}:{x,y}}
+    case'singer':{let best=null,bd=Math.abs(e.x-pl.x)+Math.abs(e.y-pl.y);for(const d of D4){const x=e.x+d[0],y=e.y+d[1];if(ctx.blocked(x,y)||(x===pl.x&&y===pl.y))continue;const dd=Math.abs(x-pl.x)+Math.abs(y-pl.y);if(dd>bd){bd=dd;best={x,y}}}return best||{stay:true}}
+  }return null}
+function stepE(e,b,t,ctx){const it=intentE(e,b%4,b,ctx);e.beatT=t;if(!it)return;
+  if(it.blast){ctx.blast(e,t);return}
+  if(it.stuck){e.li=(e.li+1)%4;e.ls=0;return}
+  if(it.stay)return;
+  if(it.x===ctx.pl.x&&it.y===ctx.pl.y){if(e.type!=='singer'){e.lunge={x:it.x-e.x,y:it.y-e.y,t};ctx.hitPlayer(e,t)}return}
+  if(ctx.blocked(it.x,it.y))return;
+  if(it.rev)e.dir=[-e.dir[0],-e.dir[1]];
+  e.px=e.x;e.py=e.y;e.x=it.x;e.y=it.y;e.mt=t;
+  if(e.type==='ticker'&&++e.ls>=2){e.ls=0;e.li=(e.li+1)%4}
+  ctx.entered(e,t)}
+function blastOf(e,stop){const o=[];for(const d of D4){let x=e.x+d[0],y=e.y+d[1];while(!stop(x,y)){o.push({x,y});x+=d[0];y+=d[1]}}return o}
+// wild parts play quietly, parts in your band play full
+function playParts(b,t,wild,band){const idx=b%4,ch=CH[Math.floor(b/4)%4],spb=CLK.spb,v=ty=>band.has(ty)?1:wild.has(ty)?.38:0;
+  if(!wild.size&&!band.size){S.click(t,idx?.6:1);return}
+  S.click(t,.25);
+  let k=v('ticker');if(k){S.hat(t,.7*k);S.hat(t+spb/2,k)}
+  k=v('thumper');if(k&&idx%2===0)S.kick(t,k);
+  k=v('snapper');if(k&&idx%2===1)S.snare(t,k);
+  k=v('rumbler');if(k){const r=ch[0]-24;S.bass(t,r,spb*.42,k);S.bass(t+spb/2,idx===3?r+7:r+12,spb*.4,k)}
+  k=v('singer');if(k){const m=MEL[b%16];if(m)S.lead(t,m,spb*.85,k)}}
+function shape(type,cx,cy,s,col){g.fillStyle=col;
+  if(type==='thumper'){rr(cx-s,cy-s,2*s,2*s,s*.35);g.fill()}
+  else if(type==='snapper'){g.beginPath();g.moveTo(cx,cy-s*1.2);g.lineTo(cx+s*1.2,cy);g.lineTo(cx,cy+s*1.2);g.lineTo(cx-s*1.2,cy);g.closePath();g.fill()}
+  else if(type==='ticker')circle(cx,cy,s*.8,col);
+  else if(type==='rumbler'){rr(cx-s*1.25,cy-s,2.5*s,2*s,s*.45);g.fill();g.fillStyle=P.bg;rr(cx-s*.8,cy-s*.12,1.6*s,s*.24,s*.12);g.fill()}
+  else{g.beginPath();g.moveTo(cx,cy-s*1.25);g.lineTo(cx+s*1.15,cy+s*.9);g.lineTo(cx-s*1.15,cy+s*.9);g.closePath();g.fill()}}
+function drawE(e,now,bx,by,cs,inBand){
+  const p=epos(e,now);let ox=0,oy=0;
+  if(e.lunge){const a=now-e.lunge.t;if(a>=0&&a<.2){const k=Math.sin(Math.PI*a/.2)*.35;ox=e.lunge.x*k;oy=e.lunge.y*k}}
+  const cx=bx+(p.x+.5+ox)*cs,cy=by+(p.y+.5+oy)*cs,ba=now-e.beatT,bn=now-e.bornT;
+  let s=cs*.28*(1+(ba>=0&&ba<.16?.18*(1-ba/.16):0));if(bn>=0&&bn<.3)s*=bn/.3;
+  if(inBand){g.strokeStyle=P.acc;g.lineWidth=2;g.beginPath();g.arc(cx,cy,cs*.42,0,7);g.stroke()}
+  shape(e.type,cx,cy,s,P[COLT[e.type]])}
+function drawArrows(en,curB,ctx,bx,by,cs,danger){if(curB<0)return;const nb=curB+1,ni=nb%4;
+  for(const e of en){if(!acts(e.type,ni,nb)||(e.type==='rumbler'&&ni===0))continue;const it=intentE(e,ni,nb,ctx);if(!it||it.x==null)continue;
+    const dx=it.x-e.x,dy=it.y-e.y,d=danger(it.x,it.y);chev(bx+(e.x+.5+dx*.5)*cs,by+(e.y+.5+dy*.5)*cs,dx,dy,cs*.13,d?P.bad:P[COLT[e.type]],d?1:.75)}}
+function drawBlastWarn(en,curB,stop,bx,by,cs){if(curB<0)return;const ni=(curB+1)%4,a=ni===0?.34:ni===3?.12:0;if(!a)return;
+  for(const e of en)if(e.type==='rumbler'){g.globalAlpha=a;g.fillStyle=P.bad;for(const q of blastOf(e,stop)){rr(bx+q.x*cs+1,by+q.y*cs+1,cs-2,cs-2,6);g.fill()}g.globalAlpha=1}}
+function drawPlayer(pl,now,bx,by,cs){const p=epos(pl,now);let ox=0,oy=0;if(pl.bump){const a=now-pl.bump.t;if(a>=0&&a<.16){const k=Math.sin(Math.PI*a/.16)*.28;ox=pl.bump.x*k;oy=pl.bump.y*k}}
+  const cx=bx+(p.x+.5+ox)*cs,cy=by+(p.y+.5+oy)*cs,ha=now-pl.hitT;circle(cx,cy,cs*.3,ha>=0&&ha<.3?P.bad:P.ink);g.strokeStyle=P.acc;g.lineWidth=3;g.beginPath();g.arc(cx,cy,cs*.3+4,0,7);g.stroke();return{x:cx,y:cy}}
+function shakeFor(pl,now){const ha=now-pl.hitT;return ha>=0&&ha<.25?(1-ha/.25)*7:0}
+function checker(C,R,bx,by,cs){for(let y=0;y<R;y++)for(let x=0;x<C;x++){g.fillStyle=(x+y)%2?P.tA:P.tB;rr(bx+x*cs+1,by+y*cs+1,cs-2,cs-2,6);g.fill()}}
+function tile(x,y,bx,by,cs,col,a,inset){const i=inset||1;g.globalAlpha=a;g.fillStyle=col;rr(bx+x*cs+i,by+y*cs+i,cs-2*i,cs-2*i,6);g.fill();g.globalAlpha=1}
+function trailLine(pts,bx,by,cs,w,col,a){if(pts.length<2)return;g.globalAlpha=a;g.strokeStyle=col;g.lineWidth=w;g.lineCap='round';g.lineJoin='round';g.beginPath();pts.forEach((p,i)=>{const x=bx+(p.x+.5)*cs,y=by+(p.y+.5)*cs;i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();g.globalAlpha=1}
+// cells the barrier closes off from the board edge
+function enclosed(C,R,isBar){const seen=new Uint8Array(C*R),st=[];const push=(x,y)=>{const i=y*C+x;if(seen[i]||isBar(x,y))return;seen[i]=1;st.push(i)};
+  for(let x=0;x<C;x++){push(x,0);push(x,R-1)}for(let y=0;y<R;y++){push(0,y);push(C-1,y)}
+  while(st.length){const i=st.pop(),x=i%C,y=(i-x)/C;if(x>0)push(x-1,y);if(x<C-1)push(x+1,y);if(y>0)push(x,y-1);if(y<R-1)push(x,y+1)}
+  const out=[];for(let i=0;i<C*R;i++){const x=i%C,y=(i-x)/C;if(!seen[i]&&!isBar(x,y))out.push(i)}return out}
+function regions(C,R,isFree){const seen=new Uint8Array(C*R),out=[];
+  for(let s=0;s<C*R;s++){const sx=s%C,sy=(s-sx)/C;if(seen[s]||!isFree(sx,sy))continue;const reg=[],st=[s];seen[s]=1;
+    while(st.length){const i=st.pop(),x=i%C,y=(i-x)/C;reg.push(i);for(const d of D4){const nx=x+d[0],ny=y+d[1];if(nx<0||ny<0||nx>=C||ny>=R)continue;const j=ny*C+nx;if(!seen[j]&&isFree(nx,ny)){seen[j]=1;st.push(j)}}}
+    out.push(reg)}return out}
+// beat stepping: a tap counts for the next beat, or for the beat that just passed if it was a hair late
+function makeStepper(){const s={queued:null,actedB:-1,curB:-1,curT:0,
+  beat(b,t,fn){s.curB=b;s.curT=t;if(s.queued){const q=s.queued;s.queued=null;s.actedB=b;fn(q.d,t,t-q.at<.16)}},
+  input(d,fn){const now=ac.currentTime;if(s.curB>=0&&s.actedB!==s.curB&&now-s.curT<=.14){s.actedB=s.curB;fn(d,Math.max(now,s.curT),Math.abs(now-s.curT)<.1);return}s.queued={d,at:now}},
+  reset(){s.queued=null;s.actedB=-1}};return s}
+function tapDir(x,y,pl,bx,by,cs){const dx=x-(bx+(pl.x+.5)*cs),dy=y-(by+(pl.y+.5)*cs);if(Math.abs(dx)<cs*.4&&Math.abs(dy)<cs*.4)return null;return Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)]}
+const KEYS={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
+function gameOver(text,start){CLK.on=false;document.getElementById('tray').style.display='none';showOv('Out of hearts',text,'Play again',start)}
+
+// =====================================================================
+// Band Paper ('paper') and Cut the Room ('cut'): your trail claims ground, caught instruments join your band
+function makeTerritory(mode){
+  const C=9,R=13,N=C*R,I=(x,y)=>y*C+x,GOAL=mode==='paper'?.55:.7;
+  const ROOMS=[['ticker','ticker','snapper'],['ticker','snapper','thumper'],['thumper','snapper','ticker','rumbler'],['thumper','ticker','rumbler','singer']];
+  const POOL=['thumper','snapper','ticker','rumbler','ticker','snapper'];
+  let room=1,hearts=3,score=0,over=false,fx=[],own=new Uint8Array(N),init=0,trail=[],tset=new Set(),from={x:0,y:0},en=[],band=[],pl=null,clearing=false,steps=0,curBar=0,bx=0,by=0,cs=40;
+  const st=makeStepper();
+  const OOB=(x,y)=>x<0||y<0||x>=C||y>=R;
+  const ctx={blocked:(x,y)=>OOB(x,y)||own[I(x,y)]===1||en.some(e=>e.x===x&&e.y===y),get pl(){return pl},
+    blast(e,t){const tl=blastOf(e,(x,y)=>OOB(x,y)||own[I(x,y)]===1);fx.push({k:'tiles',tiles:tl,t,col:P.bad});S.sub(t,CH[curBar][0]-24);
+      if(tl.some(q=>tset.has(I(q.x,q.y))))cut(t);else if(tl.some(q=>same(q,pl)))hurt(t)},
+    hitPlayer(e,t){if(trail.length)cut(t);else hurt(t)},
+    entered(e,t){if(tset.has(I(e.x,e.y)))cut(t)}};
+  function bpmFor(r){return Math.min(132,90+r*5)}
+  function count(){let n=0;for(let i=0;i<N;i++)n+=own[i];return n}
+  function progress(){return (count()-init)/(N-init)}
+  function stats(){setStats([['Room',room],['HP',hearts],['Score',score]])}
+  function newRoom(){
+    own=new Uint8Array(N);trail=[];tset=new Set();en=[];band=[];clearing=false;
+    if(mode==='paper'){for(let y=R-3;y<R;y++)for(let x=3;x<6;x++)own[I(x,y)]=1;pl={x:4,y:R-2}}
+    else{for(let x=0;x<C;x++){own[I(x,0)]=1;own[I(x,R-1)]=1}for(let y=0;y<R;y++){own[I(0,y)]=1;own[I(C-1,y)]=1}pl={x:4,y:R-1}}
+    Object.assign(pl,{px:pl.x,py:pl.y,mt:0,hitT:-9,bump:null});from={x:pl.x,y:pl.y};init=count();
+    const list=room<=ROOMS.length?ROOMS[room-1]:Array.from({length:Math.min(6,2+Math.floor(room/2))},()=>POOL[ri(POOL.length)]).concat(['singer']);
+    for(const type of list)for(let k=0;k<100;k++){const x=ri(C),y=ri(R-4);if(own[I(x,y)]||en.some(e=>e.x===x&&e.y===y)||Math.abs(x-pl.x)+Math.abs(y-pl.y)<5)continue;en.push(mkE(type,x,y));break}}
+  function reset(){room=1;hearts=3;score=0;over=false;fx=[];steps=0;st.reset();st.curB=-1;newRoom();stats()}
+  function start(){reset();clockStart(bpmFor(room))}
+  function layout(){const top=58,bot=20;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
+  function hurt(t){if(over||t-pl.hitT<.05)return;pl.hitT=t;hearts--;S.thud(t);at(t,stats);
+    if(hearts<=0){over=true;at(t+.7,()=>gameOver('Room '+room+', score '+score,start))}}
+  function cut(t){const tl=trail.slice();hurt(t);fx.push({k:'tiles',tiles:tl,t,col:P.bad});trail=[];tset.clear();
+    pl.px=pl.x;pl.py=pl.y;pl.x=from.x;pl.y=from.y;pl.mt=t+.06}
+  function close(t){
+    const tl=trail.slice();for(const c of tl)own[I(c.x,c.y)]=1;trail=[];tset.clear();
+    let fill=[];
+    if(mode==='paper')fill=enclosed(C,R,(x,y)=>own[I(x,y)]===1);
+    else for(const reg of regions(C,R,(x,y)=>!own[I(x,y)])){const s=new Set(reg),w=en.filter(e=>s.has(I(e.x,e.y)));if(!w.length||reg.length<=4*w.length)fill.push(...reg)}
+    const fs=new Set(fill);for(const i of fill)own[i]=1;
+    const caught=[];for(const e of en.slice())if(fs.has(I(e.x,e.y))){en.splice(en.indexOf(e),1);band.push(e);caught.push(e)}
+    fx.push({k:'tiles',tiles:tl.concat(fill.map(i=>({x:i%C,y:(i-i%C)/C}))),t,col:P.acc});
+    score+=tl.length+fill.length+caught.length*caught.length*50;
+    for(const e of caught)fx.push({k:'pop',x:e.x,y:e.y,t,col:P[COLT[e.type]],text:'+band'});
+    if(caught.length)S.stab(t,CH[curBar].map(m=>m+12));else S.pluck(t,CH[curBar][0]+24,.8);
+    at(t,stats);
+    if(progress()>=GOAL||!en.length){clearing=true;fx.push({k:'text',text:'Room clear',t,col:P.acc})}}
+  function doPlayer(d,t){
+    const x=pl.x+d[0],y=pl.y+d[1];
+    if(OOB(x,y)||en.some(e=>e.x===x&&e.y===y)||tset.has(I(x,y))){pl.bump={x:d[0],y:d[1],t};return}
+    pl.px=pl.x;pl.py=pl.y;pl.x=x;pl.y=y;pl.mt=t;
+    if(own[I(x,y)]){if(trail.length)close(t)}
+    else{if(!trail.length)from={x:pl.px,y:pl.py};trail.push({x,y});tset.add(I(x,y))}
+    S.pluck(t,CH[curBar][steps++%3]+12,.9)}
+  function onBeat(b,t){if(over)return;const idx=b%4;curBar=Math.floor(b/4)%4;
+    if(clearing&&idx===0){room++;newRoom();setBpm(bpmFor(room));st.reset();fx.push({k:'text',text:'Room '+room,t,col:P.ink});at(t,stats)}
+    st.beat(b,t,doPlayer);
+    if(!clearing)for(const e of en.slice())if(!over&&en.includes(e)&&acts(e.type,idx,b))stepE(e,b,t,ctx);
+    for(const e of band)if(acts(e.type,idx,b))e.beatT=t;
+    playParts(b,t,new Set(en.map(e=>e.type)),new Set(band.map(e=>e.type)))}
+  function input(d){if(!over&&CLK.on&&d)st.input(d,doPlayer)}
+  function draw(now){
+    const sh=shakeFor(pl,now);g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
+    checker(C,R,bx,by,cs);
+    for(let y=0;y<R;y++)for(let x=0;x<C;x++)if(own[I(x,y)])tile(x,y,bx,by,cs,P.acc,.26);
+    if(CLK.on){const v=vis(now),k=Math.max(0,1-v.ph*3);if(k>0){g.globalAlpha=k*.06;g.fillStyle=P.acc;rr(bx,by,cs*C,cs*R,8);g.fill();g.globalAlpha=1}}
+    for(const c of trail)tile(c.x,c.y,bx,by,cs,P.acc,.22,cs*.18);
+    if(trail.length){const pts=[from,...trail];const p=epos(pl,now);pts[pts.length-1]={x:p.x,y:p.y};trailLine(pts,bx,by,cs,cs*.22,P.acc,.95)}
+    if(CLK.on&&!over&&!clearing){drawBlastWarn(en,st.curB,(x,y)=>OOB(x,y)||own[I(x,y)]===1,bx,by,cs);
+      drawArrows(en,st.curB,ctx,bx,by,cs,(x,y)=>same({x,y},pl)||tset.has(I(x,y)))}
+    for(const e of band)drawE(e,now,bx,by,cs,true);
+    for(const e of en)drawE(e,now,bx,by,cs,false);
+    drawPlayer(pl,now,bx,by,cs);
+    drawFx(fx,now,bx,by,cs);
+    g.restore();
+    const ty=Math.max(22,by-22);beatDots(now,ty);
+    label(Math.round(progress()*100)+'%',bx+4,ty,13,P.mute,'left',650);
+    if(band.length)label(band.length+' in band',bx+cs*C-4,ty,13,P.acc,'right',650)}
+  const blurb=mode==='paper'
+    ?'Step off your ground to draw a trail, step back on to claim everything inside. Instruments you close in join your band. Anything that touches your trail cuts it.'
+    :'Walk the walls, then cut across the room. A pocket with no instruments fills in. Trap an instrument in a small pocket and it joins your band. Anything that touches your trail cuts it.';
+  return{name:mode==='paper'?'Paper':'Cut',title:mode==='paper'?'Band Paper':'Cut the Room',blurb,reset,start,layout,onBeat,draw,
+    down:(x,y)=>input(tapDir(x,y,pl,bx,by,cs)),key:k=>input(KEYS[k]),
+    dbg:()=>({room,hearts,score,over,pl,en,band,trail,progress:progress(),clearing,own}),tray:false};
+}
+
+// =====================================================================
+// Loop Catch: no territory, just your last steps. Close a loop around instruments to catch them.
+function makeLoopCatch(){
+  const C=9,R=13,I=(x,y)=>y*C+x,MAXT=18;
+  let hearts=3,score=0,caught=0,over=false,fx=[],trail=[],en=[],band=new Set(),pl=null,curBar=0,steps=0,want=3,bx=0,by=0,cs=40;
+  const st=makeStepper(),OOB=(x,y)=>x<0||y<0||x>=C||y>=R;
+  const ctx={blocked:(x,y)=>OOB(x,y)||en.some(e=>e.x===x&&e.y===y),get pl(){return pl},
+    blast(e,t){const tl=blastOf(e,OOB);fx.push({k:'tiles',tiles:tl,t,col:P.bad});S.sub(t,CH[curBar][0]-24);
+      if(tl.some(q=>same(q,pl)))hurt(t);if(trail.slice(0,-1).some(c=>tl.some(q=>same(q,c))))snip(t)},
+    hitPlayer(e,t){hurt(t);snip(t)},
+    entered(e,t){const i=trail.findIndex(c=>same(c,e));if(i>=0&&i<trail.length-1)snip(t)}};
+  function bpmFor(){return Math.min(136,94+Math.floor(caught/3)*4)}
+  function stats(){setStats([['Caught',caught],['HP',hearts],['Score',score]])}
+  function snip(t){if(trail.length>1){fx.push({k:'tiles',tiles:trail.slice(0,-1),t,col:P.bad});S.wood(t,60)}trail=[{x:pl.x,y:pl.y}]}
+  function spawnOne(t){const pool=caught<3?['ticker','ticker','snapper']:caught<8?['ticker','snapper','thumper','ticker']:['ticker','snapper','thumper','rumbler','singer'];
+    const type=pool[ri(pool.length)];
+    for(let k=0;k<100;k++){const edge=ri(4),x=edge===0?0:edge===1?C-1:ri(C),y=edge===2?0:edge===3?R-1:ri(R);
+      if(en.some(e=>e.x===x&&e.y===y)||trail.some(c=>c.x===x&&c.y===y)||Math.abs(x-pl.x)+Math.abs(y-pl.y)<5)continue;
+      const e=mkE(type,x,y);e.bornT=t;en.push(e);return}}
+  function reset(){hearts=3;score=0;caught=0;over=false;fx=[];en=[];band=new Set();steps=0;want=3;st.reset();st.curB=-1;
+    pl={x:4,y:R-3,px:4,py:R-3,mt:0,hitT:-9,bump:null};trail=[{x:pl.x,y:pl.y}];for(let i=0;i<3;i++)spawnOne(-9);stats()}
+  function start(){reset();clockStart(bpmFor())}
+  function layout(){const top=58,bot=20;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
+  function hurt(t){if(over||t-pl.hitT<.05)return;pl.hitT=t;hearts--;S.thud(t);at(t,stats);
+    if(hearts<=0){over=true;at(t+.7,()=>gameOver('Caught '+caught+', score '+score,start))}}
+  function doPlayer(d,t){
+    const x=pl.x+d[0],y=pl.y+d[1];
+    if(OOB(x,y)||en.some(e=>e.x===x&&e.y===y)){pl.bump={x:d[0],y:d[1],t};return}
+    pl.px=pl.x;pl.py=pl.y;pl.x=x;pl.y=y;pl.mt=t;
+    const i=trail.findIndex(c=>c.x===x&&c.y===y);
+    if(i>=0){const loop=trail.slice(i),bar=new Set(loop.map(c=>I(c.x,c.y))),inside=enclosed(C,R,(a,b)=>bar.has(I(a,b))),ins=new Set(inside);
+      const got=en.filter(e=>ins.has(I(e.x,e.y)));
+      if(inside.length)fx.push({k:'tiles',tiles:loop.concat(inside.map(j=>({x:j%C,y:(j-j%C)/C}))),t,col:got.length?P.gold:P.acc});
+      for(const e of got){en.splice(en.indexOf(e),1);band.add(e.type);fx.push({k:'pop',x:e.x,y:e.y,t,col:P[COLT[e.type]],text:got.length>1?'x'+got.length:'+'+10})}
+      if(got.length){caught+=got.length;score+=10*got.length*got.length;S.stab(t,CH[curBar].map(m=>m+12));want=Math.min(8,3+Math.floor(caught/3));setBpm(bpmFor());at(t,stats)}
+      trail=[{x,y}]}
+    else{trail.push({x,y});if(trail.length>MAXT)trail.shift()}
+    S.pluck(t,CH[curBar][steps++%3]+12,.9)}
+  function onBeat(b,t){if(over)return;const idx=b%4;curBar=Math.floor(b/4)%4;
+    if(idx===0&&en.length<want)spawnOne(t);
+    st.beat(b,t,doPlayer);
+    for(const e of en.slice())if(!over&&en.includes(e)&&acts(e.type,idx,b))stepE(e,b,t,ctx);
+    playParts(b,t,new Set(en.map(e=>e.type)),band)}
+  function input(d){if(!over&&CLK.on&&d)st.input(d,doPlayer)}
+  function draw(now){
+    const sh=shakeFor(pl,now);g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
+    checker(C,R,bx,by,cs);
+    if(CLK.on){const v=vis(now),k=Math.max(0,1-v.ph*3);if(k>0){g.globalAlpha=k*.06;g.fillStyle=P.acc;rr(bx,by,cs*C,cs*R,8);g.fill();g.globalAlpha=1}}
+    trail.forEach((c,i)=>{if(i<trail.length-1)tile(c.x,c.y,bx,by,cs,P.acc,.08+.22*(i/trail.length),cs*.18)});
+    if(trail.length>1){const pts=trail.slice();const p=epos(pl,now);pts[pts.length-1]={x:p.x,y:p.y};trailLine(pts,bx,by,cs,cs*.2,P.acc,.9)}
+    if(trail.length>=MAXT-3){const c=trail[0];g.globalAlpha=.6;g.strokeStyle=P.acc;g.lineWidth=2;g.setLineDash([3,3]);rr(bx+c.x*cs+3,by+c.y*cs+3,cs-6,cs-6,6);g.stroke();g.setLineDash([]);g.globalAlpha=1}
+    if(CLK.on&&!over){drawBlastWarn(en,st.curB,OOB,bx,by,cs);drawArrows(en,st.curB,ctx,bx,by,cs,(x,y)=>same({x,y},pl)||trail.slice(0,-1).some(c=>c.x===x&&c.y===y))}
+    for(const e of en)drawE(e,now,bx,by,cs,false);
+    drawPlayer(pl,now,bx,by,cs);
+    drawFx(fx,now,bx,by,cs);
+    g.restore();
+    const ty=Math.max(22,by-22);beatDots(now,ty);
+    if(band.size)label(band.size+' in band',bx+cs*C-4,ty,13,P.acc,'right',650)}
+  return{name:'Catch',title:'Loop Catch',blurb:'Your last steps leave a trail. Step back onto it to close a loop and catch every instrument inside. Anything that walks across your trail cuts it.',
+    reset,start,layout,onBeat,draw,down:(x,y)=>input(tapDir(x,y,pl,bx,by,cs)),key:k=>input(KEYS[k]),dbg:()=>({hearts,score,caught,over,pl,en,trail,band:[...band]}),tray:false};
+}
+
+// =====================================================================
+// Loop Plan: plan eight steps over two bars; close a loop in your plan to catch what is inside on that beat
+function makeLoopPlan(){
+  const C=7,R=9,I=(x,y)=>y*C+x,K=8,PLAN_BARS=2,ROWN=[84,81,79,76,74,72,69,67,64];
+  const COL={hopper:'hat',turret:'kick',drifter:'bass'};
+  let level=1,hearts=3,score=0,pl=null,en=[],phase='intro',planLeft=0,ready=false,path=[],sim=null,trail=[],over=false,fx=[],cycle=0,curB=-1,playK=0,bx=0,by=0,cs=40,dragging=false,downTile=null,downAct='',moved=false;
+  const readyBtn=document.getElementById('ready');
+  function bpmFor(l){return Math.min(116,84+(l-1)*4)}
+  function stats(){setStats([['Level',level],['HP',hearts],['Score',score]])}
+  function spawn(){en=[];const L=level;
+    const list=L===1?['hopper','hopper']:L===2?['hopper','turret']:L===3?['hopper','hopper','turret']:L===4?['hopper','turret','drifter']:['hopper','hopper','turret','drifter'].concat(L>=6?['turret']:[]);
+    for(const type of list)for(let k=0;k<120;k++){const x=1+ri(C-2),y=1+ri(R-4);
+      if(en.some(e=>e.x===x&&e.y===y)||Math.abs(x-pl.x)+Math.abs(y-pl.y)<3||trail.some(c=>c.x===x&&c.y===y))continue;if(type==='turret'&&(x===pl.x||y===pl.y))continue;
+      en.push({type,x,y,px:x,py:y,mt:0,alive:true,plan:[],strikes:[],deadT:-9});break}}
+  function plan(){cycle++;const KY=(x,y)=>x+','+y,taken=Array.from({length:K},()=>new Set());
+    for(const e of en)if(e.type==='turret')for(let k=0;k<K;k++)taken[k].add(KY(e.x,e.y));
+    for(const e of en){e.strikes=Array.from({length:K},()=>[]);
+      if(e.type==='turret'){e.plan=Array.from({length:K},()=>({x:e.x,y:e.y}));const row=[],col=[];for(let x=0;x<C;x++)if(x!==e.x)row.push({x,y:e.y});for(let y=0;y<R;y++)if(y!==e.y)col.push({x:e.x,y});
+        if(cycle%2){e.strikes[1]=row;e.strikes[5]=col}else{e.strikes[1]=col;e.strikes[5]=row}continue}
+      let p={x:e.x,y:e.y};e.plan=[];
+      for(let k=0;k<K;k++){let n=p;const go=e.type==='hopper'?k%2===1:(k===3||k===7);
+        if(go){const s=e.type==='drifter'?2:1,o=[];for(const d of D4){const x=p.x+d[0]*s,y=p.y+d[1]*s;if(x<0||y<0||x>=C||y>=R||taken[k].has(KY(x,y))||(x===pl.x&&y===pl.y))continue;o.push({x,y,dd:Math.abs(x-pl.x)+Math.abs(y-pl.y)})}
+          if(o.length){if(e.type==='drifter'&&Math.random()<.6){o.sort((a,b)=>b.dd-a.dd);n=o[0]}else n=o[ri(o.length)]}}
+        if(n!==p&&taken[k].has(KY(n.x,n.y)))n=p;n={x:n.x,y:n.y};taken[k].add(KY(n.x,n.y));e.plan.push(n);p=n}}}
+  const edge=c=>c.x===0||c.y===0||c.x===C-1||c.y===R-1;
+  // everything the barrier cuts off from the biggest open area
+  function cutOff(bar){const regs=regions(C,R,(x,y)=>!bar.has(I(x,y)));if(regs.length<2)return[];let big=0;regs.forEach((r,i)=>{if(r.length>regs[big].length)big=i});return regs.filter((r,i)=>i!==big).flat()}
+  // one simulation drives the preview and the real bars
+  function simulate(path){
+    const r={pp:[],dead:en.map(e=>e.alive?-1:-2),hit:Array(K).fill(false),loops:[],cuts:[],trails:[]};
+    let p={x:pl.x,y:pl.y},tr=trail.length?trail.map(c=>({x:c.x,y:c.y})):[{x:pl.x,y:pl.y}];
+    for(let k=0;k<K;k++){const prev=p,mv=!!path[k];if(mv)p={x:path[k].x,y:path[k].y};r.pp.push(p);
+      const alive=en.map((e,i)=>r.dead[i]===-1);
+      en.forEach((e,i)=>{if(!alive[i])return;const q=e.plan[k],qp=k?e.plan[k-1]:{x:e.x,y:e.y};if(same(q,p)||(same(qp,p)&&same(q,prev)))r.hit[k]=true});
+      // a plan closes when it steps back onto its own trail, or reaches the board edge again after leaving it
+      let loop=null;
+      if(mv){const ci=tr.findIndex(c=>same(c,p));
+        if(ci>=0)loop=tr.slice(ci);
+        else if(edge(p)&&tr.some(c=>!edge(c))){const ei=tr.findIndex(edge);if(ei>=0)loop=tr.slice(ei).concat([p])}}
+      if(loop){const bar=new Set(loop.map(c=>I(c.x,c.y)));
+        const broken=en.some((e,i)=>alive[i]&&bar.has(I(e.plan[k].x,e.plan[k].y))&&!same(e.plan[k],p));
+        if(broken)r.cuts.push(k);
+        else{const inside=cutOff(bar),ins=new Set(inside);en.forEach((e,i)=>{if(alive[i]&&ins.has(I(e.plan[k].x,e.plan[k].y)))r.dead[i]=k});if(inside.length)r.loops.push({k,cells:loop,inside})}
+        tr=[p]}
+      else{if(mv)tr.push(p);if(en.some((e,i)=>alive[i]&&tr.slice(0,-1).some(c=>same(c,e.plan[k])))){r.cuts.push(k);tr=[p]}}
+      en.forEach((e,i)=>{if(r.dead[i]===-1&&e.strikes[k].some(s=>same(s,p)))r.hit[k]=true});
+      r.trails.push(tr.slice())}
+    return r}
+  function setTray(){readyBtn.classList.toggle('on',!!ready);document.getElementById('tray').style.display=game===self&&phase==='plan'&&!over?'flex':'none'}
+  function reset(){level=1;hearts=3;score=0;over=false;fx=[];cycle=0;phase='intro';path=[];ready=false;curB=-1;pl={x:3,y:R-1,px:3,py:R-1,mt:0,hitT:-9};trail=[{x:3,y:R-1}];spawn();plan();sim=simulate(path);stats()}
+  function start(){reset();clockStart(bpmFor(level));setTray()}
+  function layout(){const top=58,bot=76;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
+  function startPlan(){plan();path=[];sim=simulate(path);planLeft=PLAN_BARS;ready=false;phase='plan';setTray()}
+  function startPlay(){sim=simulate(path);phase='play';playK=0;dragging=false;setTray()}
+  function hurt(t){pl.hitT=t;hearts--;S.thud(t);if(hearts<=0&&!over){over=true;at(t+.8,()=>gameOver('Level '+level+', score '+score,start))}}
+  function finishPlay(t){trail=sim.trails[K-1].slice();en=en.filter(e=>e.alive);
+    if(!en.length){level++;hearts=Math.min(3,hearts+1);setBpm(bpmFor(level));trail=[{x:pl.x,y:pl.y}];spawn();fx.push({k:'text',text:'Level '+level,t,col:P.ink})}}
+  function resolveStep(k,t){const bar=Math.floor(curB/4)%4,p=sim.pp[k];
+    if(!same(p,pl)){pl.px=pl.x;pl.py=pl.y;pl.x=p.x;pl.y=p.y;pl.mt=t;S.lead(t,ROWN[p.y],CLK.spb*.8)}
+    let hop=false;en.forEach(e=>{if(!e.alive)return;const q=e.plan[k];if(!same(q,e)){e.px=e.x;e.py=e.y;e.x=q.x;e.y=q.y;e.mt=t;hop=true}});
+    if(hop)S.wood(t,88,.7);
+    const lp=sim.loops.find(l=>l.k===k);
+    if(lp)fx.push({k:'tiles',tiles:lp.cells.concat(lp.inside.map(j=>({x:j%C,y:(j-j%C)/C}))),t,col:P.gold});
+    let n=0;en.forEach((e,i)=>{if(e.alive&&sim.dead[i]===k){e.alive=false;e.deadT=t;n++;fx.push({k:'pop',x:e.x,y:e.y,t,col:P[COL[e.type]],text:'+band'})}});
+    if(n){score+=100*n*n*level;S.stab(t,CH[bar].map(m=>m+12))}
+    if(sim.cuts.includes(k)){const prevTr=k?sim.trails[k-1]:trail;fx.push({k:'tiles',tiles:prevTr,t,col:P.bad});S.wood(t,60)}
+    let any=false;for(const e of en)if(e.alive&&e.strikes[k].length){any=true;fx.push({k:'tiles',tiles:e.strikes[k],t,col:P.bad})}
+    if(any)S.clap(t);
+    if(sim.hit[k])hurt(t);
+    at(t,stats)}
+  function beatsLeft(b){const idx=b%4,eff=ready?1:planLeft;return (eff-1)*4+(4-idx)}
+  function onBeat(b,t){if(over)return;const idx=b%4;curB=b;
+    if(idx===0){if(phase==='play'&&playK>=K){finishPlay(t);startPlan()}else if(phase==='plan'){planLeft--;if(planLeft<=0||ready)startPlay()}else if(phase==='intro')startPlan()}
+    if(phase==='play'&&playK<K){resolveStep(playK,t);playK++}
+    const spb=CLK.spb,ch=CH[Math.floor(b/4)%4];
+    if(idx%2===0)S.kick(t,.8);S.hat(t+spb/2,.7);
+    if(phase==='play'){S.hat(t,.5);if(idx%2===1)S.snare(t,.5)}
+    S.bass(t,ch[0]-24,spb*.4,.8);S.bass(t+spb/2,ch[0]-12,spb*.35,.55);
+    if(phase==='plan'){const L=beatsLeft(b);if(L<=4)S.wood(t,L===1?100:93,.9)}}
+  // planning input: tap or drag through tiles next to the end of your plan; stepping onto your own trail closes a loop
+  function tileAt(x,y){const tx=Math.floor((x-bx)/cs),ty=Math.floor((y-by)/cs);return tx>=0&&ty>=0&&tx<C&&ty<R?{x:tx,y:ty}:null}
+  function endPos(){return path.length?path[path.length-1]:pl}
+  function changed(grew){sim=simulate(path);if(grew&&ac){const q=path[path.length-1];S.pluck(ac.currentTime+.01,ROWN[q.y],.8)}}
+  function add(t){if(path.length<K&&adj(t,endPos())){path.push(t);changed(true);return true}return false}
+  function tap(t){if(add(t))return;if(same(t,pl)){path=[];changed();return}const i=path.findIndex(p=>same(p,t));if(i>=0){path=path.slice(0,i+1);changed()}}
+  function drag(t){const prev=path.length>=2?path[path.length-2]:pl;if(path.length&&same(t,prev)){path.pop();changed();return}add(t)}
+  function down(x,y){if(phase!=='plan')return;const t=tileAt(x,y);if(!t)return;dragging=true;moved=false;downTile=t;if(same(t,endPos()))downAct='end';else{downAct='tap';tap(t)}}
+  function move(x,y){if(!dragging||phase!=='plan')return;const t=tileAt(x,y);if(!t||same(t,downTile))return;moved=true;downTile=t;drag(t)}
+  function up(){if(!dragging)return;dragging=false;if(!moved&&downAct==='end'&&path.length&&phase==='plan'){path.pop();changed()}}
+  readyBtn.onclick=()=>{if(phase==='plan'&&game===self){ready=true;readyBtn.classList.add('on')}};
+  function draw(now){
+    const sh=shakeFor(pl,now),planning=phase==='plan'||phase==='intro',step=phase==='play'?playK-1:-1;
+    g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
+    checker(C,R,bx,by,cs);
+    // the loops your plan closes, with what they catch
+    if(sim&&planning)for(const l of sim.loops){for(const j of l.inside)tile(j%C,(j-j%C)/C,bx,by,cs,P.gold,.22)}
+    // strike tiles, numbered by beat (1 to 8)
+    g.font='600 10px Inter,system-ui,sans-serif';
+    en.forEach((e,i)=>{if(!e.alive)return;for(let k=0;k<K;k++){if(!e.strikes[k].length||(phase==='play'&&k<=step))continue;
+      const dead=sim&&sim.dead[i]!==-1&&sim.dead[i]<=k,a=dead?.05:(phase==='play'&&k===step+1?.3:.15);
+      for(const q of e.strikes[k]){tile(q.x,q.y,bx,by,cs,P.bad,a);if(!dead){g.globalAlpha=.85;g.fillStyle=P.bad;g.textAlign='right';g.textBaseline='top';g.fillText(String(k+1),bx+(q.x+1)*cs-5,by+q.y*cs+4);g.globalAlpha=1}}}});
+    // the trail you already hold
+    const held=phase==='play'&&step>=0?sim.trails[step]:trail;
+    for(const c of held)tile(c.x,c.y,bx,by,cs,P.acc,.2,cs*.18);
+    if(held.length>1)trailLine(held,bx,by,cs,cs*.16,P.acc,.55);
+    // enemy routes
+    if(planning)en.forEach((e,i)=>{if(!e.alive||e.type==='turret')return;const col=P[COL[e.type]],dk=sim?sim.dead[i]:-1;
+      g.strokeStyle=col;g.lineWidth=2;g.setLineDash([4,4]);g.globalAlpha=.7;g.beginPath();g.moveTo(bx+(e.x+.5)*cs,by+(e.y+.5)*cs);
+      for(let k=0;k<K;k++){if(dk>=0&&k>dk)break;const q=e.plan[k];g.lineTo(bx+(q.x+.5)*cs,by+(q.y+.5)*cs)}g.stroke();g.setLineDash([]);g.globalAlpha=1;
+      let last={x:e.x,y:e.y};for(let k=0;k<K;k++){if(dk>=0&&k>dk)break;const q=e.plan[k];if(!same(q,last)){const cx=bx+(q.x+.5)*cs,cy=by+(q.y+.5)*cs;circle(cx,cy,7,col);label(String(k+1),cx,cy+.5,9,P.bg,'center',700)}last=q}});
+    // your plan
+    if(path.length){const from=phase==='play'?step+1:0;g.strokeStyle=P.acc;g.lineWidth=4;g.lineCap='round';g.lineJoin='round';g.globalAlpha=phase==='play'?.35:.9;g.beginPath();
+      g.moveTo(bx+(pl.x+.5)*cs,by+(pl.y+.5)*cs);for(let k=from;k<path.length;k++)g.lineTo(bx+(path[k].x+.5)*cs,by+(path[k].y+.5)*cs);g.stroke();g.globalAlpha=1;
+      for(let k=from;k<path.length;k++){const q=path[k],cx=bx+(q.x+.5)*cs,cy=by+(q.y+.5)*cs,hit=sim.hit[k],closes=sim.loops.some(l=>l.k===k),cutK=sim.cuts.includes(k),kill=sim.dead.some(d=>d===k);
+        const col=hit||cutK?P.bad:kill?P.gold:closes?P.gold:P.acc;
+        if(hit||kill||cutK){g.strokeStyle=col;g.lineWidth=3;g.beginPath();g.arc(cx,cy,cs*.36,0,7);g.stroke()}
+        circle(cx,cy,9,col);label(String(k+1),cx,cy+.5,10,'#fff','center',700)}}
+    // enemies
+    for(const e of en){const da=now-e.deadT;if(!e.alive&&da>=0&&da>.3)continue;const p=epos(e,now),cx=bx+(p.x+.5)*cs,cy=by+(p.y+.5)*cs,s=cs*.28,col=P[COL[e.type]];
+      g.globalAlpha=!e.alive&&da>=0?1-da/.3:1;
+      if(e.type==='hopper')circle(cx,cy,s*.85,col);
+      else if(e.type==='turret')shape('thumper',cx,cy,s,col);
+      else shape('rumbler',cx,cy,s*.9,col);
+      g.globalAlpha=1}
+    drawPlayer(pl,now,bx,by,cs);
+    drawFx(fx,now,bx,by,cs);
+    g.restore();
+    if(CLK.on&&!over){const ty=Math.max(22,by-22);label(phase==='play'?'Play':'Plan',bx+4,ty,15,phase==='play'?P.acc:P.ink,'left',650);
+      beatDots(now,ty,phase==='play'?P.acc:P.mute);
+      if(phase==='plan'&&curB>=0){const L=beatsLeft(curB);label(String(L),bx+cs*C-4,ty,L<=4?20:15,L<=4?P.bad:P.mute,'right',700)}
+      else if(phase==='play')label((playK<=4?1:2)+' / 2',bx+cs*C-4,ty,13,P.mute,'right',650)}}
+  const self={name:'Loop Plan',title:'Loop Plan',blurb:'Draw up to eight steps while the count runs down. They play out over the next two bars. Close a loop, or run edge to edge, to cut off a piece of the board and catch what is in it. Stay off red tiles.',
+    reset,start,layout,onBeat,draw,down,move,up,tray:true,dbg:()=>({level,hearts,score,over,phase,pl,en,path,sim,trail}),setPath:p=>{path=p;sim=simulate(path)}};
+  return self;
+}
+
+// ---------------- shell
+const statsEl=document.getElementById('stats');
+function setStats(a){statsEl.innerHTML=a.map(([k,v])=>`<span><i>${k}</i>${v}</span>`).join('')}
+const ov=document.getElementById('ov'),ovT=ov.querySelector('.t'),ovS=ov.querySelector('.s'),ovB=ov.querySelector('button');let ovCb=null;
+function showOv(t,s,b,cb){ovT.textContent=t;ovS.textContent=s;ovB.textContent=b;ovCb=cb;ov.style.display='flex'}
+ovB.onclick=()=>{audioInit();ov.style.display='none';const f=ovCb;ovCb=null;if(f)f()};
+const games=[makeTerritory('paper'),makeTerritory('cut'),makeLoopCatch(),makeLoopPlan()];
+let gi=clamp(parseInt(Q.get('g')||'0',10)||0,0,games.length-1),game=games[gi];
+const nav=document.getElementById('nav');
+games.forEach((G,i)=>{const b=document.createElement('button');b.textContent=G.name;b.onclick=()=>select(i);nav.appendChild(b)});
+function select(i){CLK.on=false;later.length=0;gi=i;game=games[i];[...nav.children].forEach((b,j)=>b.classList.toggle('on',j===i));
+  document.getElementById('name').textContent=game.title;document.getElementById('tray').style.display='none';game.reset();game.layout();showOv(game.title,game.blurb,'Play',()=>game.start())}
+function resize(){const r=stage.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);cv.style.width=W+'px';cv.style.height=H+'px';g.setTransform(d,0,0,d,0,0);game.layout()}
+addEventListener('resize',resize);
+cv.addEventListener('pointerdown',e=>{if(ov.style.display!=='none')return;try{cv.setPointerCapture(e.pointerId)}catch(_){}game.down&&game.down(e.offsetX,e.offsetY)});
+cv.addEventListener('pointermove',e=>{game.move&&game.move(e.offsetX,e.offsetY)});
+cv.addEventListener('pointerup',e=>{game.up&&game.up(e.offsetX,e.offsetY)});
+cv.addEventListener('pointercancel',e=>{game.up&&game.up(e.offsetX,e.offsetY)});
+addEventListener('keydown',e=>{if(e.key.startsWith('Arrow'))e.preventDefault();game.key&&game.key(e.key)});
+function frame(){requestAnimationFrame(frame);const now=ac?ac.currentTime:0;
+  if(ac){tickClock();for(let i=later.length-1;i>=0;i--)if(now>=later[i].t){const f=later[i].fn;later.splice(i,1);f()}}
+  g.fillStyle=P.bg;g.fillRect(0,0,W,H);game.draw(now)}
+select(gi);resize();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
