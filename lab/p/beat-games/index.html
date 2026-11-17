@@ -27,7 +27,7 @@ button{font:inherit;border:1px solid var(--line);background:var(--field);color:v
 #tray button{pointer-events:auto;min-width:140px}
 #tray button.on{background:var(--acc);color:#fff;border-color:transparent}
 nav{display:flex;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);flex:none}
-nav button{flex:1;min-width:0;border:0;border-radius:0;background:none;color:var(--mute);font-size:12px;font-weight:600;padding:14px 0;white-space:nowrap}
+nav button{flex:1;min-width:0;border:0;border-radius:0;background:none;color:var(--mute);font-size:11.5px;font-weight:600;padding:14px 0;white-space:nowrap}
 nav button.on{color:var(--ink);box-shadow:inset 0 2px 0 var(--acc)}
 </style>
 </head>
@@ -144,9 +144,15 @@ function stepE(e,b,t,ctx){const it=intentE(e,b%4,b,ctx);e.beatT=t;if(!it)return;
   if(it.x===ctx.pl.x&&it.y===ctx.pl.y){if(e.type!=='singer'){e.lunge={x:it.x-e.x,y:it.y-e.y,t};ctx.hitPlayer(e,t)}return}
   if(ctx.blocked(it.x,it.y))return;
   if(it.rev)e.dir=[-e.dir[0],-e.dir[1]];
+  (e.hist||(e.hist=[])).push({x:e.x,y:e.y});if(e.hist.length>5)e.hist.shift();
   e.px=e.x;e.py=e.y;e.x=it.x;e.y=it.y;e.mt=t;
   if(e.type==='ticker'&&++e.ls>=2){e.ls=0;e.li=(e.li+1)%4}
   ctx.entered(e,t)}
+// where each instrument has just been, fading out, so its pattern is easy to read
+const YCOL={ticker:'#8fd16a',thumper:'#b5b864',snapper:'#e8433f',rumbler:'#6fb84c',singer:'#5aa9e6'};
+function drawMotion(en,now,bx,by,cs,yard){for(const e of en){const h=e.hist;if(!h||!h.length)continue;const col=yard?YCOL[e.type]:P[COLT[e.type]],p=epos(e,now),pts=h.concat([{x:p.x,y:p.y}]);
+  g.globalAlpha=.16;g.strokeStyle=col;g.lineWidth=cs*.05;g.lineCap='round';g.lineJoin='round';g.setLineDash([cs*.05,cs*.13]);g.beginPath();pts.forEach((q,i)=>{const x=bx+(q.x+.5)*cs,y=by+(q.y+.5)*cs;i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();g.setLineDash([]);
+  h.forEach((q,i)=>{g.globalAlpha=.06+.22*(i+1)/h.length;circle(bx+(q.x+.5)*cs,by+(q.y+.5)*cs,cs*.065,col)});g.globalAlpha=1}}
 function blastOf(e,stop){const o=[];for(const d of D4){let x=e.x+d[0],y=e.y+d[1];while(!stop(x,y)){o.push({x,y});x+=d[0];y+=d[1]}}return o}
 // ---------------- the band you build: each catch adds a part or makes one richer, up to the full ensemble
 const PARTS=['ticker','thumper','snapper','rumbler','singer'],PNAME={ticker:'Hats',thumper:'Kick',snapper:'Snare',rumbler:'Bass',singer:'Melody'};
@@ -181,9 +187,9 @@ function stinger(ty,t,isNew){const spb=CLK.spb,q=spb/4,e=q/2,ch=CH[Math.floor(Ma
     case'singer':[ch[0]+12,ch[1]+12,ch[2]+12,ch[0]+24].forEach((m,i)=>S.lead(t+i*q,m,q*1.3,.9));break}
   ch.map(m=>m+24).forEach((m,i)=>S.bell(t+i*.04,m,isNew?1:.6));
   if(isNew)S.crash(t,.6)}
-function joinBand(crew,ty,t,fx,x,y,full){full=full||5;const was=crew.lv[ty];crew.lv[ty]=Math.min(3,was+1);
+function joinBand(crew,ty,t,fx,x,y,full,names){full=full||5;names=names||PNAME;const was=crew.lv[ty];crew.lv[ty]=Math.min(3,was+1);
   stinger(ty,t,!was);
-  fx.push({k:'pop',x,y,t,col:P[COLT[ty]],text:was?PNAME[ty]+' up':PNAME[ty]+' joins'});
+  fx.push({k:'pop',x,y,t,col:P[COLT[ty]],text:was?names[ty]+' up':names[ty]+' joins'});
   if(!crew.full&&crewSize(crew)>=full){crew.full=true;fx.push({k:'text',text:'Full band',t:t+.2,col:P.acc});S.crash(t+CLK.spb,1)}}
 // the lineup: one mark per part, lit once it is in your band, dots for how rich it is
 function drawLineup(crew,xr,y,parts){parts=parts||PARTS;parts.slice().reverse().forEach((ty,i)=>{const cx=xr-6-i*20,lv=crew.lv[ty];
@@ -230,13 +236,53 @@ function tapDir(x,y,pl,bx,by,cs){const dx=x-(bx+(pl.x+.5)*cs),dy=y-(by+(pl.y+.5)
 const KEYS={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
 function gameOver(text,start){CLK.on=false;document.getElementById('tray').style.display='none';showOv('Out of hearts',text,'Play again',start)}
 
+// ---------------- Backyard Band art: everything drawn in code
+const YNAME={ticker:'Cricket',thumper:'Toad',snapper:'Woodpecker',rumbler:'Bullfrog',singer:'Songbird'};
+const PETALS=['#f7a8c4','#ffd36e','#c9a8ff','#ff8f8f','#9fe0ff'];
+function hsh(x,y){let h=(x*374761393+y*668265263)|0;h=Math.imul(h^(h>>>13),1274126177);return ((h^(h>>>16))>>>0)/4294967295}
+function eyes(x,y,r){g.fillStyle='#e9d36a';g.beginPath();g.arc(x,y,r,0,7);g.fill();g.fillStyle='#111';g.beginPath();g.arc(x,y,r*.5,0,7);g.fill()}
+function drawCritter(type,cx,cy,s,blow){g.save();g.translate(cx,cy);
+  if(type==='ticker'){ // cricket
+    g.strokeStyle='#5d9a3e';g.lineWidth=Math.max(1,s*.09);g.lineCap='round';g.beginPath();g.moveTo(-s*.15,-s*.6);g.quadraticCurveTo(-s*.5,-s*1.4,-s*1.0,-s*1.2);g.moveTo(s*.15,-s*.6);g.quadraticCurveTo(s*.5,-s*1.4,s*1.0,-s*1.2);g.stroke();
+    g.lineWidth=Math.max(1.5,s*.14);g.beginPath();g.moveTo(-s*.3,s*.2);g.lineTo(-s*.9,-s*.15);g.lineTo(-s*.75,s*.75);g.moveTo(s*.3,s*.2);g.lineTo(s*.9,-s*.15);g.lineTo(s*.75,s*.75);g.stroke();
+    g.fillStyle='#8fd16a';g.beginPath();g.ellipse(0,s*.15,s*.38,s*.7,0,0,7);g.fill();
+    g.fillStyle='#6fb84c';g.beginPath();g.arc(0,-s*.55,s*.28,0,7);g.fill()}
+  else if(type==='thumper'){ // toad
+    g.fillStyle='#8c8f45';g.beginPath();g.ellipse(0,s*.1,s*.95,s*.8,0,0,7);g.fill();
+    g.fillStyle='#6f7236';for(const [x,y,r] of [[-.4,.25,.16],[.38,.35,.12],[.08,0,.11],[-.08,.55,.1]]){g.beginPath();g.arc(x*s,y*s,r*s,0,7);g.fill()}
+    eyes(-s*.42,-s*.52,s*.24);eyes(s*.42,-s*.52,s*.24)}
+  else if(type==='snapper'){ // woodpecker
+    g.fillStyle='#1e2228';g.beginPath();g.ellipse(0,s*.2,s*.55,s*.8,0,0,7);g.fill();
+    g.fillStyle='#f2f2ee';g.beginPath();g.ellipse(0,s*.38,s*.28,s*.48,0,0,7);g.fill();
+    g.fillStyle='#1e2228';g.beginPath();g.arc(0,-s*.55,s*.38,0,7);g.fill();
+    g.fillStyle='#e8433f';g.beginPath();g.moveTo(-s*.25,-s*.78);g.lineTo(-s*.02,-s*1.2);g.lineTo(s*.25,-s*.78);g.closePath();g.fill();
+    g.fillStyle='#d9b26a';g.beginPath();g.moveTo(s*.3,-s*.62);g.lineTo(s*.9,-s*.5);g.lineTo(s*.3,-s*.4);g.closePath();g.fill();
+    g.fillStyle='#fff';g.beginPath();g.arc(s*.12,-s*.6,s*.09,0,7);g.fill()}
+  else if(type==='rumbler'){ // bullfrog
+    g.fillStyle='#4f8a3c';g.beginPath();g.ellipse(0,s*.1,s*1.25,s*.95,0,0,7);g.fill();
+    g.fillStyle='#3f7330';for(const sx of [-1,1]){g.beginPath();g.ellipse(sx*s*.95,s*.65,s*.35,s*.2,sx*.5,0,7);g.fill()}
+    g.fillStyle='#d6e39a';g.beginPath();g.arc(0,s*.42,s*(.32+.5*(blow||0)),0,7);g.fill();
+    eyes(-s*.55,-s*.6,s*.28);eyes(s*.55,-s*.6,s*.28)}
+  else{ // songbird
+    g.fillStyle='#3f7fc4';g.beginPath();g.moveTo(-s*.5,s*.35);g.lineTo(-s*1.1,s*.75);g.lineTo(-s*.7,s*.1);g.closePath();g.fill();
+    g.fillStyle='#5aa9e6';g.beginPath();g.arc(0,0,s*.75,0,7);g.fill();
+    g.fillStyle='#ffd36e';g.beginPath();g.ellipse(s*.12,s*.25,s*.42,s*.4,0,0,7);g.fill();
+    g.fillStyle='#ff9f43';g.beginPath();g.moveTo(s*.65,-s*.18);g.lineTo(s*1.08,-s*.04);g.lineTo(s*.65,s*.1);g.closePath();g.fill();
+    g.fillStyle='#111';g.beginPath();g.arc(s*.35,-s*.24,s*.1,0,7);g.fill()}
+  g.restore()}
+function drawGardener(pl,now,bx,by,cs){const p=epos(pl,now);let ox=0,oy=0;if(pl.bump){const a=now-pl.bump.t;if(a>=0&&a<.16){const k=Math.sin(Math.PI*a/.16)*.28;ox=pl.bump.x*k;oy=pl.bump.y*k}}
+  const cx=bx+(p.x+.5+ox)*cs,cy=by+(p.y+.5+oy)*cs,ha=now-pl.hitT,hurt=ha>=0&&ha<.3;
+  g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(cx+2,cy+4,cs*.36,cs*.3,0,0,7);g.fill();
+  circle(cx,cy,cs*.36,hurt?'#ff8f8f':'#e8c57e');g.strokeStyle=hurt?'#d96060':'#c19a52';g.lineWidth=1.5;g.beginPath();g.arc(cx,cy,cs*.28,0,7);g.stroke();
+  circle(cx,cy,cs*.2,hurt?'#e56b6b':'#d4a659');g.strokeStyle='#8a3b2a';g.lineWidth=3;g.beginPath();g.arc(cx,cy,cs*.2,0,7);g.stroke()}
+
 // =====================================================================
 // Band Paper ('paper') and Cut the Room ('cut'): your trail claims ground, caught instruments join your band
 function makeTerritory(mode){
-  const C=9,R=13,N=C*R,I=(x,y)=>y*C+x,GOAL=mode==='paper'?.55:.7;
+  const C=9,R=13,N=C*R,I=(x,y)=>y*C+x,GOAL=mode==='paper'?.55:.7,YD=mode==='yard';
   const ROOMS=[['ticker','ticker','snapper'],['ticker','snapper','thumper'],['thumper','snapper','ticker','rumbler'],['thumper','ticker','rumbler','singer']];
   const POOL=['thumper','snapper','ticker','rumbler','ticker','snapper'];
-  let room=1,hearts=3,score=0,over=false,fx=[],own=new Uint8Array(N),init=0,trail=[],tset=new Set(),from={x:0,y:0},en=[],band=[],crew=makeCrew(),pl=null,clearing=false,steps=0,curBar=0,bx=0,by=0,cs=40;
+  let room=1,hearts=3,score=0,over=false,fx=[],own=new Uint8Array(N),init=0,trail=[],tset=new Set(),from={x:0,y:0},en=[],band=[],crew=makeCrew(),kind=new Uint8Array(N),pl=null,clearing=false,steps=0,curBar=0,bx=0,by=0,cs=40;
   const st=makeStepper();
   const OOB=(x,y)=>x<0||y<0||x>=C||y>=R;
   const ctx={blocked:(x,y)=>OOB(x,y)||own[I(x,y)]===1||en.some(e=>e.x===x&&e.y===y),get pl(){return pl},
@@ -247,34 +293,34 @@ function makeTerritory(mode){
   function bpmFor(r){return Math.min(132,90+r*5)}
   function count(){let n=0;for(let i=0;i<N;i++)n+=own[i];return n}
   function progress(){return (count()-init)/(N-init)}
-  function stats(){setStats([['Room',room],['HP',hearts],['Score',score]])}
+  function stats(){setStats([[YD?'Yard':'Room',room],['HP',hearts],['Score',score]])}
   function newRoom(){
-    own=new Uint8Array(N);trail=[];tset=new Set();en=[];band=[];clearing=false;
+    own=new Uint8Array(N);kind=new Uint8Array(N);trail=[];tset=new Set();en=[];band=[];clearing=false;
     if(mode==='paper'){for(let y=R-3;y<R;y++)for(let x=3;x<6;x++)own[I(x,y)]=1;pl={x:4,y:R-2}}
     else{for(let x=0;x<C;x++){own[I(x,0)]=1;own[I(x,R-1)]=1}for(let y=0;y<R;y++){own[I(0,y)]=1;own[I(C-1,y)]=1}pl={x:4,y:R-1}}
-    Object.assign(pl,{px:pl.x,py:pl.y,mt:0,hitT:-9,bump:null});from={x:pl.x,y:pl.y};init=count();
+    Object.assign(pl,{px:pl.x,py:pl.y,mt:0,hitT:-9,bump:null});from={x:pl.x,y:pl.y};init=count();for(let i=0;i<N;i++)if(own[i])kind[i]=1;
     const list=room<=ROOMS.length?ROOMS[room-1]:Array.from({length:Math.min(6,2+Math.floor(room/2))},()=>POOL[ri(POOL.length)]).concat(['singer']);
     for(const type of list)for(let k=0;k<100;k++){const x=ri(C),y=ri(R-4);if(own[I(x,y)]||en.some(e=>e.x===x&&e.y===y)||Math.abs(x-pl.x)+Math.abs(y-pl.y)<5)continue;en.push(mkE(type,x,y));break}}
   function reset(){room=1;hearts=3;score=0;over=false;fx=[];steps=0;crew=makeCrew();st.reset();st.curB=-1;newRoom();stats()}
   function start(){reset();clockStart(bpmFor(room))}
-  function layout(){const top=58,bot=20;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
+  function layout(){const top=YD?112:58,bot=20;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
   function hurt(t){if(over||t-pl.hitT<.05)return;pl.hitT=t;hearts--;S.thud(t);at(t,stats);
-    if(hearts<=0){over=true;at(t+.7,()=>gameOver('Room '+room+', score '+score,start))}}
+    if(hearts<=0){over=true;at(t+.7,()=>gameOver((YD?'Yard ':'Room ')+room+', score '+score,start))}}
   function cut(t){const tl=trail.slice();hurt(t);fx.push({k:'tiles',tiles:tl,t,col:P.bad});trail=[];tset.clear();
     pl.px=pl.x;pl.py=pl.y;pl.x=from.x;pl.y=from.y;pl.mt=t+.06}
   function close(t){
-    const tl=trail.slice();for(const c of tl)own[I(c.x,c.y)]=1;trail=[];tset.clear();
+    const tl=trail.slice();for(const c of tl){own[I(c.x,c.y)]=1;kind[I(c.x,c.y)]=1}trail=[];tset.clear();
     let fill=[];
     if(mode==='paper')fill=enclosed(C,R,(x,y)=>own[I(x,y)]===1);
     else for(const reg of regions(C,R,(x,y)=>!own[I(x,y)])){const s=new Set(reg),w=en.filter(e=>s.has(I(e.x,e.y)));if(!w.length||reg.length<=4*w.length)fill.push(...reg)}
-    const fs=new Set(fill);for(const i of fill)own[i]=1;
+    const fs=new Set(fill);for(const i of fill){own[i]=1;kind[i]=2}
     const caught=[];for(const e of en.slice())if(fs.has(I(e.x,e.y))){en.splice(en.indexOf(e),1);band.push(e);caught.push(e)}
-    fx.push({k:'tiles',tiles:tl.concat(fill.map(i=>({x:i%C,y:(i-i%C)/C}))),t,col:P.acc});
+    fx.push({k:'tiles',tiles:tl.concat(fill.map(i=>({x:i%C,y:(i-i%C)/C}))),t,col:YD?'#b6f07e':P.acc});
     score+=tl.length+fill.length+caught.length*caught.length*50;
-    caught.forEach((e,i)=>joinBand(crew,e.type,t+i*CLK.spb,fx,e.x,e.y));
+    caught.forEach((e,i)=>joinBand(crew,e.type,t+i*CLK.spb,fx,e.x,e.y,5,YD?YNAME:null));
     if(!caught.length)S.pluck(t,CH[curBar][0]+24,.8);
     at(t,stats);
-    if(progress()>=GOAL||!en.length){clearing=true;fx.push({k:'text',text:'Room clear',t,col:P.acc})}}
+    if(YD?!en.length:(progress()>=GOAL||!en.length)){clearing=true;fx.push({k:'text',text:YD?'Yard done':'Room clear',t,col:P.acc})}}
   function doPlayer(d,t){
     const x=pl.x+d[0],y=pl.y+d[1];
     if(OOB(x,y)||en.some(e=>e.x===x&&e.y===y)||tset.has(I(x,y))){pl.bump={x:d[0],y:d[1],t};return}
@@ -283,13 +329,52 @@ function makeTerritory(mode){
     else{if(!trail.length)from={x:pl.px,y:pl.py};trail.push({x,y});tset.add(I(x,y))}
     S.pluck(t,CH[curBar][steps++%3]+12,.9)}
   function onBeat(b,t){if(over)return;const idx=b%4;curBar=Math.floor(b/4)%4;
-    if(clearing&&idx===0){room++;newRoom();setBpm(bpmFor(room));st.reset();fx.push({k:'text',text:'Room '+room,t,col:P.ink});at(t,stats)}
+    if(clearing&&idx===0){room++;newRoom();setBpm(bpmFor(room));st.reset();fx.push({k:'text',text:(YD?'Yard ':'Room ')+room,t,col:P.ink});at(t,stats)}
     st.beat(b,t,doPlayer);
     if(!clearing)for(const e of en.slice())if(!over&&en.includes(e)&&acts(e.type,idx,b))stepE(e,b,t,ctx);
     for(const e of band)if(acts(e.type,idx,b))e.beatT=t;
     playBand(b,t,crew,new Set(en.map(e=>e.type)))}
   function input(d){if(!over&&CLK.on&&d)st.input(d,doPlayer)}
-  function draw(now){
+  function drawYard(now){
+    const v=vis(now),sh=shakeFor(pl,now),w=cs*C,ph=Math.round(cs*1.25),py=by-ph-10;
+    g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
+    g.fillStyle='#0b140e';rr(bx-5,by-5,w+10,cs*R+10,12);g.fill();
+    for(let y=0;y<R;y++)for(let x=0;x<C;x++){const i=I(x,y),X=bx+x*cs,Y=by+y*cs,h=hsh(x,y);
+      if(own[i]&&kind[i]!==2){g.fillStyle='#1f4128';rr(X+1,Y+1,cs-2,cs-2,9);g.fill();
+        for(let j=0;j<4;j++){circle(X+cs*(.22+.56*hsh(x+j*3,y)),Y+cs*(.22+.56*hsh(x,y+j*5)),cs*(.14+.06*hsh(x+j,y+j)),j%2?'#2b5934':'#356a3e')}}
+      else if(own[i]){g.fillStyle='#3a2a1f';rr(X+1,Y+1,cs-2,cs-2,8);g.fill();
+        const n=2+Math.floor(h*2);for(let j=0;j<n;j++){const sw=Math.sin(now*2+h*9+j)*cs*.02,fx_=X+cs*(.24+.52*hsh(x*3+j,y*7))+sw,fy=Y+cs*(.24+.52*hsh(x*5,y*3+j)),col=PETALS[Math.floor(hsh(x+j*7,y*5)*5)%5],pr=cs*.075;
+          for(let k=0;k<5;k++){const a=k*1.2566+h;circle(fx_+Math.cos(a)*pr,fy+Math.sin(a)*pr,pr,col)}circle(fx_,fy,pr*.75,'#ffe9a8')}}
+      else{g.fillStyle=(x+y)%2?'#13241a':'#16281d';rr(X+1,Y+1,cs-2,cs-2,8);g.fill();
+        g.strokeStyle='#21402a';g.lineWidth=1.5;g.beginPath();for(let j=0;j<2;j++){const gx=X+cs*(.2+.6*hsh(x+j,y*2)),gy=Y+cs*(.3+.5*hsh(x*2,y+j));g.moveTo(gx,gy);g.lineTo(gx-2,gy-cs*.14);g.moveTo(gx+3,gy);g.lineTo(gx+4,gy-cs*.12)}g.stroke()}}
+    if(CLK.on){const k=Math.max(0,1-v.ph*3);if(k>0){g.globalAlpha=k*.05;g.fillStyle='#b6f07e';rr(bx,by,w,cs*R,8);g.fill();g.globalAlpha=1}}
+    // the young vine
+    if(trail.length){const pts=[from,...trail],p=epos(pl,now);pts[pts.length-1]={x:p.x,y:p.y};trailLine(pts,bx,by,cs,cs*.1,'#7bd389',1);
+      trail.forEach((c,i)=>{if(i===trail.length-1)return;const cx=bx+(c.x+.5)*cs,cy=by+(c.y+.5)*cs,sd=i%2?1:-1;g.fillStyle='#9be37a';g.beginPath();g.ellipse(cx+sd*cs*.12,cy-cs*.08,cs*.11,cs*.06,sd*.7,0,7);g.fill()})}
+    if(CLK.on&&!over&&!clearing){drawBlastWarn(en,st.curB,(x,y)=>OOB(x,y)||own[I(x,y)]===1,bx,by,cs);drawArrows(en,st.curB,ctx,bx,by,cs,(x,y)=>same({x,y},pl)||tset.has(I(x,y)))}
+    drawMotion(en,now,bx,by,cs,true);
+    for(const e of en){const p=epos(e,now);let ox=0,oy=0;if(e.lunge){const a=now-e.lunge.t;if(a>=0&&a<.2){const k=Math.sin(Math.PI*a/.2)*.35;ox=e.lunge.x*k;oy=e.lunge.y*k}}
+      const ba=now-e.beatT,hop=ba>=0&&ba<.18?Math.sin(Math.PI*ba/.18):0,cx=bx+(p.x+.5+ox)*cs,cy=by+(p.y+.5+oy)*cs;
+      g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(cx+2,cy+cs*.3,cs*.28,cs*.1,0,0,7);g.fill();
+      drawCritter(e.type,cx,cy-hop*cs*.12,cs*.3,e.type==='rumbler'?(ba>=0&&ba<.35?1-ba/.35:0):0)}
+    drawGardener(pl,now,bx,by,cs);
+    // fireflies: half blink on the beat, half on the off-beat
+    for(let i=0;i<7;i++){const fx_=bx+w*(.5+.46*Math.sin(now*.23*(1+i*.17)+i*2.1)),fy=by+cs*R*(.5+.46*Math.sin(now*.31*(1+i*.11)+i*1.3)),
+      on=CLK.on?(i%2?Math.max(0,1-Math.abs(v.ph-.5)*4):Math.max(0,1-v.ph*4)):.4,a=.15+.85*on;
+      g.globalAlpha=a*.3;circle(fx_,fy,7,'#eaff8f');g.globalAlpha=a;circle(fx_,fy,1.8,'#f6ffc9');g.globalAlpha=1}
+    drawFx(fx,now,bx,by,cs);
+    g.restore();
+    // the porch: your band, each critter bobbing on its own beat
+    g.save();g.translate(bx+w/2,py+4);g.scale(1,.35);const gr=g.createRadialGradient(0,0,4,0,0,w*.5);gr.addColorStop(0,'rgba(255,205,120,.26)');gr.addColorStop(1,'rgba(255,205,120,0)');g.fillStyle=gr;g.beginPath();g.arc(0,0,w*.5,0,7);g.fill();g.restore();
+    g.fillStyle='#4a3324';rr(bx,py,w,ph,8);g.fill();g.strokeStyle='rgba(0,0,0,.28)';g.lineWidth=1;for(let i=1;i<3;i++){g.beginPath();g.moveTo(bx+6,py+ph*i/3);g.lineTo(bx+w-6,py+ph*i/3);g.stroke()}
+    circle(bx+w/2,py+4,3.5,'#ffd98a');
+    PARTS.forEach((ty,i)=>{const cx=bx+w*(i+.5)/5,cy=py+ph*.55,lv=crew.lv[ty],bo=CLK.on&&v.b>=0&&acts(ty,v.idx,v.b)?Math.max(0,1-v.ph*3):0;
+      if(lv){drawCritter(ty,cx,cy-bo*4,ph*.24,ty==='rumbler'?bo:0);for(let k=0;k<lv;k++)circle(cx-4+k*4,py+ph-5,1.6,'#ffd98a')}
+      else{g.globalAlpha=.14;drawCritter(ty,cx,cy,ph*.24,0);g.globalAlpha=1}});
+    const ty=py-16;beatDots(now,ty,'#b6f07e');
+    label(Math.round(progress()*100)+'%',bx+4,ty,13,P.mute,'left',650);
+    if(crew.full)label('Full band',bx+w-4,ty,13,'#ffd98a','right',650)}
+  function draw(now){if(YD)return drawYard(now);
     const sh=shakeFor(pl,now);g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
     checker(C,R,bx,by,cs);
     for(let y=0;y<R;y++)for(let x=0;x<C;x++)if(own[I(x,y)])tile(x,y,bx,by,cs,P.acc,.26);
@@ -298,6 +383,7 @@ function makeTerritory(mode){
     if(trail.length){const pts=[from,...trail];const p=epos(pl,now);pts[pts.length-1]={x:p.x,y:p.y};trailLine(pts,bx,by,cs,cs*.22,P.acc,.95)}
     if(CLK.on&&!over&&!clearing){drawBlastWarn(en,st.curB,(x,y)=>OOB(x,y)||own[I(x,y)]===1,bx,by,cs);
       drawArrows(en,st.curB,ctx,bx,by,cs,(x,y)=>same({x,y},pl)||tset.has(I(x,y)))}
+    drawMotion(en,now,bx,by,cs,false);
     for(const e of band)drawE(e,now,bx,by,cs,true);
     for(const e of en)drawE(e,now,bx,by,cs,false);
     drawPlayer(pl,now,bx,by,cs);
@@ -306,10 +392,11 @@ function makeTerritory(mode){
     const ty=Math.max(22,by-22);beatDots(now,ty);
     label(Math.round(progress()*100)+'%',bx+4,ty,13,P.mute,'left',650);
     drawLineup(crew,bx+cs*C-4,ty)}
-  const blurb=mode==='paper'
+  const blurb=YD?'You are the gardener. Walk the hedges, then grow a vine across the yard. A patch with no critters blooms into a flower bed. Box a critter into a small patch and it joins the band on the porch. Catch every critter to finish the yard. Anything that steps on a young vine snaps it.'
+    :mode==='paper'
     ?'Step off your ground to draw a trail, step back on to claim everything inside. Instruments you close in join your band. Anything that touches your trail cuts it.'
     :'Walk the walls, then cut across the room. A pocket with no instruments fills in. Trap an instrument in a small pocket and it joins your band. Anything that touches your trail cuts it.';
-  return{name:mode==='paper'?'Paper':'Cut',title:mode==='paper'?'Band Paper':'Cut the Room',blurb,reset,start,layout,onBeat,draw,
+  return{name:YD?'Yard':mode==='paper'?'Paper':'Cut',title:YD?'Backyard Band':mode==='paper'?'Band Paper':'Cut the Room',blurb,reset,start,layout,onBeat,draw,
     down:(x,y)=>input(tapDir(x,y,pl,bx,by,cs)),key:k=>input(KEYS[k]),
     dbg:()=>({room,hearts,score,over,pl,en,band,crew,trail,progress:progress(),clearing,own}),tray:false};
 }
@@ -366,6 +453,7 @@ function makeLoopCatch(){
     if(trail.length>1){const pts=trail.slice();const p=epos(pl,now);pts[pts.length-1]={x:p.x,y:p.y};trailLine(pts,bx,by,cs,cs*.2,P.acc,.9)}
     if(trail.length>=MAXT-3){const c=trail[0];g.globalAlpha=.6;g.strokeStyle=P.acc;g.lineWidth=2;g.setLineDash([3,3]);rr(bx+c.x*cs+3,by+c.y*cs+3,cs-6,cs-6,6);g.stroke();g.setLineDash([]);g.globalAlpha=1}
     if(CLK.on&&!over){drawBlastWarn(en,st.curB,OOB,bx,by,cs);drawArrows(en,st.curB,ctx,bx,by,cs,(x,y)=>same({x,y},pl)||trail.slice(0,-1).some(c=>c.x===x&&c.y===y))}
+    drawMotion(en,now,bx,by,cs,false);
     for(const e of en)drawE(e,now,bx,by,cs,false);
     drawPlayer(pl,now,bx,by,cs);
     drawFx(fx,now,bx,by,cs);
@@ -768,7 +856,7 @@ function setStats(a){statsEl.innerHTML=a.map(([k,v])=>`<span><i>${k}</i>${v}</sp
 const ov=document.getElementById('ov'),ovT=ov.querySelector('.t'),ovS=ov.querySelector('.s'),ovB=ov.querySelector('button');let ovCb=null;
 function showOv(t,s,b,cb){ovT.textContent=t;ovS.textContent=s;ovB.textContent=b;ovCb=cb;ov.style.display='flex'}
 ovB.onclick=()=>{audioInit();ov.style.display='none';const f=ovCb;ovCb=null;if(f)f()};
-const games=[makeBandRoom(),makeBarPlan(),makeTerritory('paper'),makeTerritory('cut'),makeLoopCatch(),makeLoopPlan()];
+const games=[makeBandRoom(),makeBarPlan(),makeTerritory('paper'),makeTerritory('cut'),makeTerritory('yard'),makeLoopCatch(),makeLoopPlan()];
 let gi=clamp(parseInt(Q.get('g')||'0',10)||0,0,games.length-1),game=games[gi];
 const nav=document.getElementById('nav');
 games.forEach((G,i)=>{const b=document.createElement('button');b.textContent=G.name;b.onclick=()=>select(i);nav.appendChild(b)});
