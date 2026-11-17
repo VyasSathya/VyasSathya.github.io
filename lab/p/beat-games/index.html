@@ -52,20 +52,21 @@ const stage=document.getElementById('stage'),cv=document.getElementById('c'),g=c
 let W=0,H=0;
 
 // ---------------- audio
-let ac=null,out=null,noise=null;
+let ac=null,out=null,noise=null,wildBus=null,bus=null;
 function audioInit(){
   if(!ac){
     try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
     ac=new (window.AudioContext||window.webkitAudioContext)();
     const comp=ac.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;
     out=ac.createGain();out.gain.value=Q.has('mute')?0:.8;out.connect(comp);comp.connect(ac.destination);
-    const n=ac.sampleRate;noise=ac.createBuffer(1,n,n);const d=noise.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
+    const n=ac.sampleRate;noise=ac.createBuffer(1,n*2,n);const d=noise.getChannelData(0);for(let i=0;i<n*2;i++)d[i]=Math.random()*2-1;
+    wildBus=ac.createBiquadFilter();wildBus.type='lowpass';wildBus.frequency.value=650;const wg=ac.createGain();wg.gain.value=.6;wildBus.connect(wg);wg.connect(out);
   }
   if(ac.state!=='running')ac.resume();
 }
 document.addEventListener('visibilitychange',()=>{if(!ac)return;if(document.hidden)ac.suspend();else ac.resume()});
 const mf=m=>440*Math.pow(2,(m-69)/12);
-function env(node,t,a,peak,d){const gn=ac.createGain();gn.gain.setValueAtTime(.0001,t);gn.gain.exponentialRampToValueAtTime(Math.max(.0002,peak),t+a);gn.gain.exponentialRampToValueAtTime(.0001,t+a+d);node.connect(gn);gn.connect(out);return gn}
+function env(node,t,a,peak,d){const gn=ac.createGain();gn.gain.setValueAtTime(.0001,t);gn.gain.exponentialRampToValueAtTime(Math.max(.0002,peak),t+a);gn.gain.exponentialRampToValueAtTime(.0001,t+a+d);node.connect(gn);gn.connect(bus||out);return gn}
 function osc(type,f,t,dur){const o=ac.createOscillator();o.type=type;o.frequency.setValueAtTime(f,t);o.start(t);o.stop(t+dur+.06);return o}
 function nz(t,dur){const s=ac.createBufferSource();s.buffer=noise;s.start(t,Math.random()*.5);s.stop(t+dur+.06);return s}
 function filt(type,f,q){const b=ac.createBiquadFilter();b.type=type;b.frequency.value=f;if(q)b.Q.value=q;return b}
@@ -82,7 +83,13 @@ const S={
   click(t,v=1){const o=osc('sine',1800,t,.03);env(o,t,.001,.07*v,.02)},
   stab(t,ms,v=1){for(const m of ms){const o=osc('sawtooth',mf(m),t,.35),f=filt('lowpass',1800);o.connect(f);env(f,t,.004,.09*v,.3)}},
   thud(t){const o=osc('sine',95,t,.3);o.frequency.exponentialRampToValueAtTime(40,t+.25);env(o,t,.002,.8,.25);const n=nz(t,.15),f=filt('lowpass',600);n.connect(f);env(f,t,.002,.4,.12)},
-  pad(t,ms,dur){for(const m of ms){const o=osc('triangle',mf(m),t,dur);env(o,t,.15,.05,dur)}}
+  pad(t,ms,dur,v=1){for(const m of ms){const o=osc('triangle',mf(m),t,dur);env(o,t,.15,.05*v,dur)}},
+  ohat(t,v=1){const n=nz(t,.3),f=filt('highpass',6500);n.connect(f);env(f,t,.002,.13*v,.25)},
+  shaker(t,v=1){const n=nz(t,.08),f=filt('bandpass',5200,1.5);n.connect(f);env(f,t,.01,.12*v,.05)},
+  crash(t,v=1){const n=nz(t,1.4),f=filt('highpass',4200);n.connect(f);env(f,t,.002,.22*v,1.3)},
+  bell(t,m,v=1){const o=osc('sine',mf(m),t,1);env(o,t,.002,.14*v,.9);const o2=osc('sine',mf(m)*2.01,t,.5);env(o2,t,.002,.05*v,.4)},
+  slide(t,a,b,dur){const o=osc('sawtooth',mf(a),t,dur);o.frequency.exponentialRampToValueAtTime(mf(b),t+dur*.6);const f=filt('lowpass',900,3);o.connect(f);env(f,t,.005,.35,dur)},
+  subnote(t,m,dur,v=1){const o=osc('sine',mf(m),t,dur);env(o,t,.01,.35*v,dur)}
 };
 
 // ---------------- clock: game logic resolves each beat a hair early so its sounds can be scheduled exactly on the beat
@@ -141,15 +148,46 @@ function stepE(e,b,t,ctx){const it=intentE(e,b%4,b,ctx);e.beatT=t;if(!it)return;
   if(e.type==='ticker'&&++e.ls>=2){e.ls=0;e.li=(e.li+1)%4}
   ctx.entered(e,t)}
 function blastOf(e,stop){const o=[];for(const d of D4){let x=e.x+d[0],y=e.y+d[1];while(!stop(x,y)){o.push({x,y});x+=d[0];y+=d[1]}}return o}
-// wild parts play quietly, parts in your band play full
-function playParts(b,t,wild,band){const idx=b%4,ch=CH[Math.floor(b/4)%4],spb=CLK.spb,v=ty=>band.has(ty)?1:wild.has(ty)?.38:0;
-  if(!wild.size&&!band.size){S.click(t,idx?.6:1);return}
-  S.click(t,.25);
-  let k=v('ticker');if(k){S.hat(t,.7*k);S.hat(t+spb/2,k)}
-  k=v('thumper');if(k&&idx%2===0)S.kick(t,k);
-  k=v('snapper');if(k&&idx%2===1)S.snare(t,k);
-  k=v('rumbler');if(k){const r=ch[0]-24;S.bass(t,r,spb*.42,k);S.bass(t+spb/2,idx===3?r+7:r+12,spb*.4,k)}
-  k=v('singer');if(k){const m=MEL[b%16];if(m)S.lead(t,m,spb*.85,k)}}
+// ---------------- the band you build: each catch adds a part or makes one richer, up to the full ensemble
+const PARTS=['ticker','thumper','snapper','rumbler','singer'],PNAME={ticker:'Hats',thumper:'Kick',snapper:'Snare',rumbler:'Bass',singer:'Melody'};
+function makeCrew(){return{lv:{ticker:0,thumper:0,snapper:0,rumbler:0,singer:0},full:false}}
+function crewSize(c){return PARTS.filter(p=>c.lv[p]>0).length}
+function third(m){const sc=[0,2,4,5,7,9,11],pc=((m%12)+12)%12,i=sc.indexOf(pc);if(i<0)return m+3;const j=i+2;return m-pc+sc[j%7]+12*Math.floor(j/7)}
+// one part at its level: 1 plain, 2 busier, 3 full
+function part(ty,lv,b,t,v){const idx=b%4,bar=Math.floor(b/4),ch=CH[bar%4],spb=CLK.spb,h=spb/2,q=spb/4,r=ch[0]-24;
+  switch(ty){
+    case'ticker':S.hat(t,.7*v);S.hat(t+h,v);if(lv>=2){S.hat(t+q,.4*v);S.hat(t+3*q,.5*v);if(idx===3)S.ohat(t+h,.8*v)}if(lv>=3){S.shaker(t+q,.7*v);S.shaker(t+3*q,.7*v)}break;
+    case'thumper':if(idx%2===0)S.kick(t,v);if(lv>=2&&idx===1)S.kick(t+h,.75*v);if(lv>=3&&idx===3)S.kick(t+3*q,.6*v);break;
+    case'snapper':if(idx%2===1)S.snare(t,v);if(lv>=2){S.snare(t+3*q,.14*v);if(idx===2)S.snare(t+q,.1*v)}if(lv>=3){if(idx%2===1)S.clap(t,.55*v);if(bar%4===3&&idx===3)for(let i=0;i<4;i++)S.snare(t+i*q,(.25+i*.18)*v)}break;
+    case'rumbler':if(lv>=2){const L=[[0,12],[7,12],[0,7],[12,7]][idx];S.bass(t,r+L[0],h*.85,v);S.bass(t+h,r+L[1],h*.8,v)}else{S.bass(t,r,h*.85,v);S.bass(t+h,idx===3?r+7:r+12,h*.8,v)}if(lv>=3&&idx===0)S.subnote(t,r-12,spb*3.6,v);break;
+    case'singer':{const m=MEL[b%16];if(m){S.lead(t,m,spb*.85,v);if(lv>=2)S.lead(t,third(m),spb*.85,.5*v);if(lv>=3)S.lead(t+spb*.75,m+12,spb*.22,.28*v)}break}
+  }}
+function playBand(b,t,crew,wild,full){full=full||5;const idx=b%4,bar=Math.floor(b/4),ch=CH[bar%4],spb=CLK.spb,q=spb/4,n=crewSize(crew);
+  // instruments still loose in the room sound far away and muffled
+  bus=wildBus;for(const ty of wild)if(!crew.lv[ty])part(ty,1,b,t,.8);bus=null;
+  for(const ty of PARTS)if(crew.lv[ty])part(ty,crew.lv[ty],b,t,1);
+  if(!n)S.click(t,wild.size?.3:(idx?.6:1));
+  // the ensemble fills in around them as the band grows
+  if(n>=Math.min(3,full)&&idx===0)S.pad(t,ch.map(m=>m+12),spb*4,n>=full?1.8:1.1);
+  if(n>=Math.min(4,full)){const tones=[ch[0],ch[1],ch[2],ch[0]+12];for(let i=0;i<4;i++)S.pluck(t+i*q,tones[i]+24,.3)}
+  if(n>=full&&idx===0&&bar%2===0)S.crash(t,.45)}
+// a catch: the instrument plays its own fill, the chord rings, and it joins the band or gets richer
+function stinger(ty,t,isNew){const spb=CLK.spb,q=spb/4,e=q/2,ch=CH[Math.floor(Math.max(0,CLK.lastB)/4)%4];
+  switch(ty){
+    case'ticker':for(let i=0;i<8;i++)S.hat(t+i*e,.3+i*.1);S.ohat(t+8*e,1);break;
+    case'thumper':S.kick(t,1);S.kick(t+q,.8);S.kick(t+2*q,1);S.kick(t+3*q,1);break;
+    case'snapper':for(let i=0;i<8;i++)S.snare(t+i*e,.2+i*.1);S.clap(t+8*e,1);break;
+    case'rumbler':S.slide(t,ch[0]-24,ch[0]-12,spb);break;
+    case'singer':[ch[0]+12,ch[1]+12,ch[2]+12,ch[0]+24].forEach((m,i)=>S.lead(t+i*q,m,q*1.3,.9));break}
+  ch.map(m=>m+24).forEach((m,i)=>S.bell(t+i*.04,m,isNew?1:.6));
+  if(isNew)S.crash(t,.6)}
+function joinBand(crew,ty,t,fx,x,y,full){full=full||5;const was=crew.lv[ty];crew.lv[ty]=Math.min(3,was+1);
+  stinger(ty,t,!was);
+  fx.push({k:'pop',x,y,t,col:P[COLT[ty]],text:was?PNAME[ty]+' up':PNAME[ty]+' joins'});
+  if(!crew.full&&crewSize(crew)>=full){crew.full=true;fx.push({k:'text',text:'Full band',t:t+.2,col:P.acc});S.crash(t+CLK.spb,1)}}
+// the lineup: one mark per part, lit once it is in your band, dots for how rich it is
+function drawLineup(crew,xr,y,parts){parts=parts||PARTS;parts.slice().reverse().forEach((ty,i)=>{const cx=xr-6-i*20,lv=crew.lv[ty];
+  g.globalAlpha=lv?1:.25;shape(ty,cx,y-2,5,lv?P[COLT[ty]]:P.mute);g.globalAlpha=1;for(let k=0;k<lv;k++)circle(cx-4+k*4,y+8,1.4,P[COLT[ty]])})}
 function shape(type,cx,cy,s,col){g.fillStyle=col;
   if(type==='thumper'){rr(cx-s,cy-s,2*s,2*s,s*.35);g.fill()}
   else if(type==='snapper'){g.beginPath();g.moveTo(cx,cy-s*1.2);g.lineTo(cx+s*1.2,cy);g.lineTo(cx,cy+s*1.2);g.lineTo(cx-s*1.2,cy);g.closePath();g.fill()}
@@ -198,7 +236,7 @@ function makeTerritory(mode){
   const C=9,R=13,N=C*R,I=(x,y)=>y*C+x,GOAL=mode==='paper'?.55:.7;
   const ROOMS=[['ticker','ticker','snapper'],['ticker','snapper','thumper'],['thumper','snapper','ticker','rumbler'],['thumper','ticker','rumbler','singer']];
   const POOL=['thumper','snapper','ticker','rumbler','ticker','snapper'];
-  let room=1,hearts=3,score=0,over=false,fx=[],own=new Uint8Array(N),init=0,trail=[],tset=new Set(),from={x:0,y:0},en=[],band=[],pl=null,clearing=false,steps=0,curBar=0,bx=0,by=0,cs=40;
+  let room=1,hearts=3,score=0,over=false,fx=[],own=new Uint8Array(N),init=0,trail=[],tset=new Set(),from={x:0,y:0},en=[],band=[],crew=makeCrew(),pl=null,clearing=false,steps=0,curBar=0,bx=0,by=0,cs=40;
   const st=makeStepper();
   const OOB=(x,y)=>x<0||y<0||x>=C||y>=R;
   const ctx={blocked:(x,y)=>OOB(x,y)||own[I(x,y)]===1||en.some(e=>e.x===x&&e.y===y),get pl(){return pl},
@@ -217,7 +255,7 @@ function makeTerritory(mode){
     Object.assign(pl,{px:pl.x,py:pl.y,mt:0,hitT:-9,bump:null});from={x:pl.x,y:pl.y};init=count();
     const list=room<=ROOMS.length?ROOMS[room-1]:Array.from({length:Math.min(6,2+Math.floor(room/2))},()=>POOL[ri(POOL.length)]).concat(['singer']);
     for(const type of list)for(let k=0;k<100;k++){const x=ri(C),y=ri(R-4);if(own[I(x,y)]||en.some(e=>e.x===x&&e.y===y)||Math.abs(x-pl.x)+Math.abs(y-pl.y)<5)continue;en.push(mkE(type,x,y));break}}
-  function reset(){room=1;hearts=3;score=0;over=false;fx=[];steps=0;st.reset();st.curB=-1;newRoom();stats()}
+  function reset(){room=1;hearts=3;score=0;over=false;fx=[];steps=0;crew=makeCrew();st.reset();st.curB=-1;newRoom();stats()}
   function start(){reset();clockStart(bpmFor(room))}
   function layout(){const top=58,bot=20;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
   function hurt(t){if(over||t-pl.hitT<.05)return;pl.hitT=t;hearts--;S.thud(t);at(t,stats);
@@ -233,8 +271,8 @@ function makeTerritory(mode){
     const caught=[];for(const e of en.slice())if(fs.has(I(e.x,e.y))){en.splice(en.indexOf(e),1);band.push(e);caught.push(e)}
     fx.push({k:'tiles',tiles:tl.concat(fill.map(i=>({x:i%C,y:(i-i%C)/C}))),t,col:P.acc});
     score+=tl.length+fill.length+caught.length*caught.length*50;
-    for(const e of caught)fx.push({k:'pop',x:e.x,y:e.y,t,col:P[COLT[e.type]],text:'+band'});
-    if(caught.length)S.stab(t,CH[curBar].map(m=>m+12));else S.pluck(t,CH[curBar][0]+24,.8);
+    caught.forEach((e,i)=>joinBand(crew,e.type,t+i*CLK.spb,fx,e.x,e.y));
+    if(!caught.length)S.pluck(t,CH[curBar][0]+24,.8);
     at(t,stats);
     if(progress()>=GOAL||!en.length){clearing=true;fx.push({k:'text',text:'Room clear',t,col:P.acc})}}
   function doPlayer(d,t){
@@ -249,7 +287,7 @@ function makeTerritory(mode){
     st.beat(b,t,doPlayer);
     if(!clearing)for(const e of en.slice())if(!over&&en.includes(e)&&acts(e.type,idx,b))stepE(e,b,t,ctx);
     for(const e of band)if(acts(e.type,idx,b))e.beatT=t;
-    playParts(b,t,new Set(en.map(e=>e.type)),new Set(band.map(e=>e.type)))}
+    playBand(b,t,crew,new Set(en.map(e=>e.type)))}
   function input(d){if(!over&&CLK.on&&d)st.input(d,doPlayer)}
   function draw(now){
     const sh=shakeFor(pl,now);g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
@@ -267,20 +305,20 @@ function makeTerritory(mode){
     g.restore();
     const ty=Math.max(22,by-22);beatDots(now,ty);
     label(Math.round(progress()*100)+'%',bx+4,ty,13,P.mute,'left',650);
-    if(band.length)label(band.length+' in band',bx+cs*C-4,ty,13,P.acc,'right',650)}
+    drawLineup(crew,bx+cs*C-4,ty)}
   const blurb=mode==='paper'
     ?'Step off your ground to draw a trail, step back on to claim everything inside. Instruments you close in join your band. Anything that touches your trail cuts it.'
     :'Walk the walls, then cut across the room. A pocket with no instruments fills in. Trap an instrument in a small pocket and it joins your band. Anything that touches your trail cuts it.';
   return{name:mode==='paper'?'Paper':'Cut',title:mode==='paper'?'Band Paper':'Cut the Room',blurb,reset,start,layout,onBeat,draw,
     down:(x,y)=>input(tapDir(x,y,pl,bx,by,cs)),key:k=>input(KEYS[k]),
-    dbg:()=>({room,hearts,score,over,pl,en,band,trail,progress:progress(),clearing,own}),tray:false};
+    dbg:()=>({room,hearts,score,over,pl,en,band,crew,trail,progress:progress(),clearing,own}),tray:false};
 }
 
 // =====================================================================
 // Loop Catch: no territory, just your last steps. Close a loop around instruments to catch them.
 function makeLoopCatch(){
   const C=9,R=13,I=(x,y)=>y*C+x,MAXT=18;
-  let hearts=3,score=0,caught=0,over=false,fx=[],trail=[],en=[],band=new Set(),pl=null,curBar=0,steps=0,want=3,bx=0,by=0,cs=40;
+  let hearts=3,score=0,caught=0,over=false,fx=[],trail=[],en=[],crew=makeCrew(),pl=null,curBar=0,steps=0,want=3,bx=0,by=0,cs=40;
   const st=makeStepper(),OOB=(x,y)=>x<0||y<0||x>=C||y>=R;
   const ctx={blocked:(x,y)=>OOB(x,y)||en.some(e=>e.x===x&&e.y===y),get pl(){return pl},
     blast(e,t){const tl=blastOf(e,OOB);fx.push({k:'tiles',tiles:tl,t,col:P.bad});S.sub(t,CH[curBar][0]-24);
@@ -295,7 +333,7 @@ function makeLoopCatch(){
     for(let k=0;k<100;k++){const edge=ri(4),x=edge===0?0:edge===1?C-1:ri(C),y=edge===2?0:edge===3?R-1:ri(R);
       if(en.some(e=>e.x===x&&e.y===y)||trail.some(c=>c.x===x&&c.y===y)||Math.abs(x-pl.x)+Math.abs(y-pl.y)<5)continue;
       const e=mkE(type,x,y);e.bornT=t;en.push(e);return}}
-  function reset(){hearts=3;score=0;caught=0;over=false;fx=[];en=[];band=new Set();steps=0;want=3;st.reset();st.curB=-1;
+  function reset(){hearts=3;score=0;caught=0;over=false;fx=[];en=[];crew=makeCrew();steps=0;want=3;st.reset();st.curB=-1;
     pl={x:4,y:R-3,px:4,py:R-3,mt:0,hitT:-9,bump:null};trail=[{x:pl.x,y:pl.y}];for(let i=0;i<3;i++)spawnOne(-9);stats()}
   function start(){reset();clockStart(bpmFor())}
   function layout(){const top=58,bot=20;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
@@ -309,8 +347,8 @@ function makeLoopCatch(){
     if(i>=0){const loop=trail.slice(i),bar=new Set(loop.map(c=>I(c.x,c.y))),inside=enclosed(C,R,(a,b)=>bar.has(I(a,b))),ins=new Set(inside);
       const got=en.filter(e=>ins.has(I(e.x,e.y)));
       if(inside.length)fx.push({k:'tiles',tiles:loop.concat(inside.map(j=>({x:j%C,y:(j-j%C)/C}))),t,col:got.length?P.gold:P.acc});
-      for(const e of got){en.splice(en.indexOf(e),1);band.add(e.type);fx.push({k:'pop',x:e.x,y:e.y,t,col:P[COLT[e.type]],text:got.length>1?'x'+got.length:'+'+10})}
-      if(got.length){caught+=got.length;score+=10*got.length*got.length;S.stab(t,CH[curBar].map(m=>m+12));want=Math.min(8,3+Math.floor(caught/3));setBpm(bpmFor());at(t,stats)}
+      got.forEach((e,i)=>{en.splice(en.indexOf(e),1);joinBand(crew,e.type,t+i*CLK.spb,fx,e.x,e.y)});
+      if(got.length){caught+=got.length;score+=10*got.length*got.length;want=Math.min(8,3+Math.floor(caught/3));setBpm(bpmFor());at(t,stats)}
       trail=[{x,y}]}
     else{trail.push({x,y});if(trail.length>MAXT)trail.shift()}
     S.pluck(t,CH[curBar][steps++%3]+12,.9)}
@@ -318,7 +356,7 @@ function makeLoopCatch(){
     if(idx===0&&en.length<want)spawnOne(t);
     st.beat(b,t,doPlayer);
     for(const e of en.slice())if(!over&&en.includes(e)&&acts(e.type,idx,b))stepE(e,b,t,ctx);
-    playParts(b,t,new Set(en.map(e=>e.type)),band)}
+    playBand(b,t,crew,new Set(en.map(e=>e.type)))}
   function input(d){if(!over&&CLK.on&&d)st.input(d,doPlayer)}
   function draw(now){
     const sh=shakeFor(pl,now);g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
@@ -333,16 +371,16 @@ function makeLoopCatch(){
     drawFx(fx,now,bx,by,cs);
     g.restore();
     const ty=Math.max(22,by-22);beatDots(now,ty);
-    if(band.size)label(band.size+' in band',bx+cs*C-4,ty,13,P.acc,'right',650)}
+    drawLineup(crew,bx+cs*C-4,ty)}
   return{name:'Catch',title:'Loop Catch',blurb:'Your last steps leave a trail. Step back onto it to close a loop and catch every instrument inside. Anything that walks across your trail cuts it.',
-    reset,start,layout,onBeat,draw,down:(x,y)=>input(tapDir(x,y,pl,bx,by,cs)),key:k=>input(KEYS[k]),dbg:()=>({hearts,score,caught,over,pl,en,trail,band:[...band]}),tray:false};
+    reset,start,layout,onBeat,draw,down:(x,y)=>input(tapDir(x,y,pl,bx,by,cs)),key:k=>input(KEYS[k]),dbg:()=>({hearts,score,caught,over,pl,en,trail,crew}),tray:false};
 }
 
 // =====================================================================
 // Loop Plan: plan eight steps over two bars; close a loop in your plan to catch what is inside on that beat
 function makeLoopPlan(){
   const C=7,R=9,I=(x,y)=>y*C+x,K=8,PLAN_BARS=2,ROWN=[84,81,79,76,74,72,69,67,64];
-  const COL={hopper:'hat',turret:'kick',drifter:'bass'};
+  const COL={hopper:'hat',turret:'kick',drifter:'bass'},PMAP={hopper:'ticker',turret:'thumper',drifter:'rumbler'},LPARTS=['ticker','thumper','rumbler'];let crew=makeCrew();
   let level=1,hearts=3,score=0,pl=null,en=[],phase='intro',planLeft=0,ready=false,path=[],sim=null,trail=[],over=false,fx=[],cycle=0,curB=-1,playK=0,bx=0,by=0,cs=40,dragging=false,downTile=null,downAct='',moved=false;
   const readyBtn=document.getElementById('ready');
   function bpmFor(l){return Math.min(116,84+(l-1)*4)}
@@ -387,7 +425,7 @@ function makeLoopPlan(){
       r.trails.push(tr.slice())}
     return r}
   function setTray(){readyBtn.classList.toggle('on',!!ready);document.getElementById('tray').style.display=game===self&&phase==='plan'&&!over?'flex':'none'}
-  function reset(){level=1;hearts=3;score=0;over=false;fx=[];cycle=0;phase='intro';path=[];ready=false;curB=-1;pl={x:3,y:R-1,px:3,py:R-1,mt:0,hitT:-9};trail=[{x:3,y:R-1}];spawn();plan();sim=simulate(path);stats()}
+  function reset(){level=1;hearts=3;score=0;over=false;fx=[];cycle=0;crew=makeCrew();phase='intro';path=[];ready=false;curB=-1;pl={x:3,y:R-1,px:3,py:R-1,mt:0,hitT:-9};trail=[{x:3,y:R-1}];spawn();plan();sim=simulate(path);stats()}
   function start(){reset();clockStart(bpmFor(level));setTray()}
   function layout(){const top=58,bot=76;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
   function startPlan(){plan();path=[];sim=simulate(path);planLeft=PLAN_BARS;ready=false;phase='plan';setTray()}
@@ -401,8 +439,8 @@ function makeLoopPlan(){
     if(hop)S.wood(t,88,.7);
     const lp=sim.loops.find(l=>l.k===k);
     if(lp)fx.push({k:'tiles',tiles:lp.cells.concat(lp.inside.map(j=>({x:j%C,y:(j-j%C)/C}))),t,col:P.gold});
-    let n=0;en.forEach((e,i)=>{if(e.alive&&sim.dead[i]===k){e.alive=false;e.deadT=t;n++;fx.push({k:'pop',x:e.x,y:e.y,t,col:P[COL[e.type]],text:'+band'})}});
-    if(n){score+=100*n*n*level;S.stab(t,CH[bar].map(m=>m+12))}
+    let n=0;en.forEach((e,i)=>{if(e.alive&&sim.dead[i]===k){e.alive=false;e.deadT=t;n++;joinBand(crew,PMAP[e.type],t+(n-1)*CLK.spb,fx,e.x,e.y,3)}});
+    if(n)score+=100*n*n*level;
     if(sim.cuts.includes(k)){const prevTr=k?sim.trails[k-1]:trail;fx.push({k:'tiles',tiles:prevTr,t,col:P.bad});S.wood(t,60)}
     let any=false;for(const e of en)if(e.alive&&e.strikes[k].length){any=true;fx.push({k:'tiles',tiles:e.strikes[k],t,col:P.bad})}
     if(any)S.clap(t);
@@ -413,9 +451,8 @@ function makeLoopPlan(){
     if(idx===0){if(phase==='play'&&playK>=K){finishPlay(t);startPlan()}else if(phase==='plan'){planLeft--;if(planLeft<=0||ready)startPlay()}else if(phase==='intro')startPlan()}
     if(phase==='play'&&playK<K){resolveStep(playK,t);playK++}
     const spb=CLK.spb,ch=CH[Math.floor(b/4)%4];
-    if(idx%2===0)S.kick(t,.8);S.hat(t+spb/2,.7);
-    if(phase==='play'){S.hat(t,.5);if(idx%2===1)S.snare(t,.5)}
-    S.bass(t,ch[0]-24,spb*.4,.8);S.bass(t+spb/2,ch[0]-12,spb*.35,.55);
+    playBand(b,t,crew,new Set(en.filter(e=>e.alive).map(e=>PMAP[e.type])),3);
+    if(phase==='play'&&idx%2===1)S.snare(t,.4);
     if(phase==='plan'){const L=beatsLeft(b);if(L<=4)S.wood(t,L===1?100:93,.9)}}
   // planning input: tap or drag through tiles next to the end of your plan; stepping onto your own trail closes a loop
   function tileAt(x,y){const tx=Math.floor((x-bx)/cs),ty=Math.floor((y-by)/cs);return tx>=0&&ty>=0&&tx<C&&ty<R?{x:tx,y:ty}:null}
