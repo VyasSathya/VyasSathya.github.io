@@ -231,10 +231,13 @@ function regions(C,R,isFree){const seen=new Uint8Array(C*R),out=[];
     while(st.length){const i=st.pop(),x=i%C,y=(i-x)/C;reg.push(i);for(const d of D4){const nx=x+d[0],ny=y+d[1];if(nx<0||ny<0||nx>=C||ny>=R)continue;const j=ny*C+nx;if(!seen[j]&&isFree(nx,ny)){seen[j]=1;st.push(j)}}}
     out.push(reg)}return out}
 // beat stepping: a tap counts for the next beat, or for the beat that just passed if it was a hair late
-function makeStepper(){const s={queued:null,actedB:-1,curB:-1,curT:0,
-  beat(b,t,fn){s.curB=b;s.curT=t;if(s.queued){const q=s.queued;s.queued=null;s.actedB=b;fn(q.d,t,t-q.at<.16)}},
-  input(d,fn){const now=ac.currentTime;if(s.curB>=0&&s.actedB!==s.curB&&now-s.curT<=.14){s.actedB=s.curB;fn(d,Math.max(now,s.curT),Math.abs(now-s.curT)<.1);return}s.queued={d,at:now}},
-  reset(){s.queued=null;s.actedB=-1}};return s}
+// ticks are beats, or beats and half beats when the player moves on eighth notes
+function makeStepper(){const s={queued:null,acted:-1,tick:-1,curB:-1,curT:0,
+  beat(b,t,fn){s.curB=b;s.go(b*2,t,fn)},
+  half(b,t,fn){s.go(b*2+1,t,fn)},
+  go(id,t,fn){s.tick=id;s.curT=t;if(s.queued){const q=s.queued;s.queued=null;s.acted=id;fn(q.d,t,t-q.at<.16)}},
+  input(d,fn){const now=ac.currentTime;if(s.tick>=0&&s.acted!==s.tick&&now-s.curT<=.12){s.acted=s.tick;fn(d,Math.max(now,s.curT),Math.abs(now-s.curT)<.1);return}s.queued={d,at:now}},
+  reset(){s.queued=null;s.acted=-1;s.tick=-1}};return s}
 function tapDir(x,y,pl,bx,by,cs){const dx=x-(bx+(pl.x+.5)*cs),dy=y-(by+(pl.y+.5)*cs);if(Math.abs(dx)<cs*.4&&Math.abs(dy)<cs*.4)return null;return Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)]}
 const KEYS={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
 function gameOver(text,start){CLK.on=false;SEC='';document.getElementById('tray').style.display='none';showOv('Out of hearts',text,'Play again',start)}
@@ -299,7 +302,7 @@ function makeTerritory(mode){
       if(tl.some(q=>tset.has(I(q.x,q.y))))cut(t);else if(tl.some(q=>same(q,pl)))hurt(t)},
     hitPlayer(e,t){if(trail.length)cut(t);else hurt(t)},
     entered(e,t){if(tset.has(I(e.x,e.y)))cut(t)}};
-  function bpmFor(r){return Math.min(132,90+r*5)}
+  function bpmFor(r){return YD?Math.min(140,105+r*5):Math.min(132,90+r*5)}
   function count(){let n=0;for(let i=0;i<N;i++)n+=own[i];return n}
   function progress(){return (count()-init)/(N-init)}
   function stats(){setStats([[YD?'Yard':'Room',room],['HP',hearts],['Score',score]])}
@@ -361,6 +364,8 @@ function makeTerritory(mode){
       else{const sa=secAt(songBar);if(sa.start===songBar){SEC=sa.x.sec;if(songBar>0)fx.push({k:'text',text:sa.x.name,t,col:sa.x.sec==='rush'?'#ff9f6e':sa.x.sec==='calm'?'#9db8ff':P.ink});if(sa.x.sec==='rush')S.crash(t,.8);if(sa.x.spawn)fenceJumper(t)}}}
     st.beat(b,t,doPlayer);
     if(YD&&trail.length&&trailB>=0&&b-trailB>=WILT)wilt(t);
+    // in the yard the gardener also steps on the half beat
+    if(YD){const th=t+CLK.spb/2;at(th-LOOK,()=>{if(!over&&CLK.on&&!clearing)st.half(b,th,doPlayer)})}
     if(!clearing)for(const e of en.slice())if(!over&&en.includes(e)&&acts(e.type,idx,b))stepE(e,b,t,ctx);
     for(const e of band)if(acts(e.type,idx,b))e.beatT=t;
     playBand(b,t,crew,new Set(en.map(e=>e.type)),5,YD?SEC:'')}
