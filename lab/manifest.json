@@ -1,6 +1,22 @@
 {
  "items": [
   {
+   "id": "beat-tactics",
+   "key": "beat-tactics?g=0",
+   "title": "Band Room",
+   "url": "p/beat-tactics/index.html?g=0",
+   "added": "2026-11-17",
+   "v": "20261117114804"
+  },
+  {
+   "id": "beat-tactics",
+   "key": "beat-tactics?g=1",
+   "title": "Bar Plan",
+   "url": "p/beat-tactics/index.html?g=1",
+   "added": "2026-11-17",
+   "v": "20261117114804"
+  },
+  {
    "id": "rollybully-site-2",
    "key": "rollybully-site-2",
    "title": "Rollybully site 2",
