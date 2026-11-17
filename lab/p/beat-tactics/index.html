@@ -195,7 +195,7 @@ function makeBandRoom(){
     queued={d,at:now}}
   function down(x,y){const px=bx+(pl.x+.5)*cs,py=by+(pl.y+.5)*cs,dx=x-px,dy=y-py;if(Math.abs(dx)<cs*.4&&Math.abs(dy)<cs*.4)return;
     input(Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)])}
-  function key(k){const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[k];if(m)input(m)}
+  function key(k){const m=KEYS[k];if(m)input(m)}
   function drawEnemy(e,now){
     const p=epos(e,now);let ox=0,oy=0;
     if(e.lunge){const a=now-e.lunge.t;if(a>=0&&a<.2){const k=Math.sin(Math.PI*a/.2)*.35;ox=e.lunge.x*k;oy=e.lunge.y*k}}
@@ -313,6 +313,8 @@ function makeBarPlan(){
     if(same(t,endPos()))downAct='end';else{downAct='tap';tap(t)}}
   function move(x,y){if(!dragging||phase!=='plan')return;const t=tileAt(x,y);if(!t||same(t,downTile))return;moved=true;downTile=t;drag(t)}
   function up(){if(!dragging)return;dragging=false;if(!moved&&downAct==='end'&&path.length&&phase==='plan'){path.pop();changed()}}
+  function planKey(k){if(phase!=='plan')return;const d=KEYS[k];if(d){const e=endPos(),t={x:e.x+d[0],y:e.y+d[1]};if(t.x>=0&&t.y>=0&&t.x<C&&t.y<R)drag(t);return}
+    if(k==='Backspace'&&path.length){path.pop();changed();return}if(k===' '||k==='Enter')readyBtn.click()}
   function tileFill(q,col,a){g.globalAlpha=a;g.fillStyle=col;rr(bx+q.x*cs+1,by+q.y*cs+1,cs-2,cs-2,6);g.fill();g.globalAlpha=1}
   function draw(now){
     const v=vis(now),ha=now-pl.hitT,sh=ha>=0&&ha<.25?(1-ha/.25)*7:0,planning=phase==='plan'||phase==='intro',step=phase==='play'?((curB%4)+4)%4:-1;
@@ -352,11 +354,12 @@ function makeBarPlan(){
       beatDots(now,ty,phase==='play'?P.acc:P.mute);
       if(phase==='plan'&&curB>=0){const L=beatsLeft(curB);label(String(L),bx+cs*C-4,ty,L<=4?20:15,L<=4?P.bad:P.mute,'right',700)}}
   }
-  const self={name:'Bar Plan',blurb:'Draw up to four steps while the bar counts down. Next bar they play out on the beat, as a melody. Land on enemies, stay off red tiles.',reset,start,layout,onBeat,draw,down,move,up,tray:true,dbg:()=>({level,hearts,score,over,phase,pl,en,path,sim}),setPath:p=>{path=p;sim=simulate(path)}};
+  const self={name:'Bar Plan',blurb:'Draw up to four steps while the bar counts down. Next bar they play out on the beat, as a melody. Land on enemies, stay off red tiles.',reset,start,layout,onBeat,draw,down,move,up,key:planKey,tray:true,dbg:()=>({level,hearts,score,over,phase,pl,en,path,sim}),setPath:p=>{path=p;sim=simulate(path)}};
   return self;
 }
 
 // ---------------- shell
+const KEYS={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
 const statsEl=document.getElementById('stats');
 function setStats(a){statsEl.innerHTML=a.map(([k,v])=>`<span><i>${k}</i>${v}</span>`).join('')}
 const ov=document.getElementById('ov'),ovT=ov.querySelector('.t'),ovS=ov.querySelector('.s'),ovB=ov.querySelector('button');let ovCb=null;
@@ -374,7 +377,8 @@ cv.addEventListener('pointerdown',e=>{if(ov.style.display!=='none')return;try{cv
 cv.addEventListener('pointermove',e=>{game.move&&game.move(e.offsetX,e.offsetY)});
 cv.addEventListener('pointerup',e=>{game.up&&game.up(e.offsetX,e.offsetY)});
 cv.addEventListener('pointercancel',e=>{game.up&&game.up(e.offsetX,e.offsetY)});
-addEventListener('keydown',e=>{if(e.key.startsWith('Arrow'))e.preventDefault();game.key&&game.key(e.key)});
+const WASD={w:'ArrowUp',a:'ArrowLeft',s:'ArrowDown',d:'ArrowRight',W:'ArrowUp',A:'ArrowLeft',S:'ArrowDown',D:'ArrowRight'};
+addEventListener('keydown',e=>{if(e.repeat||e.metaKey||e.ctrlKey||e.altKey)return;const k=WASD[e.key]||e.key;if(k.startsWith('Arrow')||k===' '||k==='Backspace')e.preventDefault();if(ov.style.display!=='none'){if(k===' '||k==='Enter')ovB.click();return}game.key&&game.key(k)});
 function frame(){requestAnimationFrame(frame);const now=ac?ac.currentTime:0;
   if(ac){tickClock();for(let i=later.length-1;i>=0;i--)if(now>=later[i].t){const f=later[i].fn;later.splice(i,1);f()}}
   g.fillStyle=P.bg;g.fillRect(0,0,W,H);game.draw(now)}
