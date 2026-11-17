@@ -427,6 +427,8 @@ function makeLoopPlan(){
   function down(x,y){if(phase!=='plan')return;const t=tileAt(x,y);if(!t)return;dragging=true;moved=false;downTile=t;if(same(t,endPos()))downAct='end';else{downAct='tap';tap(t)}}
   function move(x,y){if(!dragging||phase!=='plan')return;const t=tileAt(x,y);if(!t||same(t,downTile))return;moved=true;downTile=t;drag(t)}
   function up(){if(!dragging)return;dragging=false;if(!moved&&downAct==='end'&&path.length&&phase==='plan'){path.pop();changed()}}
+  function planKey(k){if(phase!=='plan')return;const d=KEYS[k];if(d){const e=endPos(),t={x:e.x+d[0],y:e.y+d[1]};if(t.x>=0&&t.y>=0&&t.x<C&&t.y<R)drag(t);return}
+    if(k==='Backspace'&&path.length){path.pop();changed();return}if(k===' '||k==='Enter')readyBtn.click()}
   readyBtn.onclick=()=>{if(phase==='plan'&&game===self){ready=true;readyBtn.classList.add('on')}};
   function draw(now){
     const sh=shakeFor(pl,now),planning=phase==='plan'||phase==='intro',step=phase==='play'?playK-1:-1;
@@ -470,7 +472,7 @@ function makeLoopPlan(){
       if(phase==='plan'&&curB>=0){const L=beatsLeft(curB);label(String(L),bx+cs*C-4,ty,L<=4?20:15,L<=4?P.bad:P.mute,'right',700)}
       else if(phase==='play')label((playK<=4?1:2)+' / 2',bx+cs*C-4,ty,13,P.mute,'right',650)}}
   const self={name:'Loop Plan',title:'Loop Plan',blurb:'Draw up to eight steps while the count runs down. They play out over the next two bars. Close a loop, or run edge to edge, to cut off a piece of the board and catch what is in it. Stay off red tiles.',
-    reset,start,layout,onBeat,draw,down,move,up,tray:true,dbg:()=>({level,hearts,score,over,phase,pl,en,path,sim,trail}),setPath:p=>{path=p;sim=simulate(path)}};
+    reset,start,layout,onBeat,draw,down,move,up,key:planKey,tray:true,dbg:()=>({level,hearts,score,over,phase,pl,en,path,sim,trail}),setPath:p=>{path=p;sim=simulate(path)}};
   return self;
 }
 
@@ -492,7 +494,8 @@ cv.addEventListener('pointerdown',e=>{if(ov.style.display!=='none')return;try{cv
 cv.addEventListener('pointermove',e=>{game.move&&game.move(e.offsetX,e.offsetY)});
 cv.addEventListener('pointerup',e=>{game.up&&game.up(e.offsetX,e.offsetY)});
 cv.addEventListener('pointercancel',e=>{game.up&&game.up(e.offsetX,e.offsetY)});
-addEventListener('keydown',e=>{if(e.key.startsWith('Arrow'))e.preventDefault();game.key&&game.key(e.key)});
+const WASD={w:'ArrowUp',a:'ArrowLeft',s:'ArrowDown',d:'ArrowRight',W:'ArrowUp',A:'ArrowLeft',S:'ArrowDown',D:'ArrowRight'};
+addEventListener('keydown',e=>{if(e.repeat||e.metaKey||e.ctrlKey||e.altKey)return;const k=WASD[e.key]||e.key;if(k.startsWith('Arrow')||k===' '||k==='Backspace')e.preventDefault();if(ov.style.display!=='none'){if(k===' '||k==='Enter')ovB.click();return}game.key&&game.key(k)});
 function frame(){requestAnimationFrame(frame);const now=ac?ac.currentTime:0;
   if(ac){tickClock();for(let i=later.length-1;i>=0;i--)if(now>=later[i].t){const f=later[i].fn;later.splice(i,1);f()}}
   g.fillStyle=P.bg;g.fillRect(0,0,W,H);game.draw(now)}
