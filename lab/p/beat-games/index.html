@@ -123,7 +123,8 @@ const CH=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]];          // Am F C G
 const COLT={thumper:'kick',snapper:'snare',ticker:'hat',rumbler:'bass',singer:'lead'};
 const D4=[[1,0],[0,1],[-1,0],[0,-1]];
 const same=(a,b)=>a.x===b.x&&a.y===b.y,adj=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y)===1;
-function acts(type,idx,b){switch(type){case'thumper':return idx%2===0;case'snapper':return idx%2===1;case'ticker':return true;case'rumbler':return idx<2;case'singer':return MEL[b%16]!=null}return false}
+let SEC='';
+function acts(type,idx,b){if(SEC==='rush')return true;if(SEC==='calm')return type==='rumbler'?idx===1:idx===0;switch(type){case'thumper':return idx%2===0;case'snapper':return idx%2===1;case'ticker':return true;case'rumbler':return idx<2;case'singer':return MEL[b%16]!=null}return false}
 function mkE(type,x,y){return{type,x,y,px:x,py:y,mt:0,dir:Math.random()<.5?[1,0]:[0,1],li:ri(4),ls:0,beatT:-9,lunge:null,bornT:-9}}
 function chaseE(e,ctx){const pl=ctx.pl,dx=pl.x-e.x,dy=pl.y-e.y,ax=[Math.sign(dx),0],ay=[0,Math.sign(dy)],o=[];
   if(Math.abs(dx)>=Math.abs(dy)){if(dx)o.push(ax);if(dy)o.push(ay)}else{if(dy)o.push(ay);if(dx)o.push(ax)}
@@ -168,10 +169,12 @@ function part(ty,lv,b,t,v){const idx=b%4,bar=Math.floor(b/4),ch=CH[bar%4],spb=CL
     case'rumbler':if(lv>=2){const L=[[0,12],[7,12],[0,7],[12,7]][idx];S.bass(t,r+L[0],h*.85,v);S.bass(t+h,r+L[1],h*.8,v)}else{S.bass(t,r,h*.85,v);S.bass(t+h,idx===3?r+7:r+12,h*.8,v)}if(lv>=3&&idx===0)S.subnote(t,r-12,spb*3.6,v);break;
     case'singer':{const m=MEL[b%16];if(m){S.lead(t,m,spb*.85,v);if(lv>=2)S.lead(t,third(m),spb*.85,.5*v);if(lv>=3)S.lead(t+spb*.75,m+12,spb*.22,.28*v)}break}
   }}
-function playBand(b,t,crew,wild,full){full=full||5;const idx=b%4,bar=Math.floor(b/4),ch=CH[bar%4],spb=CLK.spb,q=spb/4,n=crewSize(crew);
+function playBand(b,t,crew,wild,full,energy){full=full||5;const idx=b%4,bar=Math.floor(b/4),ch=CH[bar%4],spb=CLK.spb,q=spb/4,n=crewSize(crew),keep=ty=>energy!=='calm'||ty==='rumbler'||ty==='singer';
   // instruments still loose in the room sound far away and muffled
-  bus=wildBus;for(const ty of wild)if(!crew.lv[ty])part(ty,1,b,t,.8);bus=null;
-  for(const ty of PARTS)if(crew.lv[ty])part(ty,crew.lv[ty],b,t,1);
+  bus=wildBus;for(const ty of wild)if(!crew.lv[ty]&&keep(ty))part(ty,1,b,t,.8);bus=null;
+  for(const ty of PARTS)if(crew.lv[ty]&&keep(ty))part(ty,crew.lv[ty],b,t,1);
+  if(energy==='calm'){S.click(t,.25);if(idx===0)S.pad(t,ch.map(m=>m+12),spb*4,1.5)}
+  if(energy==='rush'&&crew.lv.ticker){S.hat(t+q,.35);S.hat(t+3*q,.35)}
   if(!n)S.click(t,wild.size?.3:(idx?.6:1));
   // the ensemble fills in around them as the band grows
   if(n>=Math.min(3,full)&&idx===0)S.pad(t,ch.map(m=>m+12),spb*4,n>=full?1.8:1.1);
@@ -234,7 +237,7 @@ function makeStepper(){const s={queued:null,actedB:-1,curB:-1,curT:0,
   reset(){s.queued=null;s.actedB=-1}};return s}
 function tapDir(x,y,pl,bx,by,cs){const dx=x-(bx+(pl.x+.5)*cs),dy=y-(by+(pl.y+.5)*cs);if(Math.abs(dx)<cs*.4&&Math.abs(dy)<cs*.4)return null;return Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)]}
 const KEYS={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
-function gameOver(text,start){CLK.on=false;document.getElementById('tray').style.display='none';showOv('Out of hearts',text,'Play again',start)}
+function gameOver(text,start){CLK.on=false;SEC='';document.getElementById('tray').style.display='none';showOv('Out of hearts',text,'Play again',start)}
 
 // ---------------- Backyard Band art: everything drawn in code
 const YNAME={ticker:'Cricket',thumper:'Toad',snapper:'Woodpecker',rumbler:'Bullfrog',singer:'Songbird'};
@@ -276,13 +279,19 @@ function drawGardener(pl,now,bx,by,cs){const p=epos(pl,now);let ox=0,oy=0;if(pl.
   circle(cx,cy,cs*.36,hurt?'#ff8f8f':'#e8c57e');g.strokeStyle=hurt?'#d96060':'#c19a52';g.lineWidth=1.5;g.beginPath();g.arc(cx,cy,cs*.28,0,7);g.stroke();
   circle(cx,cy,cs*.2,hurt?'#e56b6b':'#d4a659');g.strokeStyle='#8a3b2a';g.lineWidth=3;g.beginPath();g.arc(cx,cy,cs*.2,0,7);g.stroke()}
 
+// ---------------- a yard is one song: the night ends at dawn
+const SONG=[{name:'Intro',bars:2,sec:''},{name:'Verse',bars:8,sec:''},{name:'Chorus',bars:8,sec:'rush'},{name:'Bridge',bars:4,sec:'calm'},{name:'Last chorus',bars:8,sec:'rush',spawn:true}];
+const SONG_BARS=SONG.reduce((a,x)=>a+x.bars,0),WILT=12;
+function secAt(k){let a=0;for(const x of SONG){if(k<a+x.bars)return{x,start:a};a+=x.bars}return null}
+const lerpC=(a,b,f)=>{const pa=a.match(/\w\w/g).map(h=>parseInt(h,16)),pb=b.match(/\w\w/g).map(h=>parseInt(h,16));return'rgb('+pa.map((v,i)=>Math.round(v+(pb[i]-v)*f)).join(',')+')'};
+
 // =====================================================================
 // Band Paper ('paper') and Cut the Room ('cut'): your trail claims ground, caught instruments join your band
 function makeTerritory(mode){
   const C=9,R=13,N=C*R,I=(x,y)=>y*C+x,GOAL=mode==='paper'?.55:.7,YD=mode==='yard';
   const ROOMS=[['ticker','ticker','snapper'],['ticker','snapper','thumper'],['thumper','snapper','ticker','rumbler'],['thumper','ticker','rumbler','singer']];
   const POOL=['thumper','snapper','ticker','rumbler','ticker','snapper'];
-  let room=1,hearts=3,score=0,over=false,fx=[],own=new Uint8Array(N),init=0,trail=[],tset=new Set(),from={x:0,y:0},en=[],band=[],crew=makeCrew(),kind=new Uint8Array(N),pl=null,clearing=false,steps=0,curBar=0,bx=0,by=0,cs=40;
+  let room=1,hearts=3,score=0,over=false,fx=[],own=new Uint8Array(N),init=0,trail=[],tset=new Set(),from={x:0,y:0},en=[],band=[],crew=makeCrew(),kind=new Uint8Array(N),pl=null,clearing=false,outro=0,songBar=-1,trailB=-1,dawnT=-9,steps=0,curBar=0,bx=0,by=0,cs=40;
   const st=makeStepper();
   const OOB=(x,y)=>x<0||y<0||x>=C||y>=R;
   const ctx={blocked:(x,y)=>OOB(x,y)||own[I(x,y)]===1||en.some(e=>e.x===x&&e.y===y),get pl(){return pl},
@@ -295,7 +304,7 @@ function makeTerritory(mode){
   function progress(){return (count()-init)/(N-init)}
   function stats(){setStats([[YD?'Yard':'Room',room],['HP',hearts],['Score',score]])}
   function newRoom(){
-    own=new Uint8Array(N);kind=new Uint8Array(N);trail=[];tset=new Set();en=[];band=[];clearing=false;
+    own=new Uint8Array(N);kind=new Uint8Array(N);trail=[];tset=new Set();en=[];band=[];clearing=false;songBar=-1;trailB=-1;dawnT=-9;if(YD)SEC='';
     if(mode==='paper'){for(let y=R-3;y<R;y++)for(let x=3;x<6;x++)own[I(x,y)]=1;pl={x:4,y:R-2}}
     else{for(let x=0;x<C;x++){own[I(x,0)]=1;own[I(x,R-1)]=1}for(let y=0;y<R;y++){own[I(0,y)]=1;own[I(C-1,y)]=1}pl={x:4,y:R-1}}
     Object.assign(pl,{px:pl.x,py:pl.y,mt:0,hitT:-9,bump:null});from={x:pl.x,y:pl.y};init=count();for(let i=0;i<N;i++)if(own[i])kind[i]=1;
@@ -303,9 +312,22 @@ function makeTerritory(mode){
     for(const type of list)for(let k=0;k<100;k++){const x=ri(C),y=ri(R-4);if(own[I(x,y)]||en.some(e=>e.x===x&&e.y===y)||Math.abs(x-pl.x)+Math.abs(y-pl.y)<5)continue;en.push(mkE(type,x,y));break}}
   function reset(){room=1;hearts=3;score=0;over=false;fx=[];steps=0;crew=makeCrew();st.reset();st.curB=-1;newRoom();stats()}
   function start(){reset();clockStart(bpmFor(room))}
-  function layout(){const top=YD?112:58,bot=20;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
+  function layout(){const top=YD?128:58,bot=20;cs=Math.floor(Math.min((W-24)/C,(H-top-bot)/R));bx=Math.round((W-cs*C)/2);by=Math.round(top+(H-top-bot-cs*R)/2)}
   function hurt(t){if(over||t-pl.hitT<.05)return;pl.hitT=t;hearts--;S.thud(t);at(t,stats);
     if(hearts<=0){over=true;at(t+.7,()=>gameOver((YD?'Yard ':'Room ')+room+', score '+score,start))}}
+  function wilt(t){const tl=trail.slice();fx.push({k:'tiles',tiles:tl,t,col:'#8a5a3a'});fx.push({k:'pop',x:pl.x,y:pl.y,t,col:'#c9a24a',text:'Wilted'});S.wood(t,55,.9);trail=[];tset.clear();
+    pl.px=pl.x;pl.py=pl.y;pl.x=from.x;pl.y=from.y;pl.mt=t+.06}
+  function setClear(t,text){clearing=true;outro=YD?2:1;if(YD)SEC='';fx.push({k:'text',text,t,col:P.acc})}
+  // the last chorus: a new critter jumps the fence
+  function fenceJumper(t){const types=PARTS.slice(),open=[];for(let y=1;y<R-1;y++)for(let x=1;x<C-1;x++){const i=I(x,y);if(own[i]||en.some(e=>e.x===x&&e.y===y)||tset.has(i)||Math.abs(x-pl.x)+Math.abs(y-pl.y)<3)continue;
+      if(own[I(x-1,y)]||own[I(x+1,y)]||own[I(x,y-1)]||own[I(x,y+1)])open.push({x,y})}
+    if(!open.length)return;const c=open[ri(open.length)],e=mkE(types[ri(types.length)],c.x,c.y);e.bornT=t;en.push(e);fx.push({k:'pop',x:c.x,y:c.y,t,col:'#ff9f6e',text:'Jumped in'})}
+  // dawn: whatever is still loose runs off, and costs you
+  function dawn(t){dawnT=t;const lost=en.length;
+    for(const e of en)fx.push({k:'pop',x:e.x,y:e.y,t,col:'#ff9f6e',text:'Got away'});en=[];
+    if(lost){for(let i=0;i<lost&&hearts>0;i++){hearts--}S.thud(t);pl.hitT=t;at(t,stats)}
+    if(hearts<=0){over=true;SEC='';at(t+1.2,()=>gameOver('Dawn on yard '+room+', score '+score,start));return}
+    setClear(t,lost?'Dawn: '+lost+' got away':'Dawn')}
   function cut(t){const tl=trail.slice();hurt(t);fx.push({k:'tiles',tiles:tl,t,col:P.bad});trail=[];tset.clear();
     pl.px=pl.x;pl.py=pl.y;pl.x=from.x;pl.y=from.y;pl.mt=t+.06}
   function close(t){
@@ -317,26 +339,34 @@ function makeTerritory(mode){
     const caught=[];for(const e of en.slice())if(fs.has(I(e.x,e.y))){en.splice(en.indexOf(e),1);band.push(e);caught.push(e)}
     fx.push({k:'tiles',tiles:tl.concat(fill.map(i=>({x:i%C,y:(i-i%C)/C}))),t,col:YD?'#b6f07e':P.acc});
     score+=tl.length+fill.length+caught.length*caught.length*50;
+    const onOne=YD&&st.curB>=0&&st.curB%4===0;
+    if(onOne){score+=25+caught.length*50;fx.push({k:'pop',x:pl.x,y:pl.y,t,col:'#ffd98a',text:'On the 1'});S.crash(t,.5)}
     caught.forEach((e,i)=>joinBand(crew,e.type,t+i*CLK.spb,fx,e.x,e.y,5,YD?YNAME:null));
     if(!caught.length)S.pluck(t,CH[curBar][0]+24,.8);
     at(t,stats);
-    if(YD?!en.length:(progress()>=GOAL||!en.length)){clearing=true;fx.push({k:'text',text:YD?'Yard done':'Room clear',t,col:P.acc})}}
+    if(YD?!en.length:(progress()>=GOAL||!en.length)){
+      if(YD){const left=Math.max(0,SONG_BARS-songBar-1),bonus=left*20;score+=bonus;at(t,stats);setClear(t,bonus?'Yard done  +'+bonus:'Yard done')}
+      else setClear(t,'Room clear')}}
   function doPlayer(d,t){
     const x=pl.x+d[0],y=pl.y+d[1];
     if(OOB(x,y)||en.some(e=>e.x===x&&e.y===y)||tset.has(I(x,y))){pl.bump={x:d[0],y:d[1],t};return}
     pl.px=pl.x;pl.py=pl.y;pl.x=x;pl.y=y;pl.mt=t;
     if(own[I(x,y)]){if(trail.length)close(t)}
-    else{if(!trail.length)from={x:pl.px,y:pl.py};trail.push({x,y});tset.add(I(x,y))}
+    else{if(!trail.length){from={x:pl.px,y:pl.py};trailB=st.curB}trail.push({x,y});tset.add(I(x,y))}
     S.pluck(t,CH[curBar][steps++%3]+12,.9)}
   function onBeat(b,t){if(over)return;const idx=b%4;curBar=Math.floor(b/4)%4;
-    if(clearing&&idx===0){room++;newRoom();setBpm(bpmFor(room));st.reset();fx.push({k:'text',text:(YD?'Yard ':'Room ')+room,t,col:P.ink});at(t,stats)}
+    if(clearing&&idx===0&&--outro<=0){room++;newRoom();setBpm(bpmFor(room));st.reset();fx.push({k:'text',text:(YD?'Yard ':'Room ')+room,t,col:P.ink});at(t,stats)}
+    if(YD&&!clearing&&idx===0){songBar++;
+      if(songBar>=SONG_BARS){dawn(t);if(over)return}
+      else{const sa=secAt(songBar);if(sa.start===songBar){SEC=sa.x.sec;if(songBar>0)fx.push({k:'text',text:sa.x.name,t,col:sa.x.sec==='rush'?'#ff9f6e':sa.x.sec==='calm'?'#9db8ff':P.ink});if(sa.x.sec==='rush')S.crash(t,.8);if(sa.x.spawn)fenceJumper(t)}}}
     st.beat(b,t,doPlayer);
+    if(YD&&trail.length&&trailB>=0&&b-trailB>=WILT)wilt(t);
     if(!clearing)for(const e of en.slice())if(!over&&en.includes(e)&&acts(e.type,idx,b))stepE(e,b,t,ctx);
     for(const e of band)if(acts(e.type,idx,b))e.beatT=t;
-    playBand(b,t,crew,new Set(en.map(e=>e.type)))}
+    playBand(b,t,crew,new Set(en.map(e=>e.type)),5,YD?SEC:'')}
   function input(d){if(!over&&CLK.on&&d)st.input(d,doPlayer)}
   function drawYard(now){
-    const v=vis(now),sh=shakeFor(pl,now),w=cs*C,ph=Math.round(cs*1.25),py=by-ph-10;
+    const v=vis(now),sh=shakeFor(pl,now),w=cs*C,ph=Math.round(cs*1.25),py=by-ph-10,sp=clamp(songBar<0?0:(songBar+((v.idx+v.ph)/4))/SONG_BARS,0,1),dawnP=clearing&&dawnT>0?1:sp;
     g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
     g.fillStyle='#0b140e';rr(bx-5,by-5,w+10,cs*R+10,12);g.fill();
     for(let y=0;y<R;y++)for(let x=0;x<C;x++){const i=I(x,y),X=bx+x*cs,Y=by+y*cs,h=hsh(x,y);
@@ -347,23 +377,46 @@ function makeTerritory(mode){
           for(let k=0;k<5;k++){const a=k*1.2566+h;circle(fx_+Math.cos(a)*pr,fy+Math.sin(a)*pr,pr,col)}circle(fx_,fy,pr*.75,'#ffe9a8')}}
       else{g.fillStyle=(x+y)%2?'#13241a':'#16281d';rr(X+1,Y+1,cs-2,cs-2,8);g.fill();
         g.strokeStyle='#21402a';g.lineWidth=1.5;g.beginPath();for(let j=0;j<2;j++){const gx=X+cs*(.2+.6*hsh(x+j,y*2)),gy=Y+cs*(.3+.5*hsh(x*2,y+j));g.moveTo(gx,gy);g.lineTo(gx-2,gy-cs*.14);g.moveTo(gx+3,gy);g.lineTo(gx+4,gy-cs*.12)}g.stroke()}}
-    if(CLK.on){const k=Math.max(0,1-v.ph*3);if(k>0){g.globalAlpha=k*.05;g.fillStyle='#b6f07e';rr(bx,by,w,cs*R,8);g.fill();g.globalAlpha=1}}
+    if(CLK.on){const k=Math.max(0,1-v.ph*3);if(k>0){g.globalAlpha=k*(SEC==='rush'?.1:.05);g.fillStyle=SEC==='rush'?'#ff9f6e':'#b6f07e';rr(bx,by,w,cs*R,8);g.fill();g.globalAlpha=1}}
+    if(SEC==='calm'){g.globalAlpha=.22;g.fillStyle='#050a14';rr(bx,by,w,cs*R,8);g.fill();g.globalAlpha=1}
+    if(dawnP>.5){g.globalAlpha=(dawnP-.5)*.22;g.fillStyle='#ffb070';rr(bx,by,w,cs*R,8);g.fill();g.globalAlpha=1}
     // the young vine
-    if(trail.length){const pts=[from,...trail],p=epos(pl,now);pts[pts.length-1]={x:p.x,y:p.y};trailLine(pts,bx,by,cs,cs*.1,'#7bd389',1);
-      trail.forEach((c,i)=>{if(i===trail.length-1)return;const cx=bx+(c.x+.5)*cs,cy=by+(c.y+.5)*cs,sd=i%2?1:-1;g.fillStyle='#9be37a';g.beginPath();g.ellipse(cx+sd*cs*.12,cy-cs*.08,cs*.11,cs*.06,sd*.7,0,7);g.fill()})}
+    let age=0,vcol='#7bd389',lcol='#9be37a';
+    if(trail.length){age=clamp((v.b-trailB+v.ph)/WILT,0,1);vcol=age<.5?lerpC('7bd389','d6c04a',age*2):lerpC('d6c04a','9a6a3a',(age-.5)*2);lcol=age<.5?lerpC('9be37a','e6cf5a',age*2):lerpC('e6cf5a','a87a48',(age-.5)*2);
+      const fl=age>.67&&Math.floor(now*8)%2?.55:1,pts=[from,...trail],p=epos(pl,now);pts[pts.length-1]={x:p.x,y:p.y};trailLine(pts,bx,by,cs,cs*.1,vcol,fl);
+      trail.forEach((c,i)=>{if(i===trail.length-1)return;const cx=bx+(c.x+.5)*cs,cy=by+(c.y+.5)*cs,sd=i%2?1:-1,droop=age*.6;g.globalAlpha=fl;g.fillStyle=lcol;g.beginPath();g.ellipse(cx+sd*cs*.12,cy-cs*.08+droop*cs*.08,cs*.11,cs*.06,sd*(.7+droop),0,7);g.fill();g.globalAlpha=1})}
     if(CLK.on&&!over&&!clearing){drawBlastWarn(en,st.curB,(x,y)=>OOB(x,y)||own[I(x,y)]===1,bx,by,cs);drawArrows(en,st.curB,ctx,bx,by,cs,(x,y)=>same({x,y},pl)||tset.has(I(x,y)))}
     drawMotion(en,now,bx,by,cs,true);
     for(const e of en){const p=epos(e,now);let ox=0,oy=0;if(e.lunge){const a=now-e.lunge.t;if(a>=0&&a<.2){const k=Math.sin(Math.PI*a/.2)*.35;ox=e.lunge.x*k;oy=e.lunge.y*k}}
       const ba=now-e.beatT,hop=ba>=0&&ba<.18?Math.sin(Math.PI*ba/.18):0,cx=bx+(p.x+.5+ox)*cs,cy=by+(p.y+.5+oy)*cs;
       g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(cx+2,cy+cs*.3,cs*.28,cs*.1,0,0,7);g.fill();
+      if(SEC==='rush'){g.globalAlpha=.25+.2*Math.sin(now*14+e.x);g.strokeStyle='#ff9f6e';g.lineWidth=2;g.beginPath();g.arc(cx,cy,cs*.42,0,7);g.stroke();g.globalAlpha=1}
+      if(SEC==='calm'){g.globalAlpha=.5+.4*Math.sin(now*2+e.y);label('z',cx+cs*.3,cy-cs*.42-Math.sin(now*2+e.x)*3,11,'#cfe0ff','center',700);g.globalAlpha=1}
       drawCritter(e.type,cx,cy-hop*cs*.12,cs*.3,e.type==='rumbler'?(ba>=0&&ba<.35?1-ba/.35:0):0)}
     drawGardener(pl,now,bx,by,cs);
+    if(trail.length){const p=epos(pl,now),cx=bx+(p.x+.5)*cs,cy=by+(p.y+.5)*cs;g.strokeStyle='rgba(0,0,0,.35)';g.lineWidth=4;g.beginPath();g.arc(cx,cy,cs*.47,0,7);g.stroke();
+      g.strokeStyle=vcol;g.lineWidth=3;g.lineCap='round';g.beginPath();g.arc(cx,cy,cs*.47,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-age));g.stroke()}
     // fireflies: half blink on the beat, half on the off-beat
     for(let i=0;i<7;i++){const fx_=bx+w*(.5+.46*Math.sin(now*.23*(1+i*.17)+i*2.1)),fy=by+cs*R*(.5+.46*Math.sin(now*.31*(1+i*.11)+i*1.3)),
-      on=CLK.on?(i%2?Math.max(0,1-Math.abs(v.ph-.5)*4):Math.max(0,1-v.ph*4)):.4,a=.15+.85*on;
+      on=CLK.on?(i%2?Math.max(0,1-Math.abs(v.ph-.5)*4):Math.max(0,1-v.ph*4)):.4,a=(.15+.85*on)*(1-dawnP*.75);
       g.globalAlpha=a*.3;circle(fx_,fy,7,'#eaff8f');g.globalAlpha=a;circle(fx_,fy,1.8,'#f6ffc9');g.globalAlpha=1}
     drawFx(fx,now,bx,by,cs);
     g.restore();
+    // the sky: night to dawn as the song plays, with the song laid out across it
+    const skyT=py-60,skyH=ph+60;const sg=g.createLinearGradient(0,skyT,0,py+ph);
+    sg.addColorStop(0,dawnP<.6?lerpC('0b1022','1d1a3a',dawnP/.6):lerpC('1d1a3a','4a3a5e',(dawnP-.6)/.4));
+    sg.addColorStop(1,dawnP<.6?lerpC('131a2e','3a2a4a',dawnP/.6):lerpC('3a2a4a','f0a060',(dawnP-.6)/.4));
+    g.fillStyle=sg;rr(bx-5,skyT,w+10,skyH,12);g.fill();
+    g.save();rr(bx-5,skyT,w+10,skyH,12);g.clip();
+    for(let i=0;i<14;i++){g.globalAlpha=(1-dawnP)*(.3+.5*hsh(i,3));circle(bx+w*hsh(i,1),skyT+26+(py-skyT-30)*hsh(i,2),1.1,'#fff')}g.globalAlpha=1;
+    const mx=bx+w*(.12+.76*dawnP),my=skyT+31;circle(mx,my,7,'#f1ecd2');circle(mx+3,my-2,6,sg);
+    if(dawnP>.7){g.globalAlpha=(dawnP-.7)/.3;circle(bx+w*.82,py+4,16,'#ffc56e');g.globalAlpha=1}
+    g.restore();
+    {const x0=bx+6,x1=bx+w-6,ly=skyT+18,L=x1-x0;let a=0;g.font='600 9px Inter,system-ui,sans-serif';g.textAlign='center';g.textBaseline='bottom';
+      for(const sct of SONG){const sx=x0+L*a/SONG_BARS,ex=x0+L*(a+sct.bars)/SONG_BARS-2,col=sct.sec==='rush'?'#ff9f6e':sct.sec==='calm'?'#9db8ff':'#c9cfdb',cur=songBar>=a&&songBar<a+sct.bars;
+        g.globalAlpha=songBar>=a+sct.bars?.75:cur?.95:.35;g.fillStyle=col;rr(sx,ly-2,Math.max(2,ex-sx),4,2);g.fill();
+        if(sct.bars>=4){g.globalAlpha=cur?1:.55;g.fillStyle=col;g.fillText(sct.name==='Last chorus'?'Chorus':sct.name,(sx+ex)/2,ly-5)}a+=sct.bars}
+      g.globalAlpha=1;const hx=x0+L*sp;circle(hx,ly,4.5,'#fff');circle(hx,ly,2.2,'#0b1022')}
     // the porch: your band, each critter bobbing on its own beat
     g.save();g.translate(bx+w/2,py+4);g.scale(1,.35);const gr=g.createRadialGradient(0,0,4,0,0,w*.5);gr.addColorStop(0,'rgba(255,205,120,.26)');gr.addColorStop(1,'rgba(255,205,120,0)');g.fillStyle=gr;g.beginPath();g.arc(0,0,w*.5,0,7);g.fill();g.restore();
     g.fillStyle='#4a3324';rr(bx,py,w,ph,8);g.fill();g.strokeStyle='rgba(0,0,0,.28)';g.lineWidth=1;for(let i=1;i<3;i++){g.beginPath();g.moveTo(bx+6,py+ph*i/3);g.lineTo(bx+w-6,py+ph*i/3);g.stroke()}
@@ -372,7 +425,6 @@ function makeTerritory(mode){
       if(lv){drawCritter(ty,cx,cy-bo*4,ph*.24,ty==='rumbler'?bo:0);for(let k=0;k<lv;k++)circle(cx-4+k*4,py+ph-5,1.6,'#ffd98a')}
       else{g.globalAlpha=.14;drawCritter(ty,cx,cy,ph*.24,0);g.globalAlpha=1}});
     const ty=py-16;beatDots(now,ty,'#b6f07e');
-    label(Math.round(progress()*100)+'%',bx+4,ty,13,P.mute,'left',650);
     if(crew.full)label('Full band',bx+w-4,ty,13,'#ffd98a','right',650)}
   function draw(now){if(YD)return drawYard(now);
     const sh=shakeFor(pl,now);g.save();if(sh)g.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
@@ -398,7 +450,7 @@ function makeTerritory(mode){
     :'Walk the walls, then cut across the room. A pocket with no instruments fills in. Trap an instrument in a small pocket and it joins your band. Anything that touches your trail cuts it.';
   return{name:YD?'Yard':mode==='paper'?'Paper':'Cut',title:YD?'Backyard Band':mode==='paper'?'Band Paper':'Cut the Room',blurb,reset,start,layout,onBeat,draw,
     down:(x,y)=>input(tapDir(x,y,pl,bx,by,cs)),key:k=>input(KEYS[k]),
-    dbg:()=>({room,hearts,score,over,pl,en,band,crew,trail,progress:progress(),clearing,own}),tray:false};
+    dbg:()=>({room,hearts,score,over,pl,en,band,crew,trail,progress:progress(),clearing,own,songBar,outro}),tray:false};
 }
 
 // =====================================================================
@@ -860,7 +912,7 @@ const games=[makeBandRoom(),makeBarPlan(),makeTerritory('paper'),makeTerritory('
 let gi=clamp(parseInt(Q.get('g')||'0',10)||0,0,games.length-1),game=games[gi];
 const nav=document.getElementById('nav');
 games.forEach((G,i)=>{const b=document.createElement('button');b.textContent=G.name;b.onclick=()=>select(i);nav.appendChild(b)});
-function select(i){CLK.on=false;later.length=0;gi=i;game=games[i];[...nav.children].forEach((b,j)=>b.classList.toggle('on',j===i));
+function select(i){CLK.on=false;SEC='';later.length=0;gi=i;game=games[i];[...nav.children].forEach((b,j)=>b.classList.toggle('on',j===i));
   document.getElementById('name').textContent=game.title;document.getElementById('tray').style.display='none';game.reset();game.layout();showOv(game.title,game.blurb,'Play',()=>game.start())}
 function resize(){const r=stage.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);cv.style.width=W+'px';cv.style.height=H+'px';g.setTransform(d,0,0,d,0,0);game.layout()}
 addEventListener('resize',resize);
