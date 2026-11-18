@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Music Battler feels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafaf9;--fg:#1c1917;--muted:#78716c;--line:#e7e5e4;--card:#fff;--on:#1c1917;--onfg:#fafaf9;--accent:#2563eb}
+@media (prefers-color-scheme:dark){:root{--bg:#0c0a09;--fg:#f5f5f4;--muted:#a8a29e;--line:#292524;--card:#1c1917;--on:#f5f5f4;--onfg:#0c0a09;--accent:#60a5fa}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+main{max-width:720px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:22px;font-weight:600;margin:0 0 24px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.top{display:flex;align-items:center;gap:12px}
+.play{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-size:16px;cursor:pointer;display:grid;place-items:center}
+.play.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.name b{display:block;font-weight:600}
+.name span{color:var(--muted);font-size:13px}
+.parts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
+.parts button{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:8px 4px;font:500 13px Inter,system-ui,sans-serif;cursor:pointer}
+.parts button.on{background:var(--on);color:var(--onfg);border-color:var(--on)}
+.bar{height:2px;background:var(--line);border-radius:1px;margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<h1>Music Battler feels</h1>
+<div id="list"></div>
+</main>
+<script>
+const FEELS=[
+ {id:"fairy-grove",name:"Fairy grove",t:"Upright bass, harp, kalimba, frame drum · 92 BPM · D minor",ms:20870},
+ {id:"crystal-cavern",name:"Crystal cavern",t:"Sub synth, glass pad, bell arpeggios, electronic kit · 120 BPM · A minor",ms:16000},
+ {id:"goblin-war-band",name:"Goblin war band",t:"Tuba, French horns, trumpet, marching drums · 100 BPM · C minor",ms:19200},
+ {id:"storm-giants",name:"Storm giants",t:"Distorted bass, Hammond organ, guitar, rock kit · 140 BPM · E minor",ms:13714}];
+const PARTS=["bass","chords","lead","drums"];
+let ctx,cur=null;const bufs={};
+const list=document.getElementById('list');
+for(const f of FEELS){
+ const s=document.createElement('section');f.on={bass:1,chords:1,lead:1,drums:1};
+ s.innerHTML=`<div class="top"><button class="play" aria-label="Play ${f.name}">&#9654;</button><div class="name"><b>${f.name}</b><span>${f.t}</span></div></div>
+ <div class="parts">${PARTS.map(p=>`<button class="on" data-p="${p}">${p[0].toUpperCase()+p.slice(1)}</button>`).join('')}</div><div class="bar"><i></i></div>`;
+ f.el=s;list.appendChild(s);
+ s.querySelector('.play').onclick=()=>toggle(f);
+ s.querySelectorAll('.parts button').forEach(b=>b.onclick=()=>{const p=b.dataset.p;f.on[p]=!f.on[p];b.classList.toggle('on',!!f.on[p]);
+  if(cur&&cur.f===f)cur.g[p].gain.setTargetAtTime(f.on[p]?1:0,ctx.currentTime,.02)});
+}
+async function load(f){
+ if(bufs[f.id])return bufs[f.id];
+ const out={};await Promise.all(PARTS.map(async p=>{const r=await fetch(`web/${f.id}-${p}.mp3`);out[p]=await ctx.decodeAudioData(await r.arrayBuffer())}));
+ return bufs[f.id]=out;
+}
+function stop(){if(!cur)return;cur.src.forEach(s=>{try{s.stop()}catch(e){}});cur.f.el.querySelector('.play').classList.remove('on');cur.f.el.querySelector('.play').innerHTML='&#9654;';cancelAnimationFrame(cur.raf);cur.f.el.querySelector('.bar i').style.width=0;cur=null}
+async function toggle(f){
+ ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();await ctx.resume();
+ const was=cur&&cur.f===f;stop();if(was)return;
+ const btn=f.el.querySelector('.play');btn.innerHTML='&hellip;';
+ const b=await load(f);const t0=ctx.currentTime+.08,len=f.ms/1000,src=[],g={};
+ for(const p of PARTS){const s=ctx.createBufferSource(),gn=ctx.createGain();s.buffer=b[p];s.loop=true;s.loopStart=0;s.loopEnd=Math.min(len,b[p].duration);
+  gn.gain.value=f.on[p]?1:0;s.connect(gn).connect(ctx.destination);s.start(t0);src.push(s);g[p]=gn}
+ cur={f,src,g,t0,len};btn.classList.add('on');btn.innerHTML='&#10074;&#10074;';
+ const bar=f.el.querySelector('.bar i');const tick=()=>{if(!cur||cur.f!==f)return;bar.style.width=(((ctx.currentTime-t0)%len+len)%len/len*100)+'%';cur.raf=requestAnimationFrame(tick)};tick();
+}
+</script>
+</body>
+</html>

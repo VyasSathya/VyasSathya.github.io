@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "music-battler-feels",
+   "key": "music-battler-feels",
+   "title": "Music Battler feels",
+   "url": "p/music-battler-feels/index.html",
+   "added": "2026-11-18",
+   "v": "20261118102939"
+  },
+  {
    "id": "music-battler-looks",
    "key": "music-battler-looks",
    "title": "Music Battler looks",
