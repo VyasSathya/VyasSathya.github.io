@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "music-battler-looks",
+   "key": "music-battler-looks",
+   "title": "Music Battler looks",
+   "url": "p/music-battler-looks/index.html",
+   "added": "2026-11-18",
+   "v": "20261118100851"
+  },
+  {
    "id": "beat-games",
    "key": "beat-games",
    "title": "Beat Games",
