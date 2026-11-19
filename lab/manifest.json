@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "music-battler-card",
+   "key": "music-battler-card",
+   "title": "Music Battler: card game",
+   "url": "p/music-battler-card/index.html",
+   "added": "2026-11-19",
+   "v": "20261119121441"
+  },
+  {
    "id": "seed-brawl-lanes",
    "key": "seed-brawl-lanes",
    "title": "Fur Frenzy 1.0",
