@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "step-duel",
+   "key": "step-duel",
+   "title": "Step Duel",
+   "url": "p/step-duel/index.html",
+   "added": "2026-11-19",
+   "v": "20261119113741"
+  },
+  {
    "id": "sky-flick",
    "key": "sky-flick",
    "title": "Sky Flick",
