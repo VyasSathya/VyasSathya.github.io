@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "music-battler-moves",
+   "key": "music-battler-moves",
+   "title": "Music Battler: role moves",
+   "url": "p/music-battler-moves/index.html",
+   "added": "2026-11-19",
+   "v": "20261119134722"
+  },
+  {
    "id": "music-battler-card",
    "key": "music-battler-card",
    "title": "Music Battler: card game",

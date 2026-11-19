@@ -1,0 +1,1640 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Band Battler Moves</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Placeholder look on purpose: the art direction comes later. One phone column: song map, rival band, the chord strip,
+   your band, then the shop. Dark-first like a stage at night, with a light theme for daylight. */
+:root{
+  --bg:#14121C; --surface:#211E2D; --surface2:#2C2840; --cell:#1A1825; --ink:#F2EFF9; --muted:#A49EBB; --line:#3A3452;
+  --them:#EE6FB4; --them-soft:#2A1C2C; --you:#6FD6C2;
+  --rhythm:#F2814E; --harmony:#3EC6B8; --melody:#B48AF5;
+  --c0:#6B93FF; --c1:#F3C451; --c2:#56D184; --c3:#F46A72;
+  --hp:#7CDB93; --mana:#F3C451; --shield:#7FB2FF; --bad:#FF6B6B; --gold:#F3C451; --stun:#C7C2D9;
+  --scrim:rgba(8,7,12,.74); --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 16px rgba(0,0,0,.25);
+  --display:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#F1EEF6; --surface:#FFFFFF; --surface2:#ECE8F3; --cell:#E5E1ED; --ink:#1A1626; --muted:#5F5874; --line:#D0CADD;
+  --them:#C42F80; --them-soft:#FBE8F2; --you:#12907A;
+  --rhythm:#D45A22; --harmony:#13897D; --melody:#7A4BD1;
+  --c0:#3561E0; --c1:#B98404; --c2:#1F9450; --c3:#D23A44;
+  --hp:#2E9E50; --mana:#C99308; --shield:#3D72D6; --bad:#D23A44; --gold:#A87905; --stun:#6B6580;
+  --scrim:rgba(30,24,44,.45); --shadow:0 1px 2px rgba(26,22,38,.08),0 6px 16px rgba(26,22,38,.07);
+  color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#F1EEF6; --surface:#FFFFFF; --surface2:#ECE8F3; --cell:#E5E1ED; --ink:#1A1626; --muted:#5F5874; --line:#D0CADD;
+  --them:#C42F80; --them-soft:#FBE8F2; --you:#12907A;
+  --rhythm:#D45A22; --harmony:#13897D; --melody:#7A4BD1;
+  --c0:#3561E0; --c1:#B98404; --c2:#1F9450; --c3:#D23A44;
+  --hp:#2E9E50; --mana:#C99308; --shield:#3D72D6; --bad:#D23A44; --gold:#A87905; --stun:#6B6580;
+  --scrim:rgba(30,24,44,.45); --shadow:0 1px 2px rgba(26,22,38,.08),0 6px 16px rgba(26,22,38,.07);
+  color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:var(--body);font-size:14px;line-height:1.35;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible,.unit:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#app{max-width:520px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 22px;display:flex;flex-direction:column;gap:7px}
+
+.top{display:flex;align-items:center;gap:8px}
+.logo{flex:1;min-width:0}
+.logo b{display:block;font-family:var(--display);font-size:19px;line-height:1;letter-spacing:.01em}
+.logo small{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat{font-family:var(--display);font-size:15px;display:flex;align-items:center;gap:3px;font-variant-numeric:tabular-nums}
+.stat svg{width:15px;height:15px}
+.heart{color:var(--c3)} .coin{color:var(--gold)} .trophy{color:var(--you)}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;height:32px;min-width:32px;padding:0 10px;font-weight:800;font-size:12px;white-space:nowrap}
+.chip.snd{max-width:96px;overflow:hidden;text-overflow:ellipsis}
+
+/* song map */
+.song{display:flex;gap:3px}
+.sec{flex:var(--n) 1 auto;min-width:max-content;padding:0 5px;height:22px;border-radius:6px;background:var(--surface);border:1px solid var(--line);font-size:10px;font-weight:800;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;gap:3px;position:relative;overflow:hidden;white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
+.sec.done{color:var(--ink);background:var(--surface2)}
+.sec.now{color:var(--bg);background:var(--you);border-color:var(--you)}
+.sec .pips{display:flex;gap:2px}
+.sec .pips i{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.35}
+.sec .pips i.w{opacity:1}
+
+.lbl{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:0}
+.lbl b{color:var(--them);font-family:var(--display);font-size:14px;letter-spacing:.02em;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.lbl.you b{color:var(--you)}
+.tag{font-size:10px;font-weight:800;letter-spacing:.05em;padding:1px 6px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+
+#arena{position:relative;display:flex;flex-direction:column;gap:5px}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.cell{position:relative;height:64px;border-radius:10px;background:var(--cell);border:1px dashed var(--line)}
+.cell.them{border-style:solid;border-color:transparent;background:var(--them-soft)}
+.cell.drop{border-color:var(--you);border-style:solid}
+.cell.off{opacity:.35}
+.bench{grid-template-columns:repeat(5,minmax(0,1fr))}
+.bench .cell{height:56px}
+.unit{position:absolute;inset:0;border-radius:10px;background:var(--surface);border:1px solid var(--line);border-bottom:3px solid var(--fam);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 6px 5px;box-shadow:var(--shadow);transition:opacity .3s,filter .3s}
+.unit.them{background:var(--them-soft);border-color:color-mix(in srgb,var(--them) 35%,var(--line));border-bottom-color:var(--fam)}
+.unit .ic svg{width:21px;height:21px;stroke:var(--fam);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
+.unit .nm{font-size:11px;font-weight:800;line-height:1;white-space:nowrap}
+.unit .st{position:absolute;top:3px;right:5px;font-size:10px;font-weight:800;color:var(--gold);font-family:var(--display)}
+.unit .badge{position:absolute;top:3px;left:5px;font-size:10px;font-weight:800;font-family:var(--display);color:var(--stun)}
+.bars{width:100%;display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.hp,.mp{width:100%;height:4px;border-radius:4px;background:var(--surface2);overflow:hidden}
+.hp>i,.mp>i{display:block;height:100%;width:100%;transform-origin:left;transition:transform .12s}
+.hp>i{background:var(--hp)} .mp>i{background:var(--mana)}
+.unit.shielded{box-shadow:0 0 0 2px var(--shield),var(--shadow)}
+.unit.ready{box-shadow:0 0 0 2px var(--mana),0 0 14px var(--mana)}
+.unit.ready.mine::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translate(-50%,50%);width:12px;height:12px;background:var(--mana);border:2px solid var(--bg);border-radius:999px;animation:pulse 1s ease-in-out infinite}
+.unit.cued::after{background:var(--ink)!important;animation:none!important}
+@keyframes pulse{50%{transform:translate(-50%,50%) scale(1.35)}}
+.unit.solo{box-shadow:0 0 0 2px var(--fam),0 0 18px var(--fam)}
+.unit.spot{box-shadow:0 0 0 2px var(--fam),0 0 26px var(--fam);z-index:2}
+.unit.held{filter:saturate(.3);opacity:.62}
+.unit.held::before{content:"";position:absolute;top:5px;left:50%;width:9px;height:11px;transform:translateX(-50%);border-left:3px solid var(--ink);border-right:3px solid var(--ink);opacity:.6}
+.unit.rest{opacity:.3;border-style:dashed;box-shadow:none;filter:grayscale(.6)}
+.unit.clashed{outline:2px solid var(--melody);outline-offset:-2px;animation:jit .16s steps(2) infinite}
+@keyframes jit{0%{transform:translateX(-1.5px)}100%{transform:translateX(1.5px)}}
+.unit.swell{box-shadow:0 0 0 2px var(--gold),0 0 22px var(--gold)}
+.grid{transition:transform .25s}
+.grid.lift{transform:translateY(-3px)}
+.grid.lift .unit{border-top:2px solid var(--gold)}
+.lbl .up{display:none;width:15px;height:15px;stroke:var(--gold);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;margin-left:6px;margin-right:auto;flex:0 0 auto}
+.lbl.lifted .up{display:block}
+.lab{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:1px 16px}
+.lab::-webkit-scrollbar{display:none}
+.lab button{flex:0 0 auto;display:flex;align-items:center;gap:5px;height:32px;padding:0 11px 0 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:700;font-size:12px}
+.lab button svg{width:16px;height:16px;stroke:var(--fam);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
+.lab button[aria-pressed="true"]{border-color:var(--fam);background:color-mix(in srgb,var(--fam) 16%,var(--surface))}
+.hint:empty,.hint .grow:empty{min-height:0}
+.unit.down{opacity:.22;filter:grayscale(1)}
+.unit.sel{outline:2px solid var(--ink);outline-offset:1px}
+.bench .unit .bars{display:none}
+
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;position:relative;height:28px}
+.chord{border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:14px;color:var(--cc);
+  background:color-mix(in srgb,var(--cc) 14%,transparent);border:1px solid color-mix(in srgb,var(--cc) 45%,transparent);transition:background .12s}
+.chord.on{background:var(--cc);color:var(--bg)}
+#playhead{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:2px;background:var(--ink);left:0;opacity:0}
+
+.traits{display:flex;flex-wrap:wrap;gap:5px}
+.trait{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.trait.on{color:var(--fc);border-color:var(--fc);background:color-mix(in srgb,var(--fc) 12%,var(--surface))}
+.hint{min-height:44px;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px;background:var(--surface);border-radius:10px;padding:6px 8px 6px 10px;border:1px solid var(--line)}
+.hint b{color:var(--ink)}
+.hint .grow{flex:1;min-width:0}
+.pill{border:1px solid var(--line);background:var(--surface2);border-radius:999px;padding:6px 11px;font-weight:800;font-size:12px;white-space:nowrap}
+.pill.go{background:var(--you);border-color:var(--you);color:var(--bg)}
+
+.shop{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.card{position:relative;height:80px;border-radius:12px;background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--fam);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 3px;min-width:0}
+.card .ic svg{width:22px;height:22px;stroke:var(--fam);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
+.card .nm{font-size:11.5px;font-weight:800;white-space:nowrap}
+.card .fm{font-size:9.5px;font-weight:800;color:var(--fam);text-transform:uppercase;letter-spacing:.05em}
+.card .cost{position:absolute;top:3px;right:6px;font-family:var(--display);font-size:12px;color:var(--gold)}
+.card .frz{position:absolute;top:3px;left:6px;font-size:10px;font-weight:800;color:var(--shield)}
+.card.frozen{border-color:var(--shield);background:color-mix(in srgb,var(--shield) 10%,var(--surface))}
+.card.sel{outline:2px solid var(--ink);outline-offset:1px}
+.card.sold{visibility:hidden}
+.card.poor{opacity:.5}
+.actions{display:grid;grid-template-columns:1fr 1fr 1.6fr;gap:7px}
+.btn{height:48px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:800;font-size:14px;padding:0 6px}
+.btn.go{background:var(--you);border-color:var(--you);color:var(--bg);font-family:var(--display);font-size:17px;letter-spacing:.03em}
+.btn:disabled{opacity:.45;cursor:default}
+.fighting .shopzone{opacity:.35;pointer-events:none}
+.loading{font-size:11.5px;color:var(--muted);text-align:center;min-height:15px}
+
+.ov{position:fixed;inset:0;z-index:30;background:var(--scrim);display:flex;align-items:flex-end;justify-content:center;
+  padding:max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) max(12px,env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.ov[hidden]{display:none}
+.ov.mid{align-items:center}
+.sheet{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);width:100%;max-width:460px;max-height:100%;overflow:auto;-webkit-overflow-scrolling:touch;padding:18px 16px 16px;display:flex;flex-direction:column;gap:10px;-webkit-user-select:text;user-select:text}
+.sheet h2{margin:0;font-family:var(--display);font-size:24px;line-height:1.05;text-wrap:balance}
+.sheet h3{margin:6px 0 0;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sheet p{margin:0;color:var(--muted)}
+.rules{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.rules li{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:13.5px}
+.rules li span:first-child{font-family:var(--display);color:var(--you);font-size:15px}
+.sets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.set{border:1px solid var(--line);background:var(--surface2);border-radius:12px;padding:8px 10px;text-align:left;display:flex;flex-direction:column;gap:2px;min-height:58px}
+.set b{font-size:14px}
+.set span{font-size:11px;color:var(--muted);line-height:1.25}
+.set[aria-pressed="true"]{border-color:var(--you);box-shadow:0 0 0 1px var(--you);background:color-mix(in srgb,var(--you) 10%,var(--surface))}
+.row{display:flex;align-items:center;gap:8px}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:6px 12px;font-size:12px;font-weight:800;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface2);color:var(--ink)}
+.stems{display:flex;flex-direction:column;gap:6px}
+.stem{display:grid;grid-template-columns:72px 1fr auto auto;gap:6px;align-items:center;font-size:12.5px}
+.stem b{font-size:12.5px}
+.stem .fn{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.stem label{position:relative;overflow:hidden}
+.stem input[type=file]{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.num{width:64px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;font-weight:800;padding:0 8px}
+.close{align-self:stretch}
+.record{font-family:var(--display);font-size:20px;color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.hp>i,.mp>i,.unit,.chord{transition:none}}
+@media (max-height:700px){#app{gap:5px}.cell{height:54px}.bench .cell{height:44px}.card{height:64px}.card .fm{display:none}.btn{height:44px}.hint{min-height:38px;font-size:12px}.sec{height:20px}.unit .ic svg{width:18px;height:18px}}
+</style>
+<div id="app">
+  <div class="top">
+    <div class="logo"><b>Band Battler</b><small id="gigName">Gig 1 of 10 · Intro</small></div>
+    <div class="stat heart" title="Hearts"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.5-9.3C1 8.2 3.2 4.5 6.9 4.5c2 0 3.5 1 5.1 2.9 1.6-1.9 3.1-2.9 5.1-2.9 3.7 0 5.9 3.7 4.4 7.2C19.5 16.4 12 21 12 21z"/></svg><span id="hearts">4</span></div>
+    <div class="stat trophy" title="Wins"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h10v3h3v2a5 5 0 01-4.2 4.9A5 5 0 0113 15.9V18h3v3H8v-3h3v-2.1a5 5 0 01-2.8-3A5 5 0 014 8V6h3zm0 5V8H6a3 3 0 001.2 2.4A6 6 0 017 8zm10 0a6 6 0 01-.2 2.4A3 3 0 0018 8z"/></svg><span id="wins">0</span></div>
+    <div class="stat coin" title="Gold"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="9"/></svg><span id="gold">10</span></div>
+    <button class="chip snd" id="soundBtn" aria-label="Sound set">Synth</button>
+    <button class="chip" id="helpBtn" aria-label="How to play">?</button>
+  </div>
+  <div class="lab" id="lab"></div>
+  <div class="song" id="song"></div>
+
+  <div id="arena">
+    <div class="lbl" id="enemyLbl"><b id="enemyName">Rival</b><svg class="up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span class="tag" id="enemyTag">AI band</span></div>
+    <div class="grid" id="enemyGrid"></div>
+    <div class="strip" id="strip"><div id="playhead"></div></div>
+    <div class="grid" id="youGrid"></div>
+    <div class="lbl you" id="youLbl"><b id="bandName">Your band</b><svg class="up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="cap"></span></div>
+    <canvas id="fx"></canvas>
+  </div>
+
+  <div class="shopzone" style="display:flex;flex-direction:column;gap:7px">
+    <div class="lbl"><span>Bench</span><span>Three copies become ★2</span></div>
+    <div class="grid bench" id="bench"></div>
+    <div class="traits" id="traits"></div>
+    <div class="hint" id="hint"><span class="grow" id="hintText"></span><span id="hintBtns" style="display:flex;gap:5px"></span></div>
+    <div class="shop" id="shop"></div>
+  </div>
+  <div class="actions">
+    <button class="btn" id="rerollBtn">Reroll · 1</button>
+    <button class="btn" id="hearBtn">Hear band</button>
+    <button class="btn go" id="playBtn">Play the gig</button>
+  </div>
+  <div class="loading" id="loading"></div>
+</div>
+
+<div class="ov mid" id="help">
+  <div class="sheet">
+    <h2>Band Battler</h2>
+    <button class="btn go" id="startBtn">Start</button>
+  </div>
+</div>
+
+<div class="ov" id="soundSheet" hidden>
+  <div class="sheet">
+    <h2>Sound</h2>
+    <div class="sets" id="sets"></div>
+    <div id="rivalRow" hidden><h3>Rival band sound</h3><div class="row"><div class="seg" id="rivalSeg" style="flex-wrap:wrap"></div></div></div>
+    <h3>Rival band in the mix</h3>
+    <div class="row"><div class="seg" id="mixSeg"><button data-m="full">Full</button><button data-m="quiet" aria-pressed="true">Quiet</button><button data-m="off">Off</button></div>
+      <button class="pill" id="muteBtn" style="margin-left:auto">Sound on</button></div>
+    <div id="stemPanel" hidden>
+      <h3 id="stemTitle">Stems A</h3>
+      <p style="font-size:12.5px">One audio file per musician: a 4-bar loop over Am, F, C, G in A minor at the tempo below, starting on beat 1. Files stay on this device.</p>
+      <p style="font-size:12.5px">To make matching stems, render each musician's MIDI part (in the chat as midi.zip, and in the project files under battler-baseline/midi) with your tool, then load the audio here.</p>
+      <div class="row" style="font-size:12.5px;font-weight:700">Tempo <input class="num" id="stemBpm" type="number" inputmode="numeric" min="60" max="180" value="100"> BPM <button class="pill" id="stemClear" style="margin-left:auto">Clear set</button></div>
+      <div class="stems" id="stemRows"></div>
+    </div>
+    <button class="btn go close" id="soundClose">Done</button>
+  </div>
+</div>
+
+<div class="ov mid" id="result" hidden>
+  <div class="sheet">
+    <h2 id="resTitle">You won</h2>
+    <p id="resText"></p>
+    <button class="btn go" id="resBtn">Next gig</button>
+  </div>
+</div>
+
+<div class="ov mid" id="endSheet" hidden>
+  <div class="sheet">
+    <h2 id="endTitle">Tour over</h2>
+    <div class="record" id="endRecord"></div>
+    <p id="endText"></p>
+    <button class="btn" id="songBtn">Play your song</button>
+    <button class="btn go" id="newBtn">New run</button>
+  </div>
+</div>
+
+<script>
+window.BATTLER_DATA={"units":{"version":1,"about":"Musicians. Each part is one bar (16 steps) of note events, the same shape as MIDI: s = step (0-15), len = length in steps, p = pitch spec. Every event is also the musician's action: fx = what it does, amt = how much, tg = who it targets. A \u26052 or \u26053 musician plays a fuller part.","pitchSpec":{"R":"chord root in the bass register (MIDI 40-50)","R-12":"root an octave down","T0 / T1 / T2":"the 1st / 2nd / 3rd note of the current triad (MIDI 55-65)","T0+12, T1+24 ...":"a triad note shifted up by octaves","CH / CH+12":"the whole triad as a chord","K / S / H / TOM":"drums: kick, snare, hi-hat, tom"},"shorthand":"An event with every: N repeats every N steps from 'from' (default its s) up to 'to' (exclusive, default 16). seq cycles pitches across the repeats. eb: N plays the event only on every Nth bar.","effects":{"hit":"damage","splash":"damage to the target and the squares beside it (70%)","shield":"absorbs damage while the note rings; breaking it cuts the note","rowshield":"shield the whole row","heal":"heal","healall":"heal the whole band","buff":"your band hits 40% harder this bar","slow":"small hit; the target plays at half time and out of tune next bar","stun":"hit; the target rests (plays nothing) for stun steps","hitall":"damage every rival"},"targets":{"front":"front row first, nearest column (default)","any":"nearest column, either row","weak":"lowest health rival","rand":"random rival","all":"every rival","self":"itself","row":"its row","ally":"weakest bandmate","band":"whole band"},"types":{"drums":{"name":"Drummer","family":"rhythm","tier":1,"role":"drums","hp":62,"phrase":100,"mp":10,"line":"Kick and snare on the beat. Each hit lands on the front row.","soloLine":"Fill into the crash: a tom fill rolls across the rival front row, then the crash hits the whole row on the next 1.","parts":{"1":[{"s":0,"p":"K","fx":"hit","amt":4},{"s":4,"p":"S","fx":"hit","amt":4},{"s":8,"p":"K","fx":"hit","amt":4},{"s":12,"p":"S","fx":"hit","amt":4}],"2":[{"s":0,"p":"K","fx":"hit","amt":4},{"s":4,"p":"S","fx":"hit","amt":4},{"s":8,"p":"K","fx":"hit","amt":4},{"s":10,"p":"K","fx":"hit","amt":3},{"s":12,"p":"S","fx":"hit","amt":4},{"s":14,"p":"S","fx":"hit","amt":2}],"3":[{"s":0,"p":"K","fx":"hit","amt":5},{"s":4,"p":"S","fx":"hit","amt":5},{"s":6,"p":"K","fx":"hit","amt":3},{"s":8,"p":"K","fx":"hit","amt":5},{"s":10,"p":"K","fx":"hit","amt":3},{"s":12,"p":"S","fx":"hit","amt":5},{"s":14,"p":"S","fx":"hit","amt":3},{"s":15,"p":"S","fx":"hit","amt":2}]},"solo":[{"s":0,"p":"K","fx":"hit","amt":4},{"s":4,"p":"S","fx":"hit","amt":4},{"s":8,"every":1,"to":12,"p":"TOM+5","fx":"hit","amt":1.5,"tg":"col0"},{"s":12,"every":1,"to":14,"p":"TOM","fx":"hit","amt":1.5,"tg":"col1"},{"s":14,"every":1,"to":16,"p":"TOM-5","fx":"hit","amt":1.5,"tg":"col2"},{"s":16,"len":16,"p":"CR","fx":"hit","amt":13,"tg":"row"},{"s":16,"p":"K"}],"move":{"name":"Fill into the crash","trigger":"cue","bars":2},"passive":false},"bass":{"name":"Bassist","family":"rhythm","tier":1,"role":"bass","hp":95,"phrase":100,"mp":12,"line":"A held low note shields itself while it rings. Short notes hit.","soloLine":"Breakdown: for 2 bars only your rhythm players play; their hits strip shields and ignore armor, and your dropped-out players cannot be targeted.","parts":{"1":[{"s":0,"len":6,"p":"R","fx":"shield","amt":9,"tg":"self"},{"s":8,"p":"R","fx":"hit","amt":4},{"s":12,"p":"R","fx":"hit","amt":4},{"s":14,"p":"R","fx":"hit","amt":3}],"2":[{"s":0,"len":6,"p":"R","fx":"shield","amt":8,"tg":"row"},{"s":6,"p":"R","fx":"hit","amt":3},{"s":8,"p":"R","fx":"hit","amt":4},{"s":12,"p":"R","fx":"hit","amt":4},{"s":14,"p":"R","fx":"hit","amt":3}],"3":[{"s":0,"len":8,"p":"R","fx":"shield","amt":11,"tg":"row"},{"s":8,"p":"R","fx":"hit","amt":4},{"s":10,"p":"R","fx":"hit","amt":3},{"s":12,"p":"R","fx":"hit","amt":4},{"s":14,"p":"R","fx":"hit","amt":3}]},"solo":[{"s":0,"fx":"breakdown","bars":2,"silent":true},{"s":0,"len":3,"p":"R-12","fx":"hit","amt":4,"sound":"drop"},{"s":3,"len":3,"p":"R-12","fx":"hit","amt":3,"sound":"drop"},{"s":6,"len":2,"p":"R-12","fx":"hit","amt":4,"sound":"drop"},{"s":8,"len":4,"p":"R-12","fx":"hit","amt":6,"sound":"drop"},{"s":16,"len":3,"p":"R-12","fx":"hit","amt":4,"sound":"drop"},{"s":19,"len":3,"p":"R-12","fx":"hit","amt":3,"sound":"drop"},{"s":22,"len":2,"p":"R-12","fx":"hit","amt":4,"sound":"drop"},{"s":24,"len":4,"p":"R-12","fx":"hit","amt":6,"sound":"drop"}],"move":{"name":"Breakdown","trigger":"cue","bars":2},"passive":false},"lead":{"name":"Guitar","family":"melody","tier":1,"role":"lead","hp":40,"phrase":100,"mp":5,"line":"Fast eighth notes. Each note is a small hit.","soloLine":"Stop-time solo: for a bar the whole stage plays only the 1 while the guitar plays every sixteenth at the weakest rival and ends on a bent high note.","parts":{"1":[{"s":0,"every":2,"seq":["T0+12","T1+12","T2+12","T0+24","T2+12","T1+12","T0+24","T1+24"],"fx":"hit","amt":2}],"2":[{"s":0,"every":2,"to":8,"seq":["T0+12","T1+12","T2+12","T0+24"],"fx":"hit","amt":2},{"s":8,"every":1,"seq":["T2+12","T0+24","T1+24","T0+24","T2+12","T1+12","T0+12","T1+12"],"fx":"hit","amt":1.5}],"3":[{"s":0,"every":1,"seq":["T0+12","T1+12","T2+12","T0+24","T1+24","T0+24","T2+12","T1+12"],"fx":"hit","amt":1.6}]},"solo":[{"s":0,"fx":"stoptime","bars":1,"silent":true},{"s":0,"every":1,"to":14,"seq":["T0+24","T1+24","T0+24","T2+12","T1+12","T2+12","T0+24","T1+24","T2+24","T1+24","T0+24","T2+12","T0+24","T1+24"],"fx":"hit","amt":3.5,"tg":"weak"},{"s":14,"len":2,"p":"T0+36","fx":"hit","amt":10,"tg":"weak"}],"move":{"name":"Solo over stop-time","trigger":"cue","bars":1},"passive":false},"keys":{"name":"Keys","family":"harmony","tier":1,"role":"stab","hp":46,"phrase":100,"mp":10,"line":"Off-beat chord stabs splash three squares.","soloLine":"Key change: a bar of pivot chords, then the song goes up a whole step and your band hits 15% harder for the rest of the fight.","parts":{"1":[{"s":2,"every":4,"p":"CH","fx":"splash","amt":3}],"2":[{"s":2,"every":4,"p":"CH","fx":"splash","amt":3},{"s":15,"p":"CH","fx":"splash","amt":2}],"3":[{"s":2,"every":4,"p":"CH","fx":"splash","amt":4},{"s":7,"p":"CH","fx":"splash","amt":2},{"s":15,"p":"CH","fx":"splash","amt":2}]},"solo":[{"s":0,"fx":"keyup","shift":2,"mult":1.15,"silent":true},{"s":0,"every":4,"to":12,"p":"CH","fx":"splash","amt":3},{"s":12,"len":4,"p":"CH+2","fx":"splash","amt":4}],"move":{"name":"Key change up","trigger":"cue","bars":1},"passive":false},"strings":{"name":"Strings","family":"harmony","tier":2,"role":"pad","hp":52,"phrase":100,"mp":34,"line":"One held chord a bar heals your weakest player while it swells.","soloLine":"Fermata: one chord held for a bar and a half shields the whole band while it rings; if nothing cuts it, its release heals everyone.","parts":{"1":[{"s":0,"len":16,"p":"CH","fx":"heal","amt":4,"tg":"ally"},{"s":4,"every":4,"fx":"heal","amt":3,"tg":"ally","silent":true}],"2":[{"s":0,"len":16,"p":"CH","fx":"heal","amt":5,"tg":"ally"},{"s":4,"every":4,"fx":"heal","amt":4,"tg":"ally","silent":true}],"3":[{"s":0,"len":16,"p":"CH","fx":"heal","amt":7,"tg":"ally"},{"s":2,"every":2,"fx":"heal","amt":3,"tg":"ally","silent":true}]},"solo":[{"s":0,"len":24,"p":"CH","fx":"shield","amt":8,"tg":"band"},{"s":24,"len":8,"p":"CH+12","fx":"healall","amt":13,"ifHeld":true}],"move":{"name":"Fermata","trigger":"cue","bars":2},"passive":false},"taiko":{"name":"Taiko","family":"rhythm","tier":2,"role":"tom","hp":70,"phrase":100,"mp":25,"line":"One huge drum a bar. The musician it hits rests for a beat.","soloLine":"Unison strike: two huge strikes on 1 and 3 through a column; every rhythm bandmate hitting on the same step adds 40%, and the front rival rests.","parts":{"1":[{"s":8,"p":"TOM","fx":"stun","amt":6,"stun":4}],"2":[{"s":0,"p":"TOM","fx":"hit","amt":5},{"s":8,"p":"TOM","fx":"stun","amt":7,"stun":4}],"3":[{"s":0,"p":"TOM","fx":"hit","amt":6},{"s":8,"p":"TOM","fx":"stun","amt":8,"stun":8}]},"solo":[{"s":0,"len":8,"p":"TOM-5","fx":"unison","amt":5.5,"per":0.4,"stun":4,"pierce":0.6},{"s":8,"len":8,"p":"TOM-5","fx":"unison","amt":5.5,"per":0.4,"stun":4,"pierce":0.6}],"move":{"name":"Unison strike","trigger":"cue","bars":1},"passive":false},"voice":{"name":"Singer","family":"melody","tier":2,"role":"voice","hp":56,"phrase":80,"mp":10,"line":"Long sung notes. Reaches the back row.","soloLine":"Call and response: two calls at the weakest rival; a beat after each, the whole band answers together on it (the Choir counts double).","parts":{"1":[{"s":0,"len":4,"p":"T2+12","fx":"hit","amt":5,"tg":"any"},{"s":6,"len":2,"p":"T1+12","fx":"hit","amt":3,"tg":"any"},{"s":8,"len":4,"p":"T0+12","fx":"hit","amt":5,"tg":"any"},{"s":12,"len":4,"p":"T1+12","fx":"hit","amt":4,"tg":"any"}],"2":[{"s":0,"len":4,"p":"T2+12","fx":"hit","amt":5,"tg":"any"},{"s":4,"len":2,"p":"T1+12","fx":"hit","amt":3,"tg":"any"},{"s":6,"len":2,"p":"T2+12","fx":"hit","amt":3,"tg":"any"},{"s":8,"len":4,"p":"T0+12","fx":"hit","amt":5,"tg":"any"},{"s":12,"len":4,"p":"T1+12","fx":"hit","amt":4,"tg":"any"}],"3":[{"s":0,"len":4,"p":"T2+12","fx":"hit","amt":6,"tg":"any"},{"s":4,"len":2,"p":"T1+12","fx":"hit","amt":4,"tg":"any"},{"s":6,"len":2,"p":"T2+12","fx":"hit","amt":4,"tg":"any"},{"s":8,"len":4,"p":"T0+12","fx":"hit","amt":6,"tg":"any"},{"s":12,"len":2,"p":"T1+12","fx":"hit","amt":4,"tg":"any"},{"s":14,"len":2,"p":"T2+12","fx":"hit","amt":4,"tg":"any"}]},"solo":[{"s":0,"len":3,"p":"T2+12","fx":"call","amt":6,"ans":10,"answer":4,"tg":"weak"},{"s":8,"len":3,"p":"T0+12","fx":"call","amt":6,"ans":10,"answer":4,"tg":"weak"}],"move":{"name":"Call and response","trigger":"cue","bars":1},"passive":false},"arp":{"name":"Arp","family":"harmony","tier":2,"role":"arp","hp":44,"phrase":100,"mp":9,"line":"Rippling notes hit random rivals. A bent note slows its target next bar.","soloLine":"Clash: a cascade, then a note a semitone off the chord at the rival soloist (or whoever solos next); for 3 bars every 2nd note it and its neighbours play misses.","parts":{"1":[{"s":0,"every":2,"to":8,"seq":["T0+12","T1+12","T2+12","T0+24"],"fx":"hit","amt":1.5,"tg":"rand"},{"s":12,"len":2,"p":"T2+24","fx":"slow","amt":2}],"2":[{"s":0,"every":2,"to":12,"seq":["T0+12","T1+12","T2+12","T0+24","T2+12","T1+12"],"fx":"hit","amt":1.5,"tg":"rand"},{"s":12,"len":2,"p":"T2+24","fx":"slow","amt":3}],"3":[{"s":0,"every":1,"to":12,"seq":["T0+12","T1+12","T2+12","T0+24"],"fx":"hit","amt":1.2,"tg":"rand"},{"s":4,"len":2,"p":"T1+24","fx":"slow","amt":2},{"s":12,"len":2,"p":"T2+24","fx":"slow","amt":3}]},"solo":[{"s":0,"every":2,"to":12,"seq":["T0+12","T1+12","T2+12","T0+24","T1+24","T2+24"],"fx":"hit","amt":3,"tg":"rand"},{"s":12,"len":4,"p":"T2+13","fx":"clash","amt":8,"dur":48,"tg":"threat","area":"row"}],"move":{"name":"Clash","trigger":"cue","bars":1},"passive":false},"choir":{"name":"Choir","family":"melody","tier":3,"role":"choir","hp":60,"phrase":100,"mp":30,"line":"Sings every other bar: a swell that makes the band hit harder that bar. On the bars it breathes it cannot be targeted. Answers a call double.","soloLine":"No solo: the Choir breathes and swells every other bar.","parts":{"1":[{"s":0,"len":16,"p":"CH+12","fx":"buff","tg":"band","eb":2},{"s":8,"fx":"healall","amt":3,"silent":true,"eb":2}],"2":[{"s":0,"len":16,"p":"CH+12","fx":"buff","tg":"band","eb":2,"mult":1.7},{"s":0,"fx":"healall","amt":5,"silent":true,"eb":2},{"s":8,"fx":"healall","amt":5,"silent":true,"eb":2}],"3":[{"s":0,"len":16,"p":"CH+12","fx":"buff","tg":"band","eb":2,"mult":1.8},{"s":0,"fx":"healall","amt":7,"silent":true,"eb":2},{"s":8,"fx":"healall","amt":7,"silent":true,"eb":2}]},"solo":[],"move":{"name":"Breath and swell","trigger":"passive","bars":0},"passive":true}},"order":["drums","bass","lead","keys","strings","taiko","voice","arp","choir"]},"song":{"version":1,"about":"Song frame for the baseline. Everything is written in A minor; a sound set may transpose it with its own key offset (semitones) and tempo. Notes are MIDI numbers. One bar = 16 steps (sixteenth notes).","baseKey":"A minor","defaultBpm":100,"stepsPerBar":16,"chords":{"Am":{"root":45,"tri":[57,60,64]},"F":{"root":41,"tri":[57,60,65]},"C":{"root":48,"tri":[55,60,64]},"G":{"root":43,"tri":[55,59,62]},"Dm":{"root":50,"tri":[57,62,65]},"E":{"root":40,"tri":[56,59,64]}},"sections":[{"id":"intro","name":"Intro","gigs":[1,2],"prog":["Am","Am","F","F"]},{"id":"verse","name":"Verse","gigs":[3,4,5],"prog":["Am","F","C","G"]},{"id":"chorus","name":"Chorus","gigs":[6,7],"prog":["F","G","C","Am"]},{"id":"bridge","name":"Bridge","gigs":[8],"prog":["Dm","Am","E","E"]},{"id":"final","name":"Final chorus","gigs":[9,10],"prog":["F","G","C","Am"],"lift":true}],"stemLoop":{"about":"When a stem set is playing, every section uses this one 4-bar loop so a single stem per musician fits every gig.","prog":["Am","F","C","G"]},"fight":{"bars":8,"capBars":12,"aboutCap":"Fights usually end by knockout inside 8 bars. At 12 bars the band with more health left (by percentage) wins. The winning band always finishes the bar it is in."}},"run":{"version":1,"gigs":10,"hearts":4,"goldPerGig":10,"aboutGold":"Flat gold every gig; unspent gold is lost (Super Auto Pets rule).","unitCost":3,"rerollCost":1,"sellValueByStar":[1,2,3],"stageSlotsByGig":[3,3,4,4,5,5,6,6,6,6],"shopSizeByGig":[4,4,4,5,5,5,5,5,5,5],"tierByGig":[1,1,2,2,3,3,3,3,3,3],"benchSlots":5,"mergeCopies":3,"starMultiplier":[1,1.6,2.6],"hpScale":1.7,"cue":{"bonus":1.25,"onBeatWindowSec":0.15,"about":"A full phrase bar makes a musician ready. Tap it and the solo starts on the next downbeat; a tap within 0.15 s of any beat adds 25%. Not tapping is fine: the solo starts one bar later on its own."},"buffMultiplier":1.4,"moves":{"oneAtATime":"start","keyCap":4,"breakdownMult":1.2}},"traits":{"version":1,"about":"Families count distinct musician types on the stage. Each tier adds a game bonus; tier 2 also adds a sound layer you can hear.","families":{"rhythm":{"name":"Rhythm","register":"low","tiers":[{"need":2,"text":"Front row takes 20% less damage","frontArmor":0.2},{"need":3,"text":"Front row takes 35% less damage, adds hi-hats","frontArmor":0.35,"layer":"hats"}]},"harmony":{"name":"Harmony","register":"mid","tiers":[{"need":2,"text":"Splash, heal, shield, slow +40%","support":1.4},{"need":3,"text":"Splash, heal, shield, slow +80%, adds a drone","support":1.8,"layer":"drone"}]},"melody":{"name":"Melody","register":"high","tiers":[{"need":2,"text":"Phrase bars fill 40% faster","phrase":1.4},{"need":3,"text":"Phrase bars fill 80% faster, melody doubled","phrase":1.8,"layer":"double"}]}}},"feels":{"chords":{"roots":[45,41,48,43],"tri":[[57,60,64],[57,60,65],[55,60,64],[55,59,62]],"sev":[67,64,71,65]},"feels":[{"id":"enchanted","name":"Magic","blurb":"Orchestral fantasy: harp, celesta, strings, choir, taiko.","bpm":88,"key":5,"roles":{"bass":{"i":"contrabass","o":0,"g":-2.7},"drop":{"i":"timpani","o":12,"g":-2.7},"stab":{"i":"orchestral_harp","o":0,"g":-1},"arp":{"i":"celesta","o":0,"g":-1},"pad":{"i":"string_ensemble_1","o":0,"g":-2.2},"lead":{"i":"pizzicato_strings","o":-12,"g":-2},"voice":{"i":"choir_aahs","o":-12,"g":-1.2},"choir":{"i":"choir_aahs","o":-12,"g":-1.2}},"drums":{"kick":{"i":"taiko_drum","n":45},"snare":{"i":"taiko_drum","n":57},"tom":{"i":"taiko_drum","n":[60,57,55,52]},"hat":null},"fx":{"verb":3.2,"wet":0.34,"lp":0,"wobble":0,"crackle":0,"delay":0},"dg":0},{"id":"lofi","name":"Lo-fi","blurb":"Chill caf\u00e9: Rhodes, upright bass, jazz guitar, sax, soft drums, vinyl.","bpm":76,"key":-4,"sevenths":true,"roles":{"bass":{"i":"acoustic_bass","o":0,"g":-1.1},"drop":{"i":"acoustic_bass","o":12,"g":-1},"stab":{"i":"electric_piano_1","o":0,"g":-0.5},"arp":{"i":"vibraphone","o":-12,"g":-0.5},"pad":{"i":"pad_2_warm","o":0,"g":-10.3},"lead":{"i":"electric_guitar_jazz","o":-12,"g":0.8},"voice":{"i":"alto_sax","o":0,"g":-0.6},"choir":{"i":"voice_oohs","o":-12,"g":-0.6}},"drums":{"kick":"soft","snare":"soft","tom":"soft","hat":"soft"},"fx":{"verb":1.3,"wet":0.2,"lp":3600,"wobble":9,"crackle":0.05,"delay":0},"dg":5},{"id":"neon","name":"Neon","blurb":"Synthwave: analog bass, brass stabs, saw lead, gated drums, echo.","bpm":108,"key":-5,"roles":{"bass":{"i":"synth_bass_2","o":0,"g":-2.6},"drop":{"i":"synth_bass_2","o":12,"g":-2.6},"stab":{"i":"synth_brass_1","o":0,"g":-2.9},"arp":{"i":"lead_1_square","o":-12,"g":-2.9},"pad":{"i":"synth_strings_1","o":0,"g":-5.1},"lead":{"i":"lead_2_sawtooth","o":-12,"g":3.3},"voice":{"i":"lead_6_voice","o":0,"g":-1.6},"choir":{"i":"synth_choir","o":0,"g":-1.6}},"drums":{"kick":"punch","snare":"gated","tom":"electro","hat":"crisp"},"fx":{"verb":2.0,"wet":0.26,"lp":0,"wobble":0,"crackle":0,"delay":0.28},"dg":3.9},{"id":"grove","name":"Grove","blurb":"Natural folk: kalimba, marimba, nylon guitar, flute, wood and hand drums.","bpm":96,"key":-2,"roles":{"bass":{"i":"marimba","o":12,"g":-2.9},"drop":{"i":"marimba","o":24,"g":-2.9},"stab":{"i":"kalimba","o":12,"g":-5.1},"arp":{"i":"kalimba","o":-12,"g":-5.1},"pad":{"i":"pad_5_bowed","o":0,"g":-0.1},"lead":{"i":"acoustic_guitar_nylon","o":-12,"g":-1.8},"voice":{"i":"flute","o":0,"g":-1.2},"choir":{"i":"pan_flute","o":0,"g":-1.2}},"drums":{"kick":{"i":"taiko_drum","n":50},"snare":{"i":"woodblock","n":72},"tom":{"i":"woodblock","n":[79,76,72,67]},"hat":"shaker"},"fx":{"verb":1.8,"wet":0.24,"lp":0,"wobble":0,"crackle":0,"delay":0},"dg":0}]}};
+</script>
+<script>
+// Battler engine with role moves: pure game rules, no DOM and no audio.
+// Drop-in replacement for battler-baseline/src/engine.js: same API, same data files, plus the role moves
+// (docs/design/role-moves.md). Merge docs/design/role-moves.json into data/units.json with
+// BattlerEngine.mergeMoves(D.units, moves) before calling BattlerEngine(D), or pass D.moves and it is merged here.
+//
+// What is new against the baseline engine (search for "MOVES:"):
+//   - solo parts may run for more than one bar (events with s >= 16 play in the solo's 2nd bar, s >= 32 in its 3rd)
+//   - a type with no solo part is passive: it never fills its phrase bar and never solos (the Choir)
+//   - six new effect kinds: stoptime, breakdown, keyup, unison, call, clash
+//   - rest rule: a musician that plays nothing this bar (a whole-bar rest in its part, or dropped out by a breakdown)
+//     cannot be targeted
+//   - new targets: tg "row" (every rival in the front row), "col0" / "col1" / "col2" (that column, front first),
+//     "threat" (a soloing rival, else a ready one, else the fullest phrase bar); shield tg "band" (whole band)
+//   - pitch: "TOM+n" (tuned tom), "CR" (crash), and every pitched note follows the key changes (F.keyShift)
+//   - events: stoptime, breakdown, keyup, unison, answer, clash, miss; note events carry clash: true when bent
+(function (root) {
+"use strict";
+
+function mulberry(seed) {
+  var a = seed >>> 0;
+  return function () {
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// MOVES: copy role-moves.json into the units data. moves.types[t] may hold: solo (replaces the solo part; [] or
+// passive: true removes it), parts (replaces star parts), soloLine, move (name and one-line text for the page).
+function mergeMoves(units, moves) {
+  if (!moves || !moves.types) return units;
+  Object.keys(moves.types).forEach(function (t) {
+    var m = moves.types[t], u = units.types[t]; if (!u) return;
+    if (m.passive) u.solo = []; else if (m.solo) u.solo = m.solo;
+    if (m.parts) u.parts = m.parts;
+    if (m.soloLine) u.soloLine = m.soloLine;
+    if (m.line) u.line = m.line;
+    if (m.move) u.move = m.move;
+    if (m.stats) Object.keys(m.stats).forEach(function (k) { u[k] = m.stats[k]; }); // e.g. {"mp": 8}
+    u.passive = !!m.passive;
+  });
+  return units;
+}
+
+function Engine(D) {
+  if (D.moves) mergeMoves(D.units, D.moves);
+  var U = D.units.types, ORDER = D.units.order, RUN = D.run, SONG = D.song, TR = D.traits.families;
+  var E = {};
+
+  // ---------- parts: expand shorthand into plain one-bar event lists ----------
+  function expand(list) {
+    var out = [];
+    (list || []).forEach(function (ev) {
+      if (ev.every) {
+        var from = ev.from != null ? ev.from : ev.s, to = ev.to != null ? ev.to : 16, k = 0;
+        for (var s = from; s < to; s += ev.every) {
+          var e = Object.assign({}, ev); delete e.every; delete e.from; delete e.to; delete e.seq;
+          e.s = s; e.len = ev.len || 1;
+          e.p = ev.seq ? ev.seq[k % ev.seq.length] : ev.p;
+          out.push(e); k++;
+        }
+      } else { var e2 = Object.assign({}, ev); e2.len = ev.len || 1; out.push(e2); }
+    });
+    out.sort(function (a, b) { return a.s - b.s; });
+    return out;
+  }
+  // MOVES: a solo becomes a list of bars. Event s 0-15 = bar 1, 16-31 = bar 2, and so on; s is stored within its bar.
+  function soloBars(list) {
+    var flat = expand(list), bars = [];
+    flat.forEach(function (e) { var b = Math.floor(e.s / 16); while (bars.length <= b) bars.push([]); var c = Object.assign({}, e); c.s = e.s % 16; c.bar = b; bars[b].push(c); });
+    return bars;
+  }
+  var PARTS = {};
+  ORDER.forEach(function (t) {
+    PARTS[t] = { 1: expand(U[t].parts["1"]), 2: expand(U[t].parts["2"]), 3: expand(U[t].parts["3"]), solo: soloBars(U[t].solo) };
+  });
+  E.parts = PARTS;
+  E.isPassive = function (type) { return !PARTS[type].solo.length; };
+
+  // ---------- song ----------
+  E.sectionForGig = function (gig) {
+    for (var i = 0; i < SONG.sections.length; i++) if (SONG.sections[i].gigs.indexOf(gig) >= 0) return SONG.sections[i];
+    return SONG.sections[SONG.sections.length - 1];
+  };
+  // pitch spec -> MIDI note (base key A minor), or a drum name. shift = key change in semitones (MOVES: keyup)
+  E.pitch = function (p, chordName, shift) {
+    var c = SONG.chords[chordName], k = shift || 0;
+    if (!p) return null;
+    if (p === "K") return { drum: "kick" };
+    if (p === "S") return { drum: "snare" };
+    if (p === "H") return { drum: "hat" };
+    if (p === "CR") return { drum: "crash" };                       // MOVES: crash cymbal (page: noise burst + boom)
+    var tm = /^TOM([+-]\d+)?$/.exec(p);
+    if (tm) return { drum: "tom", tune: tm[1] ? parseInt(tm[1], 10) : 0 }; // MOVES: tuned tom, semitones from the mid tom
+    var m = /^(R|T0|T1|T2|CH)([+-]\d+)?$/.exec(p);
+    if (!m) return null;
+    var off = (m[2] ? parseInt(m[2], 10) : 0) + k;
+    if (m[1] === "R") return { notes: [c.root + off] };
+    if (m[1] === "CH") return { notes: c.tri.map(function (n) { return n + off; }) };
+    return { notes: [c.tri[+m[1][1]] + off] };
+  };
+
+  // ---------- run state ----------
+  E.newRun = function (seed) {
+    var rng = mulberry(seed || (Date.now() & 0xffffffff));
+    var r = { gig: 1, hearts: RUN.hearts, gold: RUN.goldPerGig, wins: 0, losses: 0, board: new Array(6).fill(null),
+      bench: new Array(RUN.benchSlots).fill(null), shop: [], frozen: [], uid: 1, rng: rng, history: [] };
+    E.rollShop(r, true);
+    return r;
+  };
+  E.slots = function (r) { return RUN.stageSlotsByGig[Math.min(r.gig, RUN.gigs) - 1]; };
+  E.boardCount = function (r) { return r.board.filter(Boolean).length; };
+  E.unit = function (r, type, star) { return { id: r.uid++, type: type, star: star || 1 }; };
+  E.pickType = function (r) {
+    var tier = RUN.tierByGig[Math.min(r.gig, RUN.gigs) - 1];
+    var pool = ORDER.filter(function (t) { return U[t].tier <= tier; });
+    var w = pool.map(function (t) { return U[t].tier === 1 ? 3 : U[t].tier === 2 ? 2.4 : 1.4; });
+    var tot = w.reduce(function (a, b) { return a + b; }, 0), x = r.rng() * tot;
+    for (var i = 0; i < pool.length; i++) { x -= w[i]; if (x <= 0) return pool[i]; }
+    return pool[0];
+  };
+  E.rollShop = function (r, keepFrozen) {
+    var n = RUN.shopSizeByGig[Math.min(r.gig, RUN.gigs) - 1], kept = [];
+    if (keepFrozen) r.shop.forEach(function (t, i) { if (t && r.frozen[i]) kept.push(t); });
+    r.shop = kept.slice(); r.frozen = kept.map(function () { return true; });
+    while (r.shop.length < n) { r.shop.push(E.pickType(r)); r.frozen.push(false); }
+  };
+  E.reroll = function (r) {
+    if (r.gold < RUN.rerollCost) return false;
+    r.gold -= RUN.rerollCost; E.rollShop(r, true); return true;
+  };
+  // where: 'board'|'bench'|null (auto). returns {ok, merged, msg}
+  E.buy = function (r, i, where, at) {
+    var type = r.shop[i];
+    if (!type) return { ok: false, msg: "Sold out." };
+    if (r.gold < RUN.unitCost) return { ok: false, msg: "Not enough gold." };
+    var u = E.unit(r, type, 1), placed = false;
+    // a buy that completes a merge needs no free slot
+    var copies = E.countCopies(r, type, 1);
+    if (where && at != null) {
+      if (r[where][at]) return { ok: false, msg: "That square is taken." };
+      if (where === "board" && E.boardCount(r) >= E.slots(r) && copies < RUN.mergeCopies - 1) return { ok: false, msg: "The stage is full this gig." };
+      r[where][at] = u; placed = true;
+    }
+    if (!placed && E.boardCount(r) < E.slots(r)) {
+      var pref = U[type].family === "rhythm" ? [1, 0, 2, 4, 3, 5] : [4, 3, 5, 1, 0, 2];
+      for (var k = 0; k < pref.length; k++) if (!r.board[pref[k]]) { r.board[pref[k]] = u; placed = true; break; }
+    }
+    if (!placed) {
+      var j = r.bench.indexOf(null);
+      if (j < 0 && copies >= RUN.mergeCopies - 1) {
+        // put it on the first copy's spot temporarily; merge resolves it
+        r.gold -= RUN.unitCost; r.shop[i] = null; r.frozen[i] = false;
+        E.addCopy(r, type); return { ok: true, merged: true, unit: u };
+      }
+      if (j < 0) return { ok: false, msg: "The bench is full. Sell someone first." };
+      r.bench[j] = u;
+    }
+    r.gold -= RUN.unitCost; r.shop[i] = null; r.frozen[i] = false;
+    var m = E.merge(r);
+    return { ok: true, merged: m, unit: u };
+  };
+  E.countCopies = function (r, type, star) {
+    return r.board.concat(r.bench).filter(function (u) { return u && u.type === type && u.star === star; }).length;
+  };
+  E.addCopy = function (r, type) {
+    // merge 2 existing copies + this one into a star 2 at the first copy's spot
+    var spots = [];
+    ["board", "bench"].forEach(function (w) { r[w].forEach(function (u, i) { if (u && u.type === type && u.star === 1) spots.push([w, i]); }); });
+    spots.slice(0, 2).forEach(function (p) { r[p[0]][p[1]] = null; });
+    r[spots[0][0]][spots[0][1]] = E.unit(r, type, 2);
+    E.merge(r);
+  };
+  E.merge = function (r) {
+    var did = false, again = true;
+    while (again) {
+      again = false;
+      for (var s = 1; s <= 2; s++) for (var t = 0; t < ORDER.length; t++) {
+        var spots = [];
+        ["board", "bench"].forEach(function (w) { r[w].forEach(function (u, i) { if (u && u.type === ORDER[t] && u.star === s) spots.push([w, i]); }); });
+        if (spots.length >= RUN.mergeCopies) {
+          spots.slice(0, RUN.mergeCopies).forEach(function (p) { r[p[0]][p[1]] = null; });
+          r[spots[0][0]][spots[0][1]] = E.unit(r, ORDER[t], s + 1); did = again = true;
+        }
+      }
+    }
+    return did;
+  };
+  E.sell = function (r, where, i) {
+    var u = r[where][i]; if (!u) return 0;
+    var v = RUN.sellValueByStar[u.star - 1]; r[where][i] = null; r.gold += v; return v;
+  };
+  E.move = function (r, a, b) { // a,b = [where,i]
+    var ua = r[a[0]][a[1]], ub = r[b[0]][b[1]];
+    if (b[0] === "board" && a[0] === "bench" && !ub && E.boardCount(r) >= E.slots(r)) return false;
+    r[a[0]][a[1]] = ub; r[b[0]][b[1]] = ua; return true;
+  };
+  E.traits = function (board) {
+    var c = { rhythm: 0, harmony: 0, melody: 0 }, seen = {};
+    board.forEach(function (u) { if (u && !seen[u.type]) { seen[u.type] = 1; c[U[u.type].family]++; } });
+    var out = { count: c, tier: {} };
+    Object.keys(TR).forEach(function (f) {
+      var t = null; TR[f].tiers.forEach(function (x) { if (c[f] >= x.need) t = x; });
+      out.tier[f] = t;
+    });
+    return out;
+  };
+  E.snapshot = function (r, name) {
+    return { v: 1, name: name, gig: r.gig, board: r.board.map(function (u, i) { return u ? { type: u.type, star: u.star, slot: i } : null; }).filter(Boolean) };
+  };
+  E.boardFromSnapshot = function (snap) {
+    var b = new Array(6).fill(null), id = 100000;
+    snap.board.forEach(function (x) { b[x.slot] = { id: id++, type: x.type, star: x.star }; });
+    return b;
+  };
+  E.nextGig = function (r) {
+    r.gig++; r.gold = RUN.goldPerGig; E.rollShop(r, true);
+  };
+
+  // ---------- AI shopper (ghost bands and tests) ----------
+  E.aiShop = function (r) {
+    var guard = 0;
+    while (guard++ < 12) {
+      var best = -1, bestScore = -99;
+      r.shop.forEach(function (t, i) {
+        if (!t) return;
+        var have = E.countCopies(r, t, 1) + 2 * E.countCopies(r, t, 2);
+        var tr = E.traits(r.board).count[U[t].family];
+        var sc = have * 3 + (tr < 3 ? 1.2 : 0) + U[t].tier * 0.8 + r.rng();
+        if (sc > bestScore) { bestScore = sc; best = i; }
+      });
+      var free = E.boardCount(r) < E.slots(r) || r.bench.indexOf(null) >= 0;
+      if (best >= 0 && r.gold >= RUN.unitCost && (free || E.countCopies(r, r.shop[best], 1) >= 2)) {
+        if (bestScore < 2.2 && r.gold >= RUN.unitCost + RUN.rerollCost && E.boardCount(r) >= E.slots(r)) { E.reroll(r); continue; }
+        E.buy(r, best);
+        continue;
+      }
+      if (r.gold >= RUN.rerollCost + RUN.unitCost) { E.reroll(r); continue; }
+      break;
+    }
+    E.aiArrange(r);
+  };
+  E.aiArrange = function (r) {
+    var all = r.board.concat(r.bench).filter(Boolean);
+    all.sort(function (a, b) { return (b.star - a.star) || (U[b.type].tier - U[a.type].tier); });
+    // pick for variety: prefer distinct types for traits
+    var chosen = [], rest = [], seen = {};
+    all.forEach(function (u) { if (!seen[u.type] && chosen.length < E.slots(r)) { chosen.push(u); seen[u.type] = 1; } else rest.push(u); });
+    rest.forEach(function (u) { if (chosen.length < E.slots(r)) chosen.push(u); });
+    var bench = all.filter(function (u) { return chosen.indexOf(u) < 0; });
+    r.board = new Array(6).fill(null);
+    var front = [1, 0, 2], back = [4, 3, 5];
+    chosen.sort(function (a, b) { return (U[a.type].family === "rhythm" ? 0 : 1) - (U[b.type].family === "rhythm" ? 0 : 1); });
+    chosen.forEach(function (u) {
+      var wantFront = U[u.type].family === "rhythm" || u.type === "keys";
+      var list = wantFront ? (front.length ? front : back) : (back.length ? back : front);
+      r.board[list.shift()] = u;
+    });
+    r.bench = new Array(RUN.benchSlots).fill(null);
+    bench.slice(0, RUN.benchSlots).forEach(function (u, i) { r.bench[i] = u; });
+  };
+  // ghost bands: seeded AI players, one snapshot per gig
+  E.makeGhosts = function (count, seed, names) {
+    var out = [];
+    for (var g = 0; g < count; g++) {
+      var r = E.newRun(seed + g * 7919), nm = names[g % names.length];
+      for (var gig = 1; gig <= RUN.gigs; gig++) {
+        E.aiShop(r);
+        var snap = E.snapshot(r, nm); snap.ghost = true; out.push(snap);
+        if (gig < RUN.gigs) E.nextGig(r);
+      }
+    }
+    return out;
+  };
+
+  // ---------- fight ----------
+  var SM = RUN.starMultiplier;
+  var MOVE = RUN.moves || {};                      // MOVES: optional tuning block in run.json (defaults below)
+  var KEY_CAP = MOVE.keyCap != null ? MOVE.keyCap : 4;
+  // one move starts per band per downbeat ("start", default); "running" also waits for the band's running move to end;
+  // false lets every due move start together (the baseline rule)
+  var ONE_AT_A_TIME = MOVE.oneAtATime != null ? MOVE.oneAtATime : "start";
+  function fUnit(u, side, i) {
+    var T = U[u.type], m = SM[u.star - 1], hp = Math.round(T.hp * m * RUN.hpScale);
+    return { ref: u, type: u.type, star: u.star, side: side, slot: i, row: i < 3 ? 0 : 1, col: i % 3, hp: hp, max: hp, mana: 0,
+      shield: 0, shieldEnd: -1, down: false, solo: false, ready: false, readyBar: -1, cued: false, cueBonus: false,
+      stunUntil: -1, slowBar: -1, m: m,
+      soloIdx: 0, clashUntil: -1, clashN: 0, passive: !PARTS[u.type].solo.length };   // MOVES
+  }
+  // opts: {seed, section, stemMode, jam}
+  E.makeFight = function (youBoard, themBoard, opts) {
+    opts = opts || {};
+    var F = { units: [], bar: 0, step: 0, g: 0, over: false, ending: false, rng: mulberry(opts.seed || 1), jam: !!opts.jam,
+      prog: opts.prog || ["Am", "F", "C", "G"], buffBar: { you: -1, them: -1 }, buffMult: { you: 1, them: 1 }, result: null,
+      // MOVES: side-wide move state
+      stopTime: null,                              // {src, until}: until g, everyone but soloists plays only step 0
+      breakdown: { you: -1, them: -1 },            // g until which that side's non-rhythm players drop out
+      keyUp: { you: null, them: null },            // {from: bar, mult}: that side's lift after its key change
+      keyShift: 0, keyShiftFrom: 0, keyShiftPrev: 0, // the song's key: +keyShift semitones from bar keyShiftFrom
+      pending: [] };                               // answers queued by a call: {g, src, tg, amt}
+    youBoard.forEach(function (u, i) { if (u) F.units.push(fUnit(u, "you", i)); });
+    if (themBoard) themBoard.forEach(function (u, i) { if (u) F.units.push(fUnit(u, "them", i)); });
+    F.order = F.units.slice();
+    for (var i = F.order.length - 1; i > 0; i--) { var j = Math.floor(F.rng() * (i + 1)); var t = F.order[i]; F.order[i] = F.order[j]; F.order[j] = t; }
+    F.traits = { you: E.traits(youBoard), them: E.traits(themBoard || []) };
+    return F;
+  };
+  E.chordAt = function (F, bar) { return F.prog[bar % F.prog.length]; };
+  E.keyAt = function (F, bar) { return bar >= F.keyShiftFrom ? F.keyShift : F.keyShiftPrev; }; // MOVES
+  function alive(F, side) { return F.units.filter(function (u) { return u.side === side && !u.down; }); }
+  function foe(side) { return side === "you" ? "them" : "you"; }
+  function tier(F, side, fam, key, dflt) { var t = F.traits[side].tier[fam]; return t && t[key] != null ? t[key] : dflt; }
+  // MOVES: the part a musician reads this bar
+  function partOf(F, u) { return u.solo ? (PARTS[u.type].solo[u.soloIdx] || []) : PARTS[u.type][u.star]; }
+  // MOVES: rest rule. A whole-bar rest in the part, or dropped out by its band's breakdown -> cannot be targeted
+  function resting(F, u) {
+    if (u.down || u.solo) return false;
+    if (F.breakdown[u.side] > F.g && U[u.type].family !== "rhythm") return true;
+    var list = partOf(F, u);
+    for (var i = 0; i < list.length; i++) { var a = list[i]; if (!a.silent && !(a.eb && F.bar % a.eb !== 0)) return false; }
+    return true;
+  }
+  E.resting = resting;
+  function targets(F, side) { return alive(F, side).filter(function (x) { return !resting(F, x); }); }
+  // MOVES: does this event sound on this step? (eb, stun, slow, stop-time, breakdown)
+  function sounds(F, u, a) {
+    if (a.eb && F.bar % a.eb !== 0) return false;
+    if (F.g < u.stunUntil) return false;                               // stunned: rests
+    if (u.slowBar === F.bar && a.s % 4 !== 0) return false;            // slowed: half time
+    if (!u.solo && F.stopTime && F.g < F.stopTime.until && a.s !== 0) return false; // stop-time: only the 1
+    if (!u.solo && F.breakdown[u.side] > F.g && U[u.type].family !== "rhythm") return false; // breakdown: drops out
+    return true;
+  }
+  function pickTarget(F, u, tg) {
+    var fs = targets(F, foe(u.side)); if (!fs.length) return null;
+    if (tg === "weak") return fs.slice().sort(function (a, b) { return a.hp - b.hp; })[0];
+    if (tg === "rand") return fs[Math.floor(F.rng() * fs.length)];
+    if (tg === "any") return fs.slice().sort(function (a, b) { return Math.abs(a.col - u.col) - Math.abs(b.col - u.col) || a.row - b.row || a.hp - b.hp; })[0];
+    if (tg === "threat") {                                              // MOVES: soloing > ready > fullest phrase bar
+      return fs.slice().sort(function (a, b) { return (b.solo - a.solo) || (b.ready - a.ready) || (b.mana / U[b.type].phrase - a.mana / U[a.type].phrase); })[0];
+    }
+    var cm = /^col(\d)$/.exec(tg || "");
+    if (cm) {                                                           // MOVES: a column, front first; else nearest
+      var inCol = fs.filter(function (x) { return x.col === +cm[1]; }).sort(function (a, b) { return a.row - b.row; });
+      if (inCol.length) return inCol[0];
+      u = { col: +cm[1] };
+    }
+    var front = fs.filter(function (x) { return x.row === 0; }), pool = front.length ? front : fs;
+    return pool.slice().sort(function (a, b) { return Math.abs(a.col - u.col) - Math.abs(b.col - u.col) || a.hp - b.hp; })[0];
+  }
+  // MOVES: every targetable rival in the front row (the back row if the front is empty)
+  function rowTargets(F, side) {
+    var fs = targets(F, foe(side)), front = fs.filter(function (x) { return x.row === 0; });
+    return front.length ? front : fs.filter(function (x) { return x.row === 1; });
+  }
+  // a tap on a ready musician. onBeat decided by the caller (it knows the audio clock)
+  E.cue = function (F, u, onBeat) {
+    if (!u || u.down || !u.ready || u.cued) return false;
+    u.cued = true; u.cueBonus = !!onBeat; return true;
+  };
+  var MODE_FX = { stoptime: 1, breakdown: 1, keyup: 1 };
+  // run one 16th step; returns events
+  E.step = function (F) {
+    var ev = [], s = F.step, bar = F.bar, chord = E.chordAt(F, bar);
+    if (F.over) return ev;
+    if (s === 0) {
+      if (F.ending) return finish(F, ev, F.endWhy);
+      var starts = [];
+      F.units.forEach(function (u) {
+        // MOVES: a multi-bar solo moves to its next bar; it ends after its last bar
+        if (u.solo) { if (!u.down && u.soloIdx + 1 < PARTS[u.type].solo.length) { u.soloIdx++; return; } u.solo = false; }
+      });
+      // MOVES: one move starts per band per downbeat. Of the musicians that are due (cued, or ready for 2 bars) the cued
+      // one goes first, then the one ready longest; the rest stay ready and start on a later downbeat. With
+      // run.moves.oneAtATime "running" a band also waits for its running move to end; false = baseline (all at once).
+      ["you", "them"].forEach(function (side) {
+        var band = F.units.filter(function (u) { return u.side === side && !u.down; });
+        if (ONE_AT_A_TIME === "running" && band.some(function (u) { return u.solo; })) return;
+        var due = band.filter(function (u) { return u.ready && (u.cued || bar >= u.readyBar + 2); })
+          .sort(function (a, b) { return (b.cued - a.cued) || (a.readyBar - b.readyBar) || (F.order.indexOf(a) - F.order.indexOf(b)); });
+        (ONE_AT_A_TIME ? due.slice(0, 1) : due).forEach(function (u) {
+          u.solo = true; u.soloIdx = 0; u.ready = false; u.soloBonus = u.cued && u.cueBonus; u.cued = false; u.mana = 0; starts.push(u);
+        });
+      });
+      ev.push({ k: "bar", bar: bar, chord: chord, key: E.keyAt(F, bar), solos: starts,
+        soloing: F.units.filter(function (u) { return u.solo; }),
+        stopTime: !!(F.stopTime && F.g < F.stopTime.until), breakdown: { you: F.breakdown.you > F.g, them: F.breakdown.them > F.g } });
+    }
+    // MOVES pass 1: side-wide modes start before anyone plays this step, so they hold from their first step
+    F.order.forEach(function (u) {
+      if (u.down || !u.solo) return;
+      partOf(F, u).forEach(function (a) { if (a.s === s && MODE_FX[a.fx] && sounds(F, u, a)) mode(F, u, a, ev); });
+    });
+    // MOVES pass 2: answers to a call land now
+    if (F.pending.length) {
+      var due = F.pending.filter(function (p) { return p.g === F.g; });
+      F.pending = F.pending.filter(function (p) { return p.g !== F.g; });
+      due.forEach(function (p) { answer(F, p, chord, ev); });
+    }
+    F.order.forEach(function (u) {
+      if (u.down) return;
+      var list = partOf(F, u);
+      for (var i = 0; i < list.length; i++) {
+        var a = list[i]; if (a.s !== s || MODE_FX[a.fx]) continue;
+        if (!sounds(F, u, a)) continue;
+        act(F, u, a, chord, ev);
+      }
+    });
+    // shields that stop ringing
+    F.units.forEach(function (u) { if (u.shield > 0 && u.shieldEnd === F.g) { u.shield = 0; ev.push({ k: "shieldoff", u: u }); } });
+    F.g++; F.step++;
+    if (F.step === 16) { F.step = 0; F.bar++; }
+    if (!F.jam && !F.ending) {
+      var y = alive(F, "you").length, t = alive(F, "them").length;
+      if (!y || !t) { F.ending = true; F.endWhy = t ? "lose" : "win"; }
+      else if (F.bar >= SONG.fight.capBars) { F.ending = true; F.endWhy = "time"; }
+    }
+    if (F.jam && F.jamBars && F.bar >= F.jamBars) F.over = true;
+    return ev;
+  };
+  function finish(F, ev, why) {
+    var win = why === "win";
+    if (why === "time") {
+      var sc = function (side) { var us = F.units.filter(function (u) { return u.side === side; }); return us.reduce(function (a, u) { return a + u.hp / u.max; }, 0) / Math.max(1, us.length); };
+      win = sc("you") > sc("them");
+    }
+    F.over = true; F.result = { win: win, why: why, bars: F.bar };
+    ev.push({ k: "end", win: win, why: why });
+    return ev;
+  }
+  // MOVES: side-wide modes, started by a solo's first step
+  function mode(F, u, a, ev) {
+    var steps = 16 * (a.bars || 1);
+    if (a.fx === "stoptime") {
+      F.stopTime = { src: u, until: F.g + steps };
+      ev.push({ k: "stoptime", u: u, bars: a.bars || 1 });
+    } else if (a.fx === "breakdown") {
+      F.breakdown[u.side] = Math.max(F.breakdown[u.side], F.g + steps);
+      ev.push({ k: "breakdown", u: u, bars: a.bars || 1 });
+    } else if (a.fx === "keyup") {
+      // the whole song goes up a.shift semitones from the next downbeat (capped); the caller's band gets the lift
+      var from = F.bar + 1, cur = E.keyAt(F, F.bar);
+      F.keyShiftPrev = cur; F.keyShift = Math.min(KEY_CAP, cur + (a.shift || 2)); F.keyShiftFrom = from;
+      var mult = (a.mult || 1.2);
+      F.keyUp[u.side] = { from: from, mult: mult };                  // a second key change refreshes, never stacks
+      ev.push({ k: "keyup", u: u, from: from, shift: F.keyShift, mult: mult });
+    }
+  }
+  function amp(F, u) {
+    var side = u.side, ku = F.keyUp[side];
+    return u.m * (F.buffBar[side] === F.bar ? F.buffMult[side] : 1) * (u.solo && u.soloBonus ? RUN.cue.bonus : 1)
+      * (ku && F.bar >= ku.from ? ku.mult : 1);
+  }
+  function act(F, u, a, chord, ev) {
+    var side = u.side, T = U[u.type];
+    var support = tier(F, side, "harmony", "support", 1);
+    var amt = (a.amt || 0) * amp(F, u);
+    var shift = E.keyAt(F, F.bar);
+    // MOVES: clash. While clashed, every 2nd note is bent a semitone sharp and its effect misses
+    var missed = false;
+    if (F.g < u.clashUntil && a.fx) { u.clashN++; missed = u.clashN % 2 === 1; }
+    var note = { k: "note", u: u, a: a, chord: chord, pitch: E.pitch(a.p, chord, shift + (missed ? 1 : 0)), len: a.len || 1, sound: a.sound || T.role,
+      slow: u.slowBar === F.bar, solo: u.solo, g: F.g, clash: missed };
+    if (!a.silent && note.pitch) ev.push(note);
+    if (missed) ev.push({ k: "miss", u: u, a: a });
+    if (!F.jam && !missed) {
+      var tg;
+      switch (a.fx) {
+        case "hit":
+          if (a.tg === "row") {                                          // MOVES: crash, the whole front row at once
+            var row = rowTargets(F, side); ev.push({ k: "crash", src: u, us: row, row: row.length ? row[0].row : 0 });
+            row.forEach(function (x) { hurt(F, u, x, amt, ev); }); break;
+          }
+          tg = pickTarget(F, u, a.tg); if (tg) hurt(F, u, tg, amt, ev); break;
+        case "hitall": targets(F, foe(side)).forEach(function (x) { hurt(F, u, x, amt, ev); }); break;
+        case "splash": tg = pickTarget(F, u, a.tg);
+          if (tg) targets(F, tg.side).filter(function (x) { return x.row === tg.row && Math.abs(x.col - tg.col) <= 1; })
+            .forEach(function (x) { hurt(F, u, x, amt * support * (x === tg ? 1 : 0.7), ev); });
+          break;
+        case "stun": tg = pickTarget(F, u, a.tg); if (tg) { hurt(F, u, tg, amt, ev); stun(F, u, tg, a.stun || 4, ev); } break;
+        case "slow": tg = pickTarget(F, u, a.tg); if (tg) { hurt(F, u, tg, amt * support, ev); if (!tg.down) { tg.slowBar = F.bar + 1; ev.push({ k: "slow", src: u, u: tg }); } } break;
+        case "shield": shield(F, u, u, amt * support, a, ev);
+          if (a.tg === "row" || a.tg === "band") alive(F, side).forEach(function (x) { if (x !== u && (a.tg === "band" || x.row === u.row)) shield(F, u, x, amt * support * (a.tg === "band" ? 1 : 0.6), a, ev); });
+          break;
+        case "rowshield": alive(F, side).forEach(function (x) { if (x.row === u.row) shield(F, u, x, amt * support, a, ev); }); break;
+        case "heal": tg = alive(F, side).sort(function (p, q) { return p.hp / p.max - q.hp / q.max; })[0]; if (tg) heal(F, u, tg, amt * support, ev); break;
+        case "healall":
+          if (a.ifHeld && !(u.shield > 0)) { ev.push({ k: "cut", u: u }); break; }  // MOVES: fermata release only if the hold still rings
+          alive(F, side).forEach(function (x) { heal(F, u, x, amt * support, ev); }); break;
+        // MOVES: a buff event may carry its own multiplier (a.mult); two buffs in one bar keep the larger
+        case "buff": { var bm = a.mult || RUN.buffMultiplier; F.buffMult[side] = F.buffBar[side] === F.bar ? Math.max(F.buffMult[side], bm) : bm; F.buffBar[side] = F.bar; ev.push({ k: "buff", u: u, mult: F.buffMult[side] }); break; }
+        // MOVES: unison. Hits the nearest column front and back; each rhythm bandmate sounding on this step adds a.per
+        case "unison": {
+          var partners = alive(F, side).filter(function (x) {
+            if (x === u || U[x.type].family !== "rhythm") return false;
+            return partOf(F, x).some(function (b) { return b.s === F.step && !b.silent && !MODE_FX[b.fx] && sounds(F, x, b); });
+          });
+          tg = pickTarget(F, u, a.tg); if (!tg) break;
+          var col = targets(F, tg.side).filter(function (x) { return x.col === tg.col; });
+          var ua = amt * (1 + (a.per || 0.5) * partners.length);
+          ev.push({ k: "unison", src: u, partners: partners, u: tg, col: tg.col, amt: Math.round(ua) });
+          // full damage to the first rival struck, a.pierce (default 0.6) to the one behind it; only the first one rests
+          col.forEach(function (x) { hurt(F, u, x, x === tg ? ua : ua * (a.pierce != null ? a.pierce : 0.6), ev); if (a.stun && x === tg) stun(F, u, x, a.stun, ev); });
+          break;
+        }
+        // MOVES: call. Hits now; a.answer steps later every bandmate that can play answers on the same rival
+        case "call": tg = pickTarget(F, u, a.tg || "any"); if (!tg) break;
+          hurt(F, u, tg, amt, ev);
+          F.pending.push({ g: F.g + (a.answer || 4), src: u, tg: tg, amt: (a.ans || 0) * amp(F, u) / u.m, p: a.p, len: a.len || 2 });
+          ev.push({ k: "call", src: u, u: tg, at: F.g + (a.answer || 4) });
+          break;
+        // MOVES: clash. Small hit on the target; the target and its row neighbours (one column either side) clash
+        // for a.dur steps: every 2nd note they play is bent a semitone sharp and misses
+        case "clash": tg = pickTarget(F, u, a.tg || "threat"); if (!tg) break;
+          hurt(F, u, tg, amt * support, ev);
+          targets(F, tg.side).filter(function (x) { return x === tg || (a.area === "row" && x.row === tg.row && Math.abs(x.col - tg.col) === 1); })
+            .forEach(function (x) { if (x.down) return; x.clashUntil = Math.max(x.clashUntil, F.g + 1 + (a.dur || 16)); x.clashN = 0; ev.push({ k: "clash", src: u, u: x, steps: a.dur || 16, main: x === tg }); });
+          break;
+      }
+    }
+    if (!a.silent && !u.solo && !u.ready && !u.passive) {
+      u.mana += T.mp * tier(F, side, "melody", "phrase", 1);
+      if (u.mana >= T.phrase) { u.mana = T.phrase; u.ready = true; u.readyBar = F.bar; ev.push({ k: "ready", u: u }); }
+    }
+  }
+  // MOVES: the band answers a call. Every bandmate that can play right now (alive, not stunned, not dropped out by a
+  // breakdown, not resting, not held to the 1 by a stop-time) answers together: one hit on the called rival worth
+  // p.amt x each answerer's star multiplier, the Choir counting double. A rival that is resting (untargetable) when the
+  // answer lands is missed by all of it.
+  function answer(F, p, chord, ev) {
+    var tg = p.tg, side = p.src.side;
+    if (tg.down || resting(F, tg)) { ev.push({ k: "answer", src: p.src, u: tg, missed: true, why: tg.down ? "down" : "rest", by: [], amt: 0 }); return; }
+    var stopped = F.stopTime && F.g < F.stopTime.until && F.step !== 0;
+    var by = alive(F, side).filter(function (x) {
+      return x !== p.src && F.g >= x.stunUntil && !(F.breakdown[side] > F.g && U[x.type].family !== "rhythm") && !resting(F, x) && !(stopped && !x.solo);
+    });
+    var total = by.reduce(function (s, x) { return s + p.amt * x.m * (x.type === "choir" ? 2 : 1); }, 0);
+    ev.push({ k: "answer", src: p.src, u: tg, by: by, amt: Math.round(total) });
+    var shift = E.keyAt(F, F.bar);
+    by.forEach(function (x) {
+      var pp = x.type === "drums" ? "S" : x.type === "taiko" ? "TOM" : p.p;   // drums answer on the snare, taiko on the drum
+      ev.push({ k: "note", u: x, a: { s: F.step, fx: "answer", p: pp }, chord: chord, pitch: E.pitch(pp, chord, shift), len: p.len,
+        sound: U[x.type].role, slow: false, solo: x.solo, g: F.g, answer: true });
+    });
+    if (total > 0) hurt(F, p.src, tg, total, ev);
+  }
+  function stun(F, src, tg, steps, ev) {
+    if (tg.down) return;
+    tg.stunUntil = Math.max(tg.stunUntil, F.g + 1 + steps); ev.push({ k: "stun", src: src, u: tg, steps: steps });
+  }
+  function shield(F, src, tg, amt, a, ev) {
+    tg.shield += amt; tg.shieldEnd = F.g + (a.len || 6);
+    ev.push({ k: "shield", src: src, u: tg, amt: Math.round(amt) });
+  }
+  function heal(F, src, tg, amt, ev) {
+    amt = Math.round(amt); var before = tg.hp; tg.hp = Math.min(tg.max, tg.hp + amt);
+    ev.push({ k: "heal", src: src, u: tg, amt: tg.hp - before });
+  }
+  function hurt(F, src, tg, amt, ev) {
+    // MOVES: breakdown. While a side breaks down, its rhythm players strip shields first, ignore front-row armor,
+    // and hit x moves.breakdownMult (default 1.25)
+    var bd = F.breakdown[src.side] > F.g && U[src.type].family === "rhythm";
+    var stripped = false;
+    if (bd) { if (tg.shield > 0) { tg.shield = 0; stripped = true; } amt *= MOVE.breakdownMult || 1.2; }
+    else if (tg.row === 0) amt *= 1 - tier(F, tg.side, "rhythm", "frontArmor", 0);
+    amt = Math.max(1, Math.round(amt));
+    var ab = Math.min(tg.shield, amt); tg.shield -= ab; var dealt = amt - ab;
+    var broke = stripped || (ab > 0 && tg.shield <= 0);
+    tg.hp = Math.max(0, tg.hp - dealt);
+    if (!tg.ready && !tg.solo && !tg.passive) tg.mana = Math.min(U[tg.type].phrase - 1, tg.mana + 3);
+    ev.push({ k: "hit", src: src, u: tg, amt: dealt, blocked: ab, broke: broke, stripped: stripped });
+    if (tg.hp <= 0 && !tg.down) { tg.down = true; tg.shield = 0; ev.push({ k: "down", u: tg }); }
+  }
+  // headless: run a whole fight
+  E.simulate = function (youBoard, themBoard, opts) {
+    var F = E.makeFight(youBoard, themBoard, opts), guard = 0;
+    while (!F.over && guard++ < 16 * 20) E.step(F);
+    return F;
+  };
+  return E;
+}
+
+root.BattlerEngine = Engine;
+root.BattlerRng = mulberry;
+Engine.mergeMoves = mergeMoves;
+if (typeof module !== "undefined") module.exports = { Engine: Engine, rng: mulberry, mergeMoves: mergeMoves };
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+<script>
+(function(){
+"use strict";
+var D=window.BATTLER_DATA, E=window.BattlerEngine(D), U=D.units.types, ORDER=D.units.order, RUN=D.run, SONG=D.song;
+var FEELS=D.feels.feels;
+
+// ---------- icons ----------
+var ICONS={
+  drums:'<ellipse cx="12" cy="9" rx="8" ry="3"/><path d="M4 9v7c0 1.7 3.6 3 8 3s8-1.3 8-3V9"/><path d="M6 2l5 5M18 2l-5 5"/>',
+  bass:'<circle cx="8" cy="16" r="5"/><path d="M11 13l9-9M17.5 2.5l4 4"/><circle cx="8" cy="16" r="1.5"/>',
+  keys:'<rect x="2" y="6" width="20" height="12" rx="1.5"/><path d="M7 6v7M12 6v7M17 6v7"/>',
+  strings:'<path d="M3 10c3-5 6 5 9 0s6 5 9 0"/><path d="M3 16c3-5 6 5 9 0s6 5 9 0"/>',
+  lead:'<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>',
+  voice:'<rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v4M8 22h8"/>',
+  taiko:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M3 3l4 4M21 3l-4 4"/>',
+  arp:'<path d="M4 20V10M9 20V6M14 20V12M19 20V4"/><circle cx="4" cy="9" r="1.6"/><circle cx="9" cy="5" r="1.6"/><circle cx="14" cy="11" r="1.6"/><circle cx="19" cy="3.5" r="1.6"/>',
+  choir:'<circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><circle cx="12" cy="6" r="3"/><path d="M2 20c0-4 2.5-6 5-6s5 2 5 6M12 20c0-4 2.5-6 5-6s5 2 5 6"/>'
+};
+var FAMNAME={rhythm:'Rhythm',harmony:'Harmony',melody:'Melody'};
+var CHORDVAR={Am:'--c0',F:'--c1',C:'--c2',G:'--c3',Dm:'--c1',E:'--c3'};
+var NAMES1=['Velvet','Neon','Static','Paper','Copper','Midnight','Hollow','Lucky','Silver','Wild','Electric','Low','Golden','Broken','Quiet','Paper'];
+var NAMES2=['Riot','Tide','Choir','Kings','Foxes','Signal','Moths','Engine','Lanterns','Owls','Machine','Comets','Hearts','Static','Harbor','Arcade'];
+function bandName(rng){return 'The '+NAMES1[Math.floor(rng()*NAMES1.length)]+' '+NAMES2[Math.floor(rng()*NAMES2.length)];}
+var GHOSTNAMES=(function(){var r=window.BattlerRng(4242),a=[];for(var i=0;i<12;i++)a.push(bandName(r));return a;})();
+var GHOSTS=E.makeGhosts(10,2026,GHOSTNAMES);
+
+// ---------- storage (best effort) ----------
+function lsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+var SAVED=lsGet('battler.bands.v1',[]);
+
+// ---------- audio ----------
+var AC=window.AudioContext||window.webkitAudioContext;
+// the moves copy lives one folder down from the card game, so its sound files are one level up
+var SND_BASE=window.SND_BASE||'../sounds/';
+var Q=(function(){var o={};location.search.replace(/[?&]([^=&]+)=?([^&]*)/g,function(m,k,v){o[k]=decodeURIComponent(v);});return o;})();
+if(Q.speed)window.FAST=+Q.speed||1;
+var A={ctx:null,on:true,mix:'quiet',set:lsGet('battler.set','synth')};
+var MIXV={full:0.62,quiet:0.3,off:0};
+var BUF={},RAW={},LOADING={},STEMS={stemsA:{bpm:lsGet('battler.stemsA.bpm',100),files:{}},stemsB:{bpm:lsGet('battler.stemsB.bpm',100),files:{}}};
+// ElevenLabs feels: one part per musician on the shared stem frame (100 BPM, A minor, Am F C G, 4 bars),
+// so any feel on your band fits any feel on the rival band. Files: sounds/eleven/<feel>/<type>.mp3
+var EL=[{id:'fairy-grove',name:'Fairy grove',blurb:'ElevenLabs: harp, kalimba, upright bass, frame drum.'},
+  {id:'crystal-cavern',name:'Crystal cavern',blurb:'ElevenLabs: glass pads, bell synths, sub bass, electronic kit.'},
+  {id:'goblin-war-band',name:'Goblin war band',blurb:'ElevenLabs: tuba, trumpet, accordion, marching drums.'},
+  {id:'storm-giants',name:'Storm giants',blurb:'ElevenLabs: organ, overdriven guitar, distorted bass, rock kit.'},
+  // Suno Studio performing the band lab's own notes (4 parts, same frame, 8 bars); musicians share the nearest part.
+  {id:'suno-grove',name:'Suno: Grove band',blurb:'Suno Studio: upright bass, string pad, flute, folk kit.',dir:'suno/grove',
+   map:{drums:'drums',taiko:'drums',bass:'bass',keys:'pad',strings:'pad',choir:'pad',lead:'flute',voice:'flute',arp:'flute'}}];
+EL.forEach(function(e){STEMS['el-'+e.id]={bpm:100,files:{},el:e.id,dir:e.dir||('eleven/'+e.id),map:e.map||null};});
+var SETS=[{id:'synth',name:'Synth',blurb:'Built-in synth. Loads instantly.'}].concat(FEELS.map(function(f){return {id:f.id,name:f.name,blurb:f.blurb,feel:f};}))
+  .concat(EL.map(function(e){return {id:'el-'+e.id,name:e.name,blurb:e.blurb,stems:true,el:e.id};}))
+  .concat([{id:'stemsA',name:'Stems A',blurb:'Your own audio files, e.g. Suno.',stems:true},{id:'stemsB',name:'Stems B',blurb:'A second set, e.g. ElevenLabs.',stems:true}]);
+A.rival=lsGet('battler.rival','same');
+function setById(id){for(var i=0;i<SETS.length;i++)if(SETS[i].id===id)return SETS[i];return SETS[0];}
+if(!setById(A.set)||setById(A.set).id!==A.set)A.set='synth';
+function curSet(){return setById(A.set);}
+function curFeel(){return curSet().feel||null;}
+function bpm(){var s=curSet();if(s.stems)return STEMS[s.id].bpm||100;if(s.feel)return s.feel.bpm;return SONG.defaultBpm;}
+function keyOff(){var f=curFeel();return f?f.key:0;}
+function stepDur(){return 60/bpm()/4/(window.FAST||1);}
+function progFor(gig){return curSet().stems?SONG.stemLoop.prog:E.sectionForGig(gig).prog;}
+
+function unlock(){
+  try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
+  if(!AC)return;
+  if(!A.ctx){
+    try{A.ctx=new AC();buildGraph();}catch(e){A.ctx=null;return;}
+    // iOS: play one silent buffer inside the gesture
+    try{var b=A.ctx.createBuffer(1,1,22050),s=A.ctx.createBufferSource();s.buffer=b;s.connect(A.ctx.destination);s.start(0);}catch(e){}
+    Object.keys(RAW).forEach(decodeInst);
+    decodeStoredStems();
+    loadElSets();
+  }
+  if(A.ctx.state!=='running'){try{A.ctx.resume();}catch(e){}}
+}
+['pointerdown','touchend','click','keydown'].forEach(function(ev){document.addEventListener(ev,unlock,{capture:true,passive:true});});
+
+function buildGraph(){
+  var c=A.ctx;
+  A.comp=c.createDynamicsCompressor();A.comp.threshold.value=-18;A.comp.ratio.value=4;A.comp.attack.value=0.004;A.comp.release.value=0.2;
+  A.out=c.createGain();A.out.gain.value=A.on?0.9:0;A.comp.connect(A.out);A.out.connect(c.destination);
+  A.tone=c.createBiquadFilter();A.tone.type='lowpass';A.tone.frequency.value=20000;A.tone.connect(A.comp);
+  A.master=c.createGain();A.master.gain.value=1;A.master.connect(A.tone);
+  A.verb=c.createConvolver();A.verbGain=c.createGain();A.verb.connect(A.verbGain);A.verbGain.connect(A.tone);
+  A.delay=c.createDelay(1.5);A.delayFb=c.createGain();A.delayWet=c.createGain();A.delay.connect(A.delayFb);A.delayFb.connect(A.delay);A.delay.connect(A.delayWet);A.delayWet.connect(A.tone);
+  A.send=c.createGain();A.send.connect(A.verb);A.send.connect(A.delay);
+  A.you=c.createGain();A.you.connect(A.master);A.you.connect(A.send);
+  A.themIn=c.createGain();var lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1500;lp.Q.value=0.5;
+  A.them=c.createGain();A.them.gain.value=MIXV[A.mix];A.themIn.connect(lp);lp.connect(A.them);A.them.connect(A.master);
+  var n=c.createBuffer(1,c.sampleRate,c.sampleRate),d=n.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;A.noise=n;
+  A.crackleGain=c.createGain();A.crackleGain.gain.value=0;A.crackleGain.connect(A.tone);
+  applyFx();
+}
+function impulse(sec){
+  var c=A.ctx,len=Math.max(1,Math.floor(c.sampleRate*sec)),b=c.createBuffer(2,len,c.sampleRate);
+  for(var ch=0;ch<2;ch++){var d=b.getChannelData(ch);for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4);}
+  return b;
+}
+function applyFx(){
+  if(!A.ctx)return;
+  var f=curFeel(),fx=f?f.fx:{verb:1.4,wet:0.14,lp:0,delay:0,crackle:0},t=A.ctx.currentTime;
+  A.verb.buffer=impulse(fx.verb||1.2);
+  A.verbGain.gain.setValueAtTime(fx.wet||0.15,t);
+  A.tone.frequency.setValueAtTime(fx.lp||20000,t);
+  A.delay.delayTime.setValueAtTime(fx.delay||0.3,t);A.delayFb.gain.setValueAtTime(fx.delay?0.3:0,t);A.delayWet.gain.setValueAtTime(fx.delay?0.22:0,t);
+  if(A.crackle){try{A.crackle.stop();}catch(e){}A.crackle=null;}
+  if(fx.crackle){var c=A.ctx,len=c.sampleRate*2,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);
+    for(var i=0;i<len;i++)d[i]=Math.random()<0.0009?(Math.random()*2-1):(Math.random()*2-1)*0.015;
+    var s=c.createBufferSource();s.buffer=b;s.loop=true;var hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=1200;s.connect(hp);hp.connect(A.crackleGain);s.start();A.crackle=s;}
+  A.crackleGain.gain.setValueAtTime((fx.crackle||0)*1.6,t);
+}
+function mtof(m){return 440*Math.pow(2,(m-69)/12);}
+
+// sample packs (sounds/<inst>.js call window.__SND)
+window.__SND=function(inst,rms,files){RAW[inst]={rms:rms,files:files};if(A.ctx)decodeInst(inst);};
+function b64ToBuf(s){var bin=atob(s),n=bin.length,u=new Uint8Array(n);for(var i=0;i<n;i++)u[i]=bin.charCodeAt(i);return u.buffer;}
+function decode(ab){return new Promise(function(res,rej){try{var p=A.ctx.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);}catch(e){rej(e);}});}
+function decodeInst(inst){
+  var r=RAW[inst];if(!r||BUF[inst]||r.busy)return;r.busy=true;
+  var keys=Object.keys(r.files),out={notes:{},rms:r.rms,list:[]},left=keys.length;
+  keys.forEach(function(k){decode(b64ToBuf(r.files[k])).then(function(b){out.notes[k]=b;}).catch(function(){}).then(function(){
+    if(--left===0){out.list=Object.keys(out.notes).map(Number).sort(function(a,b){return a-b;});BUF[inst]=out;loadingText();}});});
+}
+function instsFor(feel){
+  var s={};Object.keys(feel.roles).forEach(function(k){s[feel.roles[k].i]=1;});
+  Object.keys(feel.drums).forEach(function(k){var d=feel.drums[k];if(d&&typeof d==='object')s[d.i]=1;});
+  return Object.keys(s);
+}
+function loadFeel(feel){
+  instsFor(feel).forEach(function(inst){
+    if(RAW[inst]||LOADING[inst])return;LOADING[inst]=1;
+    var sc=document.createElement('script');sc.src=SND_BASE+inst+'.js';sc.async=true;
+    sc.onerror=function(){LOADING[inst]='err';loadingText();};
+    document.head.appendChild(sc);
+  });
+  loadingText();
+}
+function loadingText(){
+  var s=curSet(),el=$('loading');if(!el)return;
+  if(s.feel){var need=instsFor(s.feel),ready=need.filter(function(i){return BUF[i];}).length,err=need.filter(function(i){return LOADING[i]==='err';}).length;
+    el.textContent=ready<need.length?(err?'Some '+s.name+' sounds failed to load; the synth stands in for them.':'Loading '+s.name+' sounds '+ready+'/'+need.length+'… the synth plays until they arrive.'):'';}
+  else if(s.el){var fs=STEMS[s.id].files,ok=Object.keys(fs).filter(function(t){return fs[t].buf;}).length,tot=Object.keys(U).length;
+    el.textContent=!A.ctx?s.name+' loads when you tap Start or a shop card.':ok<tot?'Loading '+s.name+' '+ok+'/'+tot+'… the synth plays until it arrives.':'';}
+  else if(s.stems){var n=Object.keys(STEMS[s.id].files).length;el.textContent=n?n+' of 9 musicians have stems in '+s.name+'; the rest use the synth.':s.name+' is empty: open ♪ to load stems. The synth plays meanwhile.';}
+  else el.textContent='';
+}
+
+// voices
+function env(g,t,v,a,hold,r){g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(0.0002,v),t+a);g.gain.setValueAtTime(Math.max(0.0002,v),t+Math.max(a,hold));g.gain.exponentialRampToValueAtTime(0.0001,t+Math.max(a,hold)+r);}
+function tone(t,midi,dur,o){
+  var c=A.ctx,osc=c.createOscillator();osc.type=o.type||'triangle';osc.frequency.setValueAtTime(mtof(midi),t);
+  if(o.detune)osc.detune.value=o.detune;
+  var node=osc;
+  if(o.lp){var f=c.createBiquadFilter();f.type='lowpass';f.frequency.setValueAtTime(o.lp,t);if(o.lp2)f.frequency.exponentialRampToValueAtTime(o.lp2,t+Math.max(.05,dur));f.Q.value=o.q||0.7;osc.connect(f);node=f;}
+  var g=c.createGain();node.connect(g);g.connect(o.out);
+  var a=o.a||0.005,r=o.r||0.08;env(g,t,o.vol||0.1,a,dur,r);
+  osc.start(t);osc.stop(t+Math.max(a,dur)+r+0.05);
+  return {g:g,end:t+Math.max(a,dur)+r};
+}
+function noise(t,dur,o){
+  var c=A.ctx,s=c.createBufferSource();s.buffer=A.noise;
+  var f=c.createBiquadFilter();f.type=o.type||'highpass';f.frequency.setValueAtTime(o.f||2000,t);f.Q.value=o.q||0.7;
+  var g=c.createGain();s.connect(f);f.connect(g);g.connect(o.out);
+  g.gain.setValueAtTime(o.vol||0.1,t);
+  if(o.gate){g.gain.setValueAtTime(o.vol||0.1,t+dur*0.8);g.gain.linearRampToValueAtTime(0.0001,t+dur);}else g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  s.start(t,Math.random()*0.5);s.stop(t+dur+0.05);return {g:g,end:t+dur};
+}
+function boom(t,f0,f1,dur,vol,out){
+  var c=A.ctx,osc=c.createOscillator(),g=c.createGain();
+  osc.frequency.setValueAtTime(f0,t);osc.frequency.exponentialRampToValueAtTime(f1,t+dur*0.5);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  osc.connect(g);g.connect(out);osc.start(t);osc.stop(t+dur+0.05);return {g:g,end:t+dur};
+}
+var SUSTAIN={pad:1,voice:1,choir:1,drop:1};
+function sample(inst,midi,t,dur,vol,out,o){
+  var B=BUF[inst];if(!B||!B.list.length)return null;
+  var best=B.list[0];for(var i=0;i<B.list.length;i++)if(Math.abs(B.list[i]-midi)<Math.abs(best-midi))best=B.list[i];
+  if(Math.abs(best-midi)>7)return null;
+  var c=A.ctx,s=c.createBufferSource();s.buffer=B.notes[best];s.playbackRate.value=Math.pow(2,(midi-best)/12);
+  if(o.detune&&s.detune)s.detune.value=o.detune;
+  var g=c.createGain();s.connect(g);g.connect(out);
+  var norm=Math.min(4,0.12/Math.max(0.01,B.rms||0.1)),v=vol*norm;
+  var bufLen=s.buffer.duration/s.playbackRate.value;
+  var hold=o.sus?Math.min(bufLen-0.1,dur):Math.min(bufLen-0.05,dur+(o.ring||0.25));
+  var a=o.sus?0.06:0.004,r=o.sus?0.3:0.12;hold=Math.max(a+0.01,hold);
+  env(g,t,v,a,hold,r);s.start(t);s.stop(t+hold+r+0.05);
+  return {g:g,end:t+hold+r};
+}
+// a drum: sample, synth variant, or nothing
+function drum(kind,t,vol,out,n){
+  var f=curFeel(),spec=f?f.drums[kind]:'std',v=[];
+  if(f&&spec===null){if(kind!=='hat')spec='std';else return v;}
+  if(spec&&typeof spec==='object'){var note=Array.isArray(spec.n)?spec.n[(n||0)%spec.n.length]:spec.n;var x=sample(spec.i,note,t,0.4,vol*(kind==='tom'?1.1:0.9),out,{ring:0.6});if(x){v.push(x);return v;}spec='std';}
+  spec=spec||'std';
+  if(kind==='kick'){if(spec==='soft')v.push(boom(t,110,45,0.28,0.65*vol,out));else if(spec==='punch'){v.push(boom(t,190,40,0.32,0.95*vol,out));v.push(noise(t,0.02,{type:'highpass',f:3000,vol:0.2*vol,out:out}));}else v.push(boom(t,150,42,0.3,0.9*vol,out));}
+  else if(kind==='snare'){if(spec==='soft')v.push(noise(t,0.12,{type:'lowpass',f:3200,vol:0.22*vol,out:out}));
+    else if(spec==='gated'){v.push(noise(t,0.22,{type:'bandpass',f:1700,q:0.5,vol:0.42*vol,gate:true,out:out}));v.push(tone(t,52,0.05,{type:'triangle',vol:0.2,r:0.06,out:out}));}
+    else{v.push(noise(t,0.16,{type:'bandpass',f:1900,q:0.6,vol:0.35*vol,out:out}));v.push(tone(t,55,0.03,{type:'triangle',vol:0.18,r:0.08,out:out}));}}
+  else if(kind==='tom'){var p=220-((n||0)%4)*28;if(spec==='electro')v.push(tone(t,40+((n||0)%4)*3,0.18,{type:'square',lp:900,lp2:200,vol:0.25*vol,r:0.1,out:out}));else if(spec==='soft')v.push(boom(t,p*0.8,70,0.25,0.5*vol,out));else v.push(boom(t,p,70,0.3,0.7*vol,out));}
+  else if(kind==='crash'){v.push(noise(t,1.9,{type:'highpass',f:5200,vol:0.22*vol,out:out}));v.push(noise(t,0.35,{type:'bandpass',f:3100,q:0.7,vol:0.2*vol,out:out}));v.push(boom(t,130,40,0.55,0.95*vol,out));}
+  else if(kind==='hat'){if(spec==='shaker')v.push(noise(t,0.07,{type:'bandpass',f:5200,q:1.2,vol:0.12*vol,out:out}));else if(spec==='soft')v.push(noise(t,0.03,{type:'highpass',f:6000,vol:0.05*vol,out:out}));else v.push(noise(t,0.04,{type:'highpass',f:7500,vol:0.09*vol,out:out}));}
+  return v;
+}
+var ROLELV={bass:0.8,drop:0.95,stab:0.4,arp:0.5,pad:0.26,lead:0.55,voice:0.62,choir:0.26};
+// plays one note event. returns voices
+function play(role,pitch,t,dur,out,o){
+  o=o||{};var v=[],vol=o.vol||1;
+  if(!A.ctx||!A.on)return v;
+  if(pitch.drum){return drum(pitch.drum,t,vol,out,o.n);}
+  var f=curFeel(),k=keyOff(),notes=pitch.notes;
+  if(f&&f.roles[role]){var R=f.roles[role],ok=true;
+    notes.forEach(function(m){var x=sample(R.i,m+k+R.o,t,dur,(ROLELV[role]||0.5)*vol,out,{sus:!!SUSTAIN[role],detune:o.detune});if(x)v.push(x);else ok=false;});
+    if(ok)return v;v.forEach(function(x){try{x.g.gain.cancelScheduledValues(t);x.g.gain.setValueAtTime(0.0001,t);}catch(e){}});v=[];
+  }
+  var dt=o.detune||0;
+  notes.forEach(function(m0,i){var m=m0+k;
+    switch(role){
+      case 'bass':v.push(tone(t,m,dur*0.92,{type:'sawtooth',lp:520,vol:0.22*vol,a:0.01,r:0.08,detune:dt,out:out}));break;
+      case 'drop':v.push(boom(t,90,30,1.2,0.9*vol,out));v.push(tone(t,m,dur,{type:'sawtooth',lp:700,lp2:200,vol:0.25*vol,a:0.01,r:0.2,out:out}));break;
+      case 'stab':v.push(tone(t,m,0.1,{type:'triangle',vol:0.075*vol,r:0.12,detune:dt,out:out}));break;
+      case 'arp':v.push(tone(t,m,0.09,{type:'triangle',vol:0.09*vol,r:0.12,detune:dt,out:out}));break;
+      case 'pad':v.push(tone(t,m,dur*0.95,{type:'sawtooth',lp:1300,detune:(i%2?7:-7)+dt,vol:0.034*vol,a:0.18,r:0.3,out:out}));break;
+      case 'lead':v.push(tone(t,m,Math.min(0.12,dur*0.9),{type:'square',lp:3200,lp2:900,vol:0.06*vol,r:0.07,detune:dt,out:out}));break;
+      case 'voice':v.push(tone(t,m,dur*0.9,{type:'triangle',lp:2000,vol:0.12*vol,a:0.04,r:0.15,detune:dt,out:out}));v.push(tone(t,m,dur*0.9,{type:'sine',detune:9+dt,vol:0.08*vol,a:0.05,r:0.15,out:out}));break;
+      case 'choir':v.push(tone(t,m,dur*0.95,{type:'triangle',lp:1800,detune:5+dt,vol:0.06*vol,a:0.12,r:0.35,out:out}));break;
+      default:v.push(tone(t,m,0.1,{type:'triangle',vol:0.08*vol,out:out}));
+    }});
+  return v;
+}
+function channel(u){
+  if(u.ch||!A.ctx)return u.ch;
+  var c=A.ctx,g=c.createGain(),bus=u.side==='them'?A.themIn:A.you,out=g;
+  if(c.createStereoPanner){var p=c.createStereoPanner();p.pan.value=[-0.5,0,0.5][u.col];g.connect(p);p.connect(bus);}else g.connect(bus);
+  u.ch={g:g,voices:[]};return u.ch;
+}
+function cutVoices(list,t){(list||[]).forEach(function(x){try{x.g.gain.cancelScheduledValues(t);x.g.gain.setTargetAtTime(0.0001,t,0.025);}catch(e){}});}
+function cut(u,t){if(!u.ch)return;cutVoices(u.ch.voices,t);u.ch.voices=[];}
+
+// stems: decoded AudioBuffers per set and musician
+var DB=null;
+function db(){return new Promise(function(res){if(DB)return res(DB);try{var r=indexedDB.open('battler-stems',1);r.onupgradeneeded=function(){r.result.createObjectStore('f');};r.onsuccess=function(){DB=r.result;res(DB);};r.onerror=function(){res(null);};}catch(e){res(null);}});}
+function dbPut(k,v){return db().then(function(d){if(!d)return;return new Promise(function(res){try{var tx=d.transaction('f','readwrite');v===null?tx.objectStore('f').delete(k):tx.objectStore('f').put(v,k);tx.oncomplete=res;tx.onerror=res;}catch(e){res();}});});}
+function dbAll(){return db().then(function(d){if(!d)return [];return new Promise(function(res){try{var out=[],tx=d.transaction('f','readonly'),st=tx.objectStore('f'),rq=st.openCursor();rq.onsuccess=function(){var c=rq.result;if(c){out.push([c.key,c.value]);c.continue();}else res(out);};rq.onerror=function(){res([]);};}catch(e){res([]);}});});}
+var storedStems=[];
+dbAll().then(function(list){storedStems=list;list.forEach(function(kv){var p=kv[0].split(':');if(STEMS[p[0]])STEMS[p[0]].files[p[1]]={name:kv[1].name,bytes:kv[1].bytes,buf:null};});if(A.ctx)decodeStoredStems();renderStems();loadingText();});
+function decodeStoredStems(){Object.keys(STEMS).forEach(function(sid){Object.keys(STEMS[sid].files).forEach(function(t){var f=STEMS[sid].files[t];if(f&&!f.buf&&f.bytes&&!f.busy){f.busy=true;decode(f.bytes.slice(0)).then(function(b){f.buf=b;renderStems();}).catch(function(){f.err=true;renderStems();});}});});}
+function rivalSetId(){var s=curSet();if(!s.stems||A.rival==='same'||!STEMS[A.rival])return s.id;return A.rival;}
+function stemFor(type,side){var s=curSet();if(!s.stems)return null;var sid=side==='them'?rivalSetId():s.id;var f=STEMS[sid].files[type];return f&&f.buf?f.buf:null;}
+function loadEl(sid){
+  var set=STEMS[sid];if(!set||!set.el||!A.ctx||set.loading)return;set.loading=true;
+  Object.keys(U).forEach(function(t){
+    if(set.files[t])return;var fn=(set.map&&set.map[t])||t,f={name:set.dir+'/'+fn+'.mp3',buf:null};set.files[t]=f;
+    fetch(SND_BASE+set.dir+'/'+fn+'.mp3').then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();})
+      .then(function(b){return decode(b);}).then(function(b){f.buf=b;loadingText();})
+      .catch(function(){f.err=true;delete set.files[t];loadingText();});
+  });
+}
+function loadElSets(){var s=curSet();if(s.el)loadEl(s.id);if(s.stems&&STEMS[A.rival])loadEl(A.rival);}
+function startStems(F,t0){
+  if(!A.ctx||!curSet().stems)return;
+  var barLen=stepDur()*16;
+  F.units.forEach(function(u){
+    var b=stemFor(u.type,u.side);if(!b)return;var ch=channel(u);
+    var s=A.ctx.createBufferSource();s.buffer=b;s.loop=true;var bars=Math.max(1,Math.round(b.duration/barLen));s.loopStart=0;s.loopEnd=Math.min(b.duration,bars*barLen);
+    var g=A.ctx.createGain();g.gain.value=1;s.connect(g);g.connect(ch.g);s.start(t0);u.stem={src:s,g:g};
+  });
+}
+function stemGain(u,t,v,len){if(!u.stem)return;var g=u.stem.g.gain;g.setTargetAtTime(v,t,0.02);if(len)g.setTargetAtTime(1,t+len,0.03);}
+function stopStems(F,t){F.units.forEach(function(u){if(u.stem){try{u.stem.g.gain.setTargetAtTime(0.0001,t,0.08);u.stem.src.stop(t+0.6);}catch(e){}u.stem=null;}});}
+
+// ---------- state ----------
+var R=null,F=null,sel=null,band='',runId=0,opp=null,MODE='shop',songQueue=null;
+function newRun(){
+  runId=Date.now();R=E.newRun(runId&0x7fffffff);band=bandName(R.rng);sel=null;F=null;MODE='shop';
+  R.history=[];pickOpponent();say('Tap a shop card to hear it, then buy.');render();
+}
+function pickOpponent(){
+  var pool=GHOSTS.filter(function(g){return g.gig===R.gig;}).map(function(g){return {snap:g,saved:false};});
+  SAVED.forEach(function(s){if(s.gig===R.gig&&s.run!==runId)pool.push({snap:s,saved:true});});
+  var savedPool=pool.filter(function(p){return p.saved;});
+  var use=savedPool.length&&R.rng()<0.5?savedPool:pool;
+  opp=use[Math.floor(R.rng()*use.length)];
+}
+
+// ---------- scheduler ----------
+var vq=[];function vis(t,fn){vq.push({t:t,fn:fn});}
+function clock(){return A.ctx&&A.ctx.state==='running'?A.ctx.currentTime:performance.now()/1000;}
+var S={F:null,next:0,sd:0.15,useAudio:false,t0:0,onEnd:null,barStart:0,curBar:-1,label:''};
+function startSequencer(fight,onEnd){
+  unlock();
+  S.F=fight;S.useAudio=!!(A.ctx&&A.on&&A.ctx.state==='running');S.sd=stepDur();
+  S.next=clock()+0.25;S.t0=S.next;S.barStart=S.next;S.curBar=-1;S.onEnd=onEnd;S.hatN=0;
+  if(S.useAudio){fight.units.forEach(function(u){channel(u);});startStems(fight,S.next);}
+}
+function stopSequencer(t){
+  if(!S.F)return;var f=S.F;S.F=null;
+  f.units.forEach(function(u){cut(u,t);});stopStems(f,t);
+}
+function schedule(){
+  if(!S.F)return;
+  var now=clock();if(S.next<now-0.3)S.next=now+0.05;
+  var guard=0;
+  while(S.F&&S.next<now+0.12&&guard++<64){
+    var t=S.next,f=S.F,ev=E.step(f);
+    ev.forEach(function(e){handle(e,t,f);});
+    if(f.over){var done=S.onEnd,ft=t;S.F=null;f.units.forEach(function(u){cut(u,ft+S.sd*2);});stopStems(f,ft+S.sd);
+      setTimeout(function(){if(done)done(f);},Math.max(0,(ft-clock())*1000)+700);break;}
+    S.next+=S.sd;
+  }
+}
+function layerOn(side,f,name){var tr=f.traits[side];if(!tr)return false;return Object.keys(tr.tier).some(function(k){var x=tr.tier[k];return x&&x.layer===name;});}
+function handle(e,t,f){
+  var au=S.useAudio&&A.ctx;
+  switch(e.k){
+    case 'bar':
+      var bar=e.bar,ch=e.chord,solos=e.solos.slice();
+      // board state for this bar, read now (the scheduler runs ahead of the picture): who is soloing, who is held to
+      // the 1 by a stop-time, who rests (untargetable: a breakdown drop-out or the choir's breath), which band is lifted
+      var st=f.units.map(function(u){return {solo:u.solo&&!u.down,held:!!(f.stopTime&&f.g<f.stopTime.until&&!u.solo&&!u.down),rest:!u.down&&E.resting(f,u)};});
+      var lift={you:!!(f.keyUp&&f.keyUp.you&&bar>=f.keyUp.you.from),them:!!(f.keyUp&&f.keyUp.them&&bar>=f.keyUp.them.from)};
+      vis(t,function(){S.curBar=bar;S.barStart=t;S.chord=ch;renderStrip();
+        f.units.forEach(function(u,i){var s=st[i];if(!u.el||!s)return;u.el.classList.toggle('solo',s.solo);u.el.classList.toggle('spot',s.solo);
+          u.el.classList.toggle('held',s.held);u.el.classList.toggle('rest',s.rest);if(s.solo){u.el.classList.remove('ready','cued');}});
+        $('youGrid').classList.toggle('lift',lift.you);$('enemyGrid').classList.toggle('lift',lift.them);
+        $('youLbl').classList.toggle('lifted',lift.you);$('enemyLbl').classList.toggle('lifted',lift.them);
+        solos.forEach(function(u){ring(u,'--fam',u,46);if(u.soloBonus)pop(u,'+25%','--mana');});});
+      if(au){
+        ['you','them'].forEach(function(side){
+          var soloists=f.units.filter(function(u){return u.side===side&&u.solo&&!u.down;});
+          f.units.forEach(function(u){if(u.side!==side||!u.ch)return;var v=soloists.length?(u.solo?1.25:0.55):1;u.ch.g.gain.setValueAtTime(v,t);});
+          if(layerOn(side,f,'drone')){var c=SONG.chords[ch];play('pad',{notes:[c.root+12,c.root+19]},t,S.sd*16,side==='you'?A.you:A.themIn,{vol:0.7});}
+        });
+        if(f.lift&&!f.jam){(noise(t,1.4,{type:'highpass',f:6500,vol:0.05,out:A.you}));}
+      }
+      break;
+    case 'note':
+      var u=e.u,role=e.sound;
+      if(!e.pitch)break;
+      if(au&&!(u.stem)){
+        var vs=play(role,e.pitch,t,e.len*S.sd,channel(u).g,{detune:e.slow?-45:0,n:e.g,vol:u.star>1?1.15:1});
+        if(layerOn(u.side,f,'double')&&U[u.type].family==='melody'&&e.pitch.notes)vs=vs.concat(play(role,{notes:e.pitch.notes.map(function(m){return m+12;})},t,e.len*S.sd,channel(u).g,{vol:0.45}));
+        u.ch.voices=u.ch.voices.filter(function(x){return x.end>t-0.05;}).concat(vs);
+        if(e.a.fx==='shield'||e.a.fx==='rowshield')u.shieldVoices=vs;
+      }
+      if(au&&e.a.fx==='hit'&&e.g%2===0&&f.step===0){}
+      vis(t,function(){thump(u);});
+      break;
+    case 'hit':
+      var tg=e.u,src=e.src,hp=tg.hp/tg.max,sh=tg.shield>0,cv=CHORDVAR[S.chord||'Am']||'--c0';
+      if(e.broke&&au&&tg.shieldVoices){cutVoices(tg.shieldVoices,t);tg.shieldVoices=null;}
+      var fill=src.solo&&src.type==='drums'&&e.amt<10,laser=src.solo&&src.type==='lead',big=e.amt>=10;
+      vis(t,function(){
+        if(fill)colFlash(tg,css('--rhythm'));
+        if(laser)line('laser',src,tg,css('--melody'),140);
+        shot(src,tg,cv,e.amt?'-'+e.amt:'block');setBar(tg,hp,null);if(tg.el)tg.el.classList.toggle('shielded',sh);
+        if(e.stripped||e.broke)ring(tg,'--shield',null,30);
+        if(big){thump(tg);ring(tg,'--bad',null,34);}
+      });
+      break;
+    case 'down':
+      var d=e.u;if(au){cut(d,t);if(d.stem)stemGain(d,t,0.0001);}
+      vis(t,function(){if(d.el){d.el.classList.add('down');d.el.classList.remove('solo','shielded','ready','cued');}});
+      break;
+    case 'heal':var hu=e.u,hs=e.src,h=hu.hp/hu.max,amt=e.amt;vis(t,function(){if(amt>0){beam(hs,hu);pop(hu,'+'+amt,'--hp');}setBar(hu,h,null);});break;
+    case 'shield':var su=e.u,sa=e.amt,fer=e.src.solo&&e.src.type==='strings'&&e.src===e.u,ferLen=(e.u.shieldEnd-(f.g-1))*S.sd;
+      vis(t,function(){if(su.el)su.el.classList.add('shielded');pop(su,''+sa,'--shield');if(fer)dome(su.side,ferLen);});break;
+    case 'shieldoff':var so=e.u;vis(t,function(){if(so.el)so.el.classList.remove('shielded');});break;
+    case 'stun':var sn=e.u,len=e.steps*S.sd;if(au){cut(sn,t);stemGain(sn,t,0.12,len);}
+      vis(t,function(){badge(sn,'zz');});vis(t+len,function(){badge(sn,'');});break;
+    case 'slow':var sl=e.u;
+      var bt=t+(16-f.step+1)*S.sd;vis(bt,function(){badge(sl,'~');});vis(bt+16*S.sd,function(){badge(sl,'');});
+      if(au&&sl.stem){stemGain(sl,bt,0.5,16*S.sd);}break;
+    case 'buff':var bu=e.u,pct=Math.round(((e.mult||RUN.buffMultiplier)-1)*100),mates=f.units.filter(function(x){return x.side===bu.side&&!x.down;});
+      vis(t,function(){pop(bu,'+'+pct+'%','--gold');mates.forEach(function(x){if(x.el)x.el.classList.add('swell');});});
+      vis(t+16*S.sd-0.05,function(){mates.forEach(function(x){if(x.el)x.el.classList.remove('swell');});});break;
+    // ---- the role moves (engine events added by the moves draft) ----
+    case 'crash':var cu=e.us.slice();vis(t,function(){slashRow(cu,css('--rhythm'));cu.forEach(thump);});break;
+    case 'stoptime':var sp=e.u;if(au){drum('crash',t,0.6,busOf(sp.side),0);}vis(t,function(){ring(sp,'--fam',sp,60);});break;
+    case 'breakdown':var bd=e.u;if(au){boom(t,70,32,1.4,1,busOf(bd.side));}vis(t,function(){ring(bd,'--fam',bd,60);});break;
+    case 'keyup':var ku=e.u,kt=t+(16-f.step+1)*S.sd;
+      if(au){var o=busOf(ku.side);tone(t,45+e.shift,16*S.sd,{type:'sawtooth',lp:300,lp2:5000,vol:0.07,a:0.2,r:0.2,out:o});tone(kt,57+e.shift,0.5,{type:'square',lp:3000,vol:0.06,r:0.3,out:o});}
+      vis(t,function(){ring(ku,'--gold',null,60);});break;
+    case 'miss':var mu2=e.u;if(au&&mu2.ch)noise(t,0.05,{type:'lowpass',f:500,vol:0.18,out:mu2.ch.g});vis(t,function(){missMark(mu2);});break;
+    case 'cut':var cu2=e.u;vis(t,function(){crackDome(cu2.side);});break;
+    case 'unison':var us=e.src,ut=e.u,up=e.partners.slice();
+      if(au){var ob=busOf(us.side);boom(t,95,34,0.7,0.9,ob);up.forEach(function(x,i){boom(t,75-i*8,30,0.6,0.7,ob);});}
+      vis(t,function(){shockCol(us,ut,css('--rhythm'),up.length);up.forEach(function(x){line('link',x,us,css('--rhythm'),260);});});break;
+    case 'call':var cs=e.src,ct=e.u,cl=(e.at-(f.g-1))*S.sd;vis(t,function(){line('call',cs,ct,css('--melody'),cl*1000);});break;
+    case 'answer':var as=e.src,at=e.u,ab=e.by.slice(),miss=!!e.missed;
+      vis(t,function(){if(miss){missMark(at);return;}converge(ab,at,css('--melody'));pop(at,'-'+e.amt,'--bad');ring(at,'--melody',null,40);});break;
+    case 'clash':var zs=e.src,zu=e.u,zl=e.steps*S.sd,zm=e.main;
+      vis(t,function(){if(zm)line('zig',zs,zu,css('--melody'),420);if(zu.el)zu.el.classList.add('clashed');});
+      vis(t+zl,function(){if(zu.el)zu.el.classList.remove('clashed');});break;
+    case 'ready':var ru=e.u;vis(t,function(){if(ru.el){ru.el.classList.add('ready');setBar(ru,null,1);}});break;
+  }
+  if(e.k==='note'){var mu=e.u,mana=mu.mana/U[mu.type].phrase;vis(t,function(){setBar(mu,null,mu.solo?0:mana);});}
+  if(e.k==='bar'&&au){
+    ['you','them'].forEach(function(side){if(!layerOn(side,f,'hats'))return;for(var i=0;i<16;i+=2)drum('hat',t+i*S.sd,0.8,side==='you'?A.you:A.themIn,i);});
+  }
+}
+
+// ---------- fight flow ----------
+function startFight(){
+  if(MODE!=='shop')return;
+  if(!E.boardCount(R)){say('Put at least one musician on the stage.');return;}
+  stopSequencer(clock());
+  unlock();
+  var snap=E.snapshot(R,band);snap.run=runId;snap.at=Date.now();
+  R.history.push(snap);
+  SAVED.push(snap);if(SAVED.length>300)SAVED=SAVED.slice(-300);lsSet('battler.bands.v1',SAVED);
+  var sec=E.sectionForGig(R.gig);
+  F=E.makeFight(R.board,E.boardFromSnapshot(opp.snap),{seed:(runId+R.gig*977)&0x7fffffff,prog:progFor(R.gig)});
+  F.lift=!!sec.lift;
+  MODE='fight';sel=null;render();
+  say('Every note is a move. Tap a glowing musician to cue their solo.');
+  startSequencer(F,function(f){showResult(f.result);});
+}
+// ---------- move lab: one role's move, fired early, against a fixed rival band ----------
+var labOn=null,labSaved=null;
+function labBoards(t){
+  var id=900,front,back;
+  function put(arr,type,star){var f=(U[type].family==='rhythm'||type==='keys')?front:back,list=f.length?f:(f===front?back:front);arr[list.shift()]={id:id++,type:type,star:star};}
+  var mine=new Array(6).fill(null),them=new Array(6).fill(null);
+  front=[1,0,2];back=[4,3,5];put(mine,t,2);
+  ['drums','bass','keys','voice','strings','lead'].filter(function(x){return x!==t;}).slice(0,3).forEach(function(x){put(mine,x,1);});
+  front=[1,0,2];back=[4,3,5];['bass','drums','keys','lead','strings'].forEach(function(x){put(them,x,1);});
+  return {mine:mine,them:them};
+}
+function labFight(t){
+  if(!U[t]||(MODE!=='shop'&&!labOn))return;
+  stopSequencer(clock());unlock();
+  if(!labSaved)labSaved={board:R.board,opp:opp};
+  var b=labBoards(t);
+  R.board=b.mine;
+  opp={saved:false,snap:{name:bandName(window.BattlerRng(ORDER.indexOf(t)*131+7)),gig:R.gig,board:b.them.map(function(u,i){return u?{type:u.type,star:u.star,slot:i}:null;}).filter(Boolean)}};
+  F=E.makeFight(b.mine,b.them,{seed:11,prog:progFor(R.gig)});
+  // the lab musician starts with a full phrase bar, so its move lands on the second downbeat
+  F.units.forEach(function(u){if(u.side==='you'&&u.type===t&&!U[t].passive){u.mana=U[t].phrase;u.ready=true;u.readyBar=-1;}});
+  labOn=t;MODE='fight';sel=null;say('');render();
+  F.units.forEach(function(u){if(u.ready&&u.el)u.el.classList.add('ready');});
+  var mine=F;startSequencer(F,function(){if(F===mine)labEnd();});
+}
+function labEnd(){
+  if(labSaved){R.board=labSaved.board;opp=labSaved.opp;labSaved=null;}
+  labOn=null;F=null;MODE='shop';domes={};render();
+}
+function renderLab(){
+  var h='';ORDER.forEach(function(t){h+='<button data-lab="'+t+'" style="--fam:var(--'+U[t].family+')" aria-pressed="'+(labOn===t)+'"><svg viewBox="0 0 24 24">'+ICONS[t]+'</svg>'+U[t].name+'</button>';});
+  $('lab').innerHTML=h;
+}
+function showResult(res){
+  MODE='result';
+  var g=R.gig,last=g>=RUN.gigs;
+  if(res.win)R.wins++;else{R.hearts--;R.losses=(R.losses||0)+1;}
+  var t=$('resTitle'),p=$('resText'),b=$('resBtn'),nm=opp.snap.name;
+  var how=res.why==='time'?'The song ran out at bar '+res.bars+' and '+(res.win?'your band':nm)+' had more health left.':(res.win?nm+' all dropped out of the song':'Your whole band dropped out of the song')+' in '+res.bars+' bars.';
+  t.textContent=res.win?'You won gig '+g:nm+' won gig '+g;
+  p.textContent=how+(res.win?'':' You lose a heart.');
+  if(R.hearts<=0||last){b.textContent='See the tour';}else b.textContent='Next gig';
+  $('result').hidden=false;render();
+}
+function afterResult(){
+  $('result').hidden=true;
+  if(R.hearts<=0||R.gig>=RUN.gigs){showEnd();return;}
+  E.nextGig(R);MODE='shop';F=null;pickOpponent();
+  var sec=E.sectionForGig(R.gig),prev=E.sectionForGig(R.gig-1);
+  say((sec.id!==prev.id?'<b>The song moves to the '+sec.name.toLowerCase()+'.</b> ':'')+'Gig '+R.gig+': '+E.slots(R)+' spots on stage, 10 gold.');
+  render();
+}
+function showEnd(){
+  MODE='over';var w=R.wins,l=R.gig-w;
+  $('endTitle').textContent=R.hearts<=0?'Tour over':(w>=8?'You headlined':w>=5?'Strong tour':'Tour finished');
+  $('endRecord').textContent=w+' wins, '+l+' losses';
+  $('endText').textContent='Your band played '+R.history.length+' gigs. Play your song to hear it grow from the first gig to the last, two bars per gig.';
+  $('endSheet').hidden=false;render();
+}
+function playSong(){
+  stopSequencer(clock());
+  var parts=R.history.slice(),i=0;
+  $('songBtn').textContent='Playing… tap to stop';
+  songQueue=parts;
+  function nextPart(){
+    if(songQueue!==parts)return;
+    if(i>=parts.length){$('songBtn').textContent='Play your song';songQueue=null;return;}
+    var snap=parts[i++],board=E.boardFromSnapshot(snap),f=E.makeFight(board,null,{jam:true,prog:progFor(snap.gig).slice(i%2?0:2).concat(progFor(snap.gig))});
+    f.jamBars=2;f.lift=!!E.sectionForGig(snap.gig).lift;
+    $('endText').textContent='Gig '+snap.gig+' · '+E.sectionForGig(snap.gig).name+' · '+board.filter(Boolean).length+' musicians';
+    startSequencer(f,function(){nextPart();});
+  }
+  nextPart();
+}
+// jam: hear a band (optionally with one extra musician) over this gig's chords
+function jam(extraType,bars){
+  if(MODE!=='shop')return;
+  unlock();stopSequencer(clock());
+  var board=R.board.slice();
+  if(extraType){var spot=board.indexOf(null);var u={id:-1,type:extraType,star:1};if(spot<0){board=board.slice();board.push(u);}else board[spot]=u;}
+  if(!board.some(Boolean))return;
+  var f=E.makeFight(board,null,{jam:true,prog:progFor(R.gig)});f.jamBars=bars||2;
+  startSequencer(f,function(){$('hearBtn').textContent='Hear band';});
+}
+
+// ---------- shop interactions ----------
+function $(id){return document.getElementById(id);}
+// no instruction text on screen: only a bold name (the unit in hand) is shown, next to its buttons
+function say(h,btns){var m=/<b>[^<]*<\/b>/.exec(h||'');$('hintText').innerHTML=m?m[0]:'';$('hint').style.display=(m||(btns&&btns.length))?'':'none';var b=$('hintBtns');b.innerHTML='';(btns||[]).forEach(function(x){var e=document.createElement('button');e.className='pill'+(x.go?' go':'');e.textContent=x.label;e.onclick=x.fn;b.appendChild(e);});}
+function unitLine(t,star){var T=U[t];return '<b>'+T.name+(star>1?' ★'+star:'')+'</b> · '+FAMNAME[T.family]+'. '+T.line;}
+function tapShop(i){
+  if(MODE!=='shop'||!R.shop[i])return;
+  if(sel&&sel.where==='shop'&&sel.i===i){sel=null;say('');render();return;}
+  sel={where:'shop',i:i};var t=R.shop[i];
+  jam(t,2);
+  say(unitLine(t,1)+(E.countCopies(R,t,1)>=2?' <b>Buying makes a ★2.</b>':''),[
+    {label:R.frozen[i]?'Unfreeze':'Freeze',fn:function(){R.frozen[i]=!R.frozen[i];render();tapShopRefresh(i);}},
+    {label:'Buy '+RUN.unitCost,go:true,fn:function(){doBuy(i,null,null);}}]);
+  render();
+}
+function tapShopRefresh(i){var s=sel;sel=null;tapShop(i);if(!sel)sel=s;stopSequencer(clock());}
+function doBuy(i,where,at){
+  var t=R.shop[i],res=E.buy(R,i,where,at);
+  if(!res.ok){say(res.msg);return;}
+  sel=null;say(res.merged?'<b>'+U[t].name+' ★2.</b> Three copies combined into a fuller part. '+U[t].soloLine:unitLine(t,1)+' '+U[t].soloLine);
+  render();jam(null,1);
+}
+function tapCell(where,i){
+  if(MODE==='fight'){if(where==='board')cueAt(i);return;}
+  if(MODE!=='shop')return;
+  var u=R[where][i];
+  if(sel&&sel.where==='shop'){
+    var t=R.shop[sel.i];
+    if(!u){doBuy(sel.i,where,i);return;}
+    if(u.type===t&&u.star===1&&E.countCopies(R,t,1)>=2){doBuy(sel.i,null,null);return;}
+    sel=null;
+  }
+  if(!sel){if(u){sel={where:where,i:i};var v=RUN.sellValueByStar[u.star-1];
+      say(unitLine(u.type,u.star)+' Solo: '+U[u.type].soloLine,[{label:'Sell +'+v,fn:function(){E.sell(R,where,i);sel=null;say('Sold for '+v+' gold.');render();}}]);}
+    render();return;}
+  if(sel.where===where&&sel.i===i){sel=null;say('');render();return;}
+  if(!E.move(R,[sel.where,sel.i],[where,i])){say('The stage holds '+E.slots(R)+' this gig. Swap with someone instead.');return;}
+  sel=null;say('');render();
+}
+function cueAt(slot){
+  if(!F)return;var u=null;F.units.forEach(function(x){if(x.side==='you'&&x.slot===slot)u=x;});
+  if(!u||!u.ready||u.cued)return;
+  var now=clock(),beat=S.sd*4,ph=((now-S.t0)%beat+beat)%beat,off=Math.min(ph,beat-ph),onBeat=S.useAudio&&off<=RUN.cue.onBeatWindowSec;
+  if(!S.useAudio)onBeat=off<=RUN.cue.onBeatWindowSec;
+  if(E.cue(F,u,onBeat)){if(u.el)u.el.classList.add('cued');ring(u,'--mana',null,30);}
+}
+
+// ---------- view ----------
+function unitEl(u,side,fu){
+  var T=U[u.type],d=document.createElement('div');
+  d.className='unit '+(side==='them'?'them':'mine');d.style.setProperty('--fam','var(--'+T.family+')');
+  d.innerHTML='<div class="ic"><svg viewBox="0 0 24 24">'+ICONS[u.type]+'</svg></div><div class="nm">'+T.name+'</div>'+(u.star>1?'<div class="st">★'+u.star+'</div>':'')+
+    '<div class="badge"></div><div class="bars"><div class="hp"><i></i></div><div class="mp"><i style="transform:scaleX(0)"></i></div></div>';
+  if(fu){fu.el=d;if(fu.down)d.classList.add('down');if(fu.ready)d.classList.add('ready');setBar(fu,fu.hp/fu.max,fu.mana/U[fu.type].phrase);}
+  return d;
+}
+function setBar(u,hp,mp){if(!u.el)return;var b=u.el.querySelectorAll('.bars i');if(hp!=null)b[0].style.transform='scaleX('+Math.max(0,hp)+')';if(mp!=null)b[1].style.transform='scaleX('+Math.min(1,mp)+')';}
+function badge(u,txt){if(!u.el)return;var b=u.el.querySelector('.badge');if(b)b.textContent=txt;}
+function fu(side,i){if(!F)return null;for(var k=0;k<F.units.length;k++){var u=F.units[k];if(u.side===side&&u.slot===i)return u;}return null;}
+function renderGrid(el,side,arr,order){
+  el.innerHTML='';
+  order.forEach(function(i){
+    var c=document.createElement('div');c.className='cell '+(side==='them'?'them':'mine');
+    var u=arr[i];
+    if(side==='you'){c.dataset.where='board';c.dataset.i=i;if(MODE==='shop'&&sel&&!u)c.classList.add('drop');}
+    if(side==='them')c.dataset.them=i;
+    if(u){var e=unitEl(u,side,fu(side,i));if(side==='you'&&sel&&sel.where==='board'&&sel.i===i)e.classList.add('sel');c.appendChild(e);}
+    el.appendChild(c);
+  });
+}
+function renderSong(){
+  var h='';SONG.sections.forEach(function(s){
+    var now=s.gigs.indexOf(R.gig)>=0,done=s.gigs[s.gigs.length-1]<R.gig;
+    var pips=s.gigs.map(function(g){var w=R.history[g-1]&&g<R.gig;return '<i class="'+(g<R.gig?'w':'')+'"></i>';}).join('');
+    h+='<div class="sec'+(now?' now':done?' done':'')+'" style="--n:'+s.gigs.length+'">'+s.name.replace('Final chorus','Final')+'<span class="pips">'+pips+'</span></div>';
+  });
+  $('song').innerHTML=h;
+}
+function renderStrip(){
+  var prog=F?F.prog:progFor(R.gig),s=$('strip');
+  var cs=s.querySelectorAll('.chord');
+  if(cs.length!==4||s.dataset.prog!==prog.join()){cs.forEach(function(c){c.remove();});
+    prog.forEach(function(n){var d=document.createElement('div');d.className='chord';d.style.setProperty('--cc','var('+(CHORDVAR[n]||'--c0')+')');d.textContent=n;s.insertBefore(d,$('playhead'));});
+    s.dataset.prog=prog.join();cs=s.querySelectorAll('.chord');}
+  var live=S.F&&S.curBar>=0;
+  cs.forEach(function(c,i){c.classList.toggle('on',!!(live&&S.curBar%4===i));});
+  if(F&&MODE==='fight')$('cap').textContent=live&&S.F===F?'Bar '+(S.curBar+1)+' of '+SONG.fight.bars+(S.curBar>=SONG.fight.bars?' · overtime':''):'';
+}
+function render(){
+  if(!R)return;
+  $('hearts').textContent=R.hearts;$('gold').textContent=R.gold;$('wins').textContent=R.wins;
+  var sec=E.sectionForGig(R.gig);
+  $('gigName').textContent='Gig '+R.gig+' of '+RUN.gigs+' · '+sec.name;
+  $('soundBtn').textContent='♪ '+curSet().name;
+  renderSong();
+  $('enemyName').textContent=opp.snap.name;$('enemyTag').textContent=opp.saved?'Saved band':'AI band';
+  renderGrid($('enemyGrid'),'them',E.boardFromSnapshot(opp.snap),[3,4,5,0,1,2]);
+  renderGrid($('youGrid'),'you',R.board,[0,1,2,3,4,5]);
+  $('bandName').textContent=band;if(MODE!=='fight')$('cap').textContent=E.boardCount(R)+'/'+E.slots(R)+' on stage';
+  var be=$('bench');be.innerHTML='';
+  R.bench.forEach(function(u,i){var c=document.createElement('div');c.className='cell mine';c.dataset.where='bench';c.dataset.i=i;
+    if(MODE==='shop'&&sel&&!u)c.classList.add('drop');
+    if(u){var e=unitEl(u,'you');if(sel&&sel.where==='bench'&&sel.i===i)e.classList.add('sel');c.appendChild(e);}be.appendChild(c);});
+  // the stage cells beyond this gig's slots read as closed when empty
+  var tr=E.traits(R.board),th='';
+  Object.keys(D.traits.families).forEach(function(f){var fam=D.traits.families[f],n=tr.count[f],t=tr.tier[f];
+    th+='<span class="trait'+(t?' on':'')+'" style="--fc:var(--'+f+')">'+fam.name+' '+n+'/'+(t&&t.need===3?3:n>=2?3:2)+'</span>';});
+  $('traits').innerHTML=th;
+  var sh='';R.shop.forEach(function(t,i){
+    if(!t){sh+='<button class="card sold" aria-hidden="true" tabindex="-1"></button>';return;}
+    var T=U[t],cls='card'+(R.frozen[i]?' frozen':'')+(sel&&sel.where==='shop'&&sel.i===i?' sel':'')+(R.gold<RUN.unitCost?' poor':'');
+    sh+='<button class="'+cls+'" data-buy="'+i+'" style="--fam:var(--'+T.family+')"><span class="cost">'+RUN.unitCost+'</span>'+(R.frozen[i]?'<span class="frz">❄</span>':'')+'<span class="ic"><svg viewBox="0 0 24 24">'+ICONS[t]+'</svg></span><span class="nm">'+T.name+'</span><span class="fm">'+FAMNAME[T.family]+'</span></button>';
+  });
+  var shop=$('shop');shop.style.gridTemplateColumns='repeat('+Math.max(4,R.shop.length)+',minmax(0,1fr))';shop.innerHTML=sh;
+  var inShop=MODE==='shop';
+  document.body.classList.toggle('fighting',!inShop);
+  $('rerollBtn').disabled=!inShop||R.gold<RUN.rerollCost;$('hearBtn').disabled=!inShop||!E.boardCount(R);$('playBtn').disabled=!inShop;
+  $('playBtn').textContent=inShop?'Play the gig':MODE==='fight'?'Playing…':'Play the gig';
+  renderStrip();loadingText();renderLab();
+  requestAnimationFrame(sizeFx);
+}
+
+// ---------- sound sheet ----------
+function renderSets(){
+  var h='';SETS.forEach(function(s){h+='<button class="set" data-set="'+s.id+'" aria-pressed="'+(s.id===A.set)+'"><b>'+s.name+'</b><span>'+s.blurb+'</span></button>';});
+  $('sets').innerHTML=h;
+  var rv='<button data-rival="same" aria-pressed="'+(A.rival==='same')+'">Same as yours</button>';
+  EL.forEach(function(e){rv+='<button data-rival="el-'+e.id+'" aria-pressed="'+(A.rival==='el-'+e.id)+'">'+e.name+'</button>';});
+  $('rivalSeg').innerHTML=rv;$('rivalRow').hidden=!curSet().stems;
+  var st=curSet();$('stemPanel').hidden=!st.stems||!!st.el;
+  if(st.stems){$('stemTitle').textContent=st.name;$('stemBpm').value=STEMS[st.id].bpm;renderStems();}
+}
+function renderStems(){
+  var st=curSet();if(!st.stems||!$('stemRows'))return;var set=STEMS[st.id];
+  var h='';ORDER.forEach(function(t){var f=set.files[t];
+    h+='<div class="stem"><b>'+U[t].name+'</b><span class="fn">'+(f?(f.err?'Could not read '+esc(f.name):esc(f.name)+(f.buf?' · '+f.buf.duration.toFixed(1)+' s':' · decoding…')):'Synth')+'</span>'+
+      '<label class="pill">Load<input type="file" accept="audio/*,.wav,.mp3,.m4a,.aac,.ogg,.flac" data-stem="'+t+'"></label>'+
+      (f?'<button class="pill" data-test="'+t+'">Test</button>':'<span></span>')+'</div>';});
+  $('stemRows').innerHTML=h;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function chooseSet(id){
+  stopSequencer(clock());
+  A.set=id;lsSet('battler.set',id);
+  var s=curSet();if(s.feel)loadFeel(s.feel);loadElSets();
+  applyFx();renderSets();render();
+}
+function loadStem(type,file){
+  var sid=curSet().id;if(!STEMS[sid])return;
+  unlock();
+  var rd=new FileReader();
+  rd.onload=function(){var bytes=rd.result,f={name:file.name,bytes:bytes,buf:null};STEMS[sid].files[type]=f;renderStems();
+    dbPut(sid+':'+type,{name:file.name,bytes:bytes});
+    if(A.ctx)decode(bytes.slice(0)).then(function(b){f.buf=b;renderStems();loadingText();}).catch(function(){f.err=true;renderStems();});};
+  rd.readAsArrayBuffer(file);
+}
+function testStem(type){
+  if(MODE!=='shop'){return;}
+  unlock();stopSequencer(clock());
+  var f=E.makeFight([{id:-2,type:type,star:1},null,null,null,null,null],null,{jam:true,prog:progFor(R.gig)});f.jamBars=4;
+  startSequencer(f,null);
+}
+
+// ---------- fx ----------
+var cv=$('fx'),cx=cv.getContext&&cv.getContext('2d'),fx=[],reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function sizeFx(){if(!cx)return;var r=$('arena').getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);cx.setTransform(dpr,0,0,dpr,0,0);}
+function center(u){if(!u||!u.el)return null;var a=$('arena').getBoundingClientRect(),r=u.el.getBoundingClientRect();return {x:r.left-a.left+r.width/2,y:r.top-a.top+r.height/2};}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function shot(src,tg,cvar,label){var a=center(src),b=center(tg);if(!a||!b)return;fx.push({k:'shot',a:a,b:b,c:css(cvar),t0:performance.now(),d:170,label:label});}
+function beam(src,tg){var a=center(src),b=center(tg);if(!a||!b)return;fx.push({k:'beam',a:a,b:b,c:css('--hp'),t0:performance.now(),d:260});}
+function pop(u,txt,cvar){var a=center(u);if(!a)return;fx.push({k:'pop',a:{x:a.x+(Math.random()*16-8),y:a.y-8},c:css(cvar),t0:performance.now(),d:700,label:txt});}
+function thump(u){if(!u.el||reduce||!u.el.animate)return;u.el.animate([{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:150,easing:'ease-out'});}
+// ---- move marks on the board ----
+function busOf(side){return side==='you'?A.you:A.themIn;}
+function famC(u){return css('--'+U[u.type].family);}
+function rectOf(el){var a=$('arena').getBoundingClientRect(),r=el.getBoundingClientRect();return {x:r.left-a.left,y:r.top-a.top,w:r.width,h:r.height};}
+function gridOf(side){return side==='you'?$('youGrid'):$('enemyGrid');}
+function ring(u,cvar,famU,r1){var a=center(u);if(!a)return;fx.push({k:'ring',a:a,c:cvar==='--fam'?famC(famU||u):css(cvar),r0:12,r1:r1||40,t0:performance.now(),d:520});}
+function line(kind,src,tg,c,d){var a=center(src),b=center(tg);if(!a||!b)return;fx.push({k:kind,a:a,b:b,c:c,t0:performance.now(),d:d||300});}
+function colFlash(tg,c){if(!tg.el)return;var g=rectOf(gridOf(tg.side)),r=rectOf(tg.el);fx.push({k:'col',x:r.x,w:r.w,y:g.y,h:g.h,c:c,t0:performance.now(),d:220});}
+function slashRow(us,c){var pts=us.map(center).filter(Boolean);if(!pts.length)return;var g=rectOf(gridOf(us[0].side)),y=pts[0].y;
+  fx.push({k:'slash',a:{x:g.x-6,y:y+16},b:{x:g.x+g.w+6,y:y-16},c:c,t0:performance.now(),d:520});pts.forEach(function(p){fx.push({k:'ring',a:p,c:c,r0:10,r1:44,t0:performance.now(),d:520});});}
+function missMark(u){var a=center(u);if(!a)return;fx.push({k:'miss',a:{x:a.x+18,y:a.y-14},c:css('--muted'),t0:performance.now(),d:520});}
+var domes={};
+function dome(side,sec){if(domes[side])domes[side].dead=true;var f={k:'dome',side:side,c:css('--shield'),t0:performance.now(),d:Math.max(300,sec*1000)};domes[side]=f;fx.push(f);}
+function crackDome(side){var d=domes[side];if(!d)return;d.dead=true;domes[side]=null;var g=rectOf(gridOf(side));fx.push({k:'crack',g:g,c:css('--shield'),t0:performance.now(),d:600});}
+function shockCol(src,tg,c,n){var a=center(src),b=center(tg);if(!a||!b)return;var g=rectOf(gridOf(tg.side)),far=tg.side==='them'?g.y:g.y+g.h;
+  fx.push({k:'shock',a:a,b:{x:b.x,y:far},w:3+2*n,c:c,t0:performance.now(),d:480});colFlash(tg,c);}
+function converge(us,tg,c){var b=center(tg);if(!b)return;var pts=us.map(center).filter(Boolean);fx.push({k:'conv',pts:pts,b:b,c:c,t0:performance.now(),d:360});}
+function jag(a,b,amp,n){var dx=b.x-a.x,dy=b.y-a.y,L=Math.max(1,Math.hypot(dx,dy)),nx=-dy/L,ny=dx/L;cx.beginPath();
+  for(var i=0;i<=n;i++){var o=(i>0&&i<n)?(i%2?amp:-amp):0,x=a.x+dx*i/n+nx*o,y=a.y+dy*i/n+ny*o;if(i)cx.lineTo(x,y);else cx.moveTo(x,y);}cx.stroke();}
+function rrect(x,y,w,h,r){cx.beginPath();if(cx.roundRect)cx.roundRect(x,y,w,h,r);else cx.rect(x,y,w,h);}
+function drawFx(){
+  if(!cx){fx=[];return;}
+  var now=performance.now();cx.clearRect(0,0,cv.width,cv.height);
+  fx=fx.filter(function(f){
+    var p=(now-f.t0)/f.d;
+    if(f.k==='shot'){
+      if(p>=1){fx.push({k:'pop',a:{x:f.b.x+(Math.random()*14-7),y:f.b.y-10},c:f.label==='block'?css('--shield'):css('--ink'),t0:now,d:550,label:f.label});return false;}
+      var x=f.a.x+(f.b.x-f.a.x)*p,y=f.a.y+(f.b.y-f.a.y)*p;
+      cx.globalAlpha=0.35;cx.strokeStyle=f.c;cx.lineWidth=2;cx.beginPath();cx.moveTo(f.a.x+(f.b.x-f.a.x)*Math.max(0,p-0.35),f.a.y+(f.b.y-f.a.y)*Math.max(0,p-0.35));cx.lineTo(x,y);cx.stroke();
+      cx.globalAlpha=1;cx.fillStyle=f.c;cx.beginPath();cx.arc(x,y,4.5,0,7);cx.fill();return true;
+    }
+    if(f.dead)return false;
+    if(p>=1)return false;
+    cx.lineCap='round';cx.lineJoin='round';
+    if(f.k==='ring'){cx.globalAlpha=(1-p)*0.9;cx.strokeStyle=f.c;cx.lineWidth=3;cx.beginPath();cx.arc(f.a.x,f.a.y,f.r0+(f.r1-f.r0)*p,0,7);cx.stroke();cx.globalAlpha=1;return true;}
+    if(f.k==='slash'){var q=Math.min(1,p*3.5);cx.globalAlpha=1-p*p;cx.strokeStyle=f.c;cx.lineWidth=Math.max(1.5,9*(1-p));cx.beginPath();cx.moveTo(f.a.x,f.a.y);cx.lineTo(f.a.x+(f.b.x-f.a.x)*q,f.a.y+(f.b.y-f.a.y)*q);cx.stroke();cx.globalAlpha=1;return true;}
+    if(f.k==='col'){cx.globalAlpha=0.28*(1-p);cx.fillStyle=f.c;rrect(f.x,f.y,f.w,f.h,10);cx.fill();cx.globalAlpha=1;return true;}
+    if(f.k==='laser'){cx.globalAlpha=1-p;cx.strokeStyle=f.c;cx.lineWidth=3;cx.beginPath();cx.moveTo(f.a.x,f.a.y);cx.lineTo(f.b.x,f.b.y);cx.stroke();cx.globalAlpha=1;return true;}
+    if(f.k==='link'){cx.globalAlpha=0.7*(1-p);cx.strokeStyle=f.c;cx.lineWidth=2;cx.beginPath();cx.moveTo(f.a.x,f.a.y);cx.lineTo(f.b.x,f.b.y);cx.stroke();cx.globalAlpha=1;return true;}
+    if(f.k==='shock'){cx.globalAlpha=1-p;cx.strokeStyle=f.c;cx.lineWidth=f.w*(1-p*0.6);jag(f.a,f.b,6,12);cx.globalAlpha=1;return true;}
+    if(f.k==='zig'){cx.globalAlpha=1-p*p;cx.strokeStyle=f.c;cx.lineWidth=2.5;jag(f.a,f.b,5,16);cx.globalAlpha=1;return true;}
+    if(f.k==='call'){cx.globalAlpha=0.85;cx.strokeStyle=f.c;cx.lineWidth=2;cx.setLineDash([6,6]);cx.lineDashOffset=-now/25;cx.beginPath();cx.moveTo(f.a.x,f.a.y);cx.lineTo(f.b.x,f.b.y);cx.stroke();cx.setLineDash([]);
+      var rr=17+3*Math.sin(now/90);cx.beginPath();cx.arc(f.b.x,f.b.y,rr,0,7);cx.stroke();
+      [0,1,2,3].forEach(function(i){var an=i*Math.PI/2;cx.beginPath();cx.moveTo(f.b.x+Math.cos(an)*(rr-5),f.b.y+Math.sin(an)*(rr-5));cx.lineTo(f.b.x+Math.cos(an)*(rr+5),f.b.y+Math.sin(an)*(rr+5));cx.stroke();});cx.globalAlpha=1;return true;}
+    if(f.k==='conv'){var k2=Math.min(1,p*1.8);cx.globalAlpha=1-p*0.5;cx.strokeStyle=f.c;cx.lineWidth=3;f.pts.forEach(function(a){cx.beginPath();cx.moveTo(a.x+(f.b.x-a.x)*Math.max(0,k2-0.5),a.y+(f.b.y-a.y)*Math.max(0,k2-0.5));cx.lineTo(a.x+(f.b.x-a.x)*k2,a.y+(f.b.y-a.y)*k2);cx.stroke();});cx.globalAlpha=1;return true;}
+    if(f.k==='miss'){cx.globalAlpha=1-p;cx.strokeStyle=f.c;cx.lineWidth=2;cx.beginPath();cx.arc(f.a.x,f.a.y,7,0,7);cx.moveTo(f.a.x-5,f.a.y+5);cx.lineTo(f.a.x+5,f.a.y-5);cx.stroke();cx.globalAlpha=1;return true;}
+    if(f.k==='dome'){var g=rectOf(gridOf(f.side)),fade=p>0.92?(1-p)/0.08:1,pad=5;cx.globalAlpha=0.12*fade;cx.fillStyle=f.c;rrect(g.x-pad,g.y-pad,g.w+pad*2,g.h+pad*2,16);cx.fill();
+      cx.globalAlpha=(0.55+0.25*Math.sin(now/160))*fade;cx.strokeStyle=f.c;cx.lineWidth=2.5;rrect(g.x-pad,g.y-pad,g.w+pad*2,g.h+pad*2,16);cx.stroke();cx.globalAlpha=1;return true;}
+    if(f.k==='crack'){var G=f.g,mx=G.x+G.w/2,my=G.y+G.h/2;cx.globalAlpha=1-p;cx.strokeStyle=f.c;cx.lineWidth=2.5;
+      for(var i2=0;i2<9;i2++){var an2=i2/9*Math.PI*2,r1=20+p*G.w*0.4,r2=r1+18;cx.beginPath();cx.moveTo(mx+Math.cos(an2)*r1,my+Math.sin(an2)*r1*0.6);cx.lineTo(mx+Math.cos(an2+0.15)*r2,my+Math.sin(an2+0.15)*r2*0.6);cx.stroke();}
+      cx.globalAlpha=1;return true;}
+    if(f.k==='beam'){cx.globalAlpha=0.6*(1-p);cx.strokeStyle=f.c;cx.lineWidth=3;cx.setLineDash([4,5]);cx.beginPath();cx.moveTo(f.a.x,f.a.y);cx.lineTo(f.b.x,f.b.y);cx.stroke();cx.setLineDash([]);cx.globalAlpha=1;return true;}
+    if(f.k==='pop'){cx.globalAlpha=1-p*p;cx.fillStyle=f.c;cx.font='700 12px Inter, system-ui, sans-serif';cx.textAlign='center';cx.fillText(f.label,f.a.x,f.a.y-p*16);cx.globalAlpha=1;return true;}
+    return false;
+  });
+}
+function frame(){
+  schedule();
+  var c=clock();
+  if(vq.length){var due=[],keep=[];vq.forEach(function(v){(v.t<=c?due:keep).push(v);});vq=keep;due.forEach(function(v){try{v.fn();}catch(e){console.error(e);}});}
+  var ph=$('playhead');
+  if(S.F&&S.curBar>=0){var p=Math.min(1,Math.max(0,(c-S.barStart)/(S.sd*16)));var w=$('strip').clientWidth;ph.style.opacity=1;ph.style.left=((S.curBar%4)+p)/4*w+'px';}
+  else ph.style.opacity=0;
+  if(S.F)renderStripLight();
+  drawFx();
+  requestAnimationFrame(frame);
+}
+var lastBarShown=-2;function renderStripLight(){if(S.curBar!==lastBarShown){lastBarShown=S.curBar;renderStrip();}}
+// background tabs pause rAF; keep the scheduler fed
+setInterval(function(){if(document.hidden)schedule();},50);
+
+// ---------- events ----------
+document.addEventListener('click',function(e){
+  var lb=e.target.closest('[data-lab]');if(lb){labFight(lb.dataset.lab);return;}
+  var b=e.target.closest('[data-buy]');if(b){tapShop(+b.dataset.buy);return;}
+  var c=e.target.closest('[data-where]');if(c){tapCell(c.dataset.where,+c.dataset.i);return;}
+  var t=e.target.closest('[data-them]');if(t&&MODE==='shop'){var bd=E.boardFromSnapshot(opp.snap),u=bd[+t.dataset.them];if(u)say('Rival '+unitLine(u.type,u.star));return;}
+  var s=e.target.closest('[data-set]');if(s){chooseSet(s.dataset.set);return;}
+  var rb=e.target.closest('[data-rival]');if(rb){stopSequencer(clock());A.rival=rb.dataset.rival;lsSet('battler.rival',A.rival);loadElSets();renderSets();render();return;}
+  var ts=e.target.closest('[data-test]');if(ts){testStem(ts.dataset.test);return;}
+});
+document.addEventListener('change',function(e){var i=e.target.closest('[data-stem]');if(i&&i.files&&i.files[0])loadStem(i.dataset.stem,i.files[0]);});
+$('rerollBtn').onclick=function(){if(E.reroll(R)){sel=null;say('');render();}};
+$('hearBtn').onclick=function(){if(S.F&&S.F.jam){stopSequencer(clock());this.textContent='Hear band';return;}jam(null,4);this.textContent='Stop';};
+$('playBtn').onclick=startFight;
+$('resBtn').onclick=afterResult;
+$('helpBtn').onclick=function(){$('startBtn').textContent='Back';$('help').hidden=false;};
+$('startBtn').onclick=function(){unlock();$('help').hidden=true;};
+$('soundBtn').onclick=function(){renderSets();$('soundSheet').hidden=false;};
+$('soundClose').onclick=function(){$('soundSheet').hidden=true;stopSequencer(clock());};
+$('soundSheet').addEventListener('click',function(e){if(e.target===this){this.hidden=true;}});
+$('muteBtn').onclick=function(){A.on=!A.on;this.textContent=A.on?'Sound on':'Sound off';if(A.out)A.out.gain.value=A.on?0.9:0;};
+$('mixSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;A.mix=b.dataset.m;
+  this.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b));});if(A.them)A.them.gain.value=MIXV[A.mix];});
+$('stemBpm').onchange=function(){var s=curSet();if(!s.stems)return;var v=Math.max(60,Math.min(180,+this.value||100));STEMS[s.id].bpm=v;this.value=v;lsSet('battler.'+s.id+'.bpm',v);render();};
+$('stemClear').onclick=function(){var s=curSet();if(!s.stems)return;Object.keys(STEMS[s.id].files).forEach(function(t){dbPut(s.id+':'+t,null);});STEMS[s.id].files={};renderStems();loadingText();};
+$('songBtn').onclick=function(){if(songQueue){songQueue=null;stopSequencer(clock());this.textContent='Play your song';return;}playSong();};
+$('newBtn').onclick=function(){songQueue=null;stopSequencer(clock());$('endSheet').hidden=true;newRun();};
+window.addEventListener('resize',sizeFx);
+
+if(curSet().feel)loadFeel(curSet().feel);
+newRun();requestAnimationFrame(frame);
+// ?lab=<role>&auto=1 starts that role's lab fight on load (no sound until a tap allows it); &speed= as window.FAST
+if(Q.lab&&U[Q.lab]){$('help').hidden=true;if(Q.auto)labFight(Q.lab);}
+window.__B={E:E,get R(){return R;},get F(){return F;},get S(){return S;},get MODE(){return MODE;},A:A,STEMS:STEMS,GHOSTS:GHOSTS,startFight:startFight,afterResult:afterResult,tapShop:tapShop,tapCell:tapCell,chooseSet:chooseSet,cueAt:cueAt,BUF:BUF};
+})();
+</script>
