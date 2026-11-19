@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "sky-flick",
+   "key": "sky-flick",
+   "title": "Sky Flick",
+   "url": "p/sky-flick/index.html",
+   "added": "2026-11-18",
+   "v": "20261118220222"
+  },
+  {
    "id": "music-battler-feels",
    "key": "music-battler-feels",
    "title": "Music Battler feels",

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Sky Flick</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --ink: #0f1c2e; --muted: #5d6b7e; --sky-top: #5aa9f0; --sky-bot: #cfe8ff; --card: #ffffff;
+  --line: #e2e8f0; --accent: #1f6fe0; --good: #17a35a; --warn: #e0761f;
+  --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--sky-bot); color: var(--ink); font: 15px/1.4 var(--font); overflow: hidden; -webkit-user-select: none; user-select: none; touch-action: none; }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
+.hud { position: fixed; top: max(12px, env(safe-area-inset-top)); left: 16px; right: 16px; display: flex; align-items: center; gap: 12px; pointer-events: none; }
+.hud .rd { font-weight: 600; font-size: 14px; letter-spacing: 0.02em; background: rgba(255,255,255,0.85); padding: 6px 12px; border-radius: 999px; }
+.hud .bar { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.55); overflow: hidden; }
+.hud .bar i { display: block; height: 100%; background: var(--ink); width: 0; }
+.hud .st { font-weight: 600; font-variant-numeric: tabular-nums; background: rgba(255,255,255,0.85); padding: 6px 12px; border-radius: 999px; min-width: 64px; text-align: center; }
+.panel { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.box { background: var(--card); border-radius: 18px; padding: 28px 26px 24px; width: min(420px, 100%); box-shadow: 0 20px 60px rgba(15,28,46,0.18); text-align: center; }
+h1 { margin: 0 0 6px; font-size: 34px; font-weight: 700; letter-spacing: -0.02em; }
+.sub { color: var(--muted); margin: 0 0 22px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 22px; }
+.steps div { border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; font-size: 13px; }
+.steps b { display: block; font-size: 14px; margin-bottom: 2px; }
+.steps span { color: var(--muted); }
+button { font: inherit; font-weight: 600; font-size: 16px; border: 0; border-radius: 12px; padding: 13px 22px; background: var(--ink); color: #fff; cursor: pointer; width: 100%; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.count { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; color: var(--ink); padding: 16px; }
+.count b { font-size: 88px; font-weight: 700; line-height: 1; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 40px rgba(15,28,46,0.15); }
+.count span { font-size: 17px; font-weight: 600; margin-top: 16px; background: rgba(255,255,255,0.92); padding: 8px 16px; border-radius: 999px; text-align: center; }
+.tag { display: inline-block; font-size: 13px; font-weight: 600; color: var(--accent); border: 1px solid currentColor; border-radius: 999px; padding: 4px 12px; margin-bottom: 14px; }
+.score { font-size: 52px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin: 2px 0 4px; font-variant-numeric: tabular-nums; }
+.rank { color: var(--muted); margin: 0 0 18px; }
+.rows { text-align: left; border-top: 1px solid var(--line); margin: 0 0 20px; }
+.rows div { display: flex; justify-content: space-between; padding: 10px 2px; border-bottom: 1px solid var(--line); }
+.rows span { color: var(--muted); }
+.rows b { font-variant-numeric: tabular-nums; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud" id="hud" hidden><div class="rd" id="rd"></div><div class="bar"><i id="bar"></i></div><div class="st" id="st"></div></div>
+<div class="count" id="count" hidden><b id="cn">3</b><span id="cl"></span></div>
+
+<div class="panel" id="menu">
+  <div class="box">
+    <h1>Sky Flick</h1>
+    <p class="sub">60 seconds. Three skills. One card.</p>
+    <div class="steps">
+      <div><b>React</b><span>hit it fast</span></div>
+      <div><b>Flick</b><span>snap across</span></div>
+      <div><b>Track</b><span>stay on it</span></div>
+    </div>
+    <button id="go">Play</button>
+  </div>
+</div>
+
+<div class="panel" id="card" hidden>
+  <div class="box">
+    <div class="tag" id="tag"></div>
+    <div class="score" id="score"></div>
+    <p class="rank" id="rank"></p>
+    <div class="rows">
+      <div><span>Reaction</span><b id="r1"></b></div>
+      <div><span>Flick accuracy</span><b id="r2"></b></div>
+      <div><span>Tracking</span><b id="r3"></b></div>
+    </div>
+    <button id="again">Play again</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var ROUND = 20000, COUNT = 2400;
+  var cv = document.getElementById('c'), cx = cv.getContext('2d');
+  var $ = function (id) { return document.getElementById(id); };
+  var W = 0, H = 0, D = 1, S = Math.min;
+  function size() { D = window.devicePixelRatio || 1; W = window.innerWidth; H = window.innerHeight; cv.width = W * D; cv.height = H * D; cx.setTransform(D, 0, 0, D, 0, 0); }
+  window.addEventListener('resize', size); size();
+  function unit() { return Math.max(0.7, Math.min(1.3, Math.min(W, H) / 600)); }
+
+  var clouds = [];
+  for (var i = 0; i < 9; i++) clouds.push({ x: Math.random(), y: 0.12 + Math.random() * 0.8, s: 0.6 + Math.random() * 0.9, v: 0.004 + Math.random() * 0.008 });
+  function cloud(x, y, s, a) {
+    cx.fillStyle = 'rgba(255,255,255,' + a + ')';
+    cx.beginPath();
+    [[0, 0, 42], [38, -14, 34], [74, 2, 38], [-34, 6, 28], [30, 14, 36]].forEach(function (b) { cx.moveTo(x + b[0] * s + b[2] * s, y + b[1] * s); cx.arc(x + b[0] * s, y + b[1] * s, b[2] * s, 0, Math.PI * 2); });
+    cx.fill();
+  }
+
+  var g = { mode: 'menu', round: 0, t0: 0, now: 0, px: -1, py: -1, down: false, target: null, parts: [],
+    react: [], reactMiss: 0, flickHit: 0, flickShots: 0, trackOn: 0, trackAll: 0, last: null };
+  var NAMES = ['React', 'Flick', 'Track'], HINTS = ['Hit each target the moment it appears', 'Snap to each target', 'Keep your cursor on the target'];
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function spot(r, far) {
+    var m = r + 24, top = 70;
+    for (var k = 0; k < 30; k++) {
+      var x = rnd(m, W - m), y = rnd(top + m, H - m);
+      if (!far || !g.last || Math.hypot(x - g.last.x, y - g.last.y) > Math.min(W, H) * 0.42) return { x: x, y: y };
+    }
+    return { x: rnd(m, W - m), y: rnd(top + m, H - m) };
+  }
+  function burst(x, y, col) { for (var k = 0; k < 14; k++) { var a = Math.random() * Math.PI * 2, v = rnd(80, 260); g.parts.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0, c: col }); } }
+
+  function startRound(n) {
+    g.round = n; g.mode = 'count'; g.t0 = performance.now(); g.target = null; g.last = null;
+    $('count').hidden = false; $('cl').textContent = NAMES[n] + ': ' + HINTS[n]; $('hud').hidden = true;
+  }
+  function beginPlay() {
+    g.mode = 'play'; g.t0 = performance.now(); $('count').hidden = true; $('hud').hidden = false; $('rd').textContent = (g.round + 1) + ' / 3  ' + NAMES[g.round];
+    if (g.round === 0) nextReact();
+    if (g.round === 1) nextFlick();
+    if (g.round === 2) { var u = unit(); g.target = { x: W / 2, y: H / 2, r: 34 * u, ph: Math.random() * 10 }; }
+  }
+  function nextReact() { var u = unit(), p = spot(36 * u); g.target = { x: p.x, y: p.y, r: 36 * u, at: performance.now() + rnd(450, 1300), shown: false }; }
+  function nextFlick() { var u = unit(), p = spot(26 * u, true); g.target = { x: p.x, y: p.y, r: 26 * u, born: performance.now() }; }
+
+  function hit(x, y) {
+    if (g.mode !== 'play' || !g.target) return;
+    var t = g.target, d = Math.hypot(x - t.x, y - t.y), now = performance.now();
+    if (g.round === 0) {
+      if (!t.shown) { g.reactMiss++; return; }
+      if (d <= t.r * 1.15) { g.react.push(now - t.at); burst(t.x, t.y, '#ffffff'); g.last = t; nextReact(); } else g.reactMiss++;
+    } else if (g.round === 1) {
+      g.flickShots++;
+      if (d <= t.r * 1.1) { g.flickHit++; burst(t.x, t.y, '#ffffff'); g.last = t; nextFlick(); }
+    }
+  }
+  cv.addEventListener('pointerdown', function (e) { g.down = true; g.px = e.clientX; g.py = e.clientY; hit(e.clientX, e.clientY); });
+  cv.addEventListener('pointermove', function (e) { g.px = e.clientX; g.py = e.clientY; });
+  cv.addEventListener('pointerup', function () { g.down = false; });
+  cv.addEventListener('pointerleave', function () { g.px = -1; g.py = -1; });
+
+  function results() {
+    var avg = g.react.length ? g.react.reduce(function (a, b) { return a + b; }, 0) / g.react.length : null;
+    var acc = g.flickShots ? g.flickHit / g.flickShots : 0, trk = g.trackAll ? g.trackOn / g.trackAll : 0;
+    var rN = avg == null ? 0 : Math.max(0, Math.min(1, (750 - avg) / 450));
+    var score = Math.round(rN * 400 + g.react.length * 8 + acc * 250 + g.flickHit * 6 + trk * 350);
+    var tag = rN > 0.7 && acc > 0.7 && trk > 0.7 ? 'All-rounder' : [['Quick trigger', rN], ['Sharpshooter', acc], ['Sky glider', trk]].sort(function (a, b) { return b[1] - a[1]; })[0][0];
+    return { avg: avg, acc: acc, trk: trk, score: score, tag: tag };
+  }
+  function board(score) {
+    var key = 'skyflick-' + new Date().toISOString().slice(0, 10), list = [];
+    try { list = JSON.parse(localStorage.getItem(key) || '[]') || []; } catch (e) { list = []; }
+    list.push(score); list.sort(function (a, b) { return b - a; });
+    try { localStorage.setItem(key, JSON.stringify(list.slice(0, 200))); } catch (e) {}
+    return { rank: list.indexOf(score) + 1, of: list.length };
+  }
+  function finish() {
+    g.mode = 'card'; g.target = null; $('hud').hidden = true;
+    var r = results(), b = board(r.score);
+    $('tag').textContent = r.tag; $('score').textContent = r.score.toLocaleString();
+    $('rank').textContent = b.of > 1 ? 'Number ' + b.rank + ' of ' + b.of + ' today' : 'First run today';
+    $('r1').textContent = r.avg == null ? 'No hits' : Math.round(r.avg) + ' ms';
+    $('r2').textContent = Math.round(r.acc * 100) + '%  (' + g.flickHit + ' hits)';
+    $('r3').textContent = Math.round(r.trk * 100) + '%';
+    $('card').hidden = false; $('again').focus();
+  }
+  function reset() { g.react = []; g.reactMiss = 0; g.flickHit = 0; g.flickShots = 0; g.trackOn = 0; g.trackAll = 0; g.parts = []; }
+  $('go').addEventListener('click', function () { $('menu').hidden = true; reset(); startRound(0); });
+  $('again').addEventListener('click', function () { $('card').hidden = true; reset(); startRound(0); });
+
+  function drawTarget(t, glow, scale) {
+    var r = t.r * (scale == null ? 1 : Math.max(0.05, Math.min(1, scale)));
+    if (glow) { cx.fillStyle = 'rgba(255,255,255,0.35)'; cx.beginPath(); cx.arc(t.x, t.y, r * 1.6, 0, Math.PI * 2); cx.fill(); }
+    cx.fillStyle = '#ffffff'; cx.beginPath(); cx.arc(t.x, t.y, r, 0, Math.PI * 2); cx.fill();
+    cx.fillStyle = glow ? '#17a35a' : '#1f6fe0'; cx.beginPath(); cx.arc(t.x, t.y, r * 0.66, 0, Math.PI * 2); cx.fill();
+    cx.fillStyle = '#ffffff'; cx.beginPath(); cx.arc(t.x, t.y, r * 0.3, 0, Math.PI * 2); cx.fill();
+  }
+
+  var prev = performance.now();
+  function frame() {
+    var now = performance.now();
+    var dt = Math.min(0.05, (now - prev) / 1000); prev = now;
+    var sky = cx.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, '#5aa9f0'); sky.addColorStop(1, '#cfe8ff');
+    cx.fillStyle = sky; cx.fillRect(0, 0, W, H);
+    clouds.forEach(function (c) { c.x += c.v * dt; if (c.x > 1.2) c.x = -0.2; cloud(c.x * W, c.y * H, c.s * unit(), 0.75); });
+
+    if (g.mode === 'count') {
+      var left = COUNT - (now - g.t0); $('cn').textContent = Math.max(1, Math.ceil(left / 800));
+      if (left <= 0) beginPlay();
+    } else if (g.mode === 'play') {
+      var el = now - g.t0, t = g.target;
+      $('bar').style.width = Math.min(100, el / ROUND * 100) + '%';
+      if (g.round === 0) {
+        $('st').textContent = g.react.length ? Math.round(g.react[g.react.length - 1]) + ' ms' : '-';
+        if (t && !t.shown && now >= t.at) t.shown = true;
+        if (t && t.shown && now - t.at > 1400) { g.reactMiss++; nextReact(); t = g.target; }
+        if (t && t.shown) drawTarget(t, false, Math.min(1, (now - t.at) / 90));
+      } else if (g.round === 1) {
+        $('st').textContent = g.flickHit + ' hits';
+        if (t) drawTarget(t, false, Math.min(1, (now - t.born) / 70));
+      } else {
+        var u = unit(), s = el / 1000, sp = 0.6 + el / ROUND * 0.9;
+        t.x = W / 2 + Math.sin(s * 0.9 * sp + t.ph) * (W / 2 - 60 * u) * 0.85 + Math.sin(s * 2.3 * sp) * 40 * u;
+        t.y = (H + 60) / 2 + Math.cos(s * 1.3 * sp + t.ph * 0.7) * ((H - 60) / 2 - 60 * u) * 0.8 + Math.sin(s * 3.1 * sp) * 30 * u;
+        var on = g.px >= 0 && Math.hypot(g.px - t.x, g.py - t.y) <= t.r;
+        g.trackAll += dt; if (on) g.trackOn += dt;
+        $('st').textContent = Math.round(g.trackAll ? g.trackOn / g.trackAll * 100 : 0) + '%';
+        drawTarget(t, on);
+      }
+      if (el >= ROUND) { if (g.round < 2) startRound(g.round + 1); else finish(); }
+    }
+
+    g.parts = g.parts.filter(function (p) { p.t += dt; return p.t < 0.45; });
+    g.parts.forEach(function (p) { p.x += p.vx * dt; p.y += p.vy * dt; cx.fillStyle = 'rgba(255,255,255,' + (1 - p.t / 0.45) + ')'; cx.beginPath(); cx.arc(p.x, p.y, 4, 0, Math.PI * 2); cx.fill(); });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
