@@ -4,7 +4,7 @@
  "tex": {
   "source": "C:/Dev/toybox/assets/fx/textures/toon-painted (Toybox commit e5b2c20, 2026-11-09), copied unchanged",
   "upstream": "D:/worktrees/ff-vfx (branch ff/vfx of C:/Dev/forge-flood, commit d4cd50d57), see C:/Dev/toybox/assets/fx/defs/ORIGIN.json",
-  "licence": "our own painted textures (Vyas's projects); no third-party pack art, nothing ai_restricted",
+  "licence": "our own painted textures (made in-house); no third-party pack art, nothing ai_restricted",
   "files": [
    "fx_char",
    "fx_core_dot",

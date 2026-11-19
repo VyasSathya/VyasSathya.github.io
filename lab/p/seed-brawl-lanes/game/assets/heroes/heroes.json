@@ -7,7 +7,7 @@
     {"id": "owl",      "name": "Archer Owl",       "file": "owl.glb",      "width": 0.75, "height": 1.15, "clips": ["Idle", "Walk", "Attack", "Hit", "Death"]},
     {"id": "cat",      "name": "Ninja Cat",        "file": "cat.glb",      "width": 0.8,  "height": 1.25, "clips": ["Idle", "Walk", "Attack", "Hit", "Death"]},
     {"id": "fox",      "name": "Bandit Fox",       "file": "fox.glb",      "width": 0.8,  "height": 1.3,  "clips": ["Idle", "Walk", "Attack", "Hit", "Death"]},
-    {"id": "penguin",  "name": "Magician Penguin", "file": "penguin.glb",  "width": 0.8,  "height": 1.2,  "clips": ["Idle", "Walk", "Attack", "Hit", "Death"]},
+    {"id": "penguin",  "name": "Magician Penguin", "file": "penguin.glb",  "width": 0.8,  "height": 1.2,  "lift": "#34466e", "rim": 0.8, "clips": ["Idle", "Walk", "Attack", "Hit", "Death"]},
     {"id": "bear",     "name": "Boxer Bear",       "file": "bear.glb",     "width": 1.05, "height": 1.5,  "clips": ["Idle", "Walk", "Attack", "Hit", "Death"]},
     {"id": "panda",    "name": "Sumo Panda",       "file": "panda.glb",    "width": 1.1,  "height": 1.45, "clips": ["Idle", "Walk", "Attack", "Hit", "Death"]},
     {"id": "elephant", "name": "General Elephant", "file": "elephant.glb", "width": 1.15, "height": 1.6,  "clips": ["Idle", "Walk", "Attack", "Hit", "Death"]}

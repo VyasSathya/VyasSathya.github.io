@@ -1,0 +1,136 @@
+/* Seed Brawl match buttons, one family, two skins.
+   Markup comes from hudkit.js. Put .hk-root plus .hk-a (rings, default) or .hk-b (stickers) on the HUD root.
+   Every length is in em and 1em = 1 CSS px x --hk-s, so set --hk-s on .hk-root to scale the whole family
+   (1 at 874 px wide; the sample uses width/874). Placement (left/top) is the layout's job, not this file's. */
+.hk-root{--hk-s:1;font-size:calc(var(--hk-s)*1px)}
+.hk-root{--hk-ink:#1a1320;--hk-blue:#2a8cff;--hk-blue-d:#1560c4;--hk-gold:#ffc83d;--hk-paper:#fff8e8;--hk-grey:#9aa1aa;--hk-track:#2b2233;
+ --hk-tR:#17a57a;--hk-tF:#f0891c;--hk-tS:#9b4fd6;--hk-tT:#8a5a2e;--hk-tM:#e2403c;--hk-tA:#3fc3e6;--hk-tG:#7f9c26;
+ /* sizes (Wild Rift proportions at 874 wide): attack .055W radius, ability .035W, small .023W */
+ --hk-tok:62em;--hk-sup:72em;--hk-atk:96em;--hk-upg:54em;--hk-small:40em;--hk-stick:112em;--hk-knob:50em}
+.hk{position:absolute;box-sizing:border-box;width:var(--d);height:var(--d);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
+.hk *{box-sizing:border-box}
+.hk i,.hk b,.hk img{position:absolute;display:block;font-style:normal}
+.hk-tok{--d:var(--hk-tok)}.hk-sup{--d:var(--hk-sup)}.hk-atk{--d:var(--hk-atk)}.hk-upg{--d:var(--hk-upg)}.hk-pause{--d:var(--hk-small)}
+.hk-tok[data-type=R]{--c:var(--hk-tR)}.hk-tok[data-type=F]{--c:var(--hk-tF)}.hk-tok[data-type=S]{--c:var(--hk-tS)}.hk-tok[data-type=T]{--c:var(--hk-tT)}
+.hk-tok[data-type=M]{--c:var(--hk-tM)}.hk-tok[data-type=A]{--c:var(--hk-tA)}.hk-tok[data-type=G]{--c:var(--hk-tG)}
+.hk-num{font-weight:900;color:#fff;-webkit-text-stroke:.2em var(--hk-ink);paint-order:stroke fill;font-variant-numeric:tabular-nums;line-height:1}
+/* cost: a gold seed with the number in it */
+.hk-cost{width:24em;height:28em;border-radius:50%/58% 58% 42% 42%;background:var(--hk-gold);border:2.5em solid var(--hk-ink);display:flex!important;align-items:center;justify-content:center;padding-top:2em;z-index:3}
+.hk-cost span{font-size:max(11.5px,15em)}.hk-upg .hk-cost{width:21em;height:25em}.hk-upg .hk-cost span{font-size:max(11.5px,13em)}
+.hk-cost::before{content:'';position:absolute;left:4em;top:4em;width:5em;height:7em;border-radius:50%;background:#fff3b8}
+.hk-cost span{position:relative}
+/* shared glyph badge (upgrade arrow) */
+.hk-up{width:24em;height:24em;border-radius:50%;background:#3fae3a;border:2.5em solid var(--hk-ink);z-index:3}
+.hk-up svg{position:absolute;inset:0;width:100%;height:100%}
+/* empty slot, both skins */
+.hk-root .hk-tok[data-state=empty]>*{display:none!important}
+.hk-root .hk-tok[data-state=empty]{transform:none;border-radius:50%;border:3em dashed rgba(26,19,32,.75);background:rgba(26,19,32,.28);box-shadow:none!important;filter:none!important}
+/* seed pill, pause, stick: same in both skins except the outline treatment */
+.hk-seeds{width:auto;height:34em;padding:0 13em 0 6em;border-radius:17em;background:var(--hk-track);border:3em solid var(--hk-ink);display:flex;align-items:center;gap:6em}
+.hk-seeds .hk-seed{position:relative;width:20em;height:24em;border-radius:50%/58% 58% 42% 42%;background:var(--hk-gold);border:2.5em solid var(--hk-ink)}
+.hk-seeds .hk-seed::before{content:'';position:absolute;left:3em;top:3em;width:4em;height:6em;border-radius:50%;background:#fff3b8}
+.hk-seeds b{position:relative!important;font-size:22em}
+.hk-pause .hk-face{display:flex!important;align-items:center;justify-content:center;gap:4em;background:var(--hk-track)}
+.hk-pause .hk-face i{position:relative;width:5em;height:13em;border-radius:2em;background:#fff}
+.hk-stick{--d:var(--hk-stick);border-radius:50%;background:rgba(26,19,32,.30);border:3em solid var(--hk-ink)}
+.hk-stick::before{content:'';position:absolute;inset:6em;border-radius:50%;border:3em solid rgba(255,248,232,.55)}
+.hk-knob{--d:var(--hk-knob);border-radius:50%;background:var(--hk-paper);border:3em solid var(--hk-ink);box-shadow:0 3em 0 var(--hk-ink)}
+.hk-knob::before{content:'';position:absolute;inset:6em;border-radius:50%;border:3em solid var(--hk-blue)}
+.hk-ammo{left:50%;bottom:-17em;transform:translateX(-50%);display:flex!important;gap:4em}
+.hk-ammo u{display:block;width:20em;height:9em;border-radius:5em;background:#55413a;border:2em solid var(--hk-ink)}.hk-ammo u.on{background:var(--hk-gold)}
+.hk-burst{inset:-16em;width:auto;height:auto;display:none!important}
+.hk-sup[data-ready]>.hk-burst{display:block!important}
+.hk-atk .hk-g{inset:20%;width:60%;height:60%;z-index:2}
+.hk-burst svg,.hk-g svg{display:block;width:100%;height:100%}
+.hk-hl{left:12%;top:9%;width:34%;height:20%;border-radius:50%;border-top:3em solid rgba(255,255,255,.75);transform:rotate(-32deg);pointer-events:none;z-index:2}
+
+/* ================= skin A: rings ================= */
+/* ink disc (outline), solid coloured ring, ink hairline, face. Lip = solid ink under it. */
+.hk-a .hk-tok,.hk-a .hk-sup,.hk-a .hk-atk,.hk-a .hk-upg,.hk-a .hk-pause{border-radius:50%;background:var(--hk-ink);box-shadow:0 3em 0 var(--hk-ink)}
+.hk-a .hk-ring{inset:3em;border-radius:50%;background:var(--c,var(--hk-blue-d))}
+.hk-a .hk-face{inset:calc(3em + var(--rw,5em));border-radius:50%;background:var(--hk-blue);border:2em solid var(--hk-ink);overflow:hidden}
+.hk-a .hk-face img{inset:0;width:100%;height:100%}
+.hk-a .hk-pop,.hk-a .hk-pips,.hk-a .hk-meter,.hk-a .hk-wait{display:none}
+.hk-a .hk-cost{right:-6em;bottom:-5em}
+/* cannot afford: face stays readable (desaturated, a little flatter), ring and badge go grey; the grey part of the
+   ring fills clockwise as seeds come in, the rest is a dark track */
+.hk-a .hk-tok[data-state=poor] .hk-ring,.hk-a .hk-upg[data-state=poor] .hk-ring{background:conic-gradient(var(--hk-grey) 0 var(--have,0%),var(--hk-track) 0)}
+.hk-a [data-state=poor] .hk-face{background:#8a96a3}
+.hk-a [data-state=poor] .hk-face img{filter:grayscale(.85) contrast(.85) brightness(.97)}
+.hk-a [data-state=poor] .hk-cost{background:#c9c2b4}
+.hk-a [data-state=poor] .hk-up{background:#a3aaa1}
+/* pressed: the ring flashes white, the face sinks, the button drops onto its lip */
+.hk-a [data-state=pressed]{transform:translateY(3em);box-shadow:0 0 0 var(--hk-ink)!important}
+.hk-a [data-state=pressed] .hk-ring{background:#fff}
+.hk-a [data-state=pressed] .hk-face{transform:scale(.9);filter:brightness(.85)}
+.hk-a [data-state=pressed] .hk-hl{opacity:0}
+/* dragged: bigger, tilted, a deeper lip (it rides above the lane under the thumb) */
+.hk-a .hk-tok[data-state=dragged]{transform:rotate(-6deg) scale(1.18);box-shadow:0 7em 0 var(--hk-ink)}
+/* super: a thick meter ring, bright gold filled, near-black empty, a white tick at the fill edge; ready = full ring and a burst */
+.hk-a .hk-sup{--rw:9em}
+.hk-a .hk-sup .hk-ring{background:conic-gradient(var(--hk-gold) 0 var(--ch,0%),#171019 0)}
+.hk-a .hk-sup .hk-tick{left:50%;top:3em;width:4em;height:11em;margin-left:-2em;border-radius:2em;background:#fff;border:1.5em solid var(--hk-ink);transform-origin:2em calc(var(--d)/2 - 3em);transform:rotate(var(--cha,0deg));z-index:2}
+.hk-a .hk-sup[data-ready] .hk-tick{display:none}
+.hk-a .hk-sup .hk-face{background:#f6b73c}
+.hk-a .hk-sup[data-ready] .hk-ring{background:var(--hk-gold)}
+/* attack */
+.hk-a .hk-atk{--rw:7em;--c:var(--hk-blue-d)}
+/* upgrade: the incoming homie's face fills the button; arrow and cost are badges on it */
+.hk-a .hk-upg{--rw:4em;--c:#3fae3a}
+.hk-a .hk-upg .hk-face img{inset:-14%;width:128%;height:128%;top:-4%}
+.hk-a .hk-upg .hk-up{left:-8em;top:-8em}
+.hk-a .hk-upg .hk-cost{right:-8em;bottom:-7em}
+.hk-a .hk-pause{--rw:3em;--c:#3b3340}
+.hk-a .hk-pause .hk-face{background:var(--hk-track)}
+.hk-a .hk-seeds{box-shadow:0 3em 0 var(--hk-ink)}
+
+/* ================= skin B: stickers ================= */
+/* white keyline then ink outline round the whole shape (disc plus whatever breaks out of it), ink lip. */
+.hk-b .hk-tok,.hk-b .hk-sup,.hk-b .hk-atk,.hk-b .hk-upg,.hk-b .hk-pause,.hk-b .hk-seeds,.hk-b .hk-knob{
+ filter:drop-shadow(2.5em 0 0 #fff) drop-shadow(-2.5em 0 0 #fff) drop-shadow(0 2.5em 0 #fff) drop-shadow(0 -2.5em 0 #fff)
+ drop-shadow(2em 0 0 var(--hk-ink)) drop-shadow(-2em 0 0 var(--hk-ink)) drop-shadow(0 2em 0 var(--hk-ink)) drop-shadow(0 -2em 0 var(--hk-ink)) drop-shadow(0 3em 0 var(--hk-ink))}
+.hk-b .hk-knob{box-shadow:none}
+.hk-b .hk-ring,.hk-b .hk-tight,.hk-b .hk-tick{display:none}
+.hk-b .hk-face{inset:0;border-radius:50%;background:var(--hk-blue);border:2.5em solid var(--hk-ink);overflow:hidden}
+.hk-b .hk-face .hk-tight{display:none}
+/* the pop picture: canvas 1.6 disc wide, disc centre at (128,160) of 256 -> image offset (-.3d, -.5d) */
+.hk-b .hk-pop{left:calc(var(--d)*-.3);top:calc(var(--d)*-.5);width:calc(var(--d)*1.6);height:calc(var(--d)*1.6);z-index:1;pointer-events:none}
+.hk-b .hk-pips{left:50%;bottom:-6em;transform:translateX(-50%);display:flex!important;gap:2em;padding:2em 4em;border-radius:6em;background:var(--hk-ink);z-index:2}
+.hk-b .hk-pips u{display:block;width:6em;height:6em;border-radius:50%;background:var(--hk-gold)}
+.hk-b .hk-cost{left:-9em;top:-6em}
+.hk-b .hk-hl{display:none}
+/* cannot afford: grey disc, softened drawing, a light shade over what is still missing */
+.hk-b [data-state=poor] .hk-face{background:#8a96a3}
+.hk-b [data-state=poor] .hk-pop{filter:grayscale(.85) contrast(.85) brightness(.97)}
+.hk-b [data-state=poor] .hk-wait{inset:0;border-radius:50%;background:conic-gradient(transparent 0 var(--have,0%),rgba(26,19,32,.38) 0);z-index:2}
+.hk-b [data-state=poor] .hk-cost{background:#c9c2b4}
+.hk-b [data-state=poor] .hk-pips u{background:#c9c2b4}
+.hk-b [data-state=poor] .hk-up{background:#a3aaa1}
+/* pressed: squashed, the keyline turns gold, the disc darkens */
+.hk-b [data-state=pressed]{transform:translateY(3em) scale(.9);
+ filter:drop-shadow(2.5em 0 0 var(--hk-gold)) drop-shadow(-2.5em 0 0 var(--hk-gold)) drop-shadow(0 2.5em 0 var(--hk-gold)) drop-shadow(0 -2.5em 0 var(--hk-gold))
+ drop-shadow(2em 0 0 var(--hk-ink)) drop-shadow(-2em 0 0 var(--hk-ink)) drop-shadow(0 2em 0 var(--hk-ink)) drop-shadow(0 -2em 0 var(--hk-ink))}
+.hk-b [data-state=pressed] .hk-face{background:var(--hk-blue-d)}
+/* dragged: peeled up and tilted */
+.hk-b .hk-tok[data-state=dragged]{transform:rotate(-8deg) scale(1.2)}
+/* super: gold disc, hero breaking out, meter ring outside the keyline (dark track, bright fill), ready = burst */
+.hk-b .hk-sup .hk-face{background:#f6b73c}
+.hk-b .hk-meter{inset:-11em;border-radius:50%;background:conic-gradient(var(--hk-gold) 0 var(--ch,0%),#171019 0);
+ -webkit-mask:radial-gradient(circle,transparent 0 calc(50% - 7em),#000 calc(50% - 7em));mask:radial-gradient(circle,transparent 0 calc(50% - 7em),#000 calc(50% - 7em))}
+.hk-b .hk-sup[data-ready] .hk-meter{background:var(--hk-gold)}
+/* attack */
+.hk-b .hk-atk .hk-face::before{content:'';position:absolute;inset:7em;border-radius:50%;border:4em solid var(--hk-blue-d)}
+.hk-b .hk-atk .hk-pop{display:none}
+/* upgrade: face zoomed so it fills the button */
+.hk-b .hk-upg .hk-face{background:#3fae3a}
+/* B's heads rise half a disc above it, so on the same arc B's discs are 10 percent smaller to keep heads off the next card */
+.hk-b .hk-tok{--d:calc(var(--hk-tok)*.9)}
+/* B's upgrade shows the tight face filling the disc (a head rising out of a 54 px button collides with the cards) */
+.hk-b .hk-upg .hk-pop{display:none}
+.hk-b .hk-upg .hk-face .hk-tight{display:block;left:-14%;top:-18%;width:128%;height:128%}
+.hk-b [data-state=poor] .hk-face .hk-tight{filter:grayscale(.85) contrast(.85) brightness(.97)}
+.hk-b .hk-upg .hk-up{left:-8em;top:-8em}
+.hk-b .hk-upg .hk-cost{left:auto;top:auto;right:-8em;bottom:-7em}
+.hk-b .hk-pause .hk-face{background:var(--hk-track)}
+.hk-b .hk-stick{border-color:rgba(255,255,255,.75);box-shadow:0 0 0 2em var(--hk-ink),inset 0 0 0 2em var(--hk-ink)}
+.hk-b .hk-seeds{border-width:2.5em}

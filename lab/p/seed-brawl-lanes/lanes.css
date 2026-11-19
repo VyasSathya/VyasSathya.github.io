@@ -5,10 +5,24 @@ html,body{margin:0;height:100%;background:#16202a;overflow:hidden;overscroll-beh
 #stage{position:fixed;left:0;top:0;width:100%;height:100%;overflow:hidden;transform-origin:0 0;--sl:env(safe-area-inset-left);--sr:env(safe-area-inset-right);--st:env(safe-area-inset-top);--sb:env(safe-area-inset-bottom)}
 #stage.rot{--sl:env(safe-area-inset-top);--sr:env(safe-area-inset-bottom);--st:env(safe-area-inset-right);--sb:env(safe-area-inset-left)}
 #gl{position:absolute;inset:0;width:100%;height:100%;display:block}
-#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}   /* release audit 2026-11-19: its own layer, so floating names and numbers never draw over the HUD buttons (they did over pause) */
 .lab{position:absolute;left:0;top:0;transform:translate(-50%,-50%);will-change:transform;font-weight:800;color:#fff;text-shadow:0 0 3px var(--ink),0 2px 0 var(--ink),1px 0 0 var(--ink),-1px 0 0 var(--ink);white-space:nowrap}
 .lab.base{font-size:20px}.lab.zone{font-size:11px;letter-spacing:.02em}
+/* base health bars (ff-flow): team colour, the number at the right end; .hit flashes on each hit; .up/.down = the base is off screen that way */
+.lab.bbar{display:flex;align-items:center;gap:5px;padding:2px 7px 2px 4px;border-radius:9px;background:var(--ink);box-shadow:0 2px 0 rgba(26,19,32,.6);transition:opacity .15s;z-index:1}
+.bbar i{display:block;width:76px;height:10px;border-radius:5px;background:#3a3044;overflow:hidden}.bbar s{display:block;height:100%;border-radius:5px;transition:width .25s}
+.bbar.t1 s{background:var(--blue)}.bbar.t2 s{background:var(--red)}
+.bbar b{font-size:14px;line-height:16px;min-width:18px;text-align:right;font-variant-numeric:tabular-nums}
+.bbar em{display:none;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent}
+.bbar.up em{display:block;border-bottom:8px solid #fff}.bbar.down em{display:block;border-top:8px solid #fff}
+.bbar.hit{background:#c8202a}.bbar.hit s{background:#fff}
+.short .bbar i{width:62px}
+/* result screen: the two bases' health at the end (ff-flow) */
+.rscore{display:flex;align-items:center;gap:10px}.rscore b{font-size:26px;font-weight:900;color:#fff;min-width:54px;text-align:center;padding:2px 12px;border-radius:12px;border:3px solid var(--ink);box-shadow:0 3px 0 var(--ink);text-shadow:0 2px 0 var(--ink);font-variant-numeric:tabular-nums}
+.rscore b.t1{background:var(--blue)}.rscore b.t2{background:var(--red)}.rscore svg{width:30px;height:30px}
 .lab.dmg{font-size:14px}.lab.hero{display:flex;flex-direction:column;align-items:center;gap:2px}
+.lab.hero.me::before{content:'';width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid #6fe04a;filter:drop-shadow(0 2px 0 var(--ink)) drop-shadow(0 -1px 0 var(--ink));animation:meBob 1.2s ease-in-out infinite}
+@keyframes meBob{50%{transform:translateY(-3px)}}
 .hp{width:58px;height:10px;border-radius:5px;background:var(--ink);border:2px solid var(--ink);overflow:hidden;box-shadow:0 1px 0 var(--ink)}.hp i{display:block;height:100%;background:var(--blue)}.hp.me i{background:#6fe04a}.hp.foe i{background:var(--red)}
 .lab.ubar{height:4px;border-radius:2px;background:var(--ink);border:1px solid var(--ink);overflow:hidden;z-index:0}.ubar i{display:block;height:100%;background:var(--blue)}.ubar.foe i{background:var(--red)}
 .nm{font-size:11px;font-weight:700;letter-spacing:.02em}
@@ -19,6 +33,21 @@ html,body{margin:0;height:100%;background:#16202a;overflow:hidden;overscroll-beh
 #top{position:absolute;left:50%;top:max(8px,var(--st));transform:translateX(-50%);display:flex;align-items:center;gap:10px;font-weight:800;color:#fff}
 #clock{font-size:20px;min-width:58px;text-align:center;background:var(--ink);padding:3px 10px;border-radius:10px;font-variant-numeric:tabular-nums}
 #clock.late{background:var(--gold);color:var(--ink)}
+.bhp{position:relative;width:104px;height:24px;border-radius:8px;border:2px solid var(--ink);background:#3a2f44;box-shadow:0 2px 0 var(--ink)}
+.bhp b{position:absolute;top:0;bottom:0;width:100%;border-radius:6px;transition:none}.bhp.blue b{left:0}.bhp.red b{right:0}
+.bhp .tr{background:#fff1c2}.bhp.blue .fl{background:linear-gradient(#6cb8ff,var(--blue) 55%,#1c68c8)}.bhp.red .fl{background:linear-gradient(#ff8a8a,var(--red) 55%,#cf3030)}
+.bhp s{position:absolute;inset:0;border-radius:6px;background-image:linear-gradient(90deg,transparent calc(100% - 2px),rgba(26,19,32,.6) 0);background-size:25% 100%;pointer-events:none}
+.bhp.red s{transform:scaleX(-1)}
+.bhp em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 0 3px var(--ink),0 2px 0 var(--ink),1px 0 0 var(--ink),-1px 0 0 var(--ink)}
+.bhp.low .fl{animation:bhpLow 1s ease-in-out infinite alternate}
+@keyframes bhpLow{from{filter:none}to{filter:brightness(1.35) saturate(1.3)}}
+.bhp::after{content:'';position:absolute;inset:-4px;border-radius:11px;pointer-events:none;opacity:0;box-shadow:0 0 0 3px #fff,0 0 12px 4px rgba(255,255,255,.9)}
+.bhp.red::after{box-shadow:0 0 0 3px #fff,0 0 12px 4px rgba(255,190,190,.9)}
+.bhp.danger::after{animation:bhpPulse .5s ease-in-out infinite alternate}
+.bhp.shake{animation:bhpShake .35s}
+@keyframes bhpPulse{from{opacity:.1}to{opacity:1}}
+@keyframes bhpShake{0%,100%{transform:none}20%{transform:translateX(-4px) rotate(-3deg)}40%{transform:translateX(4px) rotate(3deg)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+@media (prefers-reduced-motion:reduce){.bhp.shake{animation:none}.bhp.danger::after{animation:none;opacity:.8}}
 .pill{font-size:16px;min-width:44px;text-align:center;padding:3px 10px;border-radius:10px;border:2px solid var(--ink);font-variant-numeric:tabular-nums}.pill.blue{background:var(--blue)}.pill.red{background:var(--red)}
 .stick{position:absolute;left:max(26px,var(--sl));bottom:max(26px,var(--sb));width:118px;height:118px;border-radius:50%;background:rgba(26,19,32,.28);border:2px solid rgba(255,255,255,.35)}
 .stick i{position:absolute;left:50%;top:50%;width:50px;height:50px;margin:-25px;border-radius:50%;background:rgba(255,255,255,.85);border:2px solid var(--ink)}
@@ -131,3 +160,174 @@ html,body{margin:0;height:100%;background:#16202a;overflow:hidden;overscroll-beh
 .card.ready{animation:ready2 .3s cubic-bezier(.2,1.8,.5,1)}@keyframes ready2{from{transform:scale(1.14)}}
 /* labels in the world never sit under a thumb control or the dock; damage numbers sit above names */
 .lab.farm,.lab.base{transition:opacity .15s}.lab.dmg{z-index:2;font-size:15px}.lab.hero{z-index:1}
+/* lane buttons (?lanebtn=1|2|3, main.js): the small map gives way to three buttons, blue from our end, red from theirs, the side ahead bright */
+.lb1 #lanes,.lb2 #lanes,.lb3 #lanes,.lb4 #lanes,.lb5 #lanes,.lb6 #lanes{display:none}
+#lanebtns{display:flex;gap:10px;align-items:flex-end;pointer-events:auto;flex:none}
+.lbtn{position:relative;width:46px;height:68px;display:flex;flex-direction:column;border:3px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--ink);cursor:pointer;flex:none;box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s,border-color .12s}
+.lbtn i{display:block;flex:0 0 50%;transition:flex-basis .1s linear,background .2s}
+.lbtn .r{background:#d0434a;border-bottom:2px solid var(--ink)}.lbtn .b{background:#2370c8}
+.lbtn.bw .b{background:var(--blue)}.lbtn.bw .r{background:#a3262f}
+.lbtn.rw .r{background:var(--red)}.lbtn.rw .b{background:#1b3e66}
+.lbtn::after{content:'';position:absolute;inset:0;border-radius:9px;background:linear-gradient(rgba(255,255,255,.26),rgba(255,255,255,0) 38%);box-shadow:inset 0 -3px 0 rgba(26,19,32,.35);pointer-events:none}
+.lbtn.on{border-color:var(--gold);transform:translateY(-5px);box-shadow:0 0 0 2px var(--ink),0 5px 0 2px var(--ink)}
+.lbtn.press{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}.lbtn.on.press{transform:translateY(-2px);box-shadow:0 0 0 2px var(--ink),0 2px 0 2px var(--ink)}
+.lbtn.tgt{border-color:#fff;box-shadow:0 0 0 2px var(--ink),0 0 14px 4px rgba(255,200,61,.85)}
+.short .lbtn{width:44px;height:64px}
+.narrow .lbtn{width:44px;height:52px}
+/* 2: a row over the attack stick; the cards move next to the super */
+.lb2 #lanebtns{gap:10px;position:absolute;right:calc(max(30px,var(--sr)) + 28px);bottom:calc(max(30px,calc(var(--sb) + 8px)) + 118px)}
+.lb2 .lbtn,.lb2.short .lbtn{width:44px;height:58px}
+.lb2 #dock,.lb2.short #dock{left:auto;right:calc(max(150px,calc(var(--sr) + 120px)) + 88px);transform:none}
+.lb2.narrow #lanebtns{right:calc(max(20px,var(--sr)) + 22px);bottom:calc(max(24px,calc(var(--sb) + 8px)) + 105px)}
+.lb2.narrow .lbtn{width:44px;height:52px}
+.lb2.narrow #dock{left:auto;right:calc(max(120px,calc(var(--sr) + 100px)) + 80px);transform:none}
+/* 3: a card dragged up shows its creep under the thumb */
+#lbghost{position:absolute;left:0;top:0;width:64px;height:64px;margin:-58px 0 0 -32px;z-index:6;pointer-events:none;border-radius:50%;border:3px solid var(--gold);background:rgba(26,19,32,.45);box-shadow:0 0 0 2px var(--ink),0 0 14px 3px rgba(255,200,61,.6)}
+#lbghost[hidden]{display:none}#lbghost img{width:100%;height:100%;filter:drop-shadow(0 0 2px var(--ink)) drop-shadow(0 3px 0 var(--ink))}
+.lb3 .card.press{transform:scale(.94)}
+/* danger (main.js laneDanger): a steady light edge outside the button while a lane is dangerous (it reads on an all red button),
+   white, thicker and with a red glow when our base
+   is being hit from it; a burst brightens the red part and the edge with --p (0 to 1, set every frame), the fill and the gold pick stay */
+.lbtn{outline:0 solid transparent;outline-offset:1px}
+.lbtn.warn{outline:3px solid #fff8e8}
+.lbtn.alarm{outline:4px solid #fff;box-shadow:0 4px 0 var(--ink),0 0 7px 4px rgba(255,59,48,.9)}
+.lbtn.burst .r{filter:brightness(calc(1 + var(--p,0) * .35)) saturate(calc(1 + var(--p,0) * .5))}
+.lbtn.burst{outline-color:#fff;outline-width:calc(3px + var(--p,0) * 2px)}
+/* 4: his layout: the lane buttons bottom centre where the cards were, the cards and NEXT over the attack stick (NEXT on the left),
+   the seeds in a column up the right edge, filling from the bottom */
+.lb4 #lanebtns{position:absolute;left:50%;bottom:max(12px,var(--sb));transform:translateX(-50%)}
+.lb4 #dock,.lb4.short #dock{left:auto;right:calc(max(30px,var(--sr)) + 28px);bottom:calc(max(30px,calc(var(--sb) + 8px)) + 120px);transform:none}
+.lb4 #next{order:-1}
+.lb4 #seeds{position:absolute;right:calc(max(30px,var(--sr)) + 4px);bottom:calc(max(30px,calc(var(--sb) + 8px)) + 122px);flex-direction:column-reverse;gap:3px;pointer-events:none}
+.lb4.narrow #dock{left:auto;right:calc(max(20px,var(--sr)) + 26px);bottom:calc(max(24px,calc(var(--sb) + 8px)) + 104px);transform:none}
+.lb4.narrow #seeds{right:calc(max(20px,var(--sr)) + 2px);bottom:calc(max(24px,calc(var(--sb) + 8px)) + 106px);gap:2px}
+.lb4.narrow #seeds u{width:12px;height:16px}
+/* 5 and 6: his second layout, round 4 (work/lanebtn-review/NOTES.md). Every tapped control sits off the right lane's strip where it
+   can: the super in the wall gap between the middle and the right lane (the only ground near the right thumb no unit walks on),
+   the rest below it. The seed pips give way to one number near the lane buttons or cards. Positions in % follow the camera's
+   perspective (the gap is at about 69% of the width at 874 and 68% at 667); bottoms in px. */
+.lb5 #lanes,.lb6 #lanes,.lb5 #seeds,.lb6 #seeds{display:none}
+#seedNum{position:relative;flex:none;align-self:center;display:flex;align-items:center;gap:4px;height:34px;padding:0 9px 0 7px;border:3px solid var(--ink);border-radius:17px;background:#2b2233;box-shadow:0 3px 0 var(--ink);color:#fff;font-weight:900;font-size:19px;font-variant-numeric:tabular-nums;text-shadow:0 2px 0 var(--ink);pointer-events:none}
+#seedNum u{width:14px;height:18px;border-radius:50%/60% 60% 40% 40%;background:var(--gold);border:2px solid var(--ink)}
+#seedNum.zero u{background:#5c4a3a}#seedNum.zero b{color:#c9bfae}
+#seedNum.new{animation:seedNew .3s cubic-bezier(.2,1.8,.5,1)}#seedNum.lack{animation:shortSeeds .32s;background:#7a1d24}
+.lb5 #seedNum,.lb6 #seedNum,.lb6 #next{position:absolute}
+/* 5 (reading A): the super in the gap, the three lane buttons in a row under it, the seed number over the left lane button,
+   the cards left of the lane buttons */
+.lb5 .sup,.lb5.short .sup{left:calc(69.2% - 39px);right:auto;bottom:93px;width:78px;height:78px}
+.lb5 #lanebtns,.lb5.short #lanebtns{position:absolute;left:59%;bottom:max(21px,var(--sb));gap:6px}
+.lb5 .lbtn,.lb5.short .lbtn{width:44px;height:50px}
+.lb5 #seedNum{left:58.1%;bottom:80px}
+.lb5 #dock,.lb5.short #dock{left:auto;right:52.2%;transform:none;bottom:max(10px,var(--sb))}
+.lb5.narrow .sup{left:calc(68.8% - 29px);bottom:122px;width:58px;height:58px}
+.lb5.narrow #lanebtns{left:54.3%;bottom:10px}
+.lb5.narrow .lbtn{width:44px;height:46px}
+.lb5.narrow #seedNum{left:54%;bottom:61px}
+.lb5.narrow #dock{right:47.2%;bottom:8px}
+/* 6 (reading B): the super in the gap, the lane buttons in a row under it, the cards in a row under them (full cards: type
+   line and name), NEXT and the seed number left of the lane buttons, clear of our base */
+.lb6 .sup,.lb6.short .sup{left:calc(68.3% - 35px);right:auto;bottom:162px;width:70px;height:70px}
+.lb6 #lanebtns,.lb6.short #lanebtns{position:absolute;left:58.3%;bottom:98px;gap:6px}
+.lb6 .lbtn,.lb6.short .lbtn{width:44px;height:46px}
+.lb6 #dock,.lb6.short #dock{left:auto;right:24.5%;transform:none;bottom:max(21px,var(--sb))}
+.lb6 #next{left:52.6%;bottom:98px}
+.lb6 #seedNum{left:46.5%;bottom:104px}
+.lb6.narrow .sup{left:calc(68.1% - 28px);bottom:169px;width:56px;height:56px}
+.lb6.narrow #lanebtns{left:52.6%;bottom:111px}
+.lb6.narrow .lbtn{width:44px;height:44px}
+.lb6.narrow #dock{right:19.8%;bottom:10px}
+.lb6.narrow #next{left:45.7%;bottom:111px}
+.lb6.narrow #seedNum{left:37.5%;bottom:116px}
+.lb5 .sup i,.lb6 .sup i{width:40%;height:40%;margin:-20% 0 0 -20%}
+/* 8: the Wild Rift fan around the attack stick (main.js layoutFan places every part from the stick's centre and size).
+   Cards are round ringed tokens: picture, cost badge, the name under the token. */
+.lb8 #lanes,.lb8 #seeds{display:none}
+.lb8 #dock,.lb8.short #dock,.lb8.narrow #dock{left:0;top:0;right:0;bottom:0;transform:none;display:block}
+.lb8 #row,.lb8 #hand{display:block;pointer-events:none}
+.lb8 #lanebtns{position:absolute;inset:0;display:block;pointer-events:none}
+.lb8 .card,.lb8.short .card{position:absolute;width:54px;height:54px;border-radius:50%;pointer-events:auto;box-shadow:0 0 0 3px rgba(255,248,232,.55),0 3px 0 3px var(--ink);overflow:visible}
+.lb8 .card img,.lb8.short .card img{width:50px;height:50px;top:0;border-radius:50%}
+.lb8 .card span{position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);white-space:nowrap;padding:0}
+.lb8 .card small{display:none}
+.lb8 .card b{font-size:11px;letter-spacing:-.01em}
+.lb8 .card em{right:-5px;top:-6px;min-width:22px;height:22px;border-radius:11px;font-size:13px;line-height:18px}
+.lb8 .sup,.lb8.short .sup{right:auto;bottom:auto;width:60px;height:60px}
+.lb8 #next{position:absolute;width:34px;height:40px;align-self:auto}
+.lb8 #next img{width:30px;height:30px;top:3px}
+.lb8 #seedNum{position:absolute;height:28px;font-size:16px;padding:0 7px 0 5px;border-width:2px}
+.lb8 #seedNum u{width:12px;height:15px}
+.lb8 .lbtn{position:absolute;pointer-events:auto;width:44px;height:44px;border-radius:50%}
+.lb8 .lbtn,.lb8.short .lbtn,.lb8.narrow .lbtn{width:12px;height:40px;border-radius:6px;border-width:2px;pointer-events:none;box-shadow:0 2px 0 var(--ink)}
+.lb8 .lbtn::after{border-radius:4px}
+.lb8 .lbtn.on{border-color:var(--ink);transform:none;box-shadow:0 2px 0 var(--ink)}
+.lb8 .card .ln{position:absolute;left:50%;top:-11px;transform:translateX(-50%);display:flex;gap:2px;pointer-events:none}
+.lb8 .card .ln u{display:block;width:7px;height:6px;border-radius:2px;background:#4a4152;border:1.5px solid var(--ink)}
+.lb8 .card .ln u.on{background:var(--paper)}
+.lb8 .card.lift{opacity:.4}
+.lb8 #lbghost{margin:-112px 0 0 -32px}
+.lb8 #lbghost.none{opacity:.5;filter:grayscale(1)}
+.lb8.narrow .card{width:50px;height:50px}
+.lb8.narrow .card img{width:46px;height:46px}
+.lb8.narrow .sup{width:54px;height:54px}
+.lb8 #lbghost.hint{margin:-27px 0 0 -32px}
+/* 8, round 5 fixes: no names under the tokens (face and cost carry it); NEXT a small round token; the meters on a light
+   backing so they read over busy ground; the spawn mark in our blue */
+.lb8 .card span{display:none}
+.lb8 #next{width:38px;height:38px;border-radius:50%;opacity:.9}
+.lb8 #next img{width:34px;height:34px;top:2px;border-radius:50%}
+.lb8 #next span{display:none}
+.lb8 #next em{right:-6px;top:-6px}
+.lb8 .lbtn,.lb8.short .lbtn,.lb8.narrow .lbtn{box-shadow:0 0 0 2px rgba(255,248,232,.85),0 2px 0 2px var(--ink)}
+#spawnGhost{position:absolute;left:0;top:0;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;border:3px solid #fff;background:rgba(42,140,255,.6);box-shadow:0 0 0 3px #2a8cff,0 0 18px 6px rgba(42,140,255,.75);pointer-events:none;z-index:4}
+#spawnGhost[hidden]{display:none}
+#spawnGhost img{position:absolute;left:3px;top:3px;width:40px;height:40px;border-radius:50%;opacity:.95}
+#spawnGhost.below::after{content:'';position:absolute;left:50%;bottom:-16px;margin-left:-9px;border-style:solid;border-width:10px 9px 0 9px;border-color:#fff transparent transparent transparent;filter:drop-shadow(0 0 2px #1a1320)}
+/* 8 with the hudkit (lanes/hudkit): the super, attack and pause keep their elements and show the kit button inside; the stick
+   is restyled to match; skin B's stickers smaller so no head covers a neighbour's cost; the super's ready burst kept near it */
+.hkit .sup,.hkit .atk,.hkit #pauseBtn{background:transparent!important;border-color:transparent!important;box-shadow:none!important;animation:none!important}
+.hkit .sup>:not(span),.hkit .atk>*,.hkit #pauseBtn>*{visibility:hidden}
+.hkit .kin{pointer-events:none;z-index:1}
+.hkit .sup,.hkit.short .sup{width:calc(72px*var(--hk-s,1));height:calc(72px*var(--hk-s,1))}
+.hkit .sup span{top:-19px}
+#hud.hk-root .hk-sup .hk-burst{inset:-7em}
+#hud.hk-root #next{--d:42em;opacity:.95}
+#hud.hk-b .hk-tok:not(#next):not(#lbghost){--d:52em}
+.hkit #hand>.hk{pointer-events:auto}
+.hkit #seedNum{height:34em;padding:0 13em 0 6em;border-radius:17em;background:var(--hk-track);border:3em solid var(--hk-ink);box-shadow:none;font-size:inherit;text-shadow:none;gap:6em;color:#fff}
+.hkit #seedNum b{font-size:22em}
+.hkit #lbghost{margin:0;left:0;top:0;translate:-50% -112px}
+.hkit .stick{background:rgba(26,19,32,.30);border:3px solid var(--ink)}
+.hkit .stick::after{content:'';position:absolute;inset:6px;border-radius:50%;border:3px solid rgba(255,248,232,.55);pointer-events:none}
+.hkit .stick i{background:var(--paper);border:3px solid var(--ink);box-shadow:inset 0 0 0 5px var(--paper),inset 0 0 0 8px var(--blue),0 3px 0 var(--ink)}
+#hud.hk-root .hk{font-size:calc(var(--hk-s,1)*1px)}
+/* 8 with multi=1: how many of a card go out, on the token; multi=2: the recharge sweep */
+.lb8 #hand>* .mult{position:absolute;left:-8px;bottom:-6px;min-width:26px;height:22px;padding:0 4px;border-radius:11px;background:#2a8cff;color:#fff;border:2px solid var(--ink);font-size:13px;font-weight:900;line-height:18px;text-align:center;text-shadow:0 1px 0 var(--ink);z-index:4}
+.lb8 #hand>* .mult[hidden],.lb8 #hand>* .rc[hidden]{display:none!important}
+.lb8 #hand>* .rc{position:absolute;inset:0;border-radius:50%;background:conic-gradient(rgba(26,19,32,.62) var(--rc,0%),transparent 0);z-index:3;pointer-events:none}
+/* round 8: the super's name is not drawn in mode 8 with the kit (the hero face and the charge ring carry it; low by the thumb it
+   would sit on card 1); NEXT's cost badge sized to the small token */
+.hkit .sup>span{visibility:hidden}
+#hud.hk-root #next .hk-cost{width:17em;height:20em;right:-6em;bottom:-5em;border-width:2em}
+#hud.hk-root #next .hk-cost span{font-size:max(11.5px,11em)}
+/* round 9: the bottom row (main.js rowLay): the meters wider (26 px, were 12), the upgrade ring preview; ?lanemeter=0 hides the
+   meters and draws the lane alert (a red pulse ring and a down arrow, no text) */
+.row9 .lbtn,.row9.short .lbtn,.row9.narrow .lbtn{width:calc(26px*var(--hk-s,1));height:calc(40px*var(--hk-s,1))}
+.nometer #lanebtns{display:none}
+#upgSlot{pointer-events:auto;z-index:2}
+#laneAlerts{position:absolute;inset:0;pointer-events:none;z-index:3}
+.lal{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;opacity:0;pointer-events:none;--p:0}
+.lal i{position:absolute;inset:0;border-radius:50%;border:3px solid #fff;background:#e8323a;box-shadow:0 0 0 3px #1a1320,0 3px 0 3px #1a1320,0 0 calc(4px + 16px*var(--p)) calc(2px + 8px*var(--p)) rgba(255,59,59,.85);transform:scale(calc(1 + .22*var(--p)))}
+.lal svg{position:absolute;left:9px;top:11px;width:28px;height:28px}
+/* build 16: the upgrade is the big button in the middle of the bottom row, its seed cost easy to read */
+#upgSlot.hk-upg{--d:80em;z-index:6}
+#upgSlot .hk-cost{width:34em;height:34em;right:-12em;bottom:-8em;border-width:3em}
+#upgSlot .hk-cost span{font-size:max(15px,21em)}
+#upgSlot .hk-up{transform:scale(1.35);transform-origin:top left}
+/* screens wider than 874 (desktop, 1920x1080 recordings): the fixed-size controls grow with the kit (--big = VW/874, set in resize) */
+.hkit.wide .atk{width:calc(104px*var(--big));height:calc(104px*var(--big));right:calc(max(30px,var(--sr))*var(--big));bottom:calc(max(30px,calc(var(--sb) + 8px))*var(--big))}
+.hkit.wide .stick{width:calc(118px*var(--big));height:calc(118px*var(--big));left:calc(max(26px,var(--sl))*var(--big));bottom:calc(max(26px,var(--sb))*var(--big))}
+.hkit.wide .stick i{width:calc(50px*var(--big));height:calc(50px*var(--big));margin:calc(-25px*var(--big))}
+.hkit.wide #pauseBtn{transform:scale(var(--big));transform-origin:top left}
+.hkit.wide #top{transform:translateX(-50%) scale(var(--big));transform-origin:top center}
+/* ?rec=1 (recording takes): no desktop key hints */
+.rec .card kbd{display:none!important}.rec .sup::after,.rec .atk::after{content:none!important;display:none!important}

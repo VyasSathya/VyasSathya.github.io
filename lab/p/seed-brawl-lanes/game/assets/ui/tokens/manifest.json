@@ -1,0 +1,1680 @@
+{
+ "made": "2026-11-16",
+ "rule": "cut from the drawings only, no generation, no redraw, no restyle",
+ "tokens": [
+  {
+   "id": "bramble",
+   "name": "Champ",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/1-bear-crew.png",
+   "crop_box_px": [
+    464,
+    -8,
+    833,
+    361
+   ],
+   "pop_box_px": [
+    391,
+    -86,
+    905,
+    427
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bramble_256.png",
+    "bramble_128.png",
+    "bramble_pop_256.png",
+    "bramble_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "bramble_1",
+   "name": "Water Boy",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/1-bear-crew.png",
+   "crop_box_px": [
+    1327,
+    391,
+    1500,
+    564
+   ],
+   "pop_box_px": [
+    1271,
+    332,
+    1555,
+    615
+   ],
+   "pop_scale_vs_tight": 0.85,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bramble_1_256.png",
+    "bramble_1_128.png",
+    "bramble_1_pop_256.png",
+    "bramble_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "bramble_2",
+   "name": "Skip",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/1-bear-crew.png",
+   "crop_box_px": [
+    1575,
+    300,
+    1799,
+    524
+   ],
+   "pop_box_px": [
+    1531,
+    252,
+    1842,
+    564
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bramble_2_256.png",
+    "bramble_2_128.png",
+    "bramble_2_pop_256.png",
+    "bramble_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "bramble_3",
+   "name": "Old Sal",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/1-bear-crew.png",
+   "crop_box_px": [
+    1781,
+    225,
+    2046,
+    490
+   ],
+   "pop_box_px": [
+    1729,
+    168,
+    2097,
+    537
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bramble_3_256.png",
+    "bramble_3_128.png",
+    "bramble_3_pop_256.png",
+    "bramble_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "bramble_4",
+   "name": "Bags",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/1-bear-crew.png",
+   "crop_box_px": [
+    2155,
+    255,
+    2405,
+    505
+   ],
+   "pop_box_px": [
+    2048,
+    142,
+    2511,
+    606
+   ],
+   "pop_scale_vs_tight": 0.75,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bramble_4_256.png",
+    "bramble_4_128.png",
+    "bramble_4_pop_256.png",
+    "bramble_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "bramble_5",
+   "name": "Mitts",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/1-bear-crew.png",
+   "crop_box_px": [
+    2451,
+    81,
+    2799,
+    429
+   ],
+   "pop_box_px": [
+    2382,
+    7,
+    2867,
+    491
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bramble_5_256.png",
+    "bramble_5_128.png",
+    "bramble_5_pop_256.png",
+    "bramble_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "sow",
+   "name": "Hoot",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/2-owl-crew.png",
+   "crop_box_px": [
+    372,
+    3,
+    690,
+    321
+   ],
+   "pop_box_px": [
+    270,
+    -104,
+    791,
+    416
+   ],
+   "pop_scale_vs_tight": 0.85,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "sow_256.png",
+    "sow_128.png",
+    "sow_pop_256.png",
+    "sow_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "sow_1",
+   "name": "Owlet",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/2-owl-crew.png",
+   "crop_box_px": [
+    1082,
+    346,
+    1213,
+    477
+   ],
+   "pop_box_px": [
+    1025,
+    287,
+    1269,
+    530
+   ],
+   "pop_scale_vs_tight": 0.75,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "sow_1_256.png",
+    "sow_1_128.png",
+    "sow_1_pop_256.png",
+    "sow_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "sow_2",
+   "name": "Chips",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/2-owl-crew.png",
+   "crop_box_px": [
+    1280,
+    293,
+    1455,
+    468
+   ],
+   "pop_box_px": [
+    1205,
+    214,
+    1529,
+    539
+   ],
+   "pop_scale_vs_tight": 0.75,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "sow_2_256.png",
+    "sow_2_128.png",
+    "sow_2_pop_256.png",
+    "sow_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "sow_3",
+   "name": "Fawn",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/2-owl-crew.png",
+   "crop_box_px": [
+    1529,
+    162,
+    1762,
+    395
+   ],
+   "pop_box_px": [
+    1483,
+    112,
+    1807,
+    436
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "sow_3_256.png",
+    "sow_3_128.png",
+    "sow_3_pop_256.png",
+    "sow_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "sow_4",
+   "name": "Burrow",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/2-owl-crew.png",
+   "crop_box_px": [
+    1843,
+    222,
+    2060,
+    439
+   ],
+   "pop_box_px": [
+    1735,
+    109,
+    2167,
+    541
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": true,
+   "pop_breaks_out": false,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "sow_4_256.png",
+    "sow_4_128.png",
+    "sow_4_pop_256.png",
+    "sow_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "sow_5",
+   "name": "Bristle",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/2-owl-crew.png",
+   "crop_box_px": [
+    2171,
+    78,
+    2453,
+    360
+   ],
+   "pop_box_px": [
+    2031,
+    -67,
+    2592,
+    492
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "sow_5_256.png",
+    "sow_5_128.png",
+    "sow_5_pop_256.png",
+    "sow_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "mower",
+   "name": "Kero",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/3-frog-crew.png",
+   "crop_box_px": [
+    172,
+    7,
+    509,
+    344
+   ],
+   "pop_box_px": [
+    47,
+    -124,
+    633,
+    461
+   ],
+   "pop_scale_vs_tight": 0.8,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "mower_256.png",
+    "mower_128.png",
+    "mower_pop_256.png",
+    "mower_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "mower_1",
+   "name": "Pupil",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/3-frog-crew.png",
+   "crop_box_px": [
+    741,
+    382,
+    872,
+    513
+   ],
+   "pop_box_px": [
+    676,
+    314,
+    936,
+    574
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "mower_1_256.png",
+    "mower_1_128.png",
+    "mower_1_pop_256.png",
+    "mower_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "mower_2",
+   "name": "Dart",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/3-frog-crew.png",
+   "crop_box_px": [
+    1022,
+    333,
+    1180,
+    491
+   ],
+   "pop_box_px": [
+    954,
+    262,
+    1247,
+    555
+   ],
+   "pop_scale_vs_tight": 0.75,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "mower_2_256.png",
+    "mower_2_128.png",
+    "mower_2_pop_256.png",
+    "mower_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "mower_3",
+   "name": "Kingfisher",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/3-frog-crew.png",
+   "crop_box_px": [
+    1259,
+    273,
+    1451,
+    465
+   ],
+   "pop_box_px": [
+    1164,
+    173,
+    1545,
+    555
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "mower_3_256.png",
+    "mower_3_128.png",
+    "mower_3_pop_256.png",
+    "mower_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "mower_4",
+   "name": "Taiko",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/3-frog-crew.png",
+   "crop_box_px": [
+    1541,
+    217,
+    1764,
+    440
+   ],
+   "pop_box_px": [
+    1430,
+    101,
+    1874,
+    544
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": true,
+   "pop_breaks_out": false,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "mower_4_256.png",
+    "mower_4_128.png",
+    "mower_4_pop_256.png",
+    "mower_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "mower_5",
+   "name": "Old Shell",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/3-frog-crew.png",
+   "crop_box_px": [
+    1869,
+    83,
+    2168,
+    382
+   ],
+   "pop_box_px": [
+    1773,
+    -17,
+    2263,
+    471
+   ],
+   "pop_scale_vs_tight": 0.85,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "mower_5_256.png",
+    "mower_5_128.png",
+    "mower_5_pop_256.png",
+    "mower_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "magpie",
+   "name": "Whiskers",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/4-mouse-crew.png",
+   "crop_box_px": [
+    144,
+    -5,
+    558,
+    409
+   ],
+   "pop_box_px": [
+    63,
+    -92,
+    639,
+    483
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "magpie_256.png",
+    "magpie_128.png",
+    "magpie_pop_256.png",
+    "magpie_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "magpie_1",
+   "name": "Coo",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/4-mouse-crew.png",
+   "crop_box_px": [
+    779,
+    508,
+    887,
+    616
+   ],
+   "pop_box_px": [
+    725,
+    452,
+    940,
+    666
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": true,
+   "pop_breaks_out": false,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "magpie_1_256.png",
+    "magpie_1_128.png",
+    "magpie_1_pop_256.png",
+    "magpie_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "magpie_2",
+   "name": "Gutter",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/4-mouse-crew.png",
+   "crop_box_px": [
+    923,
+    360,
+    1127,
+    564
+   ],
+   "pop_box_px": [
+    883,
+    316,
+    1166,
+    600
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "magpie_2_256.png",
+    "magpie_2_128.png",
+    "magpie_2_pop_256.png",
+    "magpie_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "magpie_3",
+   "name": "Junk",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/4-mouse-crew.png",
+   "crop_box_px": [
+    1257,
+    394,
+    1467,
+    604
+   ],
+   "pop_box_px": [
+    1153,
+    285,
+    1570,
+    702
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": true,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "magpie_3_256.png",
+    "magpie_3_128.png",
+    "magpie_3_pop_256.png",
+    "magpie_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "magpie_4",
+   "name": "Slick",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/4-mouse-crew.png",
+   "crop_box_px": [
+    1537,
+    277,
+    1772,
+    512
+   ],
+   "pop_box_px": [
+    1491,
+    227,
+    1817,
+    554
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "magpie_4_256.png",
+    "magpie_4_128.png",
+    "magpie_4_pop_256.png",
+    "magpie_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "magpie_5",
+   "name": "Vault",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/4-mouse-crew.png",
+   "crop_box_px": [
+    1860,
+    151,
+    2177,
+    468
+   ],
+   "pop_box_px": [
+    1703,
+    -12,
+    2333,
+    617
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": true,
+   "pop_breaks_out": false,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "magpie_5_256.png",
+    "magpie_5_128.png",
+    "magpie_5_pop_256.png",
+    "magpie_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "drover",
+   "name": "General Tusk",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/5-elephant-crew.png",
+   "crop_box_px": [
+    242,
+    -5,
+    649,
+    402
+   ],
+   "pop_box_px": [
+    67,
+    -187,
+    823,
+    567
+   ],
+   "pop_scale_vs_tight": 0.75,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "drover_256.png",
+    "drover_128.png",
+    "drover_pop_256.png",
+    "drover_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "drover_1",
+   "name": "Rattle",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/5-elephant-crew.png",
+   "crop_box_px": [
+    907,
+    371,
+    1096,
+    560
+   ],
+   "pop_box_px": [
+    870,
+    330,
+    1132,
+    593
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "drover_1_256.png",
+    "drover_1_128.png",
+    "drover_1_pop_256.png",
+    "drover_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "drover_2",
+   "name": "Sandbag",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/5-elephant-crew.png",
+   "crop_box_px": [
+    1154,
+    392,
+    1328,
+    566
+   ],
+   "pop_box_px": [
+    1068,
+    302,
+    1413,
+    647
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": true,
+   "pop_breaks_out": false,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "drover_2_256.png",
+    "drover_2_128.png",
+    "drover_2_pop_256.png",
+    "drover_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "drover_3",
+   "name": "Billy",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/5-elephant-crew.png",
+   "crop_box_px": [
+    1366,
+    243,
+    1627,
+    504
+   ],
+   "pop_box_px": [
+    1314,
+    187,
+    1678,
+    550
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "drover_3_256.png",
+    "drover_3_128.png",
+    "drover_3_pop_256.png",
+    "drover_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "drover_4",
+   "name": "Big Bertha",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/5-elephant-crew.png",
+   "crop_box_px": [
+    1676,
+    149,
+    1990,
+    463
+   ],
+   "pop_box_px": [
+    1614,
+    82,
+    2051,
+    519
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "drover_4_256.png",
+    "drover_4_128.png",
+    "drover_4_pop_256.png",
+    "drover_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "drover_5",
+   "name": "Sarge",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/5-elephant-crew.png",
+   "crop_box_px": [
+    2016,
+    90,
+    2364,
+    438
+   ],
+   "pop_box_px": [
+    1947,
+    16,
+    2432,
+    500
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "drover_5_256.png",
+    "drover_5_128.png",
+    "drover_5_pop_256.png",
+    "drover_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "thistle",
+   "name": "Presto",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/6-penguin-crew.png",
+   "crop_box_px": [
+    355,
+    6,
+    707,
+    358
+   ],
+   "pop_box_px": [
+    224,
+    -131,
+    837,
+    480
+   ],
+   "pop_scale_vs_tight": 0.8,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "thistle_256.png",
+    "thistle_128.png",
+    "thistle_pop_256.png",
+    "thistle_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "thistle_1",
+   "name": "Dove",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/6-penguin-crew.png",
+   "crop_box_px": [
+    1128,
+    473,
+    1218,
+    563
+   ],
+   "pop_box_px": [
+    1083,
+    426,
+    1262,
+    605
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "thistle_1_256.png",
+    "thistle_1_128.png",
+    "thistle_1_pop_256.png",
+    "thistle_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "thistle_2",
+   "name": "Bunny",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/6-penguin-crew.png",
+   "crop_box_px": [
+    1278,
+    351,
+    1450,
+    523
+   ],
+   "pop_box_px": [
+    1193,
+    262,
+    1534,
+    603
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "thistle_2_256.png",
+    "thistle_2_128.png",
+    "thistle_2_pop_256.png",
+    "thistle_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "thistle_3",
+   "name": "Juggles",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/6-penguin-crew.png",
+   "crop_box_px": [
+    1527,
+    352,
+    1701,
+    526
+   ],
+   "pop_box_px": [
+    1492,
+    315,
+    1735,
+    557
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "thistle_3_256.png",
+    "thistle_3_128.png",
+    "thistle_3_pop_256.png",
+    "thistle_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "thistle_4",
+   "name": "Boomer",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/6-penguin-crew.png",
+   "crop_box_px": [
+    1833,
+    279,
+    2041,
+    487
+   ],
+   "pop_box_px": [
+    1730,
+    171,
+    2143,
+    584
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": true,
+   "pop_breaks_out": false,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "thistle_4_256.png",
+    "thistle_4_128.png",
+    "thistle_4_pop_256.png",
+    "thistle_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "thistle_5",
+   "name": "Atlas",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/6-penguin-crew.png",
+   "crop_box_px": [
+    2165,
+    86,
+    2486,
+    407
+   ],
+   "pop_box_px": [
+    2102,
+    17,
+    2548,
+    464
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "thistle_5_256.png",
+    "thistle_5_128.png",
+    "thistle_5_pop_256.png",
+    "thistle_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "shade",
+   "name": "Kuro",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/7-cat-crew.png",
+   "crop_box_px": [
+    143,
+    4,
+    502,
+    363
+   ],
+   "pop_box_px": [
+    45,
+    -100,
+    599,
+    454
+   ],
+   "pop_scale_vs_tight": 0.9,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "shade_256.png",
+    "shade_128.png",
+    "shade_pop_256.png",
+    "shade_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "shade_1",
+   "name": "Pin",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/7-cat-crew.png",
+   "crop_box_px": [
+    704,
+    366,
+    863,
+    525
+   ],
+   "pop_box_px": [
+    636,
+    294,
+    930,
+    589
+   ],
+   "pop_scale_vs_tight": 0.75,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "shade_1_256.png",
+    "shade_1_128.png",
+    "shade_1_pop_256.png",
+    "shade_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "shade_2",
+   "name": "Caw",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/7-cat-crew.png",
+   "crop_box_px": [
+    905,
+    259,
+    1124,
+    478
+   ],
+   "pop_box_px": [
+    862,
+    212,
+    1166,
+    517
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "shade_2_256.png",
+    "shade_2_128.png",
+    "shade_2_pop_256.png",
+    "shade_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "shade_3",
+   "name": "Ox",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/7-cat-crew.png",
+   "crop_box_px": [
+    1163,
+    203,
+    1412,
+    452
+   ],
+   "pop_box_px": [
+    1114,
+    150,
+    1460,
+    496
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "shade_3_256.png",
+    "shade_3_128.png",
+    "shade_3_pop_256.png",
+    "shade_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "shade_4",
+   "name": "Puff",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/7-cat-crew.png",
+   "crop_box_px": [
+    1450,
+    119,
+    1696,
+    365
+   ],
+   "pop_box_px": [
+    1401,
+    66,
+    1744,
+    409
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "shade_4_256.png",
+    "shade_4_128.png",
+    "shade_4_pop_256.png",
+    "shade_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "shade_5",
+   "name": "Old Mole",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/7-cat-crew.png",
+   "crop_box_px": [
+    1830,
+    86,
+    2143,
+    399
+   ],
+   "pop_box_px": [
+    1714,
+    -36,
+    2258,
+    508
+   ],
+   "pop_scale_vs_tight": 0.8,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "shade_5_256.png",
+    "shade_5_128.png",
+    "shade_5_pop_256.png",
+    "shade_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "foxglove",
+   "name": "Red",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/8-fox-crew.png",
+   "crop_box_px": [
+    126,
+    7,
+    463,
+    344
+   ],
+   "pop_box_px": [
+    60,
+    -64,
+    528,
+    404
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "foxglove_256.png",
+    "foxglove_128.png",
+    "foxglove_pop_256.png",
+    "foxglove_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "foxglove_1",
+   "name": "Stinker",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/8-fox-crew.png",
+   "crop_box_px": [
+    663,
+    331,
+    822,
+    490
+   ],
+   "pop_box_px": [
+    619,
+    284,
+    865,
+    530
+   ],
+   "pop_scale_vs_tight": 0.9,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "foxglove_1_256.png",
+    "foxglove_1_128.png",
+    "foxglove_1_pop_256.png",
+    "foxglove_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "foxglove_2",
+   "name": "Quills",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/8-fox-crew.png",
+   "crop_box_px": [
+    892,
+    281,
+    1080,
+    469
+   ],
+   "pop_box_px": [
+    799,
+    183,
+    1172,
+    557
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "foxglove_2_256.png",
+    "foxglove_2_128.png",
+    "foxglove_2_pop_256.png",
+    "foxglove_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "foxglove_3",
+   "name": "Scruff",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/8-fox-crew.png",
+   "crop_box_px": [
+    1137,
+    153,
+    1396,
+    412
+   ],
+   "pop_box_px": [
+    1086,
+    98,
+    1446,
+    458
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "foxglove_3_256.png",
+    "foxglove_3_128.png",
+    "foxglove_3_pop_256.png",
+    "foxglove_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "foxglove_4",
+   "name": "Flit",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/8-fox-crew.png",
+   "crop_box_px": [
+    1428,
+    181,
+    1672,
+    425
+   ],
+   "pop_box_px": [
+    1380,
+    129,
+    1719,
+    468
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "foxglove_4_256.png",
+    "foxglove_4_128.png",
+    "foxglove_4_pop_256.png",
+    "foxglove_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "foxglove_5",
+   "name": "Hog",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/8-fox-crew.png",
+   "crop_box_px": [
+    1755,
+    82,
+    2054,
+    381
+   ],
+   "pop_box_px": [
+    1673,
+    -5,
+    2135,
+    457
+   ],
+   "pop_scale_vs_tight": 0.9,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "foxglove_5_256.png",
+    "foxglove_5_128.png",
+    "foxglove_5_pop_256.png",
+    "foxglove_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "bamboo",
+   "name": "Bao",
+   "role": "hero",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/9-panda-crew.png",
+   "crop_box_px": [
+    233,
+    8,
+    552,
+    327
+   ],
+   "pop_box_px": [
+    170,
+    -59,
+    614,
+    384
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bamboo_256.png",
+    "bamboo_128.png",
+    "bamboo_pop_256.png",
+    "bamboo_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "bamboo_1",
+   "name": "Kit",
+   "role": "homie tier 1",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/9-panda-crew.png",
+   "crop_box_px": [
+    848,
+    381,
+    973,
+    506
+   ],
+   "pop_box_px": [
+    794,
+    324,
+    1026,
+    556
+   ],
+   "pop_scale_vs_tight": 0.75,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bamboo_1_256.png",
+    "bamboo_1_128.png",
+    "bamboo_1_pop_256.png",
+    "bamboo_1_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "bamboo_2",
+   "name": "Gyoji",
+   "role": "homie tier 2",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/9-panda-crew.png",
+   "crop_box_px": [
+    1076,
+    315,
+    1204,
+    443
+   ],
+   "pop_box_px": [
+    1028,
+    265,
+    1251,
+    487
+   ],
+   "pop_scale_vs_tight": 0.8,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bamboo_2_256.png",
+    "bamboo_2_128.png",
+    "bamboo_2_pop_256.png",
+    "bamboo_2_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "hand-set in tools/tokens/crops.json"
+  },
+  {
+   "id": "bamboo_3",
+   "name": "Salty",
+   "role": "homie tier 3",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/9-panda-crew.png",
+   "crop_box_px": [
+    1292,
+    305,
+    1460,
+    473
+   ],
+   "pop_box_px": [
+    1259,
+    269,
+    1492,
+    503
+   ],
+   "pop_scale_vs_tight": 1.0,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bamboo_3_256.png",
+    "bamboo_3_128.png",
+    "bamboo_3_pop_256.png",
+    "bamboo_3_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "bamboo_4",
+   "name": "Chef",
+   "role": "homie tier 4",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/9-panda-crew.png",
+   "crop_box_px": [
+    1547,
+    258,
+    1741,
+    452
+   ],
+   "pop_box_px": [
+    1451,
+    157,
+    1836,
+    543
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": true,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bamboo_4_256.png",
+    "bamboo_4_128.png",
+    "bamboo_4_pop_256.png",
+    "bamboo_4_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  },
+  {
+   "id": "bamboo_5",
+   "name": "Elder Yak",
+   "role": "homie tier 5",
+   "source": "C:/Dev/seed-brawl/work/creeps/custom-45-review/all-crews/9-panda-crew.png",
+   "crop_box_px": [
+    1907,
+    81,
+    2201,
+    375
+   ],
+   "pop_box_px": [
+    1761,
+    -71,
+    2346,
+    513
+   ],
+   "pop_scale_vs_tight": 0.7,
+   "pop_touches_edge": false,
+   "pop_breaks_out": true,
+   "drawing_cut_by_sheet": [],
+   "files": [
+    "bamboo_5_256.png",
+    "bamboo_5_128.png",
+    "bamboo_5_pop_256.png",
+    "bamboo_5_pop_128.png"
+   ],
+   "ops": "background mask (border flood fill, sheet-cutter method), 2 px erosion, 0.7 px edge blur, square crop, premultiplied Lanczos resample",
+   "tool": "tools/tokens/cut_tokens.py (mask method from C:/Dev/toybox/tools/images/sheet-cutter/cut_sheet.py)",
+   "crop": "auto (head band)"
+  }
+ ]
+}

@@ -2,13 +2,14 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
-<title>Seed Brawl Lanes</title>
+<title>Fur Frenzy</title>
 <link rel="stylesheet" href="lanes.css">
+<link rel="stylesheet" href="hudkit/hudkit.css">
 <script type="importmap">{"imports":{"three":"./game/vendor/three.module.js","three/addons/":"./game/vendor/addons/"}}</script>
 </head><body>
 <div id="stage">
 <canvas id="gl"></canvas>
-<div id="boot"><div class="t">Seed Brawl</div><div class="bar"><i id="bootBar"></i></div></div>
+<div id="boot"><div class="t">Fur Frenzy</div><div class="bar"><i id="bootBar"></i></div></div>
 <div id="labels"></div>
 <div id="hud" hidden>
  <div id="top"><span id="sb" class="pill blue">0</span><span id="clock">5:00</span><span id="sr" class="pill red">0</span></div>
@@ -47,10 +48,13 @@
   draw(); })();
 </script>
 <script src="config.js"></script>
+<script src="towers-cfg.js"></script><script src="towers.js"></script><!-- [towers] off unless ?towers=a or ?towers=b -->
 <script src="core.js"></script>
+<script src="homie-models.js"></script>
 <script src="sound.js"></script>
 <!-- MENU (shell branch): the app screens around the match; progress in meta.js, screens in menu.js -->
 <link rel="stylesheet" href="menu.css"><script src="meta.js"></script>
 <!-- /MENU -->
+<script src="hudkit/hudkit.js"></script>
 <script type="module" src="main.js"></script>
 </body></html>

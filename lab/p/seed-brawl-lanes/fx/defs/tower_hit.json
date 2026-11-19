@@ -1,0 +1,10 @@
+{"id": "tower_hit", "about": "A tower shot lands (refine-towers): flash, painted burst and core, a light ring, sparks and seed shards, a small dust puff. x,z = target. Reference: Dota ranged_tower_good_explosion (flashes at 0 ms, a burst, sparks).", "element": "seed", "proof": {"times": [0.02, 0.06, 0.12, 0.25, 0.5]}, "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "ramp": "flash", "size": [1.0, 1.15], "sizeCurve": "snap", "life": 0.12, "bright": 2, "fadeIn": 0.02, "fadeOut": 0.6, "toCam": 0.6},
+    {"name": "burst", "tex": "@burst", "blend": "matter", "ramp": "mid", "size": [0.9, 1.0], "life": 0.24, "upright": true, "fadeIn": 0.02, "fadeOut": 0.4, "toCam": 0.6},
+    {"name": "core", "tex": "@burst", "blend": "flame", "ramp": "hot", "size": [0.5, 0.58], "life": 0.15, "upright": true, "fadeIn": 0.02, "fadeOut": 0.5, "toCam": 0.65},
+    {"name": "ring", "tex": "fx_p_glow_ring", "ground": true, "blend": "glow", "ramp": "hot", "at": 0.04, "size": 1.1, "sizeCurve": "grow", "life": 0.2, "height": 0.04, "alpha": 0.7, "fadeOut": 0.6},
+    {"name": "sparkles", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "seed_l", "seed"], "emit": {"burst": 5}, "size": [0.2, 0.28], "life": [0.5, 0.8], "dir": "fan", "speed": [2.4, 3.4], "drag": 3, "spin": 300, "bright": 1.5, "fadeIn": 0.02, "fadeOut": 0.5, "toCam": 0.6},
+    {"name": "shards", "tex": "@shards", "frames": "random", "blend": "matter", "ramp": "solid", "emit": {"burst": 3}, "size": [0.26, 0.34], "life": [0.45, 0.65], "dir": "fan", "speed": [2.4, 3.4], "gravity": 1.0, "spin": 540, "fadeIn": 0.02, "fadeOut": 0.3, "toCam": 0.45},
+    {"name": "dust", "tex": "@dust", "blend": "smoke", "ramp": "dust", "at": 0.03, "emit": {"burst": 2}, "shape": "disc", "spread": 0.3, "size": [0.5, 0.65], "life": [0.4, 0.55], "height": 0.08, "lift": [0.25, 0.45], "sizeCurve": "swell", "alpha": 0.55, "fadeIn": 0.1, "fadeOut": 0.6},
+    {"name": "second flash", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "seed_l", "seed"], "size": [0.6, 0.7], "sizeCurve": "snap", "life": 0.17, "bright": 1.6, "fadeOut": 0.6, "toCam": 0.65}
+  ]}

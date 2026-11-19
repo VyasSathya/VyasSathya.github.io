@@ -9,6 +9,9 @@ const $ = id => document.getElementById(id), stage = $('stage');
 const BW = 874, BH = 402;
 const CREEP_W = [0.42, 0.6, 0.52, 0.5, 0.9];
 const KIND_NAMES = ['Thorn', 'Spitter', 'Runner'], BODY_NAMES = ['', 'Grunt', 'Brute', 'Splasher', 'Flyer', 'Colossus'];
+// homies: a homie id ('bramble_5') is drawn as lanes/homie-models.js maps it (its own model once loaded, else its stand-in)
+const HMOD = window.SBL_HOMIE_MODELS || {}, isHomie = id => !!HMOD[id];
+const lookOf = id => { const m = HMOD[id]; if (!m) return META.parse(id); const [k, t] = m.standIn.split('_'), tier = +t, own = UNITS.KEYS.indexOf(id); return { kind: own >= 0 && UNITS.model(own, tier - 1) ? own : UNITS.KEYS.indexOf(k), tier }; };
 
 // ---- small svg glyphs in the game's ink and gold
 const SVG = {
@@ -70,9 +73,13 @@ function snapScene(sc, cam, size) {
   const r = V.renderer, prevClear = r.getClearAlpha(); r.setSize(size, size, false); LOOK.setOutlineViewport(size, size); r.setClearColor(0, 0);
   r.render(sc, cam); const url = r.domElement.toDataURL('image/png'); r.setClearColor(0, prevClear); V.resize(); return url;
 }
+// a homie's card picture: rendered once from its own model in its idle pose (tools/homies/card_pics.js), so the menu never
+// has to load all 43 models to show them
+const homiePic = id => HMOD[id] && HMOD[id].pic ? ((window.SBL_PATHS || {}).game || '../game/') + 'assets/units/' + HMOD[id].pic : null;
 function creepPic(id, size = 200) {
+  const hp = homiePic(id); if (hp) return hp;
   const key = id + ':' + size; if (pics[key]) return pics[key];
-  const { kind, tier } = META.parse(id), ti = tier - 1, sc = new THREE.Scene(); LOOK.addLights(sc);
+  const { kind, tier } = lookOf(id), ti = tier - 1, sc = new THREE.Scene(); LOOK.addLights(sc);
   const body = UNITS.single(kind, ti, LOOK.palette.team.blue); sc.add(body); body.rotation.y = .45;
   const bx = new THREE.Box3().setFromObject(body), h = Math.max(.3, bx.max.y - bx.min.y), w = Math.max(.3, bx.max.x - bx.min.x), cy = (bx.max.y + bx.min.y) / 2;
   const c = new THREE.PerspectiveCamera(24, 1, .05, 80), d = Math.max(h, w) * 2.9; c.position.set(0, cy + h * .45, d); c.lookAt(0, cy, 0);
@@ -81,9 +88,9 @@ function creepPic(id, size = 200) {
   return url;
 }
 const heroPicP = {};
-function heroPic(id) {
-  if (heroPicP[id]) return heroPicP[id];
-  return heroPicP[id] = LOOK.loadHero(V.CAST[id] || 'cat', { ring: false, shadow: false }).then(async H => {
+function heroPic(id, skin = META.skinOf(id)) {   // skins (ff-looks): the picture is of the hero in his saved skin unless one is asked
+  const key = id + ':' + skin; if (heroPicP[key]) return heroPicP[key];
+  return heroPicP[key] = LOOK.loadHero(V.CAST[id] || 'cat', { ring: false, shadow: false, skin }).then(async H => {
     const sc = new THREE.Scene(); LOOK.addLights(sc); sc.add(H.root);
     const HA = await import('./heroanim.js'), r = HA.standRig(H); r.ph = 0; HA.stand(r, 0);   // the hero's idle pose (lanes/heroanim.js)
     const c = new THREE.PerspectiveCamera(28, 1, .1, 50), h = H.size.height; c.position.set(.7 * h, h * .95, 2.9 * h); c.lookAt(0, h * .55, 0);
@@ -96,8 +103,8 @@ const modelsReady = () => META.allCreeps().every(id => { const { kind, tier } = 
 let readyWait = null;
 function whenModels(fn) { if (modelsReady()) return; const t0 = performance.now(); if (!readyWait) readyWait = new Promise(ok => { const k = () => modelsReady() || performance.now() - t0 > 15000 ? ok() : setTimeout(k, 200); k(); }); const sc = screen; readyWait.then(() => { if (screen === sc && modelsReady()) fn(); }); }
 const rewardPic = r => r.type === 'hero' ? heroPic(r.id) : creepPic(r.id);
-const nameOf = id => { const h = SB.HEROES.find(h => h.id === id); if (h) return h.name; const { kind, tier } = META.parse(id); return KIND_NAMES[kind] + ' ' + BODY_NAMES[tier]; };
-const costOf = id => SB.costOf ? SB.costOf(META.parse(id).tier) : [0, 1, 2, 3, 5, 8][META.parse(id).tier];
+const nameOf = id => { const h = SB.HEROES.find(h => h.id === id); if (h) return h.name; if (isHomie(id)) return SB.HOMIES[id].name; const { kind, tier } = META.parse(id); return KIND_NAMES[kind] + ' ' + BODY_NAMES[tier]; };
+const costOf = id => isHomie(id) ? SB.costOf(SB.HOMIES[id].tier) : SB.costOf ? SB.costOf(META.parse(id).tier) : [0, 1, 2, 3, 5, 8][META.parse(id).tier];
 
 // ---- the live 3D stage: its own scene and camera, drawn on the game's canvas behind the screen's buttons
 let scene3 = null, cam3 = null, island = null, slots = [], heroes3 = [], extras = [];
@@ -110,8 +117,9 @@ function makeIsland() {
   LOOK.addOutline(g, 2.2);
   const bushAt = [[-3.0, -1.4, 1.1], [-2.2, -2.5, 1.25], [2.4, -2.3, 1.2], [3.05, -1.2, 1.0], [-.9, -3.0, .95], [1.0, -3.05, 1.0]];
   bushAt.forEach(([x, z, s], i) => { const b = W.bush(i * 5 + 3); b.scale.setScalar(s); b.position.set(x, 0, z); g.add(b); });
-  const pod = W.seedPod(); pod.scale.setScalar(.75); pod.position.set(-2.6, 0, .3); g.add(pod);
-  for (const [x, z, k] of [[2.75, .4, 1], [2.95, -.45, 2]]) { const w = W.wall('rock', k, 0); w.scale.set(.75, .8, .75); w.position.set(x, 0, z); g.add(w); }
+  // homies on: the seed pod and the rocks stand at the back of the island so the crew stands clear on open ground in front of them
+  const HI = META.homies(), pod = W.seedPod(); pod.scale.setScalar(.75); if (HI) pod.position.set(-2.15, 0, -2.75); else pod.position.set(-2.6, 0, .3); g.add(pod);
+  for (const [x, z, k] of HI ? [[1.9, -2.85, 1], [2.55, -2.35, 2]] : [[2.75, .4, 1], [2.95, -.45, 2]]) { const w = W.wall('rock', k, 0); w.scale.set(.75, .8, .75); w.position.set(x, 0, z); g.add(w); }
   return g;
 }
 function init3() {
@@ -128,31 +136,36 @@ function aim(target, dx, dy, ppt, pitch) {
 let camAim = null;
 // a live hero, posed every frame by the game's own pose code
 async function liveHero(id, opt = {}) {
-  const H = await LOOK.loadHero(V.CAST[id] || 'cat', { team: opt.ring === false ? undefined : LOOK.palette.team.you, ring: opt.ring !== false, shadow: true });
+  const H = await LOOK.loadHero(V.CAST[id] || 'cat', { team: opt.ring === false ? undefined : LOOK.palette.team.you, ring: opt.ring !== false, shadow: true, skin: opt.skin !== undefined ? opt.skin : META.skinOf(id) });
   const h = { fireT: 0, supT: 0, dead: false };
-  const v = { h, id, grp: H.root, body: H.body, s0: H.body.scale.x, rig: V.rigOf(H), by0: H.body.position.y, bz0: H.body.position.z, rx0: H.body.rotation.x, wk: 0, ph: 0, at: 0, su: 0, dd: 0, cd: 0, sd: Math.random() * 9, fire: 0, pop: 0, ht: H.size.height, w: H.size.width, born: clock.t, spin: 0, turn: 0, cheer: opt.cheer || 0 };
+  const v = { h, id, grp: H.root, body: H.body, s0: H.body.scale.x, rig: V.rigOf(H), by0: H.body.position.y, bz0: H.body.position.z, rx0: H.body.rotation.x, wk: 0, ph: 0, at: 0, su: 0, dd: 0, cd: 0, sd: Math.random() * 9, fire: 0, pop: 0, ht: H.size.height, w: H.size.width, born: clock.t, spin: 0, turn: 0 };
+  if (opt.mood && v.rig.ha && v.rig.ha[opt.mood]) { v.rig.ha = Object.assign({}, v.rig.ha, { idle: v.rig.ha[opt.mood] }); v.mood = opt.mood; v.bx0 = H.body.position.x; v.bf = 2.3 + Math.random() * 1.3; v.bp = Math.random() * 6.3; }   // after a match: the hero's own win / loss / draw (lanes/heroanim.js MOODS) in place of the idle
   return v;
 }
 function tickLive(v, dt) {
-  const h = v.h; V.pose(v, dt, 0, clock.t); v.fire = h.fireT; if (h.fireT > 0) h.fireT = 0;
-  if (v.cheer && clock.t - (v.lastCheer || 0) > v.cheer) { v.lastCheer = clock.t + Math.random() * .4; h.supT += 1; }
+  const h = v.h; if (v.mood) v.sd = -(v.born + .3);   // the mood starts as he lands
+  V.pose(v, dt, 0, clock.t); v.fire = h.fireT; if (h.fireT > 0) h.fireT = 0;
+  const X = v.rig.X || {}, br = v.mood ? Math.sin(clock.t * v.bf + v.bp) : 0;   // the mood's squash and stretch, turn and side step, plus a breath and a slow sway of the hero's own speed (never two in step)
+  const ms = (X.Sq ? X.Sq[0] : 0) + br * .02, my = (X.Yaw ? X.Yaw[0] : 0) + (v.mood ? Math.sin(clock.t * v.bf * .31 + v.bp * 2) * .06 : 0);
+  if (v.mood && X.Pos) v.body.position.x = v.bx0 + X.Pos[0] * v.ht;
   const k = Math.min(1, (clock.t - v.born) / .28), drop = 1 - k;                          // drop in, squash on landing
   v.grp.position.y = (v.y0 || 0) + drop * drop * 1.4;
   const sq = k < 1 ? 1 : Math.max(0, 1 - (clock.t - v.born - .28) / .18);
-  v.body.scale.set(v.s0 * (1 + .12 * sq * (k >= 1 ? 1 : 0)), v.s0 * (1 - .14 * sq * (k >= 1 ? 1 : 0)), v.s0 * (1 + .12 * sq * (k >= 1 ? 1 : 0)));
-  v.spin += (v.turn - v.spin) * Math.min(1, dt * 8); v.grp.rotation.y = (v.face || 0) + v.spin;
+  v.body.scale.set(v.s0 * (1 + .12 * sq * (k >= 1 ? 1 : 0)) * (1 - ms * .5), v.s0 * (1 - .14 * sq * (k >= 1 ? 1 : 0)) * (1 + ms), v.s0 * (1 + .12 * sq * (k >= 1 ? 1 : 0)) * (1 - ms * .5));
+  v.spin += (v.turn - v.spin) * Math.min(1, dt * 8); v.grp.rotation.y = (v.face || 0) + v.spin + my;
 }
 function poke(v) { if (!v) return; v.h.fireT = .3; snd((v.id === 'shade' ? 'shade' : v.id) + '_atk'); }
 // a creep from your deck standing on the island: hop and breathe by transform
 function liveCreep(id, x, z, face) {
-  const { kind, tier } = META.parse(id), ti = tier - 1, body = UNITS.single(kind, ti, LOOK.palette.team.blue), g = new THREE.Group();
-  const s = CREEP_W[ti] * 1.5; body.scale.setScalar(s); g.add(body);
+  const { kind, tier } = lookOf(id), ti = tier - 1, body = UNITS.single(kind, ti, LOOK.palette.team.blue), g = new THREE.Group();
+  const s = CREEP_W[ti] * 1.5 * (ti === 3 && body.userData.pose ? .74 : 1); body.scale.setScalar(s); g.add(body);   // homie flyers as in the match (main.js FLY)
   const ring = LOOK.teamRing(CREEP_W[ti] * .62, LOOK.palette.team.blue); g.add(ring);
-  g.position.set(x, 0, z); g.rotation.y = face; g.userData = { body, ti, s, ph: Math.random() * 6, real: !!UNITS.model(kind, ti), id, x, z, face };
+  g.position.set(x, 0, z); g.rotation.y = face; g.userData = { body, ti, s, ph: Math.random() * 6, real: !!UNITS.model(kind, ti) && (!isHomie(id) || UNITS.homieLoaded(id)), id, x, z, face };
   return g;
 }
 function tickCreep(g) {
   const u = g.userData, t = clock.t + u.ph, b = u.body;
+  if (b.userData.pose) { b.userData.pose('idle', t); if (u.ti === 3) b.position.y = (isHomie(u.id) ? 0 : .6) + Math.sin(t * 2.4) * .08; return; }   // a rigged model plays its own idle (never its bind pose)
   if (u.ti === 3) { b.position.y = 1.0 + Math.sin(t * 2.4) * .12; b.rotation.x = .25; }
   else { const k = Math.abs(Math.sin(t * (u.ti === 0 ? 3.2 : 1.8))); b.position.y = k * .05; b.scale.set(u.s * (1 + .03 * (1 - k)), u.s * (1 - .04 * (1 - k)) , u.s * (1 + .03 * (1 - k))); }
 }
@@ -201,22 +214,27 @@ async function showHome(opt = {}) {
   rail.forEach(([name, fn, dot], i) => {
     const b = btn('rail in-pop', '', at(62, 96 + i * 88, 76, 76) + delay(200 + i * 60), fn); b.dataset.name = name.toLowerCase();
     if (i === 0) { const im = el('img'); setImg(im, heroPic(st.hero)); b.appendChild(im); }
-    else if (i === 1) { const im = el('img'); im.src = creepPic(st.deck[0], 160); b.appendChild(im); }
+    else if (i === 1) { const im = el('img'); im.src = creepPic(META.deckIds()[0], 160); b.appendChild(im); }
     else b.insertAdjacentHTML('beforeend', SVG.road);
     b.appendChild(el('div', 'lbl o', name)); if (dot) b.appendChild(el('div', 'dot'));
     s.appendChild(b);
   });
-  whenModels(() => { const im = s.querySelector('[data-name="deck"] img'); if (im) im.src = creepPic(st.deck[0], 160); rb.dataset.rid = ''; rb.set(st.trophies); });
+  whenModels(() => { const im = s.querySelector('[data-name="deck"] img'); if (im) im.src = creepPic(META.deckIds()[0], 160); rb.dataset.rid = ''; rb.set(st.trophies); });
   const hdef = SB.HEROES.find(h => h.id === st.hero) || SB.HEROES[0];
   const plate = el('div', 'at plate o tap in-rise', hdef.name, at(350, 334, 200) + delay(320)); onTap(plate, () => { snd('card_tap'); showHeroes(); }); s.appendChild(plate);
   const hit = el('div', 'at tap', '', at(330, 70, 240, 260)); s.appendChild(hit); dragTurn(hit, () => heroes3[0]);
   const play = btn('gold play pulse in-rise', '<span>Play</span>', at(596, 284, 216, 84) + delay(380), play_, 'play_press'); play.id = 'mPlay'; s.appendChild(play);
   if (opt.hand === undefined ? st.played === 1 : opt.hand) { const hd = el('div', 'hand', SVG.hand, 'left:700px;top:330px'); s.appendChild(hd); }
   // the 3D: hero at the front, the six of the deck in an arc behind him
+  if (META.homies()) UNITS.loadHomies(META.deckIds(), { delay: 900 });   // only the crew on screen, after the screen has come in; the island swaps each in when it arrives
   const v = await liveHero(st.hero); if (screen !== 'home') return;
-  v.grp.position.set(0, 0, .8); v.grp.scale.setScalar(1.75); scene3.add(v.grp); heroes3.push(v);
+  v.grp.position.set(0, 0, .8); v.grp.scale.setScalar(META.homies() ? 1.5 : 1.75); scene3.add(v.grp); heroes3.push(v);   // homies: a little smaller so his crew stands clear beside him
   const arc = [[-2.35, -.55], [-1.6, -1.45], [-.6, -1.95], [.6, -1.95], [1.6, -1.45], [2.35, -.55]];
-  st.deck.forEach((id, i) => { const [x, z] = arc[i], g = liveCreep(id, x, z, Math.atan2(-x, 3 - z) * .6); g.userData.born = clock.t + .35 + i * .05; scene3.add(g); slots.push(g); });
+  // homies: one of each owned homie (not the deck's copies), on open ground clear of the seed pod (left) and the rocks (right)
+  const L3 = [-3.05, .8], L2 = [-2.3, -.4], L1 = [-1.7, -1.1], R1 = [1.7, -1.1], R2 = [2.75, -.75];
+  const HARC = { 3: [L2, L1, R1], 4: [L2, L1, R1, R2], 5: [L3, L2, L1, R1, R2] };
+  const show3 = META.homies() ? [...new Set(META.deckIds())] : META.deckIds(), spots = META.homies() ? HARC[show3.length] || HARC[5] : arc;
+  show3.forEach((id, i) => { const [x, z] = spots[i], g = liveCreep(id, x, z, Math.atan2(-x, 3 - z) * .6); g.userData.born = clock.t + .35 + i * .05; scene3.add(g); slots.push(g); });
   camAim = () => aim(new THREE.Vector3(0, 1.1, .3), 450, 206, 86, 16);
 }
 function dragTurn(hitEl, getV) {
@@ -248,16 +266,17 @@ function showRoad() {
     const x = xs[i + 1], got = m.at <= st.best;
     inner.appendChild(el('div', 'node' + (got ? ' got' : ''), '', `left:${x}px`));
     inner.appendChild(el('div', 'lab', SVG.trophy + m.at, `left:${x}px`));
-    const r = m.rewards[0], hero = r.type === 'hero', w = hero ? 156 : 136, h = hero ? 180 : 152;
+    const r = m.rewards[0], hero = r.type === 'hero', w = hero ? 156 : 136, h = hero ? 180 : 152, kindOf = id => isHomie(id) ? lookOf(id).kind : META.parse(id).kind;
     const wrap = el('div', 'rw tap in-pop' + (m.at === nextAt ? ' next' : ''), '', `left:${x}px;` + delay(Math.min(500, i * 35)));
-    const t = el('div', (hero ? 'ht' : 'ct k' + META.parse(r.id).kind) + (got ? '' : ' lock'), '', `width:${w}px;height:${h}px`);
+    const t = el('div', (hero ? 'ht' : 'ct k' + kindOf(r.id)) + (got ? '' : ' lock'), '', `width:${w}px;height:${h}px`); t.dataset.id = r.id;
     const img = el('img'); img.alt = ''; if (!hero) img.style.cssText = `width:${w - 6}px;height:${w - 6}px`; setImg(img, rewardPic(r)); t.appendChild(img);
     t.appendChild(el('div', 'nm o', nameOf(r.id)));
     wrap.appendChild(t); inner.appendChild(wrap);
     onTap(wrap, e => {
       e.stopPropagation(); snd('ui_tap'); if (popEl) popEl.remove();
-      popEl = el('div', 'pop', `<div class="t o">${nameOf(r.id)}</div><div class="s">${hero ? 'Hero' : BODY_NAMES[META.parse(r.id).tier] + ' / ' + KIND_NAMES[META.parse(r.id).kind]}</div>`, `left:${x - 110}px;top:2px`);
-      if (got) popEl.appendChild(btn('gold', 'Use', 'position:relative;width:100%', () => hero ? showHeroes(r.id) : showDeck(r.id)));
+      const sub = hero ? (r.crew ? r.crew.map(nameOf).join(', ') : 'Hero') : r.type === 'homie' ? SB.TYPES[SB.HOMIES[r.id].type].name + ' / ' + nameOf(r.hero) : BODY_NAMES[META.parse(r.id).tier] + ' / ' + KIND_NAMES[META.parse(r.id).kind];
+      popEl = el('div', 'pop', `<div class="t o">${nameOf(r.id)}</div><div class="s">${sub}</div>`, `left:${x - 110}px;top:2px`);
+      if (got) popEl.appendChild(btn('gold', 'Use', 'position:relative;width:100%', () => hero ? showHeroes(r.id) : r.type === 'homie' ? (META.setHero(r.hero), showCrew()) : showDeck(r.id)));
       inner.appendChild(popEl);
     });
   });
@@ -269,7 +288,27 @@ function showRoad() {
 }
 
 // Deck: your six on the left, every creep on the right as kinds by bodies; tap one, tap a slot (Clash Royale deck)
+// Deck with the homies on: the hero's own crew. His six cards on the left (his five, tier 1 twice), his five homies on the right
+// with name, type and cost. Nothing to swap: a hero always brings his own crew (work/homies-rules/choices.md).
+function showCrew() {
+  const s = newScreen('deck'); setBack('plain'); clear3();
+  const st = META.state, hero = SB.HEROES.find(h => h.id === st.hero) || SB.HEROES[0], deck = META.deckIds(), five = META.crewList(hero.id);
+  UNITS.loadHomies([...new Set(deck)], { delay: 900 });   // a homie with no card picture (no body: Old Shell, Gyoji) shows its stand-in's render
+  s.appendChild(backBtn(() => showHome()));
+  s.appendChild(el('div', 'at title o', hero.name + "'s crew", at(124, 14)));
+  const tile = (id, x, y, w, h, img, d, own = true) => {
+    const u = SB.HOMIES[id], t = el('div', 'ct in-pop k' + lookOf(id).kind + (own ? '' : ' lock'), '', at(x, y, w, h) + delay(d)); t.dataset.id = id; if (!own) t.dataset.locked = '1';
+    const im = el('img'); im.style.cssText = `width:${img}px;height:${img}px`; im.src = creepPic(id); t.appendChild(im);
+    if (own) t.append(el('div', 'nm o', '<small>' + SB.TYPES[u.type].name + '</small>' + u.name), el('div', 'cost', costOf(id)));
+    else t.appendChild(el('div', 'mk', SVG.trophy + META.markFor(id)));   // still on the road: dark, with the trophies that give him
+    s.appendChild(t); return t;
+  };
+  const els = deck.map((id, i) => tile(id, 62 + (i % 3) * 92, 64 + Math.floor(i / 3) * 142, 86, 128, 78, i * 40));
+  const big = five.map((id, i) => { const own = META.ownsHomie(id), t = tile(id, 356 + i * 88, 64, 84, 150, 78, 150 + i * 40, own); if (own) { t.appendChild(el('div', 'nm o', 'Tier ' + SB.HOMIES[id].tier, 'top:84px;bottom:auto')); META.markSeen(id); } return t; });
+  whenModels(() => { for (const t of [...els, ...big]) { const im = t.querySelector('img'), id = t.dataset.id; if (im && id && !(HMOD[id] && HMOD[id].pic)) im.src = creepPic(id, 200); } });
+}
 function showDeck(holdId) {
+  if (META.homies()) return showCrew();
   const s = newScreen('deck'); setBack('plain'); clear3();
   const st = META.state, u = META.unlocked().creeps;
   s.appendChild(backBtn(() => showHome()));
@@ -337,6 +376,25 @@ async function showHeroes(focusId) {
   const pick = btn('gold', 'Pick', at(616, 306, 196, 62) + 'font-size:24px', () => { if (META.setHero(cur)) { META.markSeen(cur); showHome(); } }, 'ui_play'); pick.id = 'mPick'; s.appendChild(pick);
   const hit = el('div', 'at tap', '', at(448, 40, 164, 300)); s.appendChild(hit); dragTurn(hit, () => heroes3[0]);
   camAim = () => aim(new THREE.Vector3(0, .8, 0), 532, 200, 120, 14);
+  // ---- skins (ff-looks): the picked hero's skins as small tiles under his model. A tap wears it at once (saved per hero,
+  // used in his matches) and redraws the model and his grid tile. Every skin is free; a hero with one skin shows no row.
+  // Tiles are 52 design px (44 screen px at the smallest phone scale, 0.857); three fit, more scroll sideways (a drag
+  // scrolls, a tap picks). The name sits above the 21 px home-bar band.
+  const skinRow = el('div', 'at', '', at(436, 300, 180, 80)); skinRow.id = 'mSkins'; s.appendChild(skinRow);
+  function drawSkins(id, ok) {
+    const list = LOOK.heroSkins(id).filter(k => META.isOwned(k.id)); skinRow.innerHTML = ''; skinRow.style.display = ok && list.length > 1 ? '' : 'none';   // owned only: today every skin is free
+    if (skinRow.style.display) return;
+    const cur = list.some(k => k.id === META.skinOf(id)) ? META.skinOf(id) : list[0].id;
+    const strip = el('div', '', '', 'position:absolute;left:0;right:0;top:0;height:62px;display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:4px;scrollbar-width:none;touch-action:pan-x;pointer-events:auto'); skinRow.appendChild(strip);
+    list.forEach((k, i) => {
+      const t = el('div', 'ht tap' + (k.id === cur ? ' on' : ''), '', 'position:relative;flex:none;width:52px;height:52px;border-radius:13px' + (i === 0 ? ';margin-left:auto' : '') + (i === list.length - 1 ? ';margin-right:auto' : '')); t.dataset.skin = k.id;
+      const im = el('img', '', undefined, 'transform:scale(1.7);transform-origin:50% 28%'); setImg(im, heroPic(id, k.id)); t.appendChild(im);   // head and chest, where the skin shows
+      onTap(t, () => { if (META.skinOf(id) === k.id || !META.equip(id, k.id).ok) return; snd('card_tap'); const g = tiles.find(x => x.dataset.id === id); if (g) setImg(g.querySelector('img'), heroPic(id, k.id)); show(id); });
+      strip.appendChild(t);
+    });
+    const on = strip.querySelector('.on'); if (on) requestAnimationFrame(() => { strip.scrollLeft = Math.max(0, on.offsetLeft - (strip.clientWidth - on.offsetWidth) / 2); });   // the worn skin in view
+    const nm = list.find(k => k.id === cur).name; skinRow.appendChild(el('div', 'at o', nm, 'left:0;right:0;top:61px;text-align:center;font-size:15px;line-height:18px;font-weight:800;white-space:nowrap'));
+  }
   let token = 0;
   async function show(id) {
     cur = id; const h = SB.HEROES.find(x => x.id === id), ok = u.includes(id); tiles.forEach(t => t.classList.toggle('on', t.dataset.id === id));
@@ -344,8 +402,11 @@ async function showHeroes(focusId) {
       `<div class="kit" style="margin-top:6px"><b class="o">${h.adesc.split(':')[0]}</b>${SB.say(h, h.adesc).split(':').slice(1).join(':').trim()}</div>` +
       `<div class="kit" style="margin-top:6px"><b class="o">${h.sup.name}</b>${SB.say(h, h.sup.desc).split(':').slice(1).join(':').trim()}</div>`;
     pick.style.display = ok ? '' : 'none';
-    if (!ok) { info.insertAdjacentHTML('beforeend', `<div class="kit o" style="margin-top:8px;display:flex;align-items:center;gap:4px;font-size:16px">${SVG.trophy.replace('<svg', '<svg width="24" height="24"')} ${META.markFor(id)}</div>`); }
+    // locked: the trophies that open him stand where Pick would be (a locked roster shows the goal in the button's place)
+    let lk = s.querySelector('#mLockAt'); if (!lk) { lk = el('div', 'at chip', '', at(616, 306, 196, 62) + 'justify-content:center;font-size:24px'); lk.id = 'mLockAt'; s.appendChild(lk); }
+    lk.style.display = ok ? 'none' : 'flex'; if (!ok) lk.innerHTML = SVG.trophy + '<span>' + META.markFor(id) + '</span>';
     if (ok) META.markSeen(id);
+    drawSkins(id, ok);
     const my = ++token; const v = await liveHero(id); if (my !== token || screen !== 'heroes') return;
     for (const o of heroes3) scene3.remove(o.grp); heroes3 = [v]; v.grp.scale.setScalar(1.25); scene3.add(v.grp);
     if (!ok) v.grp.traverse(o => { if (o.isMesh && !o.userData.isHull && o.material && o.material.isMaterial) { o.material = o.material.clone(); o.material.color = new THREE.Color(0x2a2232); o.material.map = null; } });
@@ -358,6 +419,14 @@ async function showResult(rec, G) {
   const out = rec.result, s = newScreen('result'); setBack('result', out); clear3(); island.visible = true;
   const ban = el('div', 'at in-left', `<div class="banner ${out}"><span class="big">${out === 'win' ? 'Victory!' : out === 'loss' ? 'Defeat' : 'Draw'}</span></div>`, at(70, 16)); s.appendChild(ban);   // the slant reaches 7 points left of its box
   const dl = el('div', 'at delta o in-fade' + (rec.delta < 0 ? ' neg' : ''), SVG.trophy + '<span>0</span>', at(70, 100) + delay(500)); s.appendChild(dl);
+  // ff-flow (play review item 8, "the result screen says nothing about why"): the two bases' health at the end, ours first in our
+  // colour, with a clock between them when time ran out and a cracked base mark when a base fell. ?rscore=0 = build 20.
+  const R = G && G.result && G.result.base; if (R && !/[?&]rscore=0/.test(location.search)) {
+    const mt = G.me.team, mine = Math.max(0, Math.ceil(R[mt - 1])), theirs = Math.max(0, Math.ceil(R[2 - mt]));
+    const mark = G.result.by === 'timer' ? '<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8.5" fill="#fff8e8" stroke="#1a1320" stroke-width="2.6"/><path d="M12 8.5V13l3 2" fill="none" stroke="#1a1320" stroke-width="2.6" stroke-linecap="round"/></svg>'
+      : '<svg viewBox="0 0 24 24"><path d="M4 20h16V9l-8-5-8 5z" fill="#fff8e8" stroke="#1a1320" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 6l-2 5 3 2-2 6" fill="none" stroke="#1a1320" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    s.appendChild(el('div', 'at rscore o in-fade', `<b class="t${mt}">${mine}</b>${mark}<b class="t${3 - mt}">${theirs}</b>`, at(74, 160) + delay(400)));
+  }
   const rb = roadBar(62, 300, 400, rec.before); rb.classList.add('in-rise'); rb.style.cssText += delay(600); s.appendChild(rb);
   music(out === 'win' ? 'stinger_win' : out === 'loss' ? 'stinger_lose' : 'menu', 'menu');
   const home = btn('ink', 'Home', at(486, 304, 130, 62) + 'font-size:20px;visibility:hidden', () => next(() => showHome())); home.id = 'mHome'; s.appendChild(home);
@@ -370,14 +439,14 @@ async function showResult(rec, G) {
   const ids = team.length ? [team.find(h => h === G.me), ...team.filter(h => h !== G.me)].map(h => h.def.id) : [META.state.hero];
   const pos = [[0, 0, 1.2], [-1.55, -.8, 1], [1.55, -.8, 1]];
   camAim = () => aim(new THREE.Vector3(0, .8, -.3), 630, 190, 118, 13);
-  ids.forEach(async (id, i) => { const v = await liveHero(id, { cheer: out === 'win' ? 1.6 + i * .3 : 0 }); if (screen !== 'result') return; v.grp.position.set(pos[i][0], 0, pos[i][1]); v.grp.scale.setScalar(pos[i][2]); v.face = -pos[i][0] * .18; v.born = clock.t + .25 + i * .12; scene3.add(v.grp); heroes3.push(v); });
+  ids.forEach(async (id, i) => { const v = await liveHero(id, { mood: out, skin: i ? '' : undefined }); /* skins (ff-looks): team mates are bots, in the default skin */ if (screen !== 'result') return; v.grp.position.set(pos[i][0], 0, pos[i][1]); v.grp.scale.setScalar(pos[i][2]); v.face = -pos[i][0] * .18; v.born = clock.t + .25 + i * .12; scene3.add(v.grp); heroes3.push(v); });
   // count-up, then the bar
   const t0 = performance.now(), num = dl.querySelector('span'), n = rec.delta;
   await new Promise(ok => { const step = () => { const k = skip ? 1 : Math.min(1, Math.max(0, (performance.now() - t0 - 700) / 600)); const v = Math.round(n * k); num.textContent = (n > 0 ? '+' : n < 0 ? '' : '') + v; if (k >= 1) ok(); else { if (Math.round(n * k) % 3 === 0 && k > 0) snd('trophy_tick'); requestAnimationFrame(step); } }; step(); });
   const t1 = performance.now(); if (rec.after !== rec.before) snd('road_fill');
-  await new Promise(ok => { const step = () => { const k = skip ? 1 : Math.min(1, (performance.now() - t1) / 800), e = 1 - (1 - k) * (1 - k), tt = rec.before + (rec.after - rec.before) * e; rb.set(rec.crossed.length && tt >= rec.crossed[0].at ? rec.crossed[0].at - .01 : tt); if (k >= 1) ok(); else requestAnimationFrame(step); }; step(); });
+  await new Promise(ok => { const step = () => { const k = skip ? 1 : Math.min(1, (performance.now() - t1) / 800), e = 1 - (1 - k) * (1 - k), tt = rec.before + (rec.after - rec.before) * e; rb.set(rec.crossed.length && queueReveal.length && tt >= rec.crossed[0].at ? rec.crossed[0].at - .01 : tt); if (k >= 1) ok(); else requestAnimationFrame(step); }; step(); });
   if (screen !== 'result') return;
-  if (rec.crossed.length) { rb.set(rec.crossed[0].at - .01); rb.querySelector('.trk').classList.add('flash'); snd('level_up'); await new Promise(ok => setTimeout(ok, skip ? 200 : 700)); if (screen !== 'result') return; showReveal(queueReveal.shift(), () => showResultAfter(rec, G, queueReveal)); return; }
+  if (rec.crossed.length && queueReveal.length) { rb.set(rec.crossed[0].at - .01); rb.querySelector('.trk').classList.add('flash'); snd('level_up'); await new Promise(ok => setTimeout(ok, skip ? 200 : 700)); if (screen !== 'result') return; showReveal(queueReveal.shift(), () => showResultAfter(rec, G, queueReveal)); return; }
   rb.set(rec.after);
   for (const b of [home, again]) { b.style.visibility = ''; b.classList.add('in-pop'); }
 }
@@ -389,33 +458,39 @@ function showResultAfter(rec, G, rest) {
 
 // Unlock reveal: the seed shakes, bursts, the new one turns in big on the left, its name stamps in on the right
 async function showReveal(r, then) {
-  const hero = r.type === 'hero', s = newScreen('reveal'); setBack('reveal', hero ? 'hero' : ''); clear3();
+  const hero = r.type === 'hero', homie = r.type === 'homie', s = newScreen('reveal'); setBack('reveal', hero ? 'hero' : ''); clear3();
   META.markSeen(r.id);
+  const hl = homie ? UNITS.loadHomies([r.id]) : null;   // his own model loads while the seed shakes
   const pod = makeSeed(); scene3.add(pod); extras.push(pod);
   camAim = () => aim(new THREE.Vector3(0, .78, 0), 268, 206, hero ? 190 : 165, 9);
   const txt = el('div', 'at', '', at(470, 60, 342)); s.appendChild(txt);
-  const main = btn('gold', hero ? 'Pick' : 'Add to deck', at(632, 300, 180, 66) + 'font-size:22px;visibility:hidden', () => { if (hero) { META.setHero(r.id); } leave(hero ? null : r.id); }, 'ui_play'); main.id = 'mMain';
+  const main = btn('gold', hero ? 'Pick' : homie ? 'OK' : 'Add to deck', at(632, 300, 180, 66) + 'font-size:22px;visibility:hidden', () => { if (hero) { META.setHero(r.id); } leave(hero || homie ? null : r.id); }, 'ui_play'); main.id = 'mMain';
   const later = btn('ink', 'Later', at(486, 304, 130, 62) + 'font-size:20px;visibility:hidden', () => leave(null)); later.id = 'mLater';
-  s.append(main, later);
+  s.append(main, later); if (homie) later.remove();   // a homie is in his hero's deck already: one button goes on
   const hit = el('div', 'at tap', '', at(150, 40, 300, 320)); s.appendChild(hit);
   let opened = false, fast = false; hit.addEventListener('pointerdown', () => { fast = true; });
   function leave(deckId) { if (deckId) showDeck(deckId); else then(); }
   const t0 = performance.now(), T = k => fast ? k * .35 : k;
   // shakes
   for (const at_ of [300, 700, 1100]) { await waitUntil(() => performance.now() - t0 > T(at_)); pod.userData.shake = performance.now(); snd('unlock_shake'); }
-  await waitUntil(() => performance.now() - t0 > T(1400)); if (screen !== 'reveal') return;
+  await waitUntil(() => performance.now() - t0 > T(1400)); if (hl) await Promise.race([hl, new Promise(ok => setTimeout(ok, 4000))]); if (screen !== 'reveal') return;
   scene3.remove(pod); burst(); snd('unlock_burst'); opened = true;
   // the reward
   let model;
   if (hero) { const v = await liveHero(r.id, { ring: false }); v.grp.scale.setScalar(1.25); v.turnIn = clock.t; heroes3.push(v); model = v.grp; dragTurn(hit, () => v); }
-  else { const g = liveCreep(r.id, 0, 0, 0); const ti = g.userData.ti; g.scale.setScalar(Math.min(2.4, 1.5 / Math.max(.6, CREEP_W[ti] * 1.5))); g.userData.turnIn = clock.t; slots.push(g); model = g;
+  else { const g = liveCreep(r.id, 0, 0, 0); const ti = g.userData.ti; g.scale.setScalar(Math.min(2.4, 1.5 / Math.max(.6, CREEP_W[ti] * 1.5)));
+    if (homie) { const bx = new THREE.Box3().setFromObject(g), hh = bx.max.y - bx.min.y; if (hh > .05) g.scale.setScalar(g.scale.x * 1.75 / hh); }   // his own model stands as tall as a hero in the reveal
+    g.userData.turnIn = clock.t; slots.push(g); model = g;
     const v = { turn: 0, h: {}, grp: g }; dragTurn(hit, () => null); }
   if (screen !== 'reveal') return; scene3.add(model); model.userData.spinIn = clock.t;
   await new Promise(ok => setTimeout(ok, fast ? 150 : 450));
-  const kindTag = hero ? '<div class="tag">Hero</div>' : `<div class="tag">${BODY_NAMES[META.parse(r.id).tier]}</div><div class="tag">${KIND_NAMES[META.parse(r.id).kind]}</div><div class="tag cost">${costOf(r.id)}</div>`;
-  txt.innerHTML = `<div class="newtag in-left"><span>${hero ? 'New hero!' : 'New creep!'}</span></div><div class="rname big stamp" style="margin-top:12px;animation-delay:.15s">${nameOf(r.id)}</div><div class="tags in-fade" style="margin-top:12px;animation-delay:.35s">${kindTag}</div>`;
+  // a hero with homies: their cards as on the crew screen (picture, type, name, seed cost); a homie: whose crew, type, the cards' cost badge
+  const card = id => `<div class="ct k${lookOf(id).kind} rcard"><img alt="" src="${creepPic(id)}"><div class="nm o"><small>${SB.TYPES[SB.HOMIES[id].type].name}</small>${nameOf(id)}</div><div class="cost">${costOf(id)}</div></div>`;
+  const kindTag = hero ? (r.crew && r.crew.length ? r.crew.map(card).join('') : '<div class="tag">Hero</div>') :
+    homie ? `<div class="tag">${nameOf(r.hero)}'s crew</div><div class="tag">${SB.TYPES[SB.HOMIES[r.id].type].name}</div><div class="costb">${costOf(r.id)}</div>` : `<div class="tag">${BODY_NAMES[META.parse(r.id).tier]}</div><div class="tag">${KIND_NAMES[META.parse(r.id).kind]}</div><div class="tag cost">${costOf(r.id)}</div>`;
+  txt.innerHTML = `<div class="newtag in-left"><span>${hero ? 'New hero!' : homie ? 'New homie!' : 'New creep!'}</span></div><div class="rname big stamp" style="margin-top:12px;animation-delay:.15s">${nameOf(r.id)}</div><div class="tags in-fade" style="margin-top:12px;animation-delay:.35s">${kindTag}</div>`;
   await new Promise(ok => setTimeout(ok, fast ? 150 : 500));
-  for (const b of [main, later]) { b.style.visibility = ''; b.classList.add('in-pop'); }
+  for (const b of homie ? [main] : [main, later]) { b.style.visibility = ''; b.classList.add('in-pop'); }
 }
 const waitUntil = f => new Promise(ok => { const k = () => f() ? ok() : requestAnimationFrame(k); k(); });
 function makeSeed() {
@@ -460,7 +535,7 @@ function showSettings() {
 function play_() {
   const ms = META.matchStart(SB.HEROES); pending = ms;
   active = false; root.hidden = true; back.hidden = true; clear3(); screen = ''; const lb = $('labels'); if (lb) lb.style.visibility = '';
-  V.startMatch(ms.heroIndex, false, { deck: ms.deck, pool: ms.pool, botLevel: ms.botLevel, heroes: ms.heroes });
+  V.startMatch(ms.heroIndex, false, { deck: ms.deck, pool: ms.pool, botLevel: ms.botLevel, heroes: ms.heroes, myCrew: ms.myCrew, crews: ms.crews });
 }
 function outcomeOf(G) {
   const r = G.result; if (r && typeof r === 'object') return !r.winner ? 'draw' : (r.mine !== undefined ? (r.mine ? 'win' : 'loss') : (r.winner === G.me.team ? 'win' : 'loss'));
@@ -481,7 +556,7 @@ function finish(G) {
 function enterMenu() { music('menu'); active = true; root.hidden = false; back.hidden = false; const lb = $('labels'); if (lb) lb.style.visibility = 'hidden'; const p = $('pick'); if (p) p.hidden = true; layout(); }
 function firstRun() {
   enterMenu(); const s = newScreen('splash'); setBack('home'); clear3();
-  s.appendChild(el('div', 'at splash', '<div class="big stamp">Seed Brawl</div>', at(0, 120, BW, 120)));
+  s.appendChild(el('div', 'at splash', '<div class="big stamp">Fur Frenzy</div>', at(0, 120, BW, 120)));
   setTimeout(() => { if (screen === 'splash') play_(); }, 900);
 }
 
@@ -497,7 +572,7 @@ function frame() {
   for (const x of extras) if (x.userData.seed) { const a = (performance.now() - x.userData.shake) / 300, k = a < 1 ? Math.sin(a * Math.PI * 4) * (1 - a) : 0; x.rotation.z = k * .35; x.position.y = Math.abs(k) * .1; x.rotation.y += dt * .6; }
   tickParts(dt);
   // creeps whose real model arrived after they were placed get swapped in
-  for (let i = 0; i < slots.length; i++) { const g = slots[i], u = g.userData; if (!u.real && u.id && UNITS.model(META.parse(u.id).kind, u.ti)) { const n = liveCreep(u.id, u.x, u.z, u.face); scene3.remove(g); scene3.add(n); slots[i] = n; } }
+  for (let i = 0; i < slots.length; i++) { const g = slots[i], u = g.userData; if (!u.real && u.id && UNITS.model(lookOf(u.id).kind, u.ti)) { const n = liveCreep(u.id, u.x, u.z, u.face); scene3.remove(g); scene3.add(n); slots[i] = n; } }
   W.tickAll(scene3, clock.t, dt);
   const r = V.renderer; r.setClearColor(0, 0); r.clear(); r.render(scene3, cam3);
 }
@@ -538,8 +613,9 @@ function show(name) {
   if (n === 'home') return showHome(); if (n === 'road') return showRoad(); if (n === 'deck') return showDeck(arg); if (n === 'heroes') return showHeroes(arg);
   if (n === 'settings') { showHome(); return setTimeout(showSettings, 50); }
   if (n === 'first') return firstRun();
-  if (n.startsWith('result')) { const out = n.split('-')[1] || 'win', t = META.state.trophies, nx = META.next(t), after = out === 'win' ? t + 30 : Math.max(META.floor(), t - 12);
+  if (n.startsWith('result')) { const out = n.split('-')[1] || 'win', t = META.state.trophies, nx = META.next(t), after = out === 'win' ? t + 30 : out === 'draw' ? t + 5 : Math.max(META.floor(), t - (META.homies() ? META.lossAt(t) : 12));
     const crossed = nx && after >= nx.at ? [nx] : []; return showResult({ result: out, before: t, after, delta: after - t, crossed, unlocks: crossed.flatMap(c => c.rewards) }, null); }
-  if (n === 'reveal') { const id = arg || 'thorn_3'; return showReveal({ type: SB.HEROES.some(h => h.id === id) ? 'hero' : 'creep', id }, () => showHome()); }
+  if (n === 'reveal') { const id = arg || 'thorn_3'; const hr = SB.HEROES.some(h => h.id === id), hm = isHomie(id) && !hr, row = META.marks().find(m => m.rewards.some(x => x.id === id)), rw = row && row.rewards.find(x => x.id === id);
+    return showReveal(rw || (hr ? { type: 'hero', id } : hm ? { type: 'homie', id, hero: id.split('_')[0] } : { type: 'creep', id }), () => showHome()); }
   return showHome();
 }

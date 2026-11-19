@@ -155,8 +155,20 @@ function glowMat(col) {
   return _glMats[col] = new THREE.MeshBasicMaterial({ color: col, alphaMap: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 });
 }
 // a single creep as its own object (the dock pictures)
+// A rigged model is posed by its own clips (idle, first frame), never shown in its bind pose: drawn as a one-instance copy of
+// the match's body and outline, so the outline follows the pose too. g.userData.pose(name, sec) moves it (menu idle loop).
 export function single(kind, ti, teamCol) {
   const md = model(kind, ti); if (!md) return W.unit(W.UNIT_KINDS[kind], ti, teamCol).children[0];
+  if (md.homie && md.bones && md.clips) {   // homies only: the 15 shared creeps keep build 8's pictures exactly
+    const anim = new THREE.InstancedBufferAttribute(new Float32Array(4), 4), pose = new THREE.InstancedBufferAttribute(new Float32Array(1), 1);
+    const ln = md.info.line, lw = typeof ln === 'number' ? ln : md.info.lineW || 1.6, push = ln === 'edge' ? (md.info.linePush || 0.3) : 0;
+    const b = new THREE.InstancedMesh(instanced(md.geo, anim, pose), md.matFor(teamCol), 1), o = new THREE.InstancedMesh(instanced(md.hull, anim, pose), outlineMat(md.info.lineCol ? parseInt(md.info.lineCol, 16) : undefined, lw, md, push), 1);
+    const I = new THREE.Matrix4(); b.setMatrixAt(0, I); o.setMatrixAt(0, I); b.frustumCulled = o.frustumCulled = false; if (ln === 'none') o.visible = false;
+    md.geo.computeBoundingBox(); b.geometry.boundingBox = o.geometry.boundingBox = md.geo.boundingBox.clone();
+    const g = new THREE.Group(); g.add(b, o); g.userData.noOutline = true; g.userData.box = md.geo.boundingBox.clone();
+    g.userData.pose = (name, sec) => { pose.setX(0, row(md.clips, name, sec || 0)); pose.needsUpdate = true; };
+    g.userData.pose('idle', 0); return g;
+  }
   const geo = new THREE.BufferGeometry(); for (const k of Object.keys(md.geo.attributes)) geo.setAttribute(k, md.geo.attributes[k]); if (md.geo.index) geo.setIndex(md.geo.index);
   geo.setAttribute('aAnim', new THREE.BufferAttribute(new Float32Array(md.geo.attributes.position.count * 4), 4));   // a missing attribute reads w = 1 in WebGL: the whole picture would flash white
   const g = new THREE.Group(), m = new THREE.Mesh(geo, creepMaterial({ map: md.mat.map, team: teamCol })); g.add(m); LOOK.addOutline(g, 1.6); return g;
@@ -200,24 +212,50 @@ export function row(clips, name, sec) {
 // ?unitsrc=<folder>/ (a units.json and its files, e.g. ../work/creeps/clean/): its creeps replace the ones of the same key
 // (candidates seen in the real game). Absent = only base.
 const OVERLAY = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('unitsrc') : null;
+let BASE = '', ON_READY = null, baseSet; const ready = new Promise((ok) => { baseSet = ok; });
+const homieKey = (id, m) => id + '_' + BODY[+m.standIn.split('_')[1] - 1];
 export async function load(base, onReady) {
-  let j; try { j = await (await fetch(base + 'units.json')).json(); } catch (e) { return 0; }
+  BASE = base; ON_READY = onReady; baseSet(); let j; try { j = await (await fetch(base + 'units.json')).json(); } catch (e) { return 0; }
   if (OVERLAY) { try { const o = await (await fetch(OVERLAY + 'units.json', { cache: 'no-store' })).json(); for (const [k, d] of Object.entries(o.units || {})) j.units[k] = Object.assign({}, d, { url: OVERLAY + d.file }); } catch (e) { console.warn('unitsrc', e.message); } }
-  info = j; const L = new GLTFLoader(); let n = 0;
-  await Promise.all(Object.entries(j.units || {}).map(async ([key, d]) => {
+  const own = Object.entries(j.units || {}); j.units = Object.assign(j.units || {}, info.units); info = j;
+  return (await Promise.all(own.map(([key, d]) => loadOne(key, d)))).filter(Boolean).length;
+}
+// homies (lanes/homie-models.js): a homie whose row has a model loads as its own kind, under its id, only when asked for
+// (the crews of the heroes in the match, or the crew the menu shows), never all 43 at once. Until its model has loaded and
+// its clips are baked the stand-in creep is drawn; a homie whose clips fail to bake stays on its stand-in (never a bind pose).
+const asked = {};
+// One model at a time with a frame between (its bake and outline hull run on the main thread), and after `delay` ms: on the
+// menu a burst of bakes held the screen's entry animation, so the first tap on Play landed before the button had risen.
+let chain = Promise.resolve();
+const nextFrame = () => new Promise((ok) => (typeof requestAnimationFrame === 'function' ? requestAnimationFrame(() => setTimeout(ok, 0)) : setTimeout(ok, 0)));
+export function loadHomies(ids, opt = {}) {
+  const HM = globalThis.SBL_HOMIE_MODELS || {}, jobs = [];
+  const start = opt.delay ? new Promise((ok) => setTimeout(ok, opt.delay)) : Promise.resolve();
+  for (const id of ids) { const m = HM[id]; if (!m || !m.model || !m.model.file || asked[id]) continue;
+    if (!KEYS.includes(id)) KEYS.push(id); const key = homieKey(id, m); info.units[key] = m.model;
+    asked[id] = chain = Promise.all([chain, ready, start]).then(nextFrame).then(() => loadOne(key, m.model, true)); jobs.push(asked[id]); }
+  return Promise.all(jobs).then((r) => r.filter(Boolean).length);
+}
+export const homieLoaded = (id) => { const m = (globalThis.SBL_HOMIE_MODELS || {})[id]; return !!(m && MODELS[homieKey(id, m)]); };
+const LOADER = new GLTFLoader();
+async function loadOne(key, d, homie) {
+  const base = BASE, onReady = ON_READY, L = LOADER;
     try {
       const g = await L.loadAsync(d.url || base + d.file); let mesh = null; g.scene.updateMatrixWorld(true); g.scene.traverse((o) => { if (o.isMesh && !mesh) mesh = o; });
       const geo = mesh.geometry.clone(); geo.applyMatrix4(mesh.matrixWorld); if (d.scale) geo.scale(d.scale, d.scale, d.scale); if (d.turn) geo.rotateY(d.turn);
       let bake = null; if (mesh.isSkinnedMesh && g.animations.length && !NOBAKE) { try { bake = bakeClips(g, mesh, d); } catch (e) { console.warn('creep clips', key, e.message); } }
+      if (homie && !(bake && bake.clips.idle && bake.clips.walk)) { console.warn('homie model without baked clips stays on its stand-in', key); return 0; }
       const tuv = geo.attributes.uv1; if (tuv) { const a = new Float32Array(tuv.count); for (let i = 0; i < tuv.count; i++) a[i] = tuv.getX(i); geo.setAttribute('aTeam', new THREE.BufferAttribute(a, 1)); }
       for (const k of Object.keys(geo.attributes)) if (!['position', 'normal', 'uv', 'aTeam'].concat(bake ? ['skinIndex', 'skinWeight'] : []).includes(k)) geo.deleteAttribute(k);
       const map = mesh.material.map; if (map) { map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4; }
       const mo = { map, sat: d.sat, contrast: d.contrast, top: (d.height || 1.2) * (d.scale || 1), bones: bake && bake.tex }, mats = {};
       if (d.ramp) mo.ramp = d.ramp; if (d.rim !== undefined) mo.rim = d.rim; if (d.round) mo.round = d.round;   // optional light switches (see ramp() and set())
-      MODELS[key] = { key, info: d, w0: d.scale || 1, geo, hull: LOOK.hullGeometry(geo), bones: bake && bake.tex, clips: bake && bake.clips, mat: creepMaterial(mo),
-        matFor: (col) => NOTEAM ? MODELS[key].mat : mats[col] || (mats[col] = creepMaterial(Object.assign({}, mo, { team: col }))) };   // one material per team: the team part's colour
-      const [kn, bn] = key.split('_'); drop(KEYS.indexOf(kn) + '_' + BODY.indexOf(bn) + '_'); n++; if (onReady) onReady(key);
-    } catch (e) { console.warn('creep model', key, e.message); }
-  }));
-  return n;
+      // units.json "teamMaps" (optional): {"blue": file, "red": file}, files beside the GLB: a whole texture per team (the team part
+      // painted in the texture, e.g. a headband) in place of the team uv recolour; keyed by the palette's team colours
+      const tmaps = {}; if (d.teamMaps) { const TL = new THREE.TextureLoader(), dir = (d.url || base + d.file).replace(/[^/]*$/, '');
+        await Promise.all(Object.entries(d.teamMaps).map(async ([t, f]) => { const tx = await TL.loadAsync(dir + f); tx.flipY = false; tx.colorSpace = THREE.SRGBColorSpace; tx.anisotropy = 4; if (map) { tx.wrapS = map.wrapS; tx.wrapT = map.wrapT; } tmaps[LOOK.palette.team[t]] = tx; })); }
+      MODELS[key] = { key, info: d, w0: d.scale || 1, geo, hull: LOOK.hullGeometry(geo), bones: bake && bake.tex, clips: bake && bake.clips, mat: creepMaterial(mo), tmaps, homie: !!homie,
+        matFor: (col) => NOTEAM ? MODELS[key].mat : mats[col] || (mats[col] = creepMaterial(Object.assign({}, mo, { team: col }, tmaps[col] ? { map: tmaps[col] } : {}))) };   // one material per team: the team part's colour (or the team's own texture)
+      const cut = key.lastIndexOf('_'), kn = key.slice(0, cut), bn = key.slice(cut + 1); drop(KEYS.indexOf(kn) + '_' + BODY.indexOf(bn) + '_'); if (onReady) onReady(key); return 1;
+    } catch (e) { console.warn('creep model', key, e.message); return 0; }
 }

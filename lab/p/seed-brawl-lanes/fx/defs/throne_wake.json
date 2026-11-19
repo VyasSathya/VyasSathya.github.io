@@ -1,0 +1,6 @@
+{"id": "throne_wake", "about": "The throne wakes when a guard tower falls (refine-towers, layout b): a flash on the house, a team ring that grows to the throne's real reach (radius), sparkles rising. x,z = throne.", "element": "seed", "proof": {"times": [0.05, 0.2, 0.4, 0.7, 1.0]}, "layers": [
+    {"name": "flash", "tex": "fx_p_flash", "blend": "glow", "ramp": "flash", "size": 2.4, "sizeCurve": "snap", "life": 0.14, "height": 1.6, "bright": 2, "toCam": 1.8},
+    {"name": "reach", "tex": "fx_p_shock_ring", "ground": true, "blend": "matter", "ramp": "team", "size": "radius:2.35", "sizeCurve": "grow", "life": 0.55, "height": 0.05, "alpha": 0.6, "fadeOut": 0.5},
+    {"name": "reach light", "tex": "fx_p_glow_ring", "ground": true, "blend": "glow", "ramp": "hot", "size": "radius:2.3", "sizeCurve": "grow", "life": 0.5, "height": 0.06, "alpha": 0.7, "fadeOut": 0.6},
+    {"name": "rise", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "seed_l", "seed"], "emit": {"burst": 12}, "shape": "ring", "spread": 0.8, "size": [0.2, 0.3], "life": [0.6, 0.9], "height": 0.2, "dir": "up", "speed": [1.6, 2.6], "drag": 1.5, "bright": 1.5, "fadeOut": 0.5}
+  ]}

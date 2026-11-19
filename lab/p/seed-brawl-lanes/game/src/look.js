@@ -57,6 +57,7 @@ export const toonRamp = makeRamp([120, 196, 255]);
 // ---------------------------------------------------------------- lights
 // One key light and one hemisphere fill for the whole game. The rim term is in the shader, not a light.
 export const RIM_DIR = new THREE.Vector3(-0.55, 0.65, -0.5).normalize(); // world space, from behind-left-above
+const KEY_DIR = new THREE.Vector3(-4, 10, 7).normalize();                 // the sun in addLights, for the sheen band
 export function addLights(scene) {
   const hemi = new THREE.HemisphereLight(0xfff6e8, 0x7a8a9a, 1.25);
   const sun = new THREE.DirectionalLight(0xfff4e0, 2.0);
@@ -67,7 +68,7 @@ export function addLights(scene) {
 
 // ---------------------------------------------------------------- toon material
 // opts: map, color, vertexColors, sat (saturation lift, default 1.25 for textures), contrast, rim (strength),
-//       emissive. Returns a MeshToonMaterial with the rim and texture pass injected.
+//       emissive, lift (colour near-black albedo is raised toward). Returns a MeshToonMaterial with the rim and texture pass injected.
 export function toonMaterial(opts = {}) {
   const m = new THREE.MeshToonMaterial({
     map: opts.map || null,
@@ -84,26 +85,42 @@ export function toonMaterial(opts = {}) {
     uRim: { value: opts.rim !== undefined ? opts.rim : 0.55 },
     uRimCol: { value: new THREE.Color(palette.rim) },
     uRimDir: { value: RIM_DIR },
+    // dark lift: albedo near black is raised toward this colour (whites unchanged), so a mostly black hide still shows
+    // its shape and light from the game camera (the penguin read as one black shape on his back). Default black = off.
+    uLift: { value: new THREE.Color(opts.lift !== undefined ? opts.lift : 0x000000) },
+    // rim width: 0 = the shipped band; a positive value starts the band earlier so it covers more of the edge
+    uRimW: { value: opts.rimWidth || 0 },
+    // sheen: a cel highlight band where the key light glances off, only on dark albedo (glossy black feathers). 0 = off.
+    uSheen: { value: opts.sheen || 0 },
+    uSheenCol: { value: new THREE.Color(opts.sheenColor !== undefined ? opts.sheenColor : 0xa8bce0) },
+    uKeyDir: { value: KEY_DIR },
   };
   m.userData.look = u;
   m.onBeforeCompile = (s) => {
     Object.assign(s.uniforms, u);
     s.fragmentShader = s.fragmentShader
       .replace('#include <common>', `#include <common>
-uniform float uSat; uniform float uCon; uniform float uRim; uniform vec3 uRimCol; uniform vec3 uRimDir;`)
+uniform float uSat; uniform float uCon; uniform float uRim; uniform vec3 uRimCol; uniform vec3 uRimDir; uniform vec3 uLift; uniform float uRimW; uniform float uSheen; uniform vec3 uSheenCol; uniform vec3 uKeyDir;`)
       // texture pass: lift saturation and contrast of the (linear) albedo after it is sampled
       .replace('#include <map_fragment>', `#include <map_fragment>
 { float l = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
   diffuseColor.rgb = max(mix(vec3(l), diffuseColor.rgb, uSat), 0.0);
-  diffuseColor.rgb = clamp((diffuseColor.rgb - 0.18) * uCon + 0.18, 0.0, 1.0); }`)
+  diffuseColor.rgb = clamp((diffuseColor.rgb - 0.18) * uCon + 0.18, 0.0, 1.0);
+  diffuseColor.rgb = uLift + diffuseColor.rgb * (1.0 - uLift); }`)
       // warm rim: banded fresnel, only on faces turned toward the rim direction, added after lighting
       .replace('#include <opaque_fragment>', `{
   vec3 vd = normalize(vViewPosition);
   float fr = 1.0 - clamp(dot(normal, vd), 0.0, 1.0);
   vec3 rd = normalize((viewMatrix * vec4(uRimDir, 0.0)).xyz);
   float side = clamp(dot(normal, rd) * 0.8 + 0.35, 0.0, 1.0);
-  float rim = smoothstep(0.62, 0.70, fr) * side;
+  float rim = smoothstep(0.62 - uRimW, 0.70 - uRimW, fr) * side;
   outgoingLight += uRimCol * rim * uRim * (0.35 + 0.65 * diffuseColor.rgb);
+  if (uSheen > 0.0) {
+    vec3 kd = normalize((viewMatrix * vec4(uKeyDir, 0.0)).xyz);
+    float nh = dot(normal, normalize(kd + vd));
+    float dark = 1.0 - smoothstep(0.04, 0.2, dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722)));
+    outgoingLight += uSheenCol * (smoothstep(0.80, 0.84, nh) * 0.75 + smoothstep(0.93, 0.95, nh) * 0.25) * uSheen * dark;
+  }
 }
 #include <opaque_fragment>`);
   };
@@ -234,26 +251,101 @@ const loader = new GLTFLoader();
 let heroBase = 'assets/heroes/';
 export function setHeroBase(url) { heroBase = url.endsWith('/') ? url : url + '/'; }
 let rosterP = null;
-export function heroRoster() { if (!rosterP) rosterP = fetch(heroBase + 'heroes.json').then((r) => r.json()); return rosterP; }
+export function heroRoster() {
+  if (!rosterP) rosterP = Promise.all([fetch(heroBase + 'heroes.json').then((r) => r.json()),
+    fetch(heroBase + 'cosmetics.json').then((r) => r.ok ? r.json() : { items: [] }).catch(() => ({ items: [] }))])   // no catalog: every hero as he is
+    .then(([d, c]) => { catalogData = c && Array.isArray(c.items) ? c : { items: [] }; return (rosterData = d); });
+  return rosterP;
+}
 const gltfCache = new Map();
 const heroMatCache = new Map();
 
-// loadHero(id, {team, ring, shadow, outline}) -> {root, body, mixer, clips, size, info}
+// ---- skins (work/refine-looks/SKINS.md). Skins are items of the cosmetics catalog (assets/heroes/cosmetics.json, the
+// Rollybully item shape): slot "skin", owner "hero", "asset" = the model id here, "look" = look fields laid over the
+// model's own (lift, rim, rimWidth, sat, contrast, outline, sheen, sheenColor, recolor). Any hero gets skins by adding
+// items. A skin is asked for by its item id; an unknown id, or one for another model, draws the model as it is.
+// The page flag ?look=penguin:gloss,fox:B (model id: the item's last id part or its option letter) overrides every pick.
+function lookPicks() {
+  const out = {};
+  try { const v = new URLSearchParams(location.search).get('look'); if (v) for (const p of v.split(',')) { const [id, k] = p.split(':'); if (id && k) out[id] = k; } } catch (e) { }
+  return out;
+}
+const LOOK_PICKS = lookPicks();
+let rosterData = null, catalogData = { items: [] };
+export const catalog = () => catalogData.items;
+export const catalogItem = (id) => catalogData.items.find((it) => it.id === id) || null;
+const forModel = (modelId) => catalogData.items.filter((it) => it.slot === 'skin' && it.asset === modelId);
+function pickFor(modelId, skin) {
+  const k = LOOK_PICKS[modelId];
+  if (k) { const it = forModel(modelId).find((s) => s.id.split('.').pop() === k || s.option === k); if (it) return it; }
+  const it = skin ? catalogItem(skin) : null; return it && it.slot === 'skin' && it.asset === modelId ? it : null;
+}
+export function heroLook(info, skin) {
+  const it = pickFor(info.id, skin);
+  return it ? Object.assign({}, info, it.look || {}, { skin: it.id, skinName: it.name }) : Object.assign({}, info, { skin: '', skinName: '' });
+}
+// the skin items of a game hero (catalog "hero"), in catalog order; [] before the roster is loaded
+export const heroSkins = (heroId) => catalogData.items.filter((it) => it.slot === 'skin' && it.hero === heroId);
+// the item a model is drawn in for an asked skin, the ?look flag included (null: the model as it is)
+export const heroSkin = (modelId, skin) => pickFor(modelId, skin);
+// recolor rules, applied once to a copy of the hero's texture on a canvas (the GLB on disk is untouched).
+// rule: {h:[lo,hi] degrees (lo > hi wraps through 0), s:[lo,hi], v:[lo,hi]} to match (each optional, soft edges),
+//       then toH (hue in degrees) or dh (hue shift), sMul / sSet, vMap [a,b] (the matched v range mapped onto a..b) or vMul.
+function rgb2hsv(r, g, b) { const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; let h = 0;
+  if (d > 1e-6) { if (mx === r) h = ((g - b) / d + 6) % 6; else if (mx === g) h = (b - r) / d + 2; else h = (r - g) / d + 4; h *= 60; }
+  return [h, mx > 0 ? d / mx : 0, mx]; }
+function hsv2rgb(h, s, v) { h = ((h % 360) + 360) % 360 / 60; const i = Math.floor(h), f = h - i, p = v * (1 - s), q = v * (1 - s * f), t = v * (1 - s * (1 - f));
+  return [[v, t, p], [q, v, p], [p, v, t], [p, q, v], [t, p, v], [v, p, q]][i % 6]; }
+const soft = (x, lo, hi, e) => Math.min(1, Math.max(0, (x - lo) / e + 1)) * Math.min(1, Math.max(0, (hi - x) / e + 1));
+function hueIn(h, lo, hi, e) { if (lo <= hi) return soft(h, lo, hi, e); return Math.max(soft(h, lo, 360 + e, e), soft(h, -e, hi, e)); }
+export function recolorTexture(tex, rules) {
+  const img = tex.image, w = img.width, h = img.height, c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0); const id = x.getImageData(0, 0, w, h), d = id.data;
+  for (let i = 0; i < d.length; i += 4) {
+    let r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
+    for (const R of rules) {
+      const [H, S, V] = rgb2hsv(r, g, b);
+      let wgt = 1;
+      if (R.h) wgt *= hueIn(H, R.h[0], R.h[1], 6);
+      if (R.s) wgt *= soft(S, R.s[0], R.s[1], 0.05);
+      if (R.v) wgt *= soft(V, R.v[0], R.v[1], 0.04);
+      if (wgt <= 0) continue;
+      let h2 = R.toH !== undefined ? R.toH : H + (R.dh || 0), s2 = R.sSet !== undefined ? R.sSet : S * (R.sMul !== undefined ? R.sMul : 1), v2 = V;
+      if (R.vMap) { const lo = R.v ? R.v[0] : 0, hi = R.v ? R.v[1] : 1, k = Math.min(1, Math.max(0, (V - lo) / Math.max(1e-6, hi - lo))); v2 = R.vMap[0] + k * (R.vMap[1] - R.vMap[0]); }
+      else if (R.vMul !== undefined) v2 = V * R.vMul;
+      const [r2, g2, b2] = hsv2rgb(h2, Math.min(1, Math.max(0, s2)), Math.min(1, Math.max(0, v2)));
+      r += (r2 - r) * wgt; g += (g2 - g) * wgt; b += (b2 - b) * wgt;
+    }
+    d[i] = r * 255; d[i + 1] = g * 255; d[i + 2] = b * 255;
+  }
+  x.putImageData(id, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.flipY = tex.flipY; t.wrapS = tex.wrapS; t.wrapT = tex.wrapT; t.colorSpace = THREE.SRGBColorSpace; t.channel = tex.channel;
+  t.magFilter = tex.magFilter; t.minFilter = tex.minFilter; t.anisotropy = tex.anisotropy; t.needsUpdate = true;
+  return t;
+}
+
+// loadHero(id, {team, ring, shadow, outline, skin}) -> {root, body, mixer, clips, size, info}   (info.skin: the skin drawn)
 //   root: group with feet at y=0 and the hero facing +Z (toward the camera). Rotate root.rotation.y = PI to face up the map.
 //   size: {width, height} in tiles from heroes.json; the model is scaled so its height matches.
 export async function loadHero(id, opts = {}) {
   const roster = await heroRoster();
-  const info = roster.heroes.find((h) => h.id === id);
-  if (!info) throw new Error('unknown hero ' + id);
-  if (!gltfCache.has(id)) gltfCache.set(id, loader.loadAsync(heroBase + (info.file || id + '.glb')));
-  const gltf = await gltfCache.get(id);
+  const info0 = roster.heroes.find((h) => h.id === id);
+  if (!info0) throw new Error('unknown hero ' + id);
+  const info = heroLook(info0, opts.skin);
+  const file = info.file || id + '.glb';   // a skin may draw another model file on the same skeleton (look "file")
+  if (!gltfCache.has(file)) gltfCache.set(file, loader.loadAsync(heroBase + file));
+  const gltf = await gltfCache.get(file);
   const body = SkeletonUtils.clone(gltf.scene);
-  // one shared toon material per hero
-  if (!heroMatCache.has(id)) {
+  // one shared toon material per hero and skin
+  const mk = id + ':' + info.skin;
+  if (!heroMatCache.has(mk)) {
     let src = null; gltf.scene.traverse((o) => { if (o.isMesh && !src) src = o.material; });
-    heroMatCache.set(id, toonMaterial({ map: src && src.map, sat: info.sat, contrast: info.contrast }));
+    let map = src && src.map;
+    if (map && info.recolor && info.recolor.length) map = recolorTexture(map, info.recolor);
+    heroMatCache.set(mk, toonMaterial({ map, sat: info.sat, contrast: info.contrast, lift: info.lift, rim: info.rim, rimWidth: info.rimWidth, sheen: info.sheen, sheenColor: info.sheenColor !== undefined ? new THREE.Color(info.sheenColor).getHex() : undefined }));
   }
-  const mat = heroMatCache.get(id);
+  const mat = heroMatCache.get(mk);
   body.traverse((o) => { if (o.isMesh) { o.material = mat; o.frustumCulled = false; } });
   // measure at bind pose, then scale to the roster height and put the feet on the floor
   body.updateMatrixWorld(true);
@@ -268,7 +360,7 @@ export async function loadHero(id, opts = {}) {
   if (fn) fc.divideScalar(fn); else box.getCenter(fc);
   body.scale.setScalar(s);
   body.position.set(-fc.x * s, -box.min.y * s, -fc.z * s);
-  if (opts.outline !== false) addOutline(body, opts.outlineWidth || OUTLINE_PX);
+  if (opts.outline !== false) addOutline(body, opts.outlineWidth || OUTLINE_PX, info.outline ? new THREE.Color(info.outline).getHex() : palette.outline);
   const root = new THREE.Group();
   root.add(body);
   if (opts.shadow !== false) root.add(blobShadow(info.width * 0.62));

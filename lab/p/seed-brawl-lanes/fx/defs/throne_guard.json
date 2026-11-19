@@ -1,0 +1,5 @@
+{"id": "throne_guard", "about": "A sleeping throne (refine-towers, layout b): while both guard towers stand it cannot be hurt and does not shoot; a slow team-coloured glow turns round its feet with a few rising motes. Ends (stop) when a tower falls. x,z = throne, radius about 1.9.", "element": "seed", "loop": true, "tail": 0.5, "proof": {"times": [0.3, 1.0, 2.0, 3.0, 4.0], "duration": 5}, "layers": [
+    {"name": "guard ring", "tex": "fx_p_glow_ring", "ground": true, "hold": true, "blend": "matter", "ramp": "team", "size": "radius:2.4", "life": "duration:1:0", "spin": 12, "height": 0.03, "alpha": 0.55, "fadeIn": 0.05, "fadeOut": 0.2},
+    {"name": "guard edge", "tex": "fx_p_shock_ring", "ground": true, "hold": true, "blend": "matter", "ramp": "team", "size": "radius:2.6", "life": "duration:1:0", "spin": -6, "height": 0.035, "alpha": 0.5, "fadeIn": 0.05, "fadeOut": 0.2},
+    {"name": "motes", "tex": "fx_p_flash", "blend": "glow", "tokens": ["white", "seed_l", "seed"], "emit": {"rate": 3}, "shape": "ring", "spread": 0.9, "size": [0.14, 0.2], "life": [0.9, 1.3], "height": 0.2, "dir": "up", "speed": [0.6, 1.0], "bright": 1.2, "fadeIn": 0.25, "fadeOut": 0.5}
+  ]}
