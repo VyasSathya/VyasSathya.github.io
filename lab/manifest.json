@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "walk-pet",
+   "key": "walk-pet",
+   "title": "Walk Pet",
+   "url": "p/walk-pet/index.html",
+   "added": "2026-11-19",
+   "v": "20261119113747"
+  },
+  {
    "id": "step-duel",
    "key": "step-duel",
    "title": "Step Duel",
