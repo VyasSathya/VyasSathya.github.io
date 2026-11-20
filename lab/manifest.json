@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "date-ninja-controls",
+   "key": "date-ninja-controls",
+   "title": "Date Ninja - controls per device",
+   "url": "p/date-ninja-controls/index.html",
+   "added": "2026-11-19",
+   "v": "20261119173601"
+  },
+  {
    "id": "music-battler-moves",
    "key": "music-battler-moves",
    "title": "Music Battler: role moves",
