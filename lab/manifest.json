@@ -1,6 +1,54 @@
 {
  "items": [
   {
+   "id": "date-ninja-fun",
+   "key": "date-ninja-fun",
+   "title": "Date Ninja now (no option)",
+   "url": "p/date-ninja-fun/index.html",
+   "added": "2026-11-19",
+   "v": "20261119181427"
+  },
+  {
+   "id": "date-ninja-fun",
+   "key": "date-ninja-fun?fun=A",
+   "title": "Date Ninja A: zig-zag combo",
+   "url": "p/date-ninja-fun/index.html?fun=A",
+   "added": "2026-11-19",
+   "v": "20261119181427"
+  },
+  {
+   "id": "date-ninja-fun",
+   "key": "date-ninja-fun?fun=B",
+   "title": "Date Ninja B: swipe up Super Like",
+   "url": "p/date-ninja-fun/index.html?fun=B",
+   "added": "2026-11-19",
+   "v": "20261119181427"
+  },
+  {
+   "id": "date-ninja-fun",
+   "key": "date-ninja-fun?fun=C",
+   "title": "Date Ninja C: Spring Break any direction",
+   "url": "p/date-ninja-fun/index.html?fun=C",
+   "added": "2026-11-19",
+   "v": "20261119181427"
+  },
+  {
+   "id": "date-ninja-fun",
+   "key": "date-ninja-fun?fun=D",
+   "title": "Date Ninja D: lines for one stroke",
+   "url": "p/date-ninja-fun/index.html?fun=D",
+   "added": "2026-11-19",
+   "v": "20261119181427"
+  },
+  {
+   "id": "date-ninja-fun",
+   "key": "date-ninja-fun?fun=E",
+   "title": "Date Ninja E: two fingers",
+   "url": "p/date-ninja-fun/index.html?fun=E",
+   "added": "2026-11-19",
+   "v": "20261119181427"
+  },
+  {
    "id": "date-ninja-controls",
    "key": "date-ninja-controls",
    "title": "Date Ninja - controls per device",
