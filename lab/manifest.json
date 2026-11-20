@@ -57,14 +57,6 @@
    "v": "20261119173601"
   },
   {
-   "id": "music-battler-moves",
-   "key": "music-battler-moves",
-   "title": "Music Battler: role moves",
-   "url": "p/music-battler-moves/index.html",
-   "added": "2026-11-19",
-   "v": "20261119134722"
-  },
-  {
    "id": "seed-brawl-lanes",
    "key": "seed-brawl-lanes",
    "title": "Fur Frenzy 1.0",
@@ -103,14 +95,6 @@
    "url": "p/sky-flick/index.html",
    "added": "2026-11-18",
    "v": "20261118220222"
-  },
-  {
-   "id": "music-battler-feels",
-   "key": "music-battler-feels",
-   "title": "Music Battler feels",
-   "url": "p/music-battler-feels/index.html",
-   "added": "2026-11-18",
-   "v": "20261118102939"
   },
   {
    "id": "music-battler-looks",
