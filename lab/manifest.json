@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "music-battler-feel-bazaar",
+   "key": "music-battler-feel-bazaar",
+   "title": "Music Battler: feel The Bazaar",
+   "url": "p/music-battler-feel-bazaar/index.html",
+   "added": "2026-11-21",
+   "v": "20261121072357"
+  },
+  {
    "id": "round-em-up-polish-1",
    "key": "round-em-up-polish-1",
    "title": "Round Em Up polish 2",
