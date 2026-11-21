@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "music-battler-feel-backpack",
+   "key": "music-battler-feel-backpack",
+   "title": "Music Battler: feel Backpack Battles",
+   "url": "p/music-battler-feel-backpack/index.html",
+   "added": "2026-11-21",
+   "v": "20261121072819"
+  },
+  {
    "id": "music-battler-feel-battlegrounds",
    "key": "music-battler-feel-battlegrounds",
    "title": "Music Battler: feel Battlegrounds",
