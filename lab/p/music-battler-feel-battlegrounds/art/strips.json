@@ -1,0 +1,422 @@
+{
+ "bf-drums": {
+  "w": 96,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-bass": {
+  "w": 131,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-guitar": {
+  "w": 102,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-keys": {
+  "w": 99,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-strings": {
+  "w": 83,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-taiko": {
+  "w": 93,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-singer": {
+  "w": 109,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-arp": {
+  "w": 97,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-choir": {
+  "w": 116,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-drums": {
+  "w": 114,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-bass": {
+  "w": 99,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-guitar": {
+  "w": 103,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-keys": {
+  "w": 131,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-strings": {
+  "w": 80,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-taiko": {
+  "w": 120,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-singer": {
+  "w": 97,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-arp": {
+  "w": 99,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "ss-choir": {
+  "w": 102,
+  "h": 150,
+  "n": 10,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "play_heavy-0",
+   "play_heavy-1",
+   "play_heavy-2",
+   "play_heavy-3",
+   "play_heavy-4",
+   "play_heavy-5",
+   "hit-2"
+  ]
+ },
+ "bf-lead-countin": {
+  "w": 114,
+  "h": 150,
+  "n": 12,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "conduct-0",
+   "conduct-1",
+   "conduct-2",
+   "conduct-3",
+   "conduct-4",
+   "conduct-5",
+   "hit-2",
+   "cheer-2",
+   "ko-5"
+  ]
+ },
+ "bf-lead-frontman": {
+  "w": 112,
+  "h": 150,
+  "n": 12,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "conduct-0",
+   "conduct-1",
+   "conduct-2",
+   "conduct-3",
+   "conduct-4",
+   "conduct-5",
+   "hit-2",
+   "cheer-2",
+   "ko-5"
+  ]
+ },
+ "bf-lead-conductor": {
+  "w": 84,
+  "h": 150,
+  "n": 12,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "conduct-0",
+   "conduct-1",
+   "conduct-2",
+   "conduct-3",
+   "conduct-4",
+   "conduct-5",
+   "hit-2",
+   "cheer-2",
+   "ko-5"
+  ]
+ },
+ "ss-lead-countin": {
+  "w": 121,
+  "h": 150,
+  "n": 12,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "conduct-0",
+   "conduct-1",
+   "conduct-2",
+   "conduct-3",
+   "conduct-4",
+   "conduct-5",
+   "hit-2",
+   "cheer-2",
+   "ko-5"
+  ]
+ },
+ "ss-lead-frontman": {
+  "w": 115,
+  "h": 150,
+  "n": 12,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "conduct-0",
+   "conduct-1",
+   "conduct-2",
+   "conduct-3",
+   "conduct-4",
+   "conduct-5",
+   "hit-2",
+   "cheer-2",
+   "ko-5"
+  ]
+ },
+ "ss-lead-conductor": {
+  "w": 107,
+  "h": 150,
+  "n": 12,
+  "frames": [
+   "idle-0",
+   "idle-2",
+   "idle-4",
+   "conduct-0",
+   "conduct-1",
+   "conduct-2",
+   "conduct-3",
+   "conduct-4",
+   "conduct-5",
+   "hit-2",
+   "cheer-2",
+   "ko-5"
+  ]
+ }
+}

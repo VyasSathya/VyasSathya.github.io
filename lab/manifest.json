@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "music-battler-feel-battlegrounds",
+   "key": "music-battler-feel-battlegrounds",
+   "title": "Music Battler: feel Battlegrounds",
+   "url": "p/music-battler-feel-battlegrounds/index.html",
+   "added": "2026-11-21",
+   "v": "20261121072412"
+  },
+  {
    "id": "music-battler-feel-bazaar",
    "key": "music-battler-feel-bazaar",
    "title": "Music Battler: feel The Bazaar",

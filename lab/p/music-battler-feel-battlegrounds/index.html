@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Battlegrounds Feel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f3f0;--surface:#ffffff;--surface2:#ecebe7;--line:rgba(20,20,25,.10);--line2:rgba(20,20,25,.18);
+  --text:#18181b;--muted:#6f6f78;--accent:#b97a12;--accent-ink:#fff;--storm:#3f63b5;--danger:#d33f3f;
+  --bf-card:linear-gradient(180deg,#fbf3e2 0%,#efe0bf 100%);--ss-card:linear-gradient(180deg,#e8eef9 0%,#d3ddf0 100%);
+  --stage:radial-gradient(120% 80% at 50% 40%,#ffffff 0%,#ecebe7 70%);
+  --atk:#26262b;--atk-ink:#fff;--gold:#d9a521;
+  --r:10px;--gap:5px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101013;--surface:#18181c;--surface2:#212126;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);
+  --text:#ececef;--muted:#9a9aa4;--accent:#d8992b;--accent-ink:#141414;--storm:#7b9be6;--danger:#e35b5b;
+  --bf-card:linear-gradient(180deg,#3a3122 0%,#2a2418 100%);--ss-card:linear-gradient(180deg,#232c40 0%,#1b2131 100%);
+  --stage:radial-gradient(120% 80% at 50% 40%,#1d1d22 0%,#121215 70%);
+  --atk:#ececef;--atk-ink:#141414;
+}}
+:root[data-theme="dark"]{
+  --bg:#101013;--surface:#18181c;--surface2:#212126;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);
+  --text:#ececef;--muted:#9a9aa4;--accent:#d8992b;--accent-ink:#141414;--storm:#7b9be6;--danger:#e35b5b;
+  --bf-card:linear-gradient(180deg,#3a3122 0%,#2a2418 100%);--ss-card:linear-gradient(180deg,#232c40 0%,#1b2131 100%);
+  --stage:radial-gradient(120% 80% at 50% 40%,#1d1d22 0%,#121215 70%);
+  --atk:#ececef;--atk-ink:#141414;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;
+  -webkit-user-select:none;user-select:none;touch-action:manipulation}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--stage);
+  --cw:min(calc((100vw - 20px - 6 * var(--gap)) / 7), calc(18.5dvh * .68), 128px);--ch:calc(var(--cw) / .68)}
+@media (min-width:700px){#app{--gap:10px;--cw:min(calc((100vw - 60px - 6 * var(--gap)) / 7), calc(18.5dvh * .68), 128px)}}
+
+/* lobby */
+#lobby{display:flex;justify-content:center;gap:4px;padding:44px 5px 6px;flex:0 0 auto}
+.chip{position:relative;width:44px;height:44px;border-radius:50%;background:var(--surface2);border:1px solid var(--line);overflow:visible;flex:0 0 auto}
+.chip .face{position:absolute;inset:0;border-radius:50%;background-repeat:no-repeat;overflow:hidden}
+.chip .n{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:0 4px;line-height:13px}
+.chip.you{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.chip.opp{box-shadow:0 0 0 2px var(--danger)}
+.chip.dead{opacity:.28;filter:grayscale(1)}
+@media (min-width:700px){.chip{width:48px;height:48px}#lobby{gap:12px;padding-top:44px}}
+
+#mid{flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;min-height:0;padding:0 10px}
+@media (min-width:700px){#mid{padding:0 30px}}
+#bar{position:relative;width:100%;max-width:980px;height:54px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px}
+#timer{position:absolute;left:0;right:0;top:0;height:2px;border-radius:2px;background:var(--line);overflow:hidden}
+#timer i{display:block;height:100%;background:var(--accent);transform-origin:left center}
+.btn{height:44px;min-width:48px;padding:0 14px;border-radius:22px;background:var(--surface);border:1px solid var(--line2);display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:14px}
+.btn svg{width:18px;height:18px}
+.btn.on{background:var(--storm);color:#fff;border-color:transparent}
+.btn.acc{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn[disabled],.btn.off{opacity:.38;pointer-events:none}
+.cost{font-variant-numeric:tabular-nums;font-weight:700}
+.tier{display:inline-flex;align-items:center;gap:8px}
+.tierbadge{width:44px;height:44px;border-radius:12px;background:var(--surface);border:1px solid var(--line2);display:grid;place-items:center;font-weight:700;font-size:17px}
+.gold{display:inline-flex;align-items:center;gap:5px;font-weight:700;font-size:16px;font-variant-numeric:tabular-nums}
+.coin{width:16px;height:16px;border-radius:50%;background:var(--gold);box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
+.grp{display:flex;gap:6px;align-items:center}
+
+.row{display:flex;justify-content:center;align-items:flex-end;gap:var(--gap);width:100%;height:calc(var(--ch) + 12px);flex:0 0 auto;position:relative}
+.row.hand{height:calc(var(--hh) + 10px)}
+.row.hand .card{width:var(--hw);height:var(--hh)}
+.row.hand.many .card{margin-left:var(--hov)}
+.row.hand.many .card:first-child{margin-left:0}
+.slotline{position:absolute;left:0;right:0;bottom:4px;height:1px;background:var(--line)}
+
+/* card */
+.card{position:relative;width:var(--cw);height:var(--ch);border-radius:var(--r);background:var(--bf-card);border:1px solid var(--line2);flex:0 0 auto;
+  transition:transform .14s ease-out, opacity .3s, filter .2s;will-change:transform}
+.card.ss{background:var(--ss-card)}
+.card .art{position:absolute;left:2px;right:2px;top:5%;bottom:9%;overflow:hidden;border-radius:calc(var(--r) - 3px)}
+.spr{position:absolute;bottom:0;left:50%;height:100%;transform:translateX(-50%) scaleX(var(--flip,1));background-repeat:no-repeat;background-size:calc(var(--n) * 100%) 100%;
+  animation:idle10 calc(var(--beat) * 3) steps(3) infinite}
+.card .a,.card .h{position:absolute;bottom:-6px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;z-index:3}
+.card .a{left:-4px;background:var(--atk);color:var(--atk-ink)}
+.card .h{right:-4px;background:var(--danger);color:#fff}
+.card .h.hurt{background:#8f2323}
+.card .pips{position:absolute;top:3px;left:4px;display:flex;gap:2px;z-index:3}
+.card .pips i{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.card .kw{position:absolute;top:2px;right:3px;display:flex;gap:2px;z-index:3}
+.card .kw i{width:13px;height:13px;display:block}
+.card .dr{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:12px;height:12px;border-radius:50%;background:var(--surface);border:1px solid var(--line2);z-index:3;display:none}
+.card.hasdr .dr{display:block}
+.card .dr::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--muted)}
+.card.taunt{border:2px solid var(--muted);box-shadow:inset 0 0 0 2px var(--surface)}
+.card.shield::after{content:"";position:absolute;inset:-4px;border-radius:calc(var(--r) + 4px);border:2px solid rgba(255,205,70,.95);box-shadow:0 0 12px rgba(255,200,60,.55);pointer-events:none;z-index:2}
+.card.reborn .spr{filter:drop-shadow(0 0 3px rgba(110,190,255,.95))}
+.card.gold{border:2px solid var(--gold);box-shadow:0 0 0 1px rgba(217,165,33,.4),0 0 14px rgba(217,165,33,.35)}
+.card.tok .art{opacity:.85}
+.card.sel{transform:translateY(-8px)}
+.card.pick{animation:pulse 1s ease-in-out infinite}
+.card.wind{transform:translateY(-10px) scale(1.06);z-index:5}
+.card.wind .spr{animation:play10 calc(var(--beat) * 2) steps(6) infinite}
+.card.hit .spr{animation:none;background-position-x:100%}
+.card.dying{opacity:0;transform:scale(.7) rotate(-6deg)}
+.card.born{animation:born .3s ease-out}
+.card.frozen{filter:saturate(.5) brightness(1.05)}
+.card.frozen::before{content:"";position:absolute;inset:0;border-radius:var(--r);background:linear-gradient(160deg,rgba(150,200,255,.35),rgba(150,200,255,.08));z-index:2;pointer-events:none}
+.card.spell{background:var(--surface);display:grid;place-items:center}
+.card.spell .star{width:55%;aspect-ratio:1;color:var(--gold)}
+.card.spell .tt{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
+.float{position:absolute;left:50%;top:30%;transform:translate(-50%,0);font-weight:800;font-size:18px;color:var(--danger);text-shadow:0 1px 0 var(--surface);pointer-events:none;z-index:9;animation:float .8s ease-out forwards}
+.float.pop{color:var(--gold)}
+@keyframes float{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-26px)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(185,122,18,.0)}50%{box-shadow:0 0 0 4px rgba(185,122,18,.6)}}
+@keyframes born{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes idle10{from{background-position-x:0%}to{background-position-x:33.333%}}
+@keyframes play10{from{background-position-x:33.333%}to{background-position-x:100%}}
+@keyframes idle12{from{background-position-x:0%}to{background-position-x:27.273%}}
+@keyframes conduct12{from{background-position-x:27.273%}to{background-position-x:81.818%}}
+.shake{animation:shake .25s}
+@keyframes shake{0%,100%{translate:0 0}25%{translate:-3px 0}75%{translate:3px 0}}
+
+/* heroes */
+#foot{flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:6px 12px calc(10px + env(safe-area-inset-bottom));width:100%;max-width:1000px;margin:0 auto}
+.hero{position:relative;width:76px;height:86px;border-radius:14px;background:var(--surface);border:1px solid var(--line2);flex:0 0 auto}
+.hero .spr{animation:idle12 calc(var(--beat) * 3) steps(3) infinite;height:94%;bottom:2px}
+.hero.conduct .spr{animation:conduct12 calc(var(--beat) * 2) steps(6) infinite}
+.hero.hurt .spr{animation:none;background-position-x:81.818%}
+.hero .hp{position:absolute;right:-6px;bottom:-6px;min-width:26px;height:26px;padding:0 5px;border-radius:13px;background:var(--danger);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;z-index:3}
+.hero .ar{position:absolute;right:-6px;top:-6px;min-width:22px;height:22px;padding:0 4px;border-radius:7px;background:var(--surface2);border:1px solid var(--line2);display:grid;place-items:center;font-weight:700;font-size:11px;z-index:3}
+.hero .ar:empty{display:none}
+.footmid{display:flex;align-items:flex-end;gap:10px}
+.power{position:relative;width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid var(--line2);display:grid;place-items:center}
+.power svg{width:24px;height:24px;color:var(--accent)}
+.power .pc{position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#222;font-size:11px;font-weight:800;display:grid;place-items:center}
+.power.used{opacity:.35}
+.power.passive{border-style:dashed}
+.power.armed{box-shadow:0 0 0 3px var(--accent)}
+.fight{height:52px;padding:0 26px;border-radius:26px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px}
+#rivalhero{display:none;align-items:center;gap:10px;margin:0 auto}
+#rivalhero .nm{font-weight:600;font-size:14px;color:var(--muted)}
+#shopctl{display:contents}
+.phase-combat #shopctl{display:none}
+.phase-combat #rivalhero{display:flex}
+.phase-combat #rowH{display:none}
+.phase-combat .footmid{visibility:hidden}
+
+/* sheet and overlays */
+#veil{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .18s;z-index:20}
+#veil.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:50%;bottom:0;width:min(520px,100%);transform:translate(-50%,105%);transition:transform .2s ease-out;z-index:21;
+  background:var(--surface);border-radius:18px 18px 0 0;border:1px solid var(--line);padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+#sheet.on{transform:translate(-50%,0)}
+.sh{display:flex;gap:14px;align-items:flex-start}
+.sh .big{--cw:96px;--ch:141px}
+.sh h3{margin:2px 0 4px;font-size:18px;font-weight:700}
+.sh .meta{font-size:13px;color:var(--muted);margin-bottom:8px}
+.sh p{margin:0;font-size:15px;line-height:1.4}
+.acts{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap}
+.acts .btn{height:44px;padding:0 18px}
+#pick{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45)}
+#pick.on{display:flex}
+.pickbox{display:flex;gap:12px;padding:16px;max-width:100%;flex-wrap:nowrap;justify-content:center}
+.opt{width:min(30vw,220px);background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:10px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.opt .card{--cw:min(22vw,120px);--ch:calc(var(--cw) / .68)}
+.opt .hero{width:min(22vw,120px);height:min(28vw,150px)}
+.opt h4{margin:4px 0 0;font-size:15px}
+.opt .pn{font-size:12px;font-weight:600;color:var(--accent)}
+.opt p{margin:0;font-size:12px;line-height:1.35;color:var(--muted)}
+#end{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:var(--bg)}
+#end.on{display:flex}
+#end .place{font-size:84px;font-weight:700;letter-spacing:-2px}
+#end .who{font-size:15px;color:var(--muted)}
+.dmg{position:absolute;left:50%;top:-8px;transform:translateX(-50%);font-weight:800;font-size:22px;color:var(--danger);animation:float 1.2s ease-out forwards;z-index:9}
+</style>
+</head>
+<body>
+<div id="app" class="phase-shop">
+  <div id="lobby"></div>
+  <div id="mid">
+    <div id="bar">
+      <div id="timer"><i></i></div>
+      <div id="shopctl">
+        <div class="tier"><div class="tierbadge" id="tierN">1</div><button class="btn" id="bUp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span class="cost" id="upC">5</span></button></div>
+        <div class="grp"><button class="btn" id="bRef"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span class="cost" id="refC">1</span></button>
+          <button class="btn" id="bFrz" aria-label="Freeze"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7M9 4l3 3 3-3M9 20l3-3 3 3"/></svg></button></div>
+        <div class="gold"><span class="coin"></span><span id="goldN">3</span></div>
+      </div>
+      <div id="rivalhero"></div>
+    </div>
+    <div class="row" id="rowA"></div>
+    <div class="row" id="rowB"><div class="slotline"></div></div>
+    <div class="row hand" id="rowH"></div>
+  </div>
+  <div id="foot">
+    <div class="hero" id="youHero"></div>
+    <div class="footmid">
+      <button class="power" id="bPow"></button>
+      <button class="fight" id="bFight">Fight</button>
+    </div>
+  </div>
+</div>
+<div id="veil"></div>
+<div id="sheet"></div>
+<div id="pick"><div class="pickbox" id="pickbox"></div></div>
+<div id="end"><div class="place" id="endPlace"></div><div class="who" id="endWho"></div><button class="btn acc" id="bAgain" style="height:50px;padding:0 28px">Play again</button></div>
+<script src="art/strips.js"></script>
+<script src="song.js"></script>
+<script src="cards.js"></script>
+<script src="engine.js"></script>
+<script src="audio.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
