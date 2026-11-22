@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "squish",
+   "key": "squish",
+   "title": "Squish",
+   "url": "p/squish/index.html",
+   "added": "2026-11-22",
+   "v": "20261122115734"
+  },
+  {
    "id": "lead-band",
    "key": "lead-band",
    "title": "Lead the Band",

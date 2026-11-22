@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Squish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--sky1:#BDE7FF;--sky2:#EAF7FF;--deck:#FFD9A8;--deck2:#FFCB8E;--trim:#FF8A5B;--ink:#2B2340;--panel:#FFF4DE;--shade:43,35,64;--horizon:70%}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sky1:#2A3558;--sky2:#1E2643;--deck:#B98C63;--deck2:#A67A54;--trim:#D9663C;--ink:#FFF1DA;--panel:#2B2340;--shade:10,8,20}}
+:root[data-theme="dark"]{--sky1:#2A3558;--sky2:#1E2643;--deck:#B98C63;--deck2:#A67A54;--trim:#D9663C;--ink:#FFF1DA;--panel:#2B2340;--shade:10,8,20}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--sky1);font-family:Fredoka,system-ui,sans-serif;color:var(--ink);
+  touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#stage{position:fixed;inset:0;background:linear-gradient(var(--sky2),var(--sky1) var(--horizon),var(--deck) var(--horizon),var(--deck2) 100%)}
+#stage::before{content:"";position:absolute;left:0;right:0;top:var(--horizon);height:7px;margin-top:-3px;background:var(--trim)}
+#stage::after{content:"";position:absolute;left:var(--cx);top:var(--ground);width:var(--spot);height:calc(var(--spot)*.34);
+  transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.34),rgba(255,255,255,0))}
+#shadow{position:fixed;left:0;top:0;width:100px;height:20px;border-radius:50%;pointer-events:none;will-change:transform,opacity;
+  background:radial-gradient(closest-side,rgba(var(--shade),.34),rgba(var(--shade),.18) 55%,rgba(var(--shade),0))}
+#gl{position:fixed;inset:0;width:100%;height:100%;cursor:grab;opacity:0;transition:opacity .35s}
+#gl.ready{opacity:1}
+#gl.held{cursor:grabbing}
+#tray{position:fixed;display:flex;gap:6px;padding:6px;background:var(--panel);border-radius:999px;z-index:2;
+  box-shadow:0 4px 0 rgba(var(--shade),.12),0 10px 24px rgba(var(--shade),.10)}
+#tray.bottom{left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);flex-direction:row}
+#tray.side{right:max(12px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);flex-direction:column}
+#tray button{width:46px;height:46px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;position:relative;
+  transition:transform .18s cubic-bezier(.3,1.6,.5,1)}
+#tray button img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;transform:translateY(2px)}
+#tray button::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 3px var(--trim);opacity:0;transition:opacity .15s}
+#tray button.on{background:var(--deck)}
+#tray button.on::after{opacity:1}
+#tray button:active{transform:scale(.88)}
+@media (max-height:420px){#tray button{width:40px;height:40px}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="shadow"></div>
+<canvas id="gl"></canvas>
+<div id="tray"></div>
+<script src="cast.js"></script>
+<script src="loops.js"></script>
+<script>
+/* Squish: grab one of the Music Battler cast anywhere and pull. The body stretches like soft vinyl jelly (a 24x24 WebGL
+   mesh warp of the character render), springs back with overshoot and wobble, and the character sings while you pull:
+   pull further = higher, on the D major pentatonic. Letting go gives a sung "boing" that follows the spring.
+   Vyas 2026-11-22, on David Li's pieces: "in the rick and morty the way he pulls the face and pulls bak is interetng",
+   "even the way he moves he blobs and stuffi s interesitng to me"; "well first make htmls of things".
+   Voice engine from music-lab/blob-choir (glides, live vibrato and drift, the game's loop points). */
+const PACKS = {};
+window.__LAB = (name, notes) => { PACKS[name] = notes; };
+const CAST = [
+  {id:'tine_toad',       name:'Tine Toad',       base:45, packs:['el_bass_bom','el_shanty_hey'],    gain:1.0},
+  {id:'skip_chorister',  name:'Skip Chorister',  base:57, packs:['el_multi_doo','el_multi_la'],      gain:0.85},
+  {id:'mire_gatherer',   name:'Mire Gatherer',   base:62, packs:['el_back_ooh','el_back_wah'],       gain:0.8},
+  {id:'tiny_peep',       name:'Tiny Peep',       base:69, packs:['el_lead_lo','el_lead_la'],         gain:0.75},
+  {id:'undergrowth_tom', name:'Undergrowth Tom', base:54, packs:['el_overdrive_ow','el_overdrive_ha'], gain:0.9},
+  {id:'gong_golem',      name:'Gong Golem',      base:64, packs:['el_chorus_ooh','el_chorus_la'],    gain:0.7},
+];
+const MOUTHS = ['smile','oh','ah','cheer'];
+const packNames = [...new Set(CAST.flatMap(c => c.packs))];
+packNames.forEach(n => { const s = document.createElement('script'); s.src = 'sounds/' + n + '.js'; s.async = false; document.head.appendChild(s); });
+
+/* ---------- feel (all tunable) ---------- */
+const N = 24;                  // grid vertices per side
+const K_REL = 180, C_REL = 12; // spring back: stiffness, damping (zeta 0.45, ~21% overshoot, settles < 1 s)
+const K_HOLD = 520, C_HOLD = 34;   // while held: the grabbed area follows the finger with a little jelly lag
+const SIGMA = 0.34;            // finger falloff radius, in body heights
+const MAX_UP = 0.62, MAX_SIDE = 0.46, MAX_DOWN = 0.2;  // stretch limits, in body heights (soft, tanh)
+const PINCH = 0.42;            // how much the stretched part thins (volume feel)
+const STEPS_UP = 7, STEPS_DOWN = 2;   // pentatonic steps reachable by pulling / pressing
+
+/* ---------- music: D major pentatonic ---------- */
+const PENT = [0,2,4,7,9];
+CAST.forEach(c => {
+  const all = []; for (let m = c.base - 14; m <= c.base + 26; m++) if (PENT.includes(((m - 62) % 12 + 12) % 12)) all.push(m);
+  const i = all.indexOf(c.base); c.notes = all.slice(i - STEPS_DOWN, i + STEPS_UP + 1);
+});
+
+/* ---------- audio (starts on the first touch) ---------- */
+let ctx = null, master, wet, buffers = {}, decoded = {};
+function b64(s) { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u.buffer; }
+function unlock() {
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3; comp.connect(ctx.destination);
+    master = ctx.createGain(); master.gain.value = 0.85; master.connect(comp);
+    const conv = ctx.createConvolver(), len = ctx.sampleRate * 1.8, ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); let lp = 0;
+      for (let i = 0; i < len; i++) { lp = lp * 0.5 + (Math.random() * 2 - 1) * 0.5; d[i] = lp * Math.pow(1 - i / len, 3); } }
+    conv.buffer = ir; wet = ctx.createGain(); wet.gain.value = 0.24; wet.connect(conv); conv.connect(master);
+    const order = [cur.packs, ...CAST.filter(c => c !== cur).map(c => c.packs)].flat();
+    (async () => { for (const n of order) await decodePack(n); })();
+  }
+  if (ctx.state !== 'running') ctx.resume();
+}
+async function decodePack(n) {
+  if (decoded[n]) return decoded[n];
+  buffers[n] = {};
+  decoded[n] = Promise.all(Object.entries(PACKS[n] || {}).map(([k, v]) =>
+    ctx.decodeAudioData(b64(v)).then(b => { buffers[n][+k] = b; }).catch(() => {})));
+  return decoded[n];
+}
+function nearestBuf(pack, m) {
+  const b = buffers[pack]; if (!b) return [null, 0]; if (b[m]) return [b[m], 0];
+  let best = null; for (const k in b) if (best === null || Math.abs(k - m) < Math.abs(best - m)) best = +k;
+  return best === null ? [null, 0] : [b[best], m - best];
+}
+function loopOf(pack, key, buf) {
+  const L = window.LOOPS && LOOPS[pack] && LOOPS[pack].loops[key];
+  let a = L ? L[0] : buf.duration * 0.3, b = L ? L[1] : buf.duration * 0.85;
+  if (!(b > a + 0.12) || b > buf.duration) { a = buf.duration * 0.3; b = buf.duration * 0.85; }
+  return [a, b];
+}
+function packGain(pack) { const r = window.LOOPS && LOOPS[pack] && LOOPS[pack].rms; return r ? Math.min(1.6, 0.17 / r) : 1; }
+/* spring-back response of the body (same constants as the mesh), used to shape the sung boing */
+const W0 = Math.sqrt(K_REL), ZETA = C_REL / (2 * W0), WD = W0 * Math.sqrt(1 - ZETA * ZETA);
+const springQ = t => Math.exp(-ZETA * W0 * t) * (Math.cos(WD * t) + (ZETA * W0 / WD) * Math.sin(WD * t));
+
+class Voice {
+  constructor(c) { this.c = c; this.out = ctx.createGain(); this.out.gain.value = c.gain; this.out.connect(master); this.out.connect(wet); this.cur = null; }
+  make(m, vowel, fromMid) {
+    const pack = this.c.packs[vowel], [buf, off] = nearestBuf(pack, m); if (!buf) return null;
+    const key = m - off, [ls, le] = loopOf(pack, key, buf), t = ctx.currentTime;
+    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true; src.loopStart = ls; src.loopEnd = le;
+    const g = ctx.createGain(), pg = ctx.createGain(); pg.gain.value = packGain(pack);
+    src.connect(g); g.connect(pg); pg.connect(this.out);
+    const lfo = ctx.createOscillator(), depth = ctx.createGain(); lfo.frequency.value = 5.4 + Math.random() * 0.7;
+    depth.gain.setValueAtTime(0, t); depth.gain.setValueAtTime(0, t + 0.2); depth.gain.linearRampToValueAtTime(20 + Math.random() * 16, t + 0.55);
+    lfo.connect(depth); depth.connect(src.detune);
+    const drift = ctx.createOscillator(), dg = ctx.createGain(); drift.frequency.value = 0.25 + Math.random() * 0.35; dg.gain.value = 6;
+    drift.connect(dg); dg.connect(src.detune); lfo.start(t); drift.start(t);
+    src.start(t, fromMid ? ls + Math.random() * 0.05 : 0);
+    return {src, g, lfo, drift, key, m, vowel};
+  }
+  rate(v, m) { return Math.pow(2, (m - v.key) / 12); }
+  start(m, vowel) {
+    const v = this.make(m, vowel, false); if (!v) return false; const t = ctx.currentTime;
+    v.src.playbackRate.value = this.rate(v, m);
+    v.g.gain.setValueAtTime(0, t); v.g.gain.linearRampToValueAtTime(1, t + 0.02);
+    this.stop(0.04); this.cur = v; return true;
+  }
+  glide(m, vowel) {
+    const old = this.cur; if (!old) return this.start(m, vowel);
+    const t = ctx.currentTime, G = 0.15;
+    const v = this.make(m, vowel, true); if (!v) return false;
+    v.src.playbackRate.setValueAtTime(this.rate(v, old.m), t); v.src.playbackRate.linearRampToValueAtTime(this.rate(v, m), t + G);
+    old.src.playbackRate.cancelScheduledValues(t); old.src.playbackRate.setValueAtTime(old.src.playbackRate.value, t);
+    old.src.playbackRate.linearRampToValueAtTime(this.rate(old, m), t + G);
+    v.g.gain.setValueAtTime(0, t); v.g.gain.linearRampToValueAtTime(1, t + 0.1);
+    this.fade(old, 0.14); this.cur = v; return true;
+  }
+  bend(cents) { if (this.cur) this.cur.src.detune.setTargetAtTime(cents, ctx.currentTime, 0.03); }
+  fade(v, rel) {
+    const t = ctx.currentTime; v.g.gain.cancelScheduledValues(t); v.g.gain.setValueAtTime(v.g.gain.value, t);
+    v.g.gain.linearRampToValueAtTime(0, t + rel); const e = t + rel + 0.03; v.src.stop(e); v.lfo.stop(e); v.drift.stop(e);
+  }
+  stop(rel = 0.2) { if (this.cur) { this.fade(this.cur, rel); this.cur = null; } }
+  /* let go: a squeak up, then the pitch follows the body's spring (fast drop, a dip under, a little bounce back) */
+  boing(amount, fallbackNote) {
+    let v = this.cur; this.cur = null;
+    if (!v) { v = this.make(fallbackNote, 1, false); if (!v) return; v.g.gain.setValueAtTime(0, ctx.currentTime); }
+    const t = ctx.currentTime + 0.005, dur = 0.6, D = 5 + 8 * amount, curve = new Float32Array(64);
+    for (let i = 0; i < 64; i++) { const tt = i / 63 * dur; const semis = 3 * Math.min(1, tt / 0.025) + D * (springQ(tt) - 1);
+      curve[i] = this.rate(v, v.m + semis); }
+    const pr = v.src.playbackRate; pr.cancelScheduledValues(0); pr.setValueAtTime(pr.value, ctx.currentTime);
+    try { pr.setValueCurveAtTime(curve, t, dur); } catch (e) { pr.setTargetAtTime(curve[63], t + 0.04, 0.06); }
+    v.src.detune.cancelScheduledValues(0); v.src.detune.value = 0;
+    const g = v.g.gain; g.cancelScheduledValues(0); g.setValueAtTime(g.value, ctx.currentTime);
+    g.linearRampToValueAtTime(1.1, t + 0.025); g.setTargetAtTime(0, t + 0.07, 0.1);
+    const e = t + dur + 0.05; v.src.stop(e); v.lfo.stop(e); v.drift.stop(e);
+  }
+  /* a short sung blip (landing after a switch) */
+  blip(m, gain) {
+    const v = this.make(m, 0, false); if (!v) return; const t = ctx.currentTime;
+    v.src.playbackRate.setValueAtTime(this.rate(v, m + 2), t); v.src.playbackRate.exponentialRampToValueAtTime(this.rate(v, m - 3), t + 0.18);
+    v.g.gain.setValueAtTime(0, t); v.g.gain.linearRampToValueAtTime(gain, t + 0.015); v.g.gain.setTargetAtTime(0, t + 0.06, 0.06);
+    v.src.stop(t + 0.45); v.lfo.stop(t + 0.45); v.drift.stop(t + 0.45);
+  }
+}
+function voiceOf(c) { if (!ctx) return null; return c.voice || (c.voice = new Voice(c)); }
+function silenceAll() { CAST.forEach(c => c.voice && c.voice.stop(0.05)); }
+
+/* ---------- WebGL ---------- */
+const canvas = document.getElementById('gl');
+const gl = canvas.getContext('webgl', {premultipliedAlpha: true, alpha: true, antialias: true});
+const VS = `attribute vec2 aPos; attribute vec2 aUV; attribute float aStr; uniform vec2 uView; varying vec2 vUV; varying float vStr;
+void main(){ vUV = aUV; vStr = aStr; gl_Position = vec4(aPos.x / uView.x * 2.0 - 1.0, 1.0 - aPos.y / uView.y * 2.0, 0.0, 1.0); }`;
+const FS = `precision mediump float; varying vec2 vUV; varying float vStr; uniform sampler2D uA, uB; uniform float uMix, uFade, uRim; uniform vec2 uTexel;
+void main(){ vec4 c = mix(texture2D(uA, vUV), texture2D(uB, vUV), uMix);
+  // a soft white rim while held (Blob Opera fades one in to 0.4): the body's inner edge, found from the alpha around it
+  float n = min(min(texture2D(uA, vUV + vec2(uTexel.x, 0.0)).a, texture2D(uA, vUV - vec2(uTexel.x, 0.0)).a),
+                min(texture2D(uA, vUV + vec2(0.0, uTexel.y)).a, texture2D(uA, vUV - vec2(0.0, uTexel.y)).a));
+  c.rgb = mix(c.rgb, vec3(c.a), uRim * c.a * c.a * smoothstep(0.0, 1.0, 1.0 - n));
+  float l = clamp((vStr - 1.0) * 0.22, -0.10, 0.16);            // stretched vinyl gets thinner and lighter, squashed darker
+  c.rgb = l > 0.0 ? mix(c.rgb, vec3(c.a), l) : c.rgb * (1.0 + l);
+  gl_FragColor = c * uFade; }`;
+function sh(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+const prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+gl.linkProgram(prog); gl.useProgram(prog);
+const loc = n => gl.getAttribLocation(prog, n), uni = n => gl.getUniformLocation(prog, n);
+const NV = N * N;
+const posBuf = gl.createBuffer(), uvBuf = gl.createBuffer(), strBuf = gl.createBuffer(), idxBuf = gl.createBuffer();
+const POS = new Float32Array(NV * 2), UV = new Float32Array(NV * 2), STR = new Float32Array(NV);
+for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const k = j * N + i; UV[k * 2] = i / (N - 1); UV[k * 2 + 1] = j / (N - 1); }
+const IDX = new Uint16Array((N - 1) * (N - 1) * 6); { let p = 0;
+  for (let j = 0; j < N - 1; j++) for (let i = 0; i < N - 1; i++) { const a = j * N + i, b = a + 1, c = a + N, d = c + 1; IDX.set([a, b, c, b, d, c], p); p += 6; } }
+gl.bindBuffer(gl.ARRAY_BUFFER, uvBuf); gl.bufferData(gl.ARRAY_BUFFER, UV, gl.STATIC_DRAW);
+gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, IDX, gl.STATIC_DRAW);
+function attrib(buf, name, size) { const l = loc(name); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, size, gl.FLOAT, false, 0, 0); }
+gl.uniform1i(uni('uA'), 0); gl.uniform1i(uni('uB'), 1);
+gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
+/* textures: four mouths per character, same framing, crossfaded */
+CAST.forEach(c => { c.img = window.CAST_IMG[c.id]; c.tex = {}; c.phase = Math.random() * 6.28;
+  const m = c.img.mask, S = Math.round(Math.sqrt(m.length)); c.mask = (u, v) => {
+    const x = Math.floor(u * S), y = Math.floor(v * S);
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const xx = x + dx, yy = y + dy;
+      if (xx >= 0 && yy >= 0 && xx < S && yy < S && m[yy * S + xx] === '1') return true; }
+    return false; };
+  // body width near the feet, for the contact shadow
+  let wmax = 0; for (let y = Math.floor(S * 0.6); y < S; y++) { let a = -1, b = -1; for (let x = 0; x < S; x++) if (m[y * S + x] === '1') { if (a < 0) a = x; b = x; }
+    if (a >= 0) wmax = Math.max(wmax, (b - a + 1) / S); }
+  c.footW = wmax;
+});
+function loadChar(c) {
+  if (c.loading) return c.loading;
+  c.loading = Promise.all(MOUTHS.map(m => new Promise(res => {
+    const im = new Image(); im.onload = () => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      c.tex[m] = t; res(); }; im.onerror = res; im.src = `img/${c.id}-${m}.webp`; })));
+  return c.loading;
+}
+
+/* ---------- body state ---------- */
+const R = new Float32Array(NV * 2), D = new Float32Array(NV * 2), V = new Float32Array(NV * 2), T = new Float32Array(NV * 2);
+const HGT = new Float32Array(NV), ANC = new Float32Array(NV), ANCY = new Float32Array(NV), KR = new Float32Array(NV), WS = new Float32Array(NV), SOLID = new Uint8Array(NV);
+let L = {};                    // layout
+let cur = CAST[0], next = null;
+let mouth = {a: 'smile', b: 'smile', t: 1}, cheerUntil = 0;
+let rim = 0, yoff = 0, vy = 0, falling = false, outT = -1, lastTouch = 0, nextIdle = 2.2, t0 = performance.now();
+const pointers = new Map();
+
+function layout() {
+  const W = innerWidth, H = innerHeight, side = W > H * 1.2, trayW = side ? 76 : 0, trayH = side ? 0 : 78;
+  const availW = W - trayW; let ground = side ? H * 0.86 : H - trayH - Math.max(14, H * 0.055);
+  const im = cur.img, bodyFrac = im.feet - im.top, aspect = im.w / (im.h * bodyFrac);
+  let bodyH = Math.min((ground - 14) / (1 + MAX_UP + 0.06), availW * 0.72 / aspect, 380);
+  const spare = ground - 14 - bodyH * (1 + MAX_UP + 0.06);
+  if (spare > 0) ground -= spare * 0.25;               // a narrow screen leaves sky to spare: lift the stage into the middle
+  const scale = bodyH / (im.h * bodyFrac), iw = im.w * scale, ih = im.h * scale;
+  const cx = availW / 2, x0 = cx - im.cx * iw, y0 = ground - im.feet * ih;
+  L = {W, H, side, ground, bodyH, iw, ih, cx, x0, y0};
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const k = j * N + i, u = i / (N - 1), v = j / (N - 1);
+    R[k * 2] = x0 + u * iw; R[k * 2 + 1] = y0 + v * ih;
+    const h = Math.max(0, Math.min(1.1, (ground - R[k * 2 + 1]) / bodyH)); HGT[k] = h;
+    ANC[k] = 0.42 + 0.58 * smooth(0, 0.42, h);          // the feet stay planted, the top is free
+    ANCY[k] = 0.08 + 0.92 * smooth(0, 0.5, h);          // and they barely leave the floor
+    KR[k] = K_REL * (1.1 - 0.2 * Math.min(1, h));       // the top is a little softer, so it wobbles after the base
+    SOLID[k] = cur.mask(u, v) ? 1 : 0;
+  }
+  const dpr = Math.min(2, devicePixelRatio || 1);
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.uniform2f(uni('uView'), W, H);
+  const st = document.documentElement.style;
+  st.setProperty('--horizon', (ground - Math.min(bodyH * 0.2, 56)) + 'px');
+  st.setProperty('--ground', ground + 'px'); st.setProperty('--cx', cx + 'px'); st.setProperty('--spot', (bodyH * 2.1) + 'px');
+  tray.className = side ? 'side' : 'bottom';
+}
+const smooth = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+
+/* the pull of one finger, soft-limited (tanh) with separate limits up, sideways and down */
+function pullOf(p) {
+  const px = p.x - p.sx, py = p.y - p.sy, H = L.bodyH;
+  const nx = px / (MAX_SIDE * H), ny = py < 0 ? py / (MAX_UP * H) : py / (MAX_DOWN * H);
+  const n = Math.hypot(nx, ny); if (n < 1e-4) return {x: 0, y: 0, amt: 0, push: false};
+  const f = Math.tanh(n) / n;
+  return {x: px * f, y: py * f, amt: Math.tanh(n), push: py > 0 && py > Math.abs(px)};
+}
+function targets() {
+  T.fill(0); WS.fill(0);
+  const H = L.bodyH, s2 = 2 * (SIGMA * H) ** 2, s2b = 2 * (SIGMA * 1.7 * H) ** 2;
+  for (const p of pointers.values()) {
+    const P = pullOf(p); p.amt = P.amt; p.push = P.push;
+    const len = Math.hypot(P.x, P.y), ux = len > 1e-3 ? P.x / len : 0, uy = len > 1e-3 ? P.y / len : 0, pinch = Math.min(PINCH, PINCH * 1.4 * len / H);
+    for (let k = 0; k < NV; k++) {
+      const rx = R[k * 2] - p.gx, ry = R[k * 2 + 1] - p.gy, d2 = rx * rx + ry * ry;
+      const g = Math.exp(-d2 / s2), w = g * ANC[k], wy = g * ANCY[k], wb = Math.exp(-d2 / s2b) * ANC[k];
+      const along = rx * ux + ry * uy, perx = rx - along * ux, pery = ry - along * uy;
+      // the grabbed point goes with the finger, neighbours follow with a soft falloff, and the stretched part thins
+      T[k * 2] += (P.x + p.dx0) * w - perx * pinch * wb;
+      T[k * 2 + 1] += (P.y + p.dy0) * (P.y < 0 ? wy : w) - pery * pinch * wb;
+      WS[k] = Math.max(WS[k], w);
+    }
+  }
+}
+function step(dt) {
+  for (let k = 0; k < NV; k++) {
+    const w = WS[k], kk = KR[k] + (K_HOLD - KR[k]) * w, cc = C_REL + (C_HOLD - C_REL) * w;
+    for (let a = 0; a < 2; a++) { const i = k * 2 + a;
+      V[i] += (kk * (T[i] - D[i]) - cc * V[i]) * dt; D[i] += V[i] * dt; }
+  }
+}
+function impulse(fn) { for (let k = 0; k < NV; k++) { const [ix, iy] = fn(k, HGT[k]); V[k * 2] += ix; V[k * 2 + 1] += iy; } }
+/* a squash: the top drops into the base and bounces back (landing, poke, idle hop) */
+function thump(speed) { impulse((k, h) => [0, speed * Math.min(1, h)]); }
+
+/* ---------- render ---------- */
+const OUT = new Float32Array(NV * 2);
+const shadowEl = document.getElementById('shadow');
+function render(time) {
+  // volume: when the top comes down the body widens, when it rises the body narrows a little
+  let ty = 0, tw = 0; for (let k = 0; k < NV; k++) if (HGT[k] > 0.65 && HGT[k] < 1.05 && SOLID[k]) { ty += D[k * 2 + 1] / HGT[k]; tw++; }
+  const hr = Math.max(0.55, 1 - (tw ? ty / tw : 0) / L.bodyH);
+  const widen = hr < 1 ? (1 / Math.sqrt(hr) - 1) : (1 / Math.sqrt(hr) - 1) * 0.35;
+  const idle = pointers.size ? 0 : 1, b = 0.022 * Math.sin(time * 3 + cur.phase) * idle;   // breathing at Blob Opera's 0.48 Hz
+  let sx = 1, sy = 1;
+  if (outT >= 0) { const q = Math.min(1, outT / 0.16); sy = 1 - q * q; sx = 1 + 0.35 * q; }
+  for (let k = 0; k < NV; k++) {
+    const h = Math.min(1, HGT[k]);
+    let x = R[k * 2] + D[k * 2], y = R[k * 2 + 1] + D[k * 2 + 1];
+    x += (x - L.cx) * widen * Math.pow(h, 0.7);
+    y = L.ground - (L.ground - y) * (1 + b) * sy; x = L.cx + (x - L.cx) * (1 - b * 0.6) * sx;
+    y = Math.min(y, Math.max(R[k * 2 + 1], L.ground));      // never through the floor
+    OUT[k * 2] = x; OUT[k * 2 + 1] = y + yoff;
+  }
+  // per-vertex area change, for the stretch shading
+  const dxr = L.iw / (N - 1), dyr = L.ih / (N - 1);
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const k = j * N + i, l = j * N + Math.max(0, i - 1), r = j * N + Math.min(N - 1, i + 1), u = Math.max(0, j - 1) * N + i, d = Math.min(N - 1, j + 1) * N + i;
+    const ex = (OUT[r * 2] - OUT[l * 2]) / ((r - l) * dxr), ey = (OUT[r * 2 + 1] - OUT[l * 2 + 1]) / ((r - l) * dxr);
+    const fx = (OUT[d * 2] - OUT[u * 2]) / (((d - u) / N) * dyr), fy = (OUT[d * 2 + 1] - OUT[u * 2 + 1]) / (((d - u) / N) * dyr);
+    STR[k] = Math.abs(ex * fy - ey * fx);
+  }
+  gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+  const ta = cur.tex[mouth.a] || cur.tex.smile, tb = cur.tex[mouth.b] || ta;
+  if (ta) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuf); gl.bufferData(gl.ARRAY_BUFFER, OUT, gl.DYNAMIC_DRAW); attrib(posBuf, 'aPos', 2);
+    gl.bindBuffer(gl.ARRAY_BUFFER, strBuf); gl.bufferData(gl.ARRAY_BUFFER, STR, gl.DYNAMIC_DRAW); attrib(strBuf, 'aStr', 1);
+    attrib(uvBuf, 'aUV', 2);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, ta); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, tb);
+    gl.uniform1f(uni('uMix'), mouth.t); gl.uniform1f(uni('uFade'), 1); gl.uniform1f(uni('uRim'), rim);
+    gl.uniform2f(uni('uTexel'), 5 / cur.img.w, 5 / cur.img.h);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf); gl.drawElements(gl.TRIANGLES, IDX.length, gl.UNSIGNED_SHORT, 0);
+  }
+  // contact shadow: follows the base width, fades as the body lifts or drops in
+  const sw = Math.max(cur.footW * L.iw, L.bodyH * 0.6) * 1.08 * (1 + widen * 0.8) * (1 + b * 0.5) * sx;
+  const lift = Math.min(1, Math.max(0, -yoff) / (L.bodyH * 1.2));
+  const so = (1 - lift * 0.85) * (hr > 1 ? 1 - Math.min(0.25, (hr - 1) * 0.5) : 1) * (outT >= 0 ? 1 - Math.min(1, outT / 0.16) * 0.6 : 1);
+  shadowEl.style.width = sw + 'px'; shadowEl.style.height = (sw * 0.2) + 'px';
+  shadowEl.style.transform = `translate(${L.cx - sw / 2}px,${L.ground - sw * 0.1}px) scale(${1 - lift * 0.4})`;
+  shadowEl.style.opacity = so.toFixed(3);
+}
+
+/* ---------- mouth and voice from the pull ---------- */
+function setMouth(m) {
+  const want = m; const shown = mouth.t >= 0.5 ? mouth.b : mouth.a;
+  if (want === mouth.b) return;
+  mouth = {a: shown, b: want, t: 0};
+}
+let held = {note: -1, vowel: -1, idx: -1, sounding: false};
+function sing(dt) {
+  const ps = [...pointers.values()];
+  if (!ps.length) return;
+  let amt = 0, push = false; for (const p of ps) if ((p.amt || 0) > amt) { amt = p.amt; push = p.push; }
+  const pos = STEPS_DOWN + (push ? -STEPS_DOWN * amt : STEPS_UP * amt);
+  // snap to a scale step with hysteresis (move 0.3 of a step past the edge to change), as Blob Opera does
+  const idx = held.idx >= 0 && Math.abs(pos - held.idx) < 0.8 ? held.idx : Math.max(0, Math.min(cur.notes.length - 1, Math.round(pos)));
+  const vowel = held.vowel === 1 ? (amt > 0.38 && !push ? 1 : 0) : (amt > 0.5 && !push ? 1 : 0);
+  if (time - cheerUntil > 0) setMouth(vowel ? 'ah' : 'oh');
+  const v = voiceOf(cur);
+  if (v && buffers[cur.packs[0]] && Object.keys(buffers[cur.packs[0]]).length) {
+    const note = cur.notes[idx];
+    if (!held.sounding) { if (v.start(note, vowel)) held.sounding = true; }
+    else if (note !== held.note || vowel !== held.vowel) v.glide(note, vowel);
+    held.note = note; held.vowel = vowel; held.idx = idx;
+    if (held.sounding) v.bend((pos - idx) * 45);       // between steps the voice leans toward the next one
+  } else { held.idx = idx; held.vowel = vowel; }
+}
+
+/* ---------- input ---------- */
+function toLocal(e) { return {x: e.clientX, y: e.clientY}; }
+function pick(x, y) {
+  // nearest solid vertex in the current (deformed) shape, within finger slop
+  let best = -1, bd = 1e9; for (let k = 0; k < NV; k++) { if (!SOLID[k]) continue;
+    const dx = OUT[k * 2] - x, dy = OUT[k * 2 + 1] - y, d = dx * dx + dy * dy; if (d < bd) { bd = d; best = k; } }
+  const slop = Math.max(26, L.bodyH * 0.07);
+  return best >= 0 && bd < slop * slop ? best : -1;
+}
+let swipe = null;
+canvas.addEventListener('pointerdown', e => {
+  unlock(); lastTouch = time;
+  if (falling || outT >= 0) return;
+  const {x, y} = toLocal(e), k = pick(x, y);
+  if (k < 0) { swipe = {id: e.pointerId, x, y, t: time}; return; }
+  try { canvas.setPointerCapture(e.pointerId); } catch (err) {} canvas.classList.add('held');
+  pointers.set(e.pointerId, {gx: R[k * 2], gy: R[k * 2 + 1], dx0: D[k * 2], dy0: D[k * 2 + 1], sx: x, sy: y, x, y, t: time, moved: false, amt: 0});
+  if (pointers.size === 1) { held = {note: -1, vowel: -1, idx: -1, sounding: false}; cheerUntil = 0; }
+});
+canvas.addEventListener('pointermove', e => {
+  const p = pointers.get(e.pointerId); if (!p) return;
+  p.x = e.clientX; p.y = e.clientY; if (Math.hypot(p.x - p.sx, p.y - p.sy) > 8) p.moved = true;
+});
+function release(e) {
+  if (swipe && swipe.id === e.pointerId) {
+    const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) choose(CAST[(CAST.indexOf(cur) + (dx < 0 ? 1 : -1) + CAST.length) % CAST.length]);
+    return;
+  }
+  const p = pointers.get(e.pointerId); if (!p) return;
+  if (ctx && ctx.state === 'suspended' && !document.hidden) ctx.resume();   // iOS can need the touch end to unlock
+  pointers.delete(e.pointerId); lastTouch = time;
+  // the finger's grip is gone: carry over where the body is, the spring takes it home
+  if (!pointers.size) {
+    canvas.classList.remove('held');
+    const v = voiceOf(cur), poke = !p.moved && time - p.t < 0.3;
+    if (poke) thump(160 + Math.random() * 40);
+    if (v) v.boing(poke ? 0.1 : p.amt || 0, cur.notes[STEPS_DOWN + 2]);
+    held.sounding = false;
+    setMouth('cheer'); cheerUntil = time + 0.7;
+  } else {
+    // re-anchor the remaining fingers on the current shape so nothing jumps
+    for (const q of pointers.values()) { const P = pullOf(q); q.dx0 += P.x; q.dy0 += P.y; q.sx = q.x; q.sy = q.y; }
+  }
+}
+canvas.addEventListener('pointerup', release);
+canvas.addEventListener('pointercancel', release);
+canvas.addEventListener('lostpointercapture', e => { if (pointers.has(e.pointerId)) release(e); });
+function releaseAll() { for (const id of [...pointers.keys()]) release({pointerId: id, clientX: 0, clientY: 0}); silenceAll(); }
+document.addEventListener('visibilitychange', () => { if (document.hidden) { releaseAll(); if (ctx) ctx.suspend(); } });
+window.addEventListener('blur', releaseAll);
+window.addEventListener('pagehide', () => { releaseAll(); if (ctx) ctx.suspend(); });
+
+/* ---------- switching: the old one flattens away, the new one drops in and lands with a squash ---------- */
+const tray = document.getElementById('tray');
+CAST.forEach(c => { const b = document.createElement('button'); b.setAttribute('aria-label', c.name);
+  b.innerHTML = `<img src="img/${c.id}-thumb.webp" alt="">`; b.onclick = () => { unlock(); choose(c); }; c.btn = b; tray.appendChild(b); });
+function choose(c) {
+  if (c === cur || falling || outT >= 0) return;
+  releaseAll(); next = c; outT = 0; loadChar(c);
+  CAST.forEach(x => x.btn.classList.toggle('on', x === c));
+}
+function landNext() {
+  cur = next; next = null; outT = -1; D.fill(0); V.fill(0); mouth = {a: 'oh', b: 'oh', t: 1}; layout();
+  yoff = -(L.ground + 40); vy = 0; falling = true;
+}
+
+/* ---------- loop ---------- */
+let time = 0, last = performance.now(), acc = 0;
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now; time += dt;
+  if (outT >= 0) { outT += dt; if (outT > 0.18 && next && next.tex.smile && next.tex.oh) landNext(); }
+  if (falling) {
+    vy += 5200 * dt; yoff += vy * dt;
+    if (yoff >= 0) { yoff = 0; falling = false; thump(Math.min(620, vy * 0.32)); impulse((k, h) => [(Math.random() - 0.5) * 30 * h, 0]);
+      setMouth('cheer'); cheerUntil = time + 0.5; const v = voiceOf(cur); if (v && ctx.state === 'running') v.blip(cur.notes[STEPS_DOWN], 0.55); lastTouch = time; }
+  }
+  // idle: every few seconds untouched, a small hop-squash or a sway, so it always looks squishable
+  if (!pointers.size && !falling && outT < 0 && time - lastTouch > nextIdle) {
+    lastTouch = time; nextIdle = 3.2 + Math.random() * 2.4;
+    if (Math.random() < 0.55) thump(110 + Math.random() * 50);
+    else { const s = Math.random() < 0.5 ? -1 : 1; impulse((k, h) => [s * 95 * Math.pow(Math.min(1, h), 1.5), 0]); }
+  }
+  for (const p of pointers.values()) { if (!p.moved && Math.hypot(p.x - p.sx, p.y - p.sy) > 8) p.moved = true; }
+  targets();
+  acc += dt; while (acc > 1 / 240) { step(1 / 240); acc -= 1 / 240; }
+  if (!pointers.size && time > cheerUntil && mouth.b !== 'smile') setMouth('smile');
+  if (pointers.size) sing(dt);
+  mouth.t = Math.min(1, mouth.t + dt / 0.1);
+  rim += ((pointers.size ? 0.32 : 0) - rim) * Math.min(1, dt / (pointers.size ? 0.1 : 0.25));
+  render(time);
+  requestAnimationFrame(frame);
+}
+addEventListener('resize', () => { layout(); });
+window.__squish = () => ({cur: cur.id, held: {...held}, mouth: mouth.b, ctx: ctx && ctx.state, voice: !!(cur.voice && cur.voice.cur), decoded: Object.keys(buffers).filter(n => Object.keys(buffers[n]).length).length, maxD: Math.max(...D.map(Math.abs))});
+loadChar(cur).then(() => {
+  layout(); cur.btn.classList.add('on'); canvas.classList.add('ready'); render(0);
+  setTimeout(() => thump(150), 350);
+  requestAnimationFrame(t => { last = t; frame(t); });
+  CAST.forEach(c => loadChar(c));
+});
+</script>
+</body>
+</html>
