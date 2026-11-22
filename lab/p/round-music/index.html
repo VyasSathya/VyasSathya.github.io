@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Round Music</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF4DE;--panel:#FFFFFF;--ink:#2B2340;--soft:#7A6F86;--line:#EADFCB;--accent:#FF8A5B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150}}
+:root[data-theme="dark"]{--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px Fredoka,system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+h2{font-size:15px;font-weight:600;color:var(--soft);margin:26px 0 10px}
+.r{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:8px 0;cursor:pointer}
+.r button{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:15px;cursor:pointer}
+.r.on{border-color:var(--accent)}
+.r span{font-weight:500}
+.bar{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--accent)}
+</style></head><body><main id="m"></main>
+<script>
+const R=[{"g": "Between matches", "name": "Title", "src": "a/title.mp3"}, {"g": "Between matches", "name": "Shop", "src": "a/shop.mp3"}, {"g": "Between matches", "name": "Shop, second", "src": "a/shop_alt_1.mp3"}, {"g": "Between matches", "name": "Shop, third", "src": "a/shop_alt_2.mp3"}, {"g": "Between matches", "name": "Upgrade", "src": "a/stinger_tier_up.mp3"}, {"g": "After a fight", "name": "Round won", "src": "a/stinger_round_win.mp3"}, {"g": "After a fight", "name": "Round lost", "src": "a/stinger_round_lose.mp3"}, {"g": "After a fight", "name": "Victory", "src": "a/stinger_victory.mp3"}, {"g": "After a fight", "name": "Defeat", "src": "a/stinger_defeat.mp3"}, {"g": "After a fight", "name": "Results, won", "src": "a/results_win.mp3"}, {"g": "After a fight", "name": "Results, lost", "src": "a/results_lose.mp3"}, {"g": "In the fight (the band playing)", "name": "Fight 1", "src": "a/f01.mp3"}, {"g": "In the fight (the band playing)", "name": "Fight 2", "src": "a/f02.mp3"}, {"g": "In the fight (the band playing)", "name": "Fight 3", "src": "a/f03.mp3"}, {"g": "In the fight (the band playing)", "name": "Fight 4", "src": "a/f04.mp3"}, {"g": "In the fight (the band playing)", "name": "Fight 5", "src": "a/f05.mp3"}, {"g": "In the fight (the band playing)", "name": "Fight 6", "src": "a/f06.mp3"}];const m=document.getElementById('m');let cur=null;let last='';
+R.forEach((r,i)=>{if(r.g!==last){m.insertAdjacentHTML('beforeend',`<h2>${r.g}</h2>`);last=r.g;}
+ m.insertAdjacentHTML('beforeend',`<div class="r" data-i="${i}"><button aria-label="Play">&#9654;</button><span>${r.name}</span><div class="bar"><i></i></div></div>`);});
+const audio=new Audio();
+audio.ontimeupdate=()=>{if(cur)cur.querySelector('i').style.width=(100*audio.currentTime/(audio.duration||1))+'%';};
+audio.onended=()=>stop();
+function stop(){if(cur){cur.classList.remove('on');cur.querySelector('button').innerHTML='&#9654;';cur.querySelector('i').style.width='0';}cur=null;audio.pause();}
+m.addEventListener('click',e=>{const row=e.target.closest('.r');if(!row)return;
+ if(cur===row){stop();return;}stop();cur=row;row.classList.add('on');row.querySelector('button').innerHTML='&#10074;&#10074;';
+ audio.src=R[+row.dataset.i].src;audio.play();});
+</script></body></html>
