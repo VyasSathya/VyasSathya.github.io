@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "blob-choir",
+   "key": "blob-choir",
+   "title": "Blob Choir",
+   "url": "p/blob-choir/index.html",
+   "added": "2026-11-22",
+   "v": "20261122113402"
+  },
+  {
    "id": "music-battler-feel-backpack",
    "key": "music-battler-feel-backpack",
    "title": "Music Battler: feel Backpack Battles",
