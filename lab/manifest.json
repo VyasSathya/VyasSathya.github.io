@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "lead-band",
+   "key": "lead-band",
+   "title": "Lead the Band",
+   "url": "p/lead-band/index.html",
+   "added": "2026-11-22",
+   "v": "20261122115303"
+  },
+  {
    "id": "blob-choir",
    "key": "blob-choir",
    "title": "Blob Choir",
