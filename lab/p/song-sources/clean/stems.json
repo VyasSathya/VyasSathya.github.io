@@ -1,0 +1,72 @@
+{
+ "idea": "sneaky",
+ "bpm": 143.9,
+ "bar_seconds": 1.6678,
+ "first_downbeat_s": 1.6678,
+ "sr": 48000,
+ "seconds": 59.801,
+ "source": {
+  "suno_clip": "bd151f71-8a92-42ad-95b5-2b2b430ef518",
+  "take": 1
+ },
+ "stems": {
+  "bass": {
+   "lufs": -27.8,
+   "peak_db": -12.399999618530273
+  },
+  "brass": {
+   "lufs": -25.7,
+   "peak_db": -9.800000190734863
+  },
+  "drums": {
+   "lufs": -29.1,
+   "peak_db": -9.800000190734863
+  },
+  "guitar": {
+   "lufs": -43.8,
+   "peak_db": -20.700000762939453
+  },
+  "keyboard": {
+   "lufs": -29.4,
+   "peak_db": -10.800000190734863
+  },
+  "percussion": {
+   "lufs": -43.4,
+   "peak_db": -15.5
+  },
+  "strings": {
+   "lufs": -28.3,
+   "peak_db": -12.0
+  },
+  "synth": {
+   "lufs": -38.2,
+   "peak_db": -18.200000762939453
+  },
+  "woodwinds": {
+   "lufs": -29.5,
+   "peak_db": -16.299999237060547
+  },
+  "voice_lead": {
+   "lufs": -21.0,
+   "peak_db": -10.300000190734863
+  },
+  "voice_scat": {
+   "lufs": -23.0,
+   "peak_db": -10.399999618530273
+  },
+  "voice_bom": {
+   "lufs": -19.1,
+   "peak_db": -5.5
+  },
+  "voice_doowah_lo": {
+   "lufs": -23.2,
+   "peak_db": -11.100000381469727
+  }
+ },
+ "check": {
+  "sum_vs_full_db": -300.0,
+  "full_lufs": -16.66,
+  "full_clipped": 0,
+  "suno_parts_vs_suno_mix_db": -7.199999809265137
+ }
+}
