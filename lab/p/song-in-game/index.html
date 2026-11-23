@@ -3,26 +3,30 @@
 <title>Song in the game</title><link rel="icon" href="data:,">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#FFF4DE;--panel:#FFFFFF;--ink:#2B2340;--soft:#7A6F86;--line:#EADFCB;--accent:#FF8A5B;--accent2:#6C5CE7;--grass1:#9EDC7E;--grass2:#8BD06D;--seat:#F3E7D3;--danger:#E8505B}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150;--seat:#3A3150;--grass1:#5FA04A;--grass2:#548F41}}
-:root[data-theme="dark"]{--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150;--seat:#3A3150;--grass1:#5FA04A;--grass2:#548F41}
+:root{--bg:#FFF4DE;--panel:#FFFFFF;--ink:#2B2340;--soft:#7A6F86;--line:#EADFCB;--accent:#FF8A5B;--accent2:#6C5CE7;--grass1:#9EDC7E;--grass2:#8BD06D;--danger:#E8505B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150;--grass1:#5FA04A;--grass2:#548F41}}
+:root[data-theme="dark"]{--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150;--grass1:#5FA04A;--grass2:#548F41}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:16px Fredoka,system-ui,sans-serif}
 main{max-width:560px;margin:0 auto;padding:14px 16px 28px}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 h1{font-size:20px;font-weight:700;margin:0}
-.beats{display:flex;gap:5px}.beats i{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .05s}.beats i.on{background:var(--accent)}.beats i.on.d{background:var(--accent2)}
-.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:12px}
+.beats{display:flex;gap:5px}.beats i{width:8px;height:8px;border-radius:50%;background:var(--line)}.beats i.on{background:var(--accent)}.beats i.on.d{background:var(--accent2)}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:10px}
 .seg button{flex:1;border:0;background:none;color:var(--soft);font:inherit;font-weight:600;padding:9px 0;border-radius:999px;cursor:pointer}
 .seg button.on{background:var(--accent);color:#fff}
+.combos{display:flex;gap:8px;margin-bottom:10px}
+.combo{flex:1;text-align:center;font-weight:600;font-size:14px;padding:8px 0;border-radius:999px;border:1px dashed var(--line);color:var(--soft);transition:background .2s,color .2s}
+.combo.lit{border:1px solid var(--accent2);background:var(--accent2);color:#fff;animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
 .view{display:none}.view.on{display:block}
 .lawn{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:#6FB257;padding:6px;border-radius:18px}
-.tile{aspect-ratio:1;border-radius:10px;background:var(--grass1);position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:visible;cursor:pointer}
+.tile{aspect-ratio:1;border-radius:10px;background:var(--grass1);position:relative;display:flex;align-items:flex-end;justify-content:center;cursor:pointer}
 .tile:nth-child(even){background:var(--grass2)}
 .tile.can{box-shadow:inset 0 0 0 3px rgba(255,255,255,.55)}
 .mu{position:relative;height:88%;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
-.mu img{height:100%;width:auto;max-width:110%;object-fit:contain;transform-origin:50% 100%;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18));transition:filter .06s}
+.mu img{height:100%;width:auto;max-width:110%;object-fit:contain;transform-origin:50% 100%;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18));transition:filter .06s,opacity .25s}
 .mu.wait img{opacity:.45;filter:grayscale(.6)}
+.mu.rest img{opacity:.5}
 .mu.pop img{animation:pop .38s cubic-bezier(.2,1.6,.4,1)}
 .mu.gone img{animation:gone .3s ease-in forwards}
 .mu.eat img{animation:shake .5s linear infinite}
@@ -35,12 +39,14 @@ h1{font-size:20px;font-weight:700;margin:0}
 .btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn.bad{color:var(--danger)}
 .btn.on{border-color:var(--accent2);color:var(--accent2)}
-.tray{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:10px}
-.card{border:2px solid transparent;border-radius:14px;background:var(--bg);padding:6px 2px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
-.card img{height:52px;width:auto;max-width:100%;object-fit:contain}
-.card span{font-size:11px;font-weight:500;color:var(--soft);text-align:center;line-height:1.1}
+.tray{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:4px 10px}
+.fam{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.fam:last-child{border-bottom:0}
+.fam>span{width:66px;flex:none;font-size:13px;font-weight:600;color:var(--soft)}
+.fam .cards{display:flex;gap:6px;flex:1}
+.card{width:54px;height:58px;border:2px solid transparent;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.card img{height:48px;width:auto;max-width:100%;object-fit:contain}
 .card.sel{border-color:var(--ink)}
-.card.used{opacity:.35}
+.card.used{opacity:.3}
 .stage{background:linear-gradient(180deg,#3B2F5C,#5B3F7A);border-radius:18px;padding:16px 10px 14px}
 .seats{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 8px}
 .seat{width:calc(25% - 6px);aspect-ratio:.9;border-radius:14px;background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.25);display:flex;align-items:flex-end;justify-content:center;cursor:pointer;position:relative}
@@ -49,6 +55,7 @@ h1{font-size:20px;font-weight:700;margin:0}
 </style></head><body><main>
 <header><h1>Song in the game</h1><div class="beats" id="beats"><i></i><i></i><i></i><i></i></div></header>
 <div class="seg" id="seg"><button class="on" data-v="lanes">Pull Lanes</button><button data-v="battle">Music Battler</button></div>
+<div class="combos"><div class="combo" id="c-rhythm">Rhythm section</div><div class="combo" id="c-full">Full band</div></div>
 <section class="view on" id="lanes">
  <div class="lawn" id="lawn"></div>
  <div class="bar"><button class="btn bad" id="eat">Enemy eats</button><button class="btn" id="auto">Auto</button><button class="btn" id="clear">Clear</button></div>
@@ -61,75 +68,85 @@ h1{font-size:20px;font-weight:700;margin:0}
 </section>
 </main>
 <script>
-const D={"bpm": 143.9, "bar": 1.6678, "fd": 1.6678, "loopEnd": 58.373, "parts": [{"id": "drums", "name": "Drums", "img": "img/pebble_drummer.webp", "on": [1.068, 1.207, 1.997, 2.81, 3.646, 4.505, 5.317, 6.13, 6.966, 7.802, 8.243, 8.638, 9.474, 10.31, 11.146, 11.447, 14.35, 14.489, 14.907, 15.325, 15.743, 16.138, 16.556, 16.974, 17.392, 17.81, 18.228, 18.646, 19.064, 19.458, 19.9, 20.294, 20.735, 21.014, 21.153, 21.571, 21.966, 22.407, 22.802, 23.22, 23.638, 24.056, 24.358, 24.474, 24.915, 27.678, 27.841, 28.235, 28.63, 29.071, 29.466, 29.907, 30.302, 31.022, 31.138, 31.579, 31.974, 32.392, 32.81, 33.228, 33.646, 33.948, 34.366, 34.482, 34.923, 35.318, 35.736, 36.153, 36.571, 36.966, 37.291, 37.686, 37.825, 38.243, 41.006, 41.587, 41.982, 42.423, 42.818, 43.259, 43.654, 44.095, 44.489, 44.931, 45.325, 45.767, 46.161, 46.602, 46.997, 47.438, 47.833, 48.274, 48.669, 49.087, 49.482, 49.923, 50.318, 50.759, 51.154, 51.595, 54.915, 55.333, 55.635, 55.751, 56.053, 56.169, 56.587, 57.005, 57.284, 57.702, 57.864, 58.259]}, {"id": "bass", "name": "Bass", "img": "img/thunder_ox.webp", "on": [1.486, 1.602, 2.415, 3.251, 3.971, 4.389, 4.505, 4.899, 5.735, 6.548, 7.268, 7.686, 7.825, 8.22, 9.033, 9.892, 10.588, 11.006, 11.146, 11.587, 14.907, 15.72, 16.556, 17.276, 17.694, 18.251, 18.924, 19.76, 20.201, 20.759, 21.037, 21.595, 22.407, 23.22, 23.94, 26.982, 28.119, 29.071, 29.907, 30.604, 31.022, 31.208, 31.463, 31.602, 32.392, 33.228, 33.948, 34.366, 34.528, 34.946, 35.736, 36.571, 37.268, 37.686, 37.849, 38.127, 38.522, 38.94, 39.102, 39.381, 39.799, 39.938, 40.356, 40.635, 42.028, 42.446, 42.864, 43.259, 43.7, 44.095, 44.373, 44.536, 45.349, 45.767, 46.208, 46.602, 47.044, 47.438, 47.717, 48.692, 49.11, 49.528, 49.923, 50.387, 50.759, 51.061, 51.223, 54.358, 54.962, 55.774, 56.587, 57.307, 57.841, 58.259]}, {"id": "brass", "name": "Brass", "img": "img/bell_bear.webp", "on": [1.463, 1.672, 4.342, 4.389, 4.551, 4.946, 7.686, 7.872, 8.127, 8.266, 8.522, 10.913, 11.053, 11.192, 11.587, 13.491, 14.977, 15.348, 15.766, 16.045, 16.486, 16.602, 17.02, 17.299, 17.694, 17.879, 18.297, 18.53, 18.692, 19.087, 19.365, 19.505, 19.783, 19.923, 20.341, 20.619, 21.037, 21.85, 22.013, 22.268, 24.52, 24.938, 26.865, 27.028, 27.307, 27.446, 27.725, 27.887, 28.143, 28.282, 29.071, 29.907, 30.604, 31.022, 31.208, 31.602, 32.415, 33.228, 34.342, 34.946, 37.663, 37.849, 38.127, 38.266, 38.545, 38.963, 39.102, 39.381, 39.799, 39.938, 40.38, 40.635, 41.053, 41.633, 41.889, 42.075, 42.307, 42.469, 43.328, 43.607, 43.723, 43.979, 44.373, 44.582, 44.954, 47.694, 47.903, 48.158, 48.298, 48.553, 48.739, 48.971, 49.133, 49.575, 49.83, 49.946, 50.387, 50.643, 51.061, 51.246, 51.641, 54.358, 58.236, 58.305]}, {"id": "woodwinds", "name": "Woodwinds", "img": "img/heartsick_crooner.webp", "on": [1.486, 1.997, 2.438, 3.158, 3.274, 3.692, 3.971, 4.389, 4.574, 4.923, 4.969, 5.108, 5.341, 6.177, 6.455, 6.594, 7.291, 8.29, 8.522, 9.079, 9.799, 9.938, 10.635, 11.61, 21.037, 21.432, 21.85, 22.268, 22.43, 23.545, 23.917, 25.194, 25.333, 28.653, 29.095, 29.768, 29.931, 30.209, 30.627, 31.045, 31.486, 31.835, 32.438, 32.856, 33.274, 44.373, 44.768, 45.186, 45.372, 45.79, 46.208, 46.602, 46.881, 47.044, 47.717, 48.181, 54.381, 54.962, 58.236, 59.791]}, {"id": "strings", "name": "Strings", "img": "img/sharp_harmonic.webp", "on": [11.842, 12.005, 12.26, 12.399, 12.678, 12.817, 13.096, 13.235, 29.513, 29.931, 30.325, 31.997, 32.833, 33.251, 33.669, 35.178, 35.341, 35.596, 35.736, 36.014, 36.177, 36.432, 36.571, 36.85, 36.989, 37.245, 50.643, 51.873, 52.013, 52.291, 52.431, 52.709, 52.872, 53.127, 53.267, 53.568, 53.685, 53.963, 54.102]}, {"id": "guitar", "name": "Guitar", "img": "img/glad_hummer.webp", "on": [1.974, 2.438, 2.81, 3.251, 3.646, 4.087, 4.481, 5.294, 5.735, 6.13, 6.548, 6.966, 7.291, 7.407, 7.802, 8.638, 9.474, 10.286, 11.146, 15.325, 16.161, 16.974, 17.81, 18.646, 19.482, 20.317, 21.153, 21.966, 22.802, 23.638, 24.497, 28.653, 29.489, 30.302, 30.743, 31.138, 31.974, 32.81, 33.646, 34.087, 34.482, 35.318, 36.153, 36.989, 37.825]}, {"id": "voice_lead", "name": "Lead voice", "img": "img/moss_riffer.webp", "on": [2.067, 2.461, 3.042, 3.228, 3.483, 3.622, 3.994, 5.016, 5.317, 5.526, 5.712, 5.944, 6.107, 6.362, 6.618, 6.827, 6.989, 7.268, 28.677, 29.002, 29.838, 29.977, 30.116, 30.302, 30.534, 31.811, 31.997, 32.229, 32.438, 32.856, 33.042, 33.228, 33.46, 33.646, 33.994]}, {"id": "voice_scat", "name": "Scat voice", "img": "img/island_whistler.webp", "on": [21.107, 21.362, 21.571, 21.804, 22.013, 22.221, 22.477, 22.686, 23.22, 23.452, 23.661, 23.917, 24.335, 25.147, 45.163, 45.349, 45.581, 45.767, 45.976, 46.208, 46.556, 46.811, 46.974, 47.299, 47.694]}, {"id": "voice_bom", "name": "Bom voice", "img": "img/skip_chorister.webp", "on": [2.415, 3.251, 3.994, 4.319, 4.505, 4.899, 5.759, 6.548, 7.338, 7.639, 7.802, 8.057, 8.243, 9.033, 9.892, 10.658, 10.96, 11.192, 11.54, 14.93, 17.322, 17.578, 17.763, 18.181, 18.855, 19.064, 19.691, 19.876, 20.108, 20.317, 20.712, 21.153, 21.618, 22.454, 23.986, 24.404, 24.892, 27.005, 27.423, 27.864, 28.259, 29.071, 30.65, 30.952, 31.138, 31.579, 32.392, 33.205, 33.971, 34.458, 34.946, 35.736, 36.641, 37.338, 37.64, 37.872, 38.197, 41.378, 41.564, 41.958, 42.4, 43.282, 43.677, 44.071, 44.28, 44.489, 44.722, 44.907, 45.325, 45.743, 46.161, 46.556, 47.415, 47.81, 48.251, 48.623, 50.016, 50.782, 50.991, 51.2, 51.432, 51.595, 54.869, 55.751, 56.564, 57.284, 58.329]}, {"id": "voice_doowah_lo", "name": "Doo-wah voice", "img": "img/pit_bellower.webp", "on": [1.997, 4.458, 5.317, 6.153, 7.245, 8.615, 11.099, 15.302, 17.067, 17.276, 17.786, 21.06, 23.684, 23.963, 24.543, 25.008, 28.653, 30.557, 31.184, 34.458, 35.387, 37.198, 37.802, 41.982, 43.723, 43.793, 47.717, 47.787]}]};const P={};D.parts.forEach(p=>P[p.id]=p);
-const BEAT=60/D.bpm;let ctx=null,t0=0,bufs={},gains={},running=false,loading=null,lastS=0;
-const on={};D.parts.forEach(p=>on[p.id]=false);   // what is audible (after its bar line)
+const D={"bpm": 143.9, "bar": 1.6678, "fd": 1.6678, "loopEnd": 58.373, "sectionBars": 8, "togetherSection": 3, "layers": {"bass": {"src": "parts/bass.mp3", "on": [1.486, 1.602, 2.415, 3.251, 3.971, 4.389, 4.505, 4.899, 5.735, 6.548, 7.268, 7.686, 7.825, 8.22, 9.033, 9.892, 10.588, 11.006, 11.146, 11.587, 14.907, 15.72, 16.556, 17.276, 17.694, 18.251, 18.924, 19.76, 20.201, 20.759, 21.037, 21.595, 22.407, 23.22, 23.94, 26.982, 28.119, 29.071, 29.907, 30.604, 31.022, 31.208, 31.602, 32.392, 33.228, 33.948, 34.366, 34.528, 34.946, 35.736, 36.571, 37.268, 37.686, 37.849, 38.127, 38.522, 38.94, 39.102, 39.381, 39.799, 39.938, 40.356, 40.635, 42.028, 42.446, 42.864, 43.259, 43.7, 44.095, 44.373, 44.536, 45.349, 45.767, 46.208, 46.602, 47.044, 47.438, 47.717, 48.692, 49.11, 49.528, 49.923, 50.387, 50.759, 51.061, 51.223, 54.358, 54.962, 55.774, 56.587, 57.307, 57.841, 58.259]}, "bass_sub": {"src": "parts/bass_sub.mp3", "on": [1.463, 2.415, 3.228, 3.274, 3.971, 4.365, 4.946, 5.712, 6.548, 7.245, 7.709, 7.848, 8.243, 9.033, 9.868, 10.588, 11.029, 11.587, 14.768, 14.907, 15.72, 16.533, 16.579, 17.252, 18.274, 18.924, 19.783, 20.759, 22.384, 23.22, 23.917, 26.958, 27.005, 29.048, 29.884, 30.581, 31.045, 32.369, 33.205, 33.251, 33.924, 34.389, 35.712, 36.525, 37.245, 37.686, 37.872, 38.684, 39.102, 39.799, 41.448, 43.259, 44.373, 44.954, 45.767, 46.602, 47.462, 47.763, 49.11, 49.551, 50.411, 51.084, 54.335, 55.751, 56.587, 57.284]}, "bom_bass": {"src": "parts/bom_bass.mp3", "on": [2.415, 3.251, 3.994, 4.319, 4.505, 4.899, 5.759, 6.548, 7.338, 7.639, 7.802, 8.057, 8.243, 9.033, 9.892, 10.658, 10.96, 11.192, 11.54, 14.93, 17.322, 17.578, 17.763, 18.181, 18.855, 19.064, 19.691, 19.876, 20.108, 20.317, 20.712, 21.153, 21.618, 22.454, 23.986, 24.404, 24.892, 27.005, 27.423, 27.864, 28.259, 29.071, 30.65, 30.952, 31.138, 31.579, 32.392, 33.205, 33.971, 34.458, 34.946, 35.736, 36.641, 37.338, 37.64, 37.872, 38.197, 41.378, 41.564, 41.958, 42.4, 43.282, 43.677, 44.071, 44.28, 44.489, 44.722, 44.907, 45.325, 45.743, 46.161, 46.556, 47.415, 47.81, 48.251, 48.623, 50.016, 50.782, 50.991, 51.2, 51.432, 51.595, 54.869, 55.751, 56.564, 57.284, 58.329]}, "bom_lowend": {"src": "parts/bom_lowend.mp3", "on": [2.415, 3.251, 3.994, 4.319, 4.505, 4.923, 5.759, 6.571, 7.338, 7.639, 7.802, 8.057, 8.243, 9.033, 9.892, 10.681, 10.96, 11.192, 11.54, 14.861, 14.93, 17.322, 17.578, 17.763, 18.181, 18.855, 19.064, 19.691, 19.876, 20.108, 20.317, 20.712, 21.153, 21.618, 22.454, 23.986, 24.404, 24.892, 27.005, 27.446, 27.864, 28.259, 29.071, 30.65, 30.952, 31.138, 31.579, 32.392, 33.205, 33.971, 34.458, 34.923, 35.759, 37.314, 37.64, 37.849, 38.197, 41.378, 41.564, 41.958, 42.4, 43.282, 43.677, 44.071, 44.257, 44.489, 44.722, 44.907, 45.325, 45.743, 46.161, 46.556, 47.415, 47.81, 48.251, 48.599, 50.016, 50.782, 51.014, 51.177, 51.432, 51.595, 54.869, 55.751, 56.564, 57.284, 58.329]}, "brass": {"src": "parts/brass.mp3", "on": [1.463, 1.672, 4.342, 4.389, 4.551, 4.946, 7.686, 7.872, 8.127, 8.266, 8.522, 10.913, 11.053, 11.192, 11.587, 13.491, 14.977, 15.348, 15.766, 16.045, 16.486, 16.602, 17.02, 17.299, 17.694, 17.879, 18.297, 18.53, 18.692, 19.087, 19.365, 19.505, 19.783, 19.923, 20.341, 20.619, 21.037, 21.85, 22.013, 22.268, 24.52, 24.938, 26.865, 27.028, 27.307, 27.446, 27.725, 27.887, 28.143, 28.282, 29.071, 29.907, 30.604, 31.022, 31.208, 31.602, 32.415, 33.228, 34.342, 34.946, 37.663, 37.849, 38.127, 38.266, 38.545, 38.963, 39.102, 39.381, 39.799, 39.938, 40.38, 40.635, 41.053, 41.633, 41.889, 42.075, 42.307, 42.469, 43.328, 43.607, 43.723, 43.979, 44.373, 44.582, 44.954, 47.694, 47.903, 48.158, 48.298, 48.553, 48.739, 48.971, 49.133, 49.575, 49.946, 50.387, 50.643, 51.061, 51.246, 51.641, 54.358, 58.236, 58.305]}, "doowah": {"src": "parts/doowah.mp3", "on": [1.997, 4.458, 5.317, 6.153, 7.245, 8.615, 11.099, 15.302, 17.067, 17.276, 17.786, 21.06, 23.684, 23.963, 24.543, 25.008, 28.653, 30.557, 31.184, 34.458, 35.387, 37.198, 37.802, 41.982, 43.723, 43.793, 47.717, 47.787, 48.715]}, "drums": {"src": "parts/drums.mp3", "on": [1.068, 1.207, 1.997, 2.81, 3.646, 4.505, 5.317, 6.13, 6.966, 7.802, 8.243, 8.638, 9.474, 10.31, 11.146, 11.447, 14.35, 14.489, 14.907, 15.325, 15.743, 16.138, 16.556, 16.974, 17.392, 17.81, 18.228, 18.646, 19.064, 19.458, 19.9, 20.294, 20.735, 21.014, 21.153, 21.571, 21.966, 22.407, 22.802, 23.22, 23.638, 24.056, 24.358, 24.474, 24.915, 27.678, 27.841, 28.235, 28.63, 29.071, 29.466, 29.907, 30.302, 31.022, 31.138, 31.579, 31.974, 32.415, 32.81, 33.228, 33.646, 33.948, 34.366, 34.482, 34.923, 35.318, 35.736, 36.153, 36.571, 36.966, 37.291, 37.686, 37.825, 38.243, 41.006, 41.587, 41.982, 42.423, 42.818, 43.259, 43.654, 44.095, 44.489, 44.931, 45.325, 45.767, 46.161, 46.602, 46.997, 47.438, 47.833, 48.274, 48.669, 49.087, 49.482, 49.923, 50.318, 50.759, 51.154, 51.595, 54.915, 55.333, 55.635, 55.751, 56.053, 56.169, 56.587, 57.005, 57.284, 57.702, 57.864, 58.259]}, "guitar": {"src": "parts/guitar.mp3", "on": [1.974, 2.438, 2.81, 3.251, 3.646, 4.087, 4.481, 5.294, 5.735, 6.13, 6.548, 6.966, 7.291, 7.407, 7.802, 8.638, 9.474, 10.286, 11.146, 15.325, 16.161, 16.974, 17.81, 18.646, 19.482, 20.317, 21.153, 21.966, 22.802, 23.638, 24.497, 28.653, 29.489, 30.302, 30.743, 31.138, 31.974, 32.81, 33.646, 34.087, 34.482, 35.318, 36.153, 36.989, 37.825]}, "strings": {"src": "parts/strings.mp3", "on": [11.842, 12.005, 12.26, 12.399, 12.678, 12.817, 13.096, 13.235, 29.513, 29.931, 30.325, 31.997, 32.833, 33.251, 33.669, 35.178, 35.341, 35.596, 35.736, 36.014, 36.177, 36.432, 36.571, 36.85, 36.989, 37.245, 50.643, 51.873, 52.013, 52.291, 52.431, 52.709, 52.872, 53.127, 53.267, 53.568, 53.685, 53.963, 54.102]}, "tune_chorus": {"src": "parts/tune_chorus.mp3", "on": [2.067, 2.461, 3.042, 3.251, 3.483, 3.622, 3.994, 4.18, 5.016, 5.317, 5.526, 5.712, 5.944, 6.107, 6.362, 6.618, 6.989, 7.268, 21.084, 21.339, 21.548, 21.78, 21.989, 22.198, 22.454, 22.639, 23.197, 23.429, 23.638, 23.893, 25.124, 28.677, 29.002, 29.838, 29.977, 30.116, 30.302, 30.534, 31.811, 31.974, 32.229, 32.415, 32.833, 33.042, 33.228, 33.46, 33.646, 33.971, 45.14, 45.325, 45.558, 45.743, 45.976, 46.184, 46.533, 46.788, 46.928, 47.276]}, "tune_lead": {"src": "parts/tune_lead.mp3", "on": [2.067, 2.461, 3.042, 3.251, 3.483, 3.622, 3.994, 5.016, 5.317, 5.526, 5.712, 5.944, 6.107, 6.362, 6.618, 6.989, 7.268, 21.084, 21.339, 21.548, 21.78, 21.989, 22.198, 22.454, 23.197, 23.429, 23.638, 23.893, 25.124, 28.653, 28.979, 29.118, 29.838, 29.954, 30.116, 30.302, 30.534, 31.811, 31.974, 32.206, 32.415, 32.833, 33.042, 33.228, 33.437, 33.622, 33.971, 39.149, 45.14, 45.325, 45.372, 45.558, 45.72, 45.952, 46.184, 46.533, 46.788, 46.928, 47.276]}, "tune_multi": {"src": "parts/tune_multi.mp3", "on": [2.09, 2.299, 2.485, 3.065, 3.274, 3.506, 3.646, 4.017, 4.203, 5.039, 5.341, 5.55, 5.735, 5.968, 6.13, 6.385, 6.641, 7.012, 7.291, 21.107, 21.386, 21.595, 21.804, 22.013, 22.221, 22.477, 22.663, 23.22, 23.452, 23.661, 23.917, 25.147, 28.677, 29.025, 29.861, 30.0, 30.14, 30.325, 30.557, 31.835, 31.997, 32.253, 32.461, 32.601, 32.879, 33.065, 33.251, 33.483, 33.669, 34.017, 45.163, 45.349, 45.581, 45.767, 45.976, 46.208, 46.556, 46.811, 46.951, 47.299]}, "woodwinds": {"src": "parts/woodwinds.mp3", "on": [1.486, 1.997, 2.438, 3.158, 3.274, 3.692, 3.971, 4.389, 4.574, 4.923, 4.969, 5.108, 5.341, 6.177, 6.455, 6.594, 7.291, 8.29, 8.522, 9.079, 9.799, 9.938, 10.635, 11.61, 21.037, 21.432, 21.85, 22.268, 22.43, 23.545, 23.917, 25.194, 25.333, 28.653, 29.095, 29.768, 29.931, 30.209, 30.627, 31.045, 31.486, 31.835, 32.438, 32.856, 33.274, 44.373, 44.768, 45.186, 45.372, 45.79, 46.208, 46.602, 46.881, 47.044, 47.717, 48.181, 54.381, 54.962, 58.236, 59.791]}}, "families": [{"id": "drums", "name": "Drums", "kind": "band", "layer": "drums", "third": null, "members": [{"id": "pebble_drummer", "img": "img/pebble_drummer.webp"}, {"id": "circle_caller", "img": "img/circle_caller.webp"}, {"id": "powder_monkey", "img": "img/powder_monkey.webp"}]}, {"id": "bass", "name": "Bass", "kind": "band", "layer": "bass", "third": "bass_sub", "members": [{"id": "thunder_ox", "img": "img/thunder_ox.webp"}, {"id": "tok_echo", "img": "img/tok_echo.webp"}, {"id": "dread_fundamental", "img": "img/dread_fundamental.webp"}]}, {"id": "brass", "name": "Brass", "kind": "band", "layer": "brass", "third": null, "members": [{"id": "bell_bear", "img": "img/bell_bear.webp"}, {"id": "bone_thimble", "img": "img/bone_thimble.webp"}]}, {"id": "woodwinds", "name": "Woodwinds", "kind": "band", "layer": "woodwinds", "third": null, "members": [{"id": "heartsick_crooner", "img": "img/heartsick_crooner.webp"}, {"id": "lazy_drone", "img": "img/lazy_drone.webp"}]}, {"id": "strings", "name": "Strings", "kind": "band", "layer": "strings", "third": null, "members": [{"id": "sharp_harmonic", "img": "img/sharp_harmonic.webp"}, {"id": "scythe_hand", "img": "img/scythe_hand.webp"}]}, {"id": "guitar", "name": "Guitar", "kind": "band", "layer": "guitar", "third": null, "members": [{"id": "glad_hummer", "img": "img/glad_hummer.webp"}, {"id": "tomorrow_soprano", "img": "img/tomorrow_soprano.webp"}]}, {"id": "tune", "name": "Tune", "kind": "sung", "layer": null, "third": null, "members": [{"id": "moss_riffer", "img": "img/moss_riffer.webp", "layer": "tune_lead"}, {"id": "island_whistler", "img": "img/island_whistler.webp", "layer": "tune_multi"}, {"id": "masquerade_mezzo", "img": "img/masquerade_mezzo.webp", "layer": "tune_chorus"}]}, {"id": "bom", "name": "Bom", "kind": "sung", "layer": null, "third": null, "members": [{"id": "skip_chorister", "img": "img/skip_chorister.webp", "layer": "bom_bass"}, {"id": "cutlass_baritone", "img": "img/cutlass_baritone.webp", "layer": "bom_lowend"}]}, {"id": "doowah", "name": "Doo-wah", "kind": "sung", "layer": null, "third": null, "members": [{"id": "pit_bellower", "img": "img/pit_bellower.webp", "layer": "doowah"}]}], "fullBand": ["drums", "bass", "brass", "woodwinds", "strings", "guitar", "tune"], "presets": {"full": ["pebble_drummer", "thunder_ox", "bell_bear", "heartsick_crooner", "sharp_harmonic", "glad_hummer", "moss_riffer"], "thin": ["thunder_ox", "moss_riffer"]}, "autoLevel": [["p", "pebble_drummer", 10], ["p", "thunder_ox", 12], ["p", "moss_riffer", 7], ["p", "tok_echo", 13], ["p", "bell_bear", 2], ["p", "island_whistler", 17], ["p", "heartsick_crooner", 22], ["p", "sharp_harmonic", 4], ["p", "glad_hummer", 14], ["p", "dread_fundamental", 11], ["p", "masquerade_mezzo", 1], ["p", "skip_chorister", 20], ["e", "bell_bear", 0, 1], ["e", "moss_riffer", 0, 2], ["e", "pebble_drummer", 0, 2], ["p", "circle_caller", 10, 4], ["c", "", 0, 2]]};const BEAT=60/D.bpm,SEC=D.sectionBars,NBARS=Math.round((D.loopEnd-D.fd)/D.bar);
+const FAM={},CH={};D.families.forEach(f=>{FAM[f.id]=f;f.members.forEach(m=>{m.fam=f.id;CH[m.id]=m;});});
+let ctx=null,t0=0,running=false,loading=null,lastS=0,bufs={},nodes={},singing={},lastBar=-1;
+const members={};D.families.forEach(f=>members[f.id]=[]);   // characters in order of arrival, per family
+const live=new Set();                                          // characters in play (their part applies from the next bar)
 async function engine(){if(running)return;if(loading)return loading;
  loading=(async()=>{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')await ctx.resume();
-  await Promise.all(D.parts.map(async p=>{if(bufs[p.id])return;const b=await (await fetch('parts/'+p.id+'.mp3')).arrayBuffer();bufs[p.id]=await new Promise((ok,no)=>ctx.decodeAudioData(b,ok,no));}));
-  const at=ctx.currentTime+.1;D.parts.forEach(p=>{const s=ctx.createBufferSource();s.buffer=bufs[p.id];s.loop=true;s.loopStart=D.fd;s.loopEnd=D.loopEnd;
-   const g=gains[p.id]=ctx.createGain();g.gain.value=on[p.id]?1:0;s.connect(g);g.connect(ctx.destination);s.start(at);p.src=s;});
-  t0=at;running=true;loading=null;})();return loading;}
-function stopEngine(){if(!running)return;D.parts.forEach(p=>{try{p.src.stop()}catch(e){}});running=false;}
+  await Promise.all(Object.entries(D.layers).map(async([k,l])=>{if(bufs[k])return;const b=await (await fetch(l.src)).arrayBuffer();bufs[k]=await new Promise((ok,no)=>ctx.decodeAudioData(b,ok,no));}));
+  const at=ctx.currentTime+.12;
+  const out=ctx.createGain();out.gain.value=.8;const lim=ctx.createDynamicsCompressor();lim.threshold.value=-6;lim.knee.value=3;lim.ratio.value=12;lim.attack.value=.003;lim.release.value=.15;out.connect(lim);lim.connect(ctx.destination);   // bigger families stay under clipping
+  Object.keys(D.layers).forEach(k=>{const s=ctx.createBufferSource();s.buffer=bufs[k];s.loop=true;s.loopStart=D.fd;s.loopEnd=D.loopEnd;
+   const g=ctx.createGain();g.gain.value=0;s.connect(g);g.connect(out);
+   const dg=ctx.createGain();dg.gain.value=0;const dl=ctx.createDelay(.1);dl.delayTime.value=.022;s.connect(dl);dl.connect(dg);   // the doubled copy
+   if(ctx.createStereoPanner){const pn=ctx.createStereoPanner();pn.pan.value=.55;dg.connect(pn);pn.connect(out);}else dg.connect(out);
+   s.start(at);nodes[k]={g,dg};});
+  t0=at;running=true;loading=null;lastBar=-1;})();return loading;}
 function songPos(){const e=ctx.currentTime-t0;if(e<D.loopEnd)return Math.max(0,e);return D.fd+((e-D.fd)%(D.loopEnd-D.fd));}
-function nextBar(){const s=songPos();const nb=s<D.fd?D.fd:D.fd+Math.ceil((s-D.fd+.04)/D.bar)*D.bar;return {at:ctx.currentTime+(nb-s),wait:nb-s};}
-async function setPart(id,val,ui){await engine();const {at,wait}=nextBar();gains[id].gain.setTargetAtTime(val?1:0,at,.008);
- setTimeout(()=>{on[id]=val;ui&&ui();},wait*1000);}
-// --- the frame loop: beat dots, bobbing, flashes on each part's notes
+function nextBar(){const s=songPos();const k=s<D.fd?0:Math.ceil((s-D.fd+.03)/D.bar);return {at:ctx.currentTime+(D.fd+k*D.bar-s),wait:D.fd+k*D.bar-s,bar:k%NBARS};}
+// who plays in a bar: band families grow louder and doubled with each member, sung families take turns by 8-bar section
+function plan(bar){const want={},dbl={},sing={};Object.keys(D.layers).forEach(k=>{want[k]=0;dbl[k]=0;});const sec=Math.floor(bar/SEC);
+ D.families.forEach(f=>{const ms=members[f.id].filter(id=>live.has(id));const n=ms.length;if(!n)return;
+  if(f.kind==='band'){want[f.layer]=1+.3*(n-1);if(n>=2)dbl[f.layer]=.6;if(n>=3&&f.third)want[f.third]=1;ms.forEach(id=>sing[id]=1);}
+  else{const together=n>1&&sec===D.togetherSection;ms.forEach((id,i)=>{if(n===1||together||sec%n===i){want[CH[id].layer]=together?.85:1;sing[id]=1;}});}});
+ return {want,dbl,sing};}
+function schedule(force){if(!running)return;const {at,wait,bar}=nextBar();if(!force&&bar===lastBar)return;lastBar=bar;const p=plan(bar);
+ Object.keys(D.layers).forEach(k=>{const n=nodes[k];n.g.gain.cancelScheduledValues(at);n.g.gain.setTargetAtTime(p.want[k],at,.008);n.dg.gain.cancelScheduledValues(at);n.dg.gain.setTargetAtTime(p.dbl[k],at,.008);});
+ clearTimeout(schedule._t);schedule._t=setTimeout(()=>{singing=p.sing;paintCombos();document.querySelectorAll('.mu.wait').forEach(m=>{if(live.has(m.dataset.id)){m.classList.remove('wait');m.classList.add('pop');}});},wait*1000);}
+setInterval(()=>schedule(false),60);
+function changed(){engine().then(()=>schedule(true));}
 const dots=[...document.querySelectorAll('#beats i')];
 function frame(){if(running){const s=songPos();const b=(s-D.fd)/BEAT;const beat=((Math.floor(b)%4)+4)%4,ph=b-Math.floor(b);
   dots.forEach((d,i)=>{d.classList.toggle('on',i===beat&&ph<.35);d.classList.toggle('d',i===0);});
-  const hop=s<D.fd?0:-7*Math.pow(1-ph,3);
-  document.querySelectorAll('.mu[data-id]').forEach(m=>{const id=m.dataset.id;const img=m.firstChild;img.style.translate=on[id]&&!m.classList.contains('gone')?`0 ${hop}px`:'0 0';});
-  const a=lastS,z=s;D.parts.forEach(p=>{if(!on[p.id])return;const hit=p.on.some(t=>z>=a?(t>a&&t<=z):(t>a||t<=z));
-   if(hit)document.querySelectorAll(`.mu[data-id="${p.id}"]`).forEach(m=>{m.classList.add('hit');clearTimeout(m._h);m._h=setTimeout(()=>m.classList.remove('hit'),110);});});
+  const hop=s<D.fd?0:-7*Math.pow(1-ph,3),a=lastS,z=s;
+  document.querySelectorAll('.mu[data-id]').forEach(m=>{const id=m.dataset.id,on=singing[id]&&live.has(id);m.firstChild.style.translate=on?`0 ${hop}px`:'0 0';
+   m.classList.toggle('rest',live.has(id)&&!singing[id]&&!m.classList.contains('wait'));
+   if(on){const L=D.layers[CH[id].layer||FAM[CH[id].fam].layer];if(L.on.some(t=>z>=a?(t>a&&t<=z):(t>a||t<=z))){m.classList.add('hit');clearTimeout(m._h);m._h=setTimeout(()=>m.classList.remove('hit'),110);}}});
   lastS=s;}requestAnimationFrame(frame);}
 requestAnimationFrame(frame);
-function mu(id){return `<div class="mu" data-id="${id}"><img src="${P[id].img}" alt=""></div>`;}
-function card(id){return `<div class="card" data-id="${id}"><img src="${P[id].img}" alt=""><span>${P[id].name}</span></div>`;}
-// --- Pull Lanes
-const lawn=document.getElementById('lawn'),tray=document.getElementById('tray');let sel=null;const placed={};   // id -> tile
+function paintCombos(){const has=f=>members[f].some(id=>live.has(id));
+ document.getElementById('c-rhythm').classList.toggle('lit',has('drums')&&has('bass'));document.getElementById('c-full').classList.toggle('lit',D.fullBand.every(has));}
+function mu(id,wait){return `<div class="mu${wait?' wait':''}" data-id="${id}"><img src="${CH[id].img}" alt=""></div>`;}
+function trayHTML(){return D.families.map(f=>`<div class="fam"><span>${f.name}</span><div class="cards">${f.members.map(m=>`<div class="card" data-id="${m.id}"><img src="${m.img}" alt=""></div>`).join('')}</div></div>`).join('');}
+function join(id){if(!members[CH[id].fam].includes(id))members[CH[id].fam].push(id);live.add(id);changed();}
+function leave(id){live.delete(id);members[CH[id].fam]=members[CH[id].fam].filter(x=>x!==id);changed();}
+// Pull Lanes
+const lawn=document.getElementById('lawn'),tray=document.getElementById('tray');let sel=null;const placed={};
 for(let i=0;i<25;i++)lawn.insertAdjacentHTML('beforeend',`<div class="tile" data-i="${i}"></div>`);
-tray.innerHTML=D.parts.map(p=>card(p.id)).join('');
+tray.innerHTML=trayHTML();
 function paintTray(){tray.querySelectorAll('.card').forEach(c=>{c.classList.toggle('used',!!placed[c.dataset.id]);c.classList.toggle('sel',c.dataset.id===sel);});
  lawn.querySelectorAll('.tile').forEach(t=>t.classList.toggle('can',!!sel&&!t.firstChild));}
-function plant(id,tile){if(placed[id]||tile.firstChild)return;placed[id]=tile;tile.innerHTML=mu(id);const m=tile.firstChild;m.classList.add('wait');sel=null;paintTray();
- setPart(id,true,()=>{m.classList.remove('wait');m.classList.add('pop');});}
-function unplant(id,eaten){const tile=placed[id];if(!tile)return;const m=tile.firstChild;if(m._leaving)return;m._leaving=1;if(eaten)m.classList.add('eat');
- setPart(id,false,()=>{m.classList.remove('eat');m.classList.add('gone');setTimeout(()=>{tile.innerHTML='';delete placed[id];paintTray();},300);});}
+function plant(id,tile){if(placed[id]||tile.firstChild)return;placed[id]=tile;tile.innerHTML=mu(id,true);sel=null;paintTray();join(id);}
+function unplant(id,eaten){const tile=placed[id];if(!tile)return;const m=tile.firstChild;if(m._leaving)return;m._leaving=1;if(eaten)m.classList.add('eat');leave(id);
+ const w=running?nextBar().wait:0;setTimeout(()=>{m.classList.remove('eat');m.classList.add('gone');setTimeout(()=>{tile.innerHTML='';delete placed[id];paintTray();},300);},w*1000);}
 tray.addEventListener('click',e=>{const c=e.target.closest('.card');if(!c||placed[c.dataset.id])return;sel=sel===c.dataset.id?null:c.dataset.id;paintTray();});
-lawn.addEventListener('click',e=>{const t=e.target.closest('.tile');if(!t)return;stopAuto();
- if(t.firstChild){unplant(t.firstChild.dataset.id,false);return;}if(sel)plant(sel,t);});
-document.getElementById('eat').addEventListener('click',()=>{stopAuto();const ids=Object.keys(placed).filter(id=>!placed[id].firstChild._leaving);if(!ids.length)return;unplant(ids[Math.floor(Math.random()*ids.length)],true);});
+lawn.addEventListener('click',e=>{const t=e.target.closest('.tile');if(!t)return;stopAuto();if(t.firstChild){unplant(t.firstChild.dataset.id,false);return;}if(sel)plant(sel,t);});
+document.getElementById('eat').addEventListener('click',()=>{stopAuto();const ids=Object.keys(placed).filter(id=>!placed[id].firstChild._leaving);if(ids.length)unplant(ids[Math.floor(Math.random()*ids.length)],true);});
 document.getElementById('clear').addEventListener('click',()=>{stopAuto();Object.keys(placed).forEach(id=>unplant(id,false));});
 let autoT=null;function stopAuto(){if(autoT){clearTimeout(autoT);autoT=null;document.getElementById('auto').classList.remove('on');}}
-const LEVEL=[['p','drums',12],['p','bass',10],['p','voice_bom',2],['p','brass',7],['p','voice_lead',17],['p','woodwinds',22],['p','guitar',5],['p','voice_doowah_lo',15],['p','strings',20],['p','voice_scat',24],
- ['e','brass'],['e','voice_lead'],['w'],['p','brass',7],['p','voice_lead',17],['w'],['e','drums'],['e','woodwinds'],['e','strings'],['w'],['c']];
-document.getElementById('auto').addEventListener('click',async()=>{if(autoT){stopAuto();return;}
- Object.keys(placed).forEach(id=>unplant(id,false));await engine();document.getElementById('auto').classList.add('on');let k=0;
- const step=()=>{const s=LEVEL[k++];if(!s){stopAuto();return;}
-  if(s[0]==='p'){const t=lawn.children[s[2]];if(!t.firstChild&&!placed[s[1]])plant(s[1],t);}
-  else if(s[0]==='e')unplant(s[1],true);else if(s[0]==='c')Object.keys(placed).forEach(id=>unplant(id,false));
-  autoT=setTimeout(step,D.bar*1000*(s[0]==='e'?1:2));};autoT=setTimeout(step,400);});
-// --- Music Battler
+document.getElementById('auto').addEventListener('click',async()=>{if(autoT){stopAuto();return;}Object.keys(placed).forEach(id=>unplant(id,false));await engine();
+ document.getElementById('auto').classList.add('on');let k=0;const L=D.autoLevel;
+ const step=()=>{const s=L[k++];if(!s){stopAuto();return;}
+  if(s[0]==='p'){const t=lawn.children[s[2]];if(!t.firstChild&&!placed[s[1]])plant(s[1],t);}else if(s[0]==='e')unplant(s[1],true);else if(s[0]==='c')Object.keys(placed).forEach(id=>unplant(id,false));
+  autoT=setTimeout(step,D.bar*1000*(s[3]||2));};autoT=setTimeout(step,300);});
+// Music Battler
 const seatsEl=document.getElementById('seats'),roster=document.getElementById('roster');const seats=Array(7).fill(null);let fighting=false;
-roster.innerHTML=D.parts.map(p=>card(p.id)).join('');
-function paintSeats(){seatsEl.innerHTML=seats.map((id,i)=>`<div class="seat${id?' full':''}" data-i="${i}">${id?mu(id):''}</div>`).join('');
+roster.innerHTML=trayHTML();
+function paintSeats(){seatsEl.innerHTML=seats.map((id,i)=>`<div class="seat${id?' full':''}" data-i="${i}">${id?mu(id,fighting&&!live.has(id)):''}</div>`).join('');
  roster.querySelectorAll('.card').forEach(c=>c.classList.toggle('used',seats.includes(c.dataset.id)));}
-function applySeats(){if(!fighting)return;D.parts.forEach(p=>{setPart(p.id,seats.includes(p.id));});}
-roster.addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;const id=c.dataset.id;const i=seats.indexOf(id);
- if(i>=0)seats[i]=null;else{const f=seats.indexOf(null);if(f<0)return;seats[f]=id;}paintSeats();applySeats();});
+function applySeats(){[...live].forEach(id=>{if(!fighting||!seats.includes(id))leave(id);});if(fighting)seats.forEach(id=>{if(id&&!live.has(id))join(id);});paintCombos();}
+roster.addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;const id=c.dataset.id;const i=seats.indexOf(id);if(i>=0)seats[i]=null;else{const f=seats.indexOf(null);if(f<0)return;seats[f]=id;}paintSeats();applySeats();});
 seatsEl.addEventListener('click',e=>{const s=e.target.closest('.seat');if(!s)return;seats[+s.dataset.i]=null;paintSeats();applySeats();});
 function preset(list){for(let i=0;i<7;i++)seats[i]=list[i]||null;paintSeats();applySeats();}
-document.getElementById('full').addEventListener('click',()=>preset(['drums','bass','voice_bom','brass','voice_lead','woodwinds','voice_doowah_lo']));
-document.getElementById('thin').addEventListener('click',()=>preset(['bass','voice_lead']));
-document.getElementById('fight').addEventListener('click',async()=>{const b=document.getElementById('fight');
- if(fighting){fighting=false;b.textContent='Fight';D.parts.forEach(p=>setPart(p.id,false));return;}
- fighting=true;b.textContent='Stop';await engine();applySeats();});
-preset(['drums','bass','voice_bom','brass','voice_lead','woodwinds','voice_doowah_lo']);
-// --- tabs: one song, one clock; leaving a mode silences it
+document.getElementById('full').addEventListener('click',()=>preset(D.presets.full));
+document.getElementById('thin').addEventListener('click',()=>preset(D.presets.thin));
+document.getElementById('fight').addEventListener('click',async()=>{const b=document.getElementById('fight');if(fighting){fighting=false;b.textContent='Fight';applySeats();return;}
+ fighting=true;b.textContent='Stop';paintSeats();await engine();applySeats();});
+preset(D.presets.full);
 document.getElementById('seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
  document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===b.dataset.v));
- stopAuto();D.parts.forEach(p=>{if(gains[p.id])gains[p.id].gain.setTargetAtTime(0,ctx.currentTime,.02);on[p.id]=false;});
- Object.keys(placed).forEach(id=>{placed[id].innerHTML='';delete placed[id];});sel=null;paintTray();fighting=false;document.getElementById('fight').textContent='Fight';});
+ stopAuto();Object.keys(placed).forEach(id=>{placed[id].innerHTML='';delete placed[id];});sel=null;paintTray();fighting=false;document.getElementById('fight').textContent='Fight';
+ [...live].forEach(id=>leave(id));paintSeats();paintCombos();});
 </script></body></html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Song in the game</title><link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF4DE;--panel:#FFFFFF;--ink:#2B2340;--soft:#7A6F86;--line:#EADFCB;--accent:#FF8A5B;--accent2:#6C5CE7;--grass1:#9EDC7E;--grass2:#8BD06D;--danger:#E8505B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150;--grass1:#5FA04A;--grass2:#548F41}}
+:root[data-theme="dark"]{--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150;--grass1:#5FA04A;--grass2:#548F41}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px Fredoka,system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:14px 16px 28px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+h1{font-size:20px;font-weight:700;margin:0}
+.beats{display:flex;gap:5px}.beats i{width:8px;height:8px;border-radius:50%;background:var(--line)}.beats i.on{background:var(--accent)}.beats i.on.d{background:var(--accent2)}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:10px}
+.seg button{flex:1;border:0;background:none;color:var(--soft);font:inherit;font-weight:600;padding:9px 0;border-radius:999px;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff}
+.combos{display:flex;gap:8px;margin-bottom:10px}
+.combo{flex:1;text-align:center;font-weight:600;font-size:14px;padding:8px 0;border-radius:999px;border:1px dashed var(--line);color:var(--soft);transition:background .2s,color .2s}
+.combo.lit{border:1px solid var(--accent2);background:var(--accent2);color:#fff;animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
+.view{display:none}.view.on{display:block}
+.lawn{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:#6FB257;padding:6px;border-radius:18px}
+.tile{aspect-ratio:1;border-radius:10px;background:var(--grass1);position:relative;display:flex;align-items:flex-end;justify-content:center;cursor:pointer}
+.tile:nth-child(even){background:var(--grass2)}
+.tile.can{box-shadow:inset 0 0 0 3px rgba(255,255,255,.55)}
+.mu{position:relative;height:88%;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+.mu img{height:100%;width:auto;max-width:110%;object-fit:contain;transform-origin:50% 100%;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18));transition:filter .06s,opacity .25s}
+.mu.wait img{opacity:.45;filter:grayscale(.6)}
+.mu.rest img{opacity:.5}
+.mu.pop img{animation:pop .38s cubic-bezier(.2,1.6,.4,1)}
+.mu.gone img{animation:gone .3s ease-in forwards}
+.mu.eat img{animation:shake .5s linear infinite}
+.mu.hit img{filter:brightness(1.35) drop-shadow(0 0 6px rgba(255,255,255,.9))}
+@keyframes pop{0%{transform:scale(.3)}100%{transform:scale(1)}}
+@keyframes gone{to{transform:scale(0) rotate(-20deg);opacity:0}}
+@keyframes shake{0%,100%{translate:0 0}25%{translate:-2px 0}75%{translate:2px 0}}
+.bar{display:flex;gap:8px;margin:12px 0}
+.btn{flex:1;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:600;font-size:15px;padding:11px 6px;border-radius:14px;cursor:pointer}
+.btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.bad{color:var(--danger)}
+.btn.on{border-color:var(--accent2);color:var(--accent2)}
+.tray{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:4px 10px}
+.fam{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.fam:last-child{border-bottom:0}
+.fam>span{width:66px;flex:none;font-size:13px;font-weight:600;color:var(--soft)}
+.fam .cards{display:flex;gap:6px;flex:1}
+.card{width:54px;height:58px;border:2px solid transparent;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.card img{height:48px;width:auto;max-width:100%;object-fit:contain}
+.card.sel{border-color:var(--ink)}
+.card.used{opacity:.3}
+.stage{background:linear-gradient(180deg,#3B2F5C,#5B3F7A);border-radius:18px;padding:16px 10px 14px}
+.seats{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 8px}
+.seat{width:calc(25% - 6px);aspect-ratio:.9;border-radius:14px;background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.25);display:flex;align-items:flex-end;justify-content:center;cursor:pointer;position:relative}
+.seat.full{border-style:solid;border-color:rgba(255,255,255,.35);background:radial-gradient(ellipse at 50% 92%,rgba(255,255,255,.22) 0 30%,transparent 31%)}
+.seat .mu{height:86%}
+</style></head><body><main>
+<header><h1>Song in the game</h1><div class="beats" id="beats"><i></i><i></i><i></i><i></i></div></header>
+<div class="seg" id="seg"><button class="on" data-v="lanes">Pull Lanes</button><button data-v="battle">Music Battler</button></div>
+<div class="combos"><div class="combo" id="c-rhythm">Rhythm section</div><div class="combo" id="c-full">Full band</div></div>
+<section class="view on" id="lanes">
+ <div class="lawn" id="lawn"></div>
+ <div class="bar"><button class="btn bad" id="eat">Enemy eats</button><button class="btn" id="auto">Auto</button><button class="btn" id="clear">Clear</button></div>
+ <div class="tray" id="tray"></div>
+</section>
+<section class="view" id="battle">
+ <div class="stage"><div class="seats" id="seats"></div></div>
+ <div class="bar"><button class="btn main" id="fight">Fight</button><button class="btn" id="full">Full band</button><button class="btn" id="thin">Thin band</button></div>
+ <div class="tray" id="roster"></div>
+</section>
+</main>
+<script>
+const D=__DATA__;const BEAT=60/D.bpm,SEC=D.sectionBars,NBARS=Math.round((D.loopEnd-D.fd)/D.bar);
+const FAM={},CH={};D.families.forEach(f=>{FAM[f.id]=f;f.members.forEach(m=>{m.fam=f.id;CH[m.id]=m;});});
+let ctx=null,t0=0,running=false,loading=null,lastS=0,bufs={},nodes={},singing={},lastBar=-1;
+const members={};D.families.forEach(f=>members[f.id]=[]);   // characters in order of arrival, per family
+const live=new Set();                                          // characters in play (their part applies from the next bar)
+async function engine(){if(running)return;if(loading)return loading;
+ loading=(async()=>{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')await ctx.resume();
+  await Promise.all(Object.entries(D.layers).map(async([k,l])=>{if(bufs[k])return;const b=await (await fetch(l.src)).arrayBuffer();bufs[k]=await new Promise((ok,no)=>ctx.decodeAudioData(b,ok,no));}));
+  const at=ctx.currentTime+.12;
+  const out=ctx.createGain();out.gain.value=.8;const lim=ctx.createDynamicsCompressor();lim.threshold.value=-6;lim.knee.value=3;lim.ratio.value=12;lim.attack.value=.003;lim.release.value=.15;out.connect(lim);lim.connect(ctx.destination);   // bigger families stay under clipping
+  Object.keys(D.layers).forEach(k=>{const s=ctx.createBufferSource();s.buffer=bufs[k];s.loop=true;s.loopStart=D.fd;s.loopEnd=D.loopEnd;
+   const g=ctx.createGain();g.gain.value=0;s.connect(g);g.connect(out);
+   const dg=ctx.createGain();dg.gain.value=0;const dl=ctx.createDelay(.1);dl.delayTime.value=.022;s.connect(dl);dl.connect(dg);   // the doubled copy
+   if(ctx.createStereoPanner){const pn=ctx.createStereoPanner();pn.pan.value=.55;dg.connect(pn);pn.connect(out);}else dg.connect(out);
+   s.start(at);nodes[k]={g,dg};});
+  t0=at;running=true;loading=null;lastBar=-1;})();return loading;}
+function songPos(){const e=ctx.currentTime-t0;if(e<D.loopEnd)return Math.max(0,e);return D.fd+((e-D.fd)%(D.loopEnd-D.fd));}
+function nextBar(){const s=songPos();const k=s<D.fd?0:Math.ceil((s-D.fd+.03)/D.bar);return {at:ctx.currentTime+(D.fd+k*D.bar-s),wait:D.fd+k*D.bar-s,bar:k%NBARS};}
+// who plays in a bar: band families grow louder and doubled with each member, sung families take turns by 8-bar section
+function plan(bar){const want={},dbl={},sing={};Object.keys(D.layers).forEach(k=>{want[k]=0;dbl[k]=0;});const sec=Math.floor(bar/SEC);
+ D.families.forEach(f=>{const ms=members[f.id].filter(id=>live.has(id));const n=ms.length;if(!n)return;
+  if(f.kind==='band'){want[f.layer]=1+.3*(n-1);if(n>=2)dbl[f.layer]=.6;if(n>=3&&f.third)want[f.third]=1;ms.forEach(id=>sing[id]=1);}
+  else{const together=n>1&&sec===D.togetherSection;ms.forEach((id,i)=>{if(n===1||together||sec%n===i){want[CH[id].layer]=together?.85:1;sing[id]=1;}});}});
+ return {want,dbl,sing};}
+function schedule(force){if(!running)return;const {at,wait,bar}=nextBar();if(!force&&bar===lastBar)return;lastBar=bar;const p=plan(bar);
+ Object.keys(D.layers).forEach(k=>{const n=nodes[k];n.g.gain.cancelScheduledValues(at);n.g.gain.setTargetAtTime(p.want[k],at,.008);n.dg.gain.cancelScheduledValues(at);n.dg.gain.setTargetAtTime(p.dbl[k],at,.008);});
+ clearTimeout(schedule._t);schedule._t=setTimeout(()=>{singing=p.sing;paintCombos();document.querySelectorAll('.mu.wait').forEach(m=>{if(live.has(m.dataset.id)){m.classList.remove('wait');m.classList.add('pop');}});},wait*1000);}
+setInterval(()=>schedule(false),60);
+function changed(){engine().then(()=>schedule(true));}
+const dots=[...document.querySelectorAll('#beats i')];
+function frame(){if(running){const s=songPos();const b=(s-D.fd)/BEAT;const beat=((Math.floor(b)%4)+4)%4,ph=b-Math.floor(b);
+  dots.forEach((d,i)=>{d.classList.toggle('on',i===beat&&ph<.35);d.classList.toggle('d',i===0);});
+  const hop=s<D.fd?0:-7*Math.pow(1-ph,3),a=lastS,z=s;
+  document.querySelectorAll('.mu[data-id]').forEach(m=>{const id=m.dataset.id,on=singing[id]&&live.has(id);m.firstChild.style.translate=on?`0 ${hop}px`:'0 0';
+   m.classList.toggle('rest',live.has(id)&&!singing[id]&&!m.classList.contains('wait'));
+   if(on){const L=D.layers[CH[id].layer||FAM[CH[id].fam].layer];if(L.on.some(t=>z>=a?(t>a&&t<=z):(t>a||t<=z))){m.classList.add('hit');clearTimeout(m._h);m._h=setTimeout(()=>m.classList.remove('hit'),110);}}});
+  lastS=s;}requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+function paintCombos(){const has=f=>members[f].some(id=>live.has(id));
+ document.getElementById('c-rhythm').classList.toggle('lit',has('drums')&&has('bass'));document.getElementById('c-full').classList.toggle('lit',D.fullBand.every(has));}
+function mu(id,wait){return `<div class="mu${wait?' wait':''}" data-id="${id}"><img src="${CH[id].img}" alt=""></div>`;}
+function trayHTML(){return D.families.map(f=>`<div class="fam"><span>${f.name}</span><div class="cards">${f.members.map(m=>`<div class="card" data-id="${m.id}"><img src="${m.img}" alt=""></div>`).join('')}</div></div>`).join('');}
+function join(id){if(!members[CH[id].fam].includes(id))members[CH[id].fam].push(id);live.add(id);changed();}
+function leave(id){live.delete(id);members[CH[id].fam]=members[CH[id].fam].filter(x=>x!==id);changed();}
+// Pull Lanes
+const lawn=document.getElementById('lawn'),tray=document.getElementById('tray');let sel=null;const placed={};
+for(let i=0;i<25;i++)lawn.insertAdjacentHTML('beforeend',`<div class="tile" data-i="${i}"></div>`);
+tray.innerHTML=trayHTML();
+function paintTray(){tray.querySelectorAll('.card').forEach(c=>{c.classList.toggle('used',!!placed[c.dataset.id]);c.classList.toggle('sel',c.dataset.id===sel);});
+ lawn.querySelectorAll('.tile').forEach(t=>t.classList.toggle('can',!!sel&&!t.firstChild));}
+function plant(id,tile){if(placed[id]||tile.firstChild)return;placed[id]=tile;tile.innerHTML=mu(id,true);sel=null;paintTray();join(id);}
+function unplant(id,eaten){const tile=placed[id];if(!tile)return;const m=tile.firstChild;if(m._leaving)return;m._leaving=1;if(eaten)m.classList.add('eat');leave(id);
+ const w=running?nextBar().wait:0;setTimeout(()=>{m.classList.remove('eat');m.classList.add('gone');setTimeout(()=>{tile.innerHTML='';delete placed[id];paintTray();},300);},w*1000);}
+tray.addEventListener('click',e=>{const c=e.target.closest('.card');if(!c||placed[c.dataset.id])return;sel=sel===c.dataset.id?null:c.dataset.id;paintTray();});
+lawn.addEventListener('click',e=>{const t=e.target.closest('.tile');if(!t)return;stopAuto();if(t.firstChild){unplant(t.firstChild.dataset.id,false);return;}if(sel)plant(sel,t);});
+document.getElementById('eat').addEventListener('click',()=>{stopAuto();const ids=Object.keys(placed).filter(id=>!placed[id].firstChild._leaving);if(ids.length)unplant(ids[Math.floor(Math.random()*ids.length)],true);});
+document.getElementById('clear').addEventListener('click',()=>{stopAuto();Object.keys(placed).forEach(id=>unplant(id,false));});
+let autoT=null;function stopAuto(){if(autoT){clearTimeout(autoT);autoT=null;document.getElementById('auto').classList.remove('on');}}
+document.getElementById('auto').addEventListener('click',async()=>{if(autoT){stopAuto();return;}Object.keys(placed).forEach(id=>unplant(id,false));await engine();
+ document.getElementById('auto').classList.add('on');let k=0;const L=D.autoLevel;
+ const step=()=>{const s=L[k++];if(!s){stopAuto();return;}
+  if(s[0]==='p'){const t=lawn.children[s[2]];if(!t.firstChild&&!placed[s[1]])plant(s[1],t);}else if(s[0]==='e')unplant(s[1],true);else if(s[0]==='c')Object.keys(placed).forEach(id=>unplant(id,false));
+  autoT=setTimeout(step,D.bar*1000*(s[3]||2));};autoT=setTimeout(step,300);});
+// Music Battler
+const seatsEl=document.getElementById('seats'),roster=document.getElementById('roster');const seats=Array(7).fill(null);let fighting=false;
+roster.innerHTML=trayHTML();
+function paintSeats(){seatsEl.innerHTML=seats.map((id,i)=>`<div class="seat${id?' full':''}" data-i="${i}">${id?mu(id,fighting&&!live.has(id)):''}</div>`).join('');
+ roster.querySelectorAll('.card').forEach(c=>c.classList.toggle('used',seats.includes(c.dataset.id)));}
+function applySeats(){[...live].forEach(id=>{if(!fighting||!seats.includes(id))leave(id);});if(fighting)seats.forEach(id=>{if(id&&!live.has(id))join(id);});paintCombos();}
+roster.addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;const id=c.dataset.id;const i=seats.indexOf(id);if(i>=0)seats[i]=null;else{const f=seats.indexOf(null);if(f<0)return;seats[f]=id;}paintSeats();applySeats();});
+seatsEl.addEventListener('click',e=>{const s=e.target.closest('.seat');if(!s)return;seats[+s.dataset.i]=null;paintSeats();applySeats();});
+function preset(list){for(let i=0;i<7;i++)seats[i]=list[i]||null;paintSeats();applySeats();}
+document.getElementById('full').addEventListener('click',()=>preset(D.presets.full));
+document.getElementById('thin').addEventListener('click',()=>preset(D.presets.thin));
+document.getElementById('fight').addEventListener('click',async()=>{const b=document.getElementById('fight');if(fighting){fighting=false;b.textContent='Fight';applySeats();return;}
+ fighting=true;b.textContent='Stop';paintSeats();await engine();applySeats();});
+preset(D.presets.full);
+document.getElementById('seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===b.dataset.v));
+ stopAuto();Object.keys(placed).forEach(id=>{placed[id].innerHTML='';delete placed[id];});sel=null;paintTray();fighting=false;document.getElementById('fight').textContent='Fight';
+ [...live].forEach(id=>leave(id));paintSeats();paintCombos();});
+</script></body></html>
