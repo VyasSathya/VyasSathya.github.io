@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "song-sources",
+   "key": "song-sources",
+   "title": "Song sources",
+   "url": "p/song-sources/index.html",
+   "added": "2026-11-23",
+   "v": "20261123113511"
+  },
+  {
    "id": "song-picker",
    "key": "song-picker",
    "title": "Song Picker",
