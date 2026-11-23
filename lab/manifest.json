@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "comedy-booking-mock",
+   "key": "comedy-booking-mock",
+   "title": "Comedy booking mock",
+   "url": "p/comedy-booking-mock/index.html",
+   "added": "2026-11-23",
+   "v": "20261123154349"
+  },
+  {
    "id": "song-in-game",
    "key": "song-in-game",
    "title": "Song in the game",
