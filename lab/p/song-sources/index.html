@@ -36,6 +36,7 @@ h2{font-size:15px;font-weight:600;color:var(--soft);margin:26px 0 10px}
 <script>
 const PARTS=[["Suno's band",[["drums","Drums"],["bass","Bass"],["brass","Brass"],["woodwinds","Woodwinds"],["strings","Strings"],["keyboard","Keys"],["guitar","Guitar"],["percussion","Percussion"],["synth","Synth"]]],
  ["Monster voices",[["voice_lead","Lead, the sax tune"],["voice_scat","All Rounder, the sax tune"],["voice_bom","Bass, the \"bom\""],["voice_doowah_lo","Session, the guitar chords"]]]];
+const LISTS={parts:PARTS,clean:[["Suno's band",[["drums","Drums and percussion"],["bass","Bass"],["brass","Brass"],["woodwinds","Woodwinds"],["strings","Strings"],["guitar","Guitar"]]],PARTS[1]]};
 const audio=new Audio();let cur=null;const mixers=[];
 function stopRow(){if(cur){cur.classList.remove('on');cur.querySelector('.play').innerHTML='&#9654;';cur.querySelector('i').style.width='0';}cur=null;audio.pause();}
 audio.ontimeupdate=()=>{if(cur)cur.querySelector('i').style.width=(100*audio.currentTime/(audio.duration||1))+'%';};audio.onended=stopRow;
@@ -44,7 +45,7 @@ let ctx=null;
 function makeMixer(el){
  const dir=el.dataset.dir;el.innerHTML='<div class="top"><button class="play" aria-label="Play">&#9654;</button><div class="bar"><i></i></div><button class="all">All on</button></div><div class="list"></div>';
  const mp=el.querySelector('.play'),bar=el.querySelector('.bar i'),box=el.querySelector('.list');const rows={},on={};
- PARTS.forEach(([g,list])=>{box.insertAdjacentHTML('beforeend',`<div class="grp">${g}</div>`);list.forEach(([id,name])=>{
+ LISTS[dir].forEach(([g,list])=>{box.insertAdjacentHTML('beforeend',`<div class="grp">${g}</div>`);list.forEach(([id,name])=>{
   box.insertAdjacentHTML('beforeend',`<div class="p" data-id="${id}"><span class="n">${name}</span><button class="solo">Alone</button><button class="tg" aria-label="On or off"></button></div>`);rows[id]=box.lastElementChild;on[id]=true;});});
  let bufs={},gains={},srcs=[],t0=0,off=0,playing=false,dur=0,raf=0;
  async function load(){ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();

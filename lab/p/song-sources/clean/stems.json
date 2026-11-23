@@ -11,62 +11,50 @@
  },
  "stems": {
   "bass": {
-   "lufs": -27.8,
-   "peak_db": -12.399999618530273
+   "lufs": -26.8,
+   "peak_db": -11.399999618530273
   },
   "brass": {
-   "lufs": -25.7,
-   "peak_db": -9.800000190734863
+   "lufs": -24.8,
+   "peak_db": -8.800000190734863
   },
   "drums": {
-   "lufs": -29.1,
-   "peak_db": -9.800000190734863
+   "lufs": -27.9,
+   "peak_db": -8.0
   },
   "guitar": {
-   "lufs": -43.8,
-   "peak_db": -20.700000762939453
-  },
-  "keyboard": {
-   "lufs": -29.4,
-   "peak_db": -10.800000190734863
-  },
-  "percussion": {
-   "lufs": -43.4,
-   "peak_db": -15.5
-  },
-  "strings": {
-   "lufs": -28.3,
-   "peak_db": -12.0
-  },
-  "synth": {
-   "lufs": -38.2,
-   "peak_db": -18.200000762939453
-  },
-  "woodwinds": {
-   "lufs": -29.5,
-   "peak_db": -16.299999237060547
-  },
-  "voice_lead": {
-   "lufs": -21.0,
+   "lufs": -33.6,
    "peak_db": -10.300000190734863
   },
+  "strings": {
+   "lufs": -27.1,
+   "peak_db": -10.600000381469727
+  },
+  "woodwinds": {
+   "lufs": -28.5,
+   "peak_db": -15.5
+  },
+  "voice_lead": {
+   "lufs": -20.4,
+   "peak_db": -9.699999809265137
+  },
   "voice_scat": {
-   "lufs": -23.0,
-   "peak_db": -10.399999618530273
+   "lufs": -22.4,
+   "peak_db": -9.800000190734863
   },
   "voice_bom": {
-   "lufs": -19.1,
-   "peak_db": -5.5
+   "lufs": -18.5,
+   "peak_db": -4.900000095367432
   },
   "voice_doowah_lo": {
-   "lufs": -23.2,
-   "peak_db": -11.100000381469727
+   "lufs": -22.5,
+   "peak_db": -10.5
   }
  },
  "check": {
   "sum_vs_full_db": -300.0,
-  "full_lufs": -16.66,
+  "full_lufs": -16.0,
   "full_clipped": 0,
-  "suno_parts_vs_suno_mix_db": -7.199999809265137
+  "suno_parts_vs_suno_mix_db": -9.300000190734863
  }
 }
