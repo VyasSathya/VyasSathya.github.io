@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "song-picker",
+   "key": "song-picker",
+   "title": "Song Picker",
+   "url": "p/song-picker/index.html",
+   "added": "2026-11-23",
+   "v": "20261123031011"
+  },
+  {
    "id": "full-song-3",
    "key": "full-song-3",
    "title": "Full song 3",
