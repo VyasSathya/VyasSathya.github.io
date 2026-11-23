@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Full song 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF4DE;--panel:#FFFFFF;--ink:#2B2340;--soft:#7A6F86;--line:#EADFCB;--accent:#FF8A5B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150}}
+:root[data-theme="dark"]{--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px Fredoka,system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+h2{font-size:15px;font-weight:600;color:var(--soft);margin:26px 0 10px}
+.r{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:8px 0;cursor:pointer}
+.r button{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:15px;cursor:pointer}
+.r.on{border-color:var(--accent)}
+.r span{font-weight:500}
+.bar{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--accent)}
+</style></head><body><main id="m"></main>
+<script>
+const R=[{"g": "Full song 3", "name": "The whole song", "src": "a/full.mp3"}, {"g": "Each part alone (with the floor)", "name": "Tuba (Low End)", "src": "a/tuba.mp3"}, {"g": "Each part alone (with the floor)", "name": "Plucked bass (Low End)", "src": "a/bass_pluck.mp3"}, {"g": "Each part alone (with the floor)", "name": "Snare corps (Drumline)", "src": "a/snare_corps.mp3"}, {"g": "Each part alone (with the floor)", "name": "Big drums (Drumline)", "src": "a/big_drums.mp3"}, {"g": "Each part alone (with the floor)", "name": "Trumpets (Brass)", "src": "a/trumpets.mp3"}, {"g": "Each part alone (with the floor)", "name": "Horns (Brass)", "src": "a/horns.mp3"}, {"g": "Each part alone (with the floor)", "name": "Lead singer, the hook (Chorus)", "src": "a/lead_singer.mp3"}, {"g": "Each part alone (with the floor)", "name": "Harmony singer (Chorus)", "src": "a/harmony_singer.mp3"}, {"g": "Each part alone (with the floor)", "name": "Gang \"hey!\" (Shanty)", "src": "a/gang_hey.mp3"}, {"g": "Each part alone (with the floor)", "name": "Sailor chant (Shanty)", "src": "a/sailor_chant.mp3"}, {"g": "Each part alone (with the floor)", "name": "Ghost choir (Requiem)", "src": "a/ghost_choir.mp3"}, {"g": "Each part alone (with the floor)", "name": "Airy voices (Weather)", "src": "a/airy_voices.mp3"}, {"g": "Each part alone (with the floor)", "name": "Beatbox and hum (Undertone)", "src": "a/beatbox.mp3"}, {"g": "Each part alone (with the floor)", "name": "Bouncy piano (Session)", "src": "a/piano.mp3"}, {"g": "Each part alone (with the floor)", "name": "Marimba (Session)", "src": "a/marimba.mp3"}, {"g": "Each part alone (with the floor)", "name": "Pizzicato strings (Strings)", "src": "a/pizz_strings.mp3"}, {"g": "Each part alone (with the floor)", "name": "Violin countermelody (Strings)", "src": "a/violin_counter.mp3"}, {"g": "Each part alone (with the floor)", "name": "Music box (Clockwork)", "src": "a/music_box.mp3"}, {"g": "Each part alone (with the floor)", "name": "Xylophone hook (Clockwork)", "src": "a/xylophone.mp3"}, {"g": "Each part alone (with the floor)", "name": "Clean guitar (Overdrive)", "src": "a/guitar.mp3"}, {"g": "Each part alone (with the floor)", "name": "Goofy scat (All Rounder)", "src": "a/scat.mp3"}, {"g": "Each part alone (with the floor)", "name": "Ukulele (All Rounder)", "src": "a/ukulele.mp3"}, {"g": "Each part alone (with the floor)", "name": "Fife (Brass)", "src": "a/fife.mp3"}, {"g": "Each part alone (with the floor)", "name": "Sleigh bells and triangle (Weather)", "src": "a/jingle.mp3"}, {"g": "Each part alone (with the floor)", "name": "Clarinet (All Rounder)", "src": "a/clarinet.mp3"}];const m=document.getElementById('m');let cur=null;let last='';
+R.forEach((r,i)=>{if(r.g!==last){m.insertAdjacentHTML('beforeend',`<h2>${r.g}</h2>`);last=r.g;}
+ m.insertAdjacentHTML('beforeend',`<div class="r" data-i="${i}"><button aria-label="Play">&#9654;</button><span>${r.name}</span><div class="bar"><i></i></div></div>`);});
+const audio=new Audio();
+audio.ontimeupdate=()=>{if(cur)cur.querySelector('i').style.width=(100*audio.currentTime/(audio.duration||1))+'%';};
+audio.onended=()=>stop();
+function stop(){if(cur){cur.classList.remove('on');cur.querySelector('button').innerHTML='&#9654;';cur.querySelector('i').style.width='0';}cur=null;audio.pause();}
+m.addEventListener('click',e=>{const row=e.target.closest('.r');if(!row)return;
+ if(cur===row){stop();return;}stop();cur=row;row.classList.add('on');row.querySelector('button').innerHTML='&#10074;&#10074;';
+ audio.src=R[+row.dataset.i].src;audio.play();});
+</script></body></html>
