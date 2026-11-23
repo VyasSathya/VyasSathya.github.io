@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "full-song-1",
+   "key": "full-song-1",
+   "title": "Full song 1",
+   "url": "p/full-song-1/index.html",
+   "added": "2026-11-22",
+   "v": "20261122200455"
+  },
+  {
    "id": "voice-test",
    "key": "voice-test",
    "title": "Voice Test",
