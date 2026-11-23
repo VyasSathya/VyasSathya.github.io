@@ -1,29 +1,65 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Song sources</title>
+<title>Song sources</title><link rel="icon" href="data:,">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#FFF4DE;--panel:#FFFFFF;--ink:#2B2340;--soft:#7A6F86;--line:#EADFCB;--accent:#FF8A5B}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150}}
-:root[data-theme="dark"]{--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px Fredoka,system-ui,sans-serif}
+:root{--bg:#FFF4DE;--panel:#FFFFFF;--ink:#2B2340;--soft:#7A6F86;--line:#EADFCB;--accent:#FF8A5B;--off:#EFE6D6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150;--off:#352C4A}}
+:root[data-theme="dark"]{--bg:#1E1A29;--panel:#2B2340;--ink:#FFF1DA;--soft:#C9BFD6;--line:#3A3150;--off:#352C4A}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:var(--bg);color:var(--ink);font:16px Fredoka,system-ui,sans-serif}
 main{max-width:640px;margin:0 auto;padding:20px 16px 48px}
 h2{font-size:15px;font-weight:600;color:var(--soft);margin:26px 0 10px}
 .r{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:8px 0;cursor:pointer}
-.r button{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:15px;cursor:pointer}
 .r.on{border-color:var(--accent)}
+.play{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:15px;cursor:pointer}
 .r span{font-weight:500}
 .bar{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--accent)}
-</style></head><body><main id="m"></main>
+.mixer{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.top{display:flex;align-items:center;gap:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.top .all{flex:none;border:1px solid var(--line);background:none;color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}
+.p{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}.p:last-child{border-bottom:0}
+.p .n{flex:1;font-weight:500;transition:opacity .15s}.p.mute .n{opacity:.4}
+.tg{flex:none;width:46px;height:28px;border-radius:14px;border:0;background:var(--accent);position:relative;cursor:pointer}
+.tg::after{content:"";position:absolute;top:3px;left:21px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .15s}
+.p.mute .tg{background:var(--off)}.p.mute .tg::after{left:3px}
+.solo{flex:none;border:1px solid var(--line);background:none;color:var(--soft);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+.p.only .solo{border-color:var(--accent);color:var(--accent)}
+.grp{font-size:13px;color:var(--soft);padding:12px 0 2px}
+</style></head><body><main>
+<h2>Songs</h2>
+<div class="r" data-src="a/00.mp3"><button class="play" aria-label="Play">&#9654;</button><span>Sneaky: Suno's band plus monster voices</span><div class="bar"><i></i></div></div>
+<h2>Sneaky, part by part</h2>
+<div class="mixer">
+ <div class="top"><button class="play" id="mp" aria-label="Play">&#9654;</button><div class="bar"><i id="mbar"></i></div><button class="all" id="all">All on</button></div>
+ <div id="parts"></div>
+</div>
+</main>
 <script>
-const R=[{"g": "Song sources", "name": "Sneaky: Suno's band plus monster voices", "src": "a/00.mp3"}];const m=document.getElementById('m');let cur=null;let last='';
-R.forEach((r,i)=>{if(r.g!==last){m.insertAdjacentHTML('beforeend',`<h2>${r.g}</h2>`);last=r.g;}
- m.insertAdjacentHTML('beforeend',`<div class="r" data-i="${i}"><button aria-label="Play">&#9654;</button><span>${r.name}</span><div class="bar"><i></i></div></div>`);});
-const audio=new Audio();
-audio.ontimeupdate=()=>{if(cur)cur.querySelector('i').style.width=(100*audio.currentTime/(audio.duration||1))+'%';};
-audio.onended=()=>stop();
-function stop(){if(cur){cur.classList.remove('on');cur.querySelector('button').innerHTML='&#9654;';cur.querySelector('i').style.width='0';}cur=null;audio.pause();}
-m.addEventListener('click',e=>{const row=e.target.closest('.r');if(!row)return;
- if(cur===row){stop();return;}stop();cur=row;row.classList.add('on');row.querySelector('button').innerHTML='&#10074;&#10074;';
- audio.src=R[+row.dataset.i].src;audio.play();});
+const PARTS=[["Suno's band",[["drums","Drums"],["bass","Bass"],["brass","Brass"],["woodwinds","Woodwinds"],["strings","Strings"],["keyboard","Keys"],["guitar","Guitar"],["percussion","Percussion"],["synth","Synth"]]],
+ ["Monster voices",[["voice_lead","Lead, the sax tune"],["voice_scat","All Rounder, the sax tune"],["voice_bom","Bass, the \"bom\""],["voice_doowah_lo","Session, the guitar chords"]]]];
+// single songs
+const audio=new Audio();let cur=null;
+function stopRow(){if(cur){cur.classList.remove('on');cur.querySelector('.play').innerHTML='&#9654;';cur.querySelector('i').style.width='0';}cur=null;audio.pause();}
+audio.ontimeupdate=()=>{if(cur)cur.querySelector('i').style.width=(100*audio.currentTime/(audio.duration||1))+'%';};audio.onended=stopRow;
+document.querySelectorAll('.r').forEach(r=>r.addEventListener('click',()=>{if(cur===r){stopRow();return;}stopRow();stopMix();cur=r;r.classList.add('on');r.querySelector('.play').innerHTML='&#10074;&#10074;';audio.src=r.dataset.src;audio.play();}));
+// part mixer: every part decoded, started together, each on its own gain
+const box=document.getElementById('parts');const rows={};
+PARTS.forEach(([g,list])=>{box.insertAdjacentHTML('beforeend',`<div class="grp">${g}</div>`);list.forEach(([id,name])=>{
+ box.insertAdjacentHTML('beforeend',`<div class="p" data-id="${id}"><span class="n">${name}</span><button class="solo">Alone</button><button class="tg" aria-label="On or off"></button></div>`);rows[id]=box.lastElementChild;});});
+let ctx=null,bufs={},gains={},srcs=[],t0=0,off=0,playing=false,dur=0,raf=0;const on={};Object.keys(rows).forEach(k=>on[k]=true);
+async function load(){ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+ await Promise.all(Object.keys(rows).map(async k=>{if(bufs[k])return;const b=await (await fetch('parts/'+k+'.mp3')).arrayBuffer();bufs[k]=await new Promise((ok,no)=>ctx.decodeAudioData(b,ok,no));dur=Math.max(dur,bufs[k].duration);}));}
+function apply(){Object.keys(rows).forEach(k=>{rows[k].classList.toggle('mute',!on[k]);if(gains[k])gains[k].gain.setTargetAtTime(on[k]?1:0,ctx.currentTime,.01);});
+ const live=Object.keys(on).filter(k=>on[k]);Object.keys(rows).forEach(k=>rows[k].classList.toggle('only',live.length===1&&on[k]));}
+function startMix(){srcs=[];const at=ctx.currentTime+.08;Object.keys(rows).forEach(k=>{const s=ctx.createBufferSource();s.buffer=bufs[k];const g=gains[k]||(gains[k]=ctx.createGain());g.gain.value=on[k]?1:0;s.connect(g);g.connect(ctx.destination);s.start(at,off);srcs.push(s);});
+ t0=at-off;playing=true;mp.innerHTML='&#10074;&#10074;';tick();}
+function stopMix(keep){srcs.forEach(s=>{try{s.stop()}catch(e){}});srcs=[];if(playing&&keep&&ctx)off=Math.min(dur,ctx.currentTime-t0);if(!keep)off=0;playing=false;mp.innerHTML='&#9654;';cancelAnimationFrame(raf);if(!keep)mbar.style.width='0';}
+function tick(){const p=(ctx.currentTime-t0)/dur;mbar.style.width=Math.min(100,100*p)+'%';if(p>=1){stopMix();return;}raf=requestAnimationFrame(tick);}
+const mp=document.getElementById('mp'),mbar=document.getElementById('mbar');
+mp.addEventListener('click',async()=>{if(playing){stopMix(true);return;}stopRow();mp.innerHTML='&hellip;';await load();if(ctx.state==='suspended')await ctx.resume();startMix();});
+box.addEventListener('click',e=>{const p=e.target.closest('.p');if(!p)return;const k=p.dataset.id;
+ if(e.target.classList.contains('solo')){const only=Object.keys(on).filter(x=>on[x]).length===1&&on[k];Object.keys(on).forEach(x=>on[x]=only?true:x===k);}
+ else on[k]=!on[k];if(ctx)apply();else Object.keys(rows).forEach(x=>rows[x].classList.toggle('mute',!on[x]));
+ if(!playing&&!e.target.classList.contains('tg'))mp.click();});
+document.getElementById('all').addEventListener('click',()=>{Object.keys(on).forEach(k=>on[k]=true);if(ctx)apply();else Object.keys(rows).forEach(x=>rows[x].classList.remove('mute','only'));});
 </script></body></html>
