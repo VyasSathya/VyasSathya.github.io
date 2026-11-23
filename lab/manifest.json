@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "song-in-game",
+   "key": "song-in-game",
+   "title": "Song in the game",
+   "url": "p/song-in-game/index.html",
+   "added": "2026-11-23",
+   "v": "20261123131114"
+  },
+  {
    "id": "song-sources",
    "key": "song-sources",
    "title": "Song sources",
