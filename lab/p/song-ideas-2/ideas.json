@@ -1,0 +1,232 @@
+[
+ {
+  "name": "Pull Lanes, day lawn",
+  "items": [
+   {
+    "id": "18b55201-5dbb-4a29-90e5-eb92ab554c6c",
+    "label": "Idea 1",
+    "feel": "bright jazz swing, clarinet lead"
+   },
+   {
+    "id": "fd1f8388-101b-43c9-b088-5220e07f5a52",
+    "label": "Idea 2",
+    "feel": "bright jazz swing, clarinet lead"
+   },
+   {
+    "id": "9c62bb1a-c067-46b8-b640-05ce6dfb3b81",
+    "label": "Idea 3",
+    "feel": "picnic swing, sax section"
+   },
+   {
+    "id": "b325eab3-e984-42c8-989e-99e3a70a0be8",
+    "label": "Idea 4",
+    "feel": "picnic swing, sax section"
+   }
+  ]
+ },
+ {
+  "name": "Night",
+  "items": [
+   {
+    "id": "30ba0dec-d4cb-40ce-a983-c261c981efb4",
+    "label": "Idea 1",
+    "feel": "sneaky swing, muted trumpet"
+   },
+   {
+    "id": "4ebba36c-5317-4e64-aed2-8cfbe4609815",
+    "label": "Idea 2",
+    "feel": "sneaky swing, muted trumpet"
+   },
+   {
+    "id": "5b50ffee-10d6-4bd2-ae27-5ee13d5e7389",
+    "label": "Idea 3",
+    "feel": "spy jazz, vibraphone"
+   },
+   {
+    "id": "fef849eb-98a2-44f4-8849-edefe6292c29",
+    "label": "Idea 4",
+    "feel": "spy jazz, vibraphone"
+   },
+   {
+    "id": "50e061a1-a3fb-49f2-bed6-b4db73daa45b",
+    "label": "Sneaky, already picked",
+    "feel": "full-length sneaky"
+   }
+  ]
+ },
+ {
+  "name": "Canal",
+  "items": [
+   {
+    "id": "63564f7d-bf23-48cf-b164-8dbf48133f34",
+    "label": "Idea 1",
+    "feel": "rollicking shanty, accordion and tuba"
+   },
+   {
+    "id": "dfa68039-c0a4-4a21-b3e8-74708a270dba",
+    "label": "Idea 2",
+    "feel": "rollicking shanty, accordion and tuba"
+   },
+   {
+    "id": "2f11d9a0-1f24-4dd7-9932-841821966baa",
+    "label": "Idea 3",
+    "feel": "shanty swing, concertina and fiddle"
+   },
+   {
+    "id": "46c60566-8277-4b9d-af2b-093a1e639753",
+    "label": "Idea 4",
+    "feel": "shanty swing, concertina and fiddle"
+   }
+  ]
+ },
+ {
+  "name": "Harbour fog",
+  "items": [
+   {
+    "id": "e782935e-eaaa-4d89-ad63-ee65f76ca117",
+    "label": "Idea 1",
+    "feel": "foggy minor swing, low brass"
+   },
+   {
+    "id": "f92f246e-167e-4469-b75e-1c34c97d4e24",
+    "label": "Idea 2",
+    "feel": "foggy minor swing, low brass"
+   },
+   {
+    "id": "008465a1-f598-4448-b071-fa3ae7da6dde",
+    "label": "Idea 3",
+    "feel": "ghost tango-swing, clarinet"
+   },
+   {
+    "id": "4b25ea03-bdef-49c1-8667-cf171728b835",
+    "label": "Idea 4",
+    "feel": "ghost tango-swing, clarinet"
+   }
+  ]
+ },
+ {
+  "name": "Rooftop",
+  "items": [
+   {
+    "id": "5efb3dc3-e3db-4a89-843e-a96a2c2d7e6a",
+    "label": "Idea 1",
+    "feel": "big band shout finale"
+   },
+   {
+    "id": "6c0b16a3-3ef8-4090-9a02-753b43fda9f5",
+    "label": "Idea 2",
+    "feel": "big band shout finale"
+   },
+   {
+    "id": "65d535aa-369b-4b4b-9173-72f0a133c0e0",
+    "label": "Idea 3",
+    "feel": "jump blues, tenor sax"
+   },
+   {
+    "id": "dda1a3a2-25a6-4641-8b89-dab994712b94",
+    "label": "Idea 4",
+    "feel": "jump blues, tenor sax"
+   }
+  ]
+ },
+ {
+  "name": "Pirate rival-band boss",
+  "items": [
+   {
+    "id": "55eee9d6-237a-4b2e-85fa-feece3787c44",
+    "label": "Idea 1",
+    "feel": "pompous march-swing, tuba"
+   },
+   {
+    "id": "d2533246-d4ca-4601-bcc0-aa6b0edbd8cd",
+    "label": "Idea 2",
+    "feel": "pompous march-swing, tuba"
+   },
+   {
+    "id": "53061dbe-25dc-4f4a-bf3e-81d3bda59bb8",
+    "label": "Idea 3",
+    "feel": "villain brass showdown, timpani"
+   },
+   {
+    "id": "ebff3068-399a-461f-ae85-10113cd88360",
+    "label": "Idea 4",
+    "feel": "villain brass showdown, timpani"
+   }
+  ]
+ },
+ {
+  "name": "Music Battler fight, punchy",
+  "items": [
+   {
+    "id": "9470344e-d657-4151-8e43-323ce7cacd4d",
+    "label": "Idea 1",
+    "feel": "hard swing, brass stabs"
+   },
+   {
+    "id": "260fcfaf-d42b-4842-92ce-656d5914f41e",
+    "label": "Idea 2",
+    "feel": "hard swing, brass stabs"
+   },
+   {
+    "id": "33860b38-13de-4cec-940a-2ac7d55e4960",
+    "label": "Idea 3",
+    "feel": "fast minor swing, screaming trumpet"
+   },
+   {
+    "id": "fcb0c547-1502-4966-8361-c3a8aea37b45",
+    "label": "Idea 4",
+    "feel": "fast minor swing, screaming trumpet"
+   }
+  ]
+ },
+ {
+  "name": "Music Battler fight, cheeky",
+  "items": [
+   {
+    "id": "df52689b-5bc9-476d-b17d-e8a931aa41ad",
+    "label": "Idea 1",
+    "feel": "cheeky swing, wah-wah trumpet"
+   },
+   {
+    "id": "064dd94a-3526-41e8-bd99-55b5e695fe7a",
+    "label": "Idea 2",
+    "feel": "cheeky swing, wah-wah trumpet"
+   },
+   {
+    "id": "40ec780b-a713-4d93-a5f5-09c8752ee3a7",
+    "label": "Idea 3",
+    "feel": "strutting swing, trombone slides"
+   },
+   {
+    "id": "4eb0caa2-26e5-430b-bf0a-7fa4e65abaf3",
+    "label": "Idea 4",
+    "feel": "strutting swing, trombone slides"
+   }
+  ]
+ },
+ {
+  "name": "Menu and shop",
+  "items": [
+   {
+    "id": "44beb986-27bd-4aeb-b1b2-7cc8eaf06296",
+    "label": "Idea 1",
+    "feel": "lounge swing, vibraphone"
+   },
+   {
+    "id": "3a9f4065-2077-45b0-bcea-fce96959162e",
+    "label": "Idea 2",
+    "feel": "lounge swing, vibraphone"
+   },
+   {
+    "id": "5c9cde65-e1af-424d-9950-1c9852e913c5",
+    "label": "Idea 3",
+    "feel": "bossa swing, nylon guitar"
+   },
+   {
+    "id": "a7610e8f-4c9f-4a63-a0f5-1a15d6eba53e",
+    "label": "Idea 4",
+    "feel": "bossa swing, nylon guitar"
+   }
+  ]
+ }
+]

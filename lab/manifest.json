@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "song-ideas-2",
+   "key": "song-ideas-2",
+   "title": "Song ideas 2",
+   "url": "p/song-ideas-2/index.html",
+   "added": "2026-11-23",
+   "v": "20261123172225"
+  },
+  {
    "id": "song-sources",
    "key": "song-sources",
    "title": "Song sources",
