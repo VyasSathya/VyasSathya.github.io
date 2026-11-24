@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "song-run",
+   "key": "song-run",
+   "title": "Song Run",
+   "url": "p/song-run/index.html",
+   "added": "2026-11-23",
+   "v": "20261123180652"
+  },
+  {
    "id": "band-roundup-play",
    "key": "band-roundup-play",
    "title": "Band Roundup (play)",
