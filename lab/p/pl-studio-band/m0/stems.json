@@ -1,0 +1,13 @@
+{
+ "bpm": 116,
+ "beat_seconds": 0.5172413793103449,
+ "bar_seconds": 2.0689655172413794,
+ "first_downbeat_s": 0.0,
+ "loop": {
+  "start_s": 0.0,
+  "end_s": 16.551724137931036,
+  "bars": 8
+ },
+ "key": "D major",
+ "source": "Suno Studio composer wrote every part as its own track (drums, tuba bass, whistle lead, accordion chords); accordion and whistle performed by Suno covers locked to those notes; tuba and drums are those notes on CC0 samples"
+}

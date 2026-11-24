@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "pl-studio-band",
+   "key": "pl-studio-band",
+   "title": "Pull Lanes band, part by part",
+   "url": "p/pl-studio-band/index.html",
+   "added": "2026-11-24",
+   "v": "20261124141647"
+  },
+  {
    "id": "pl-songs-split",
    "key": "pl-songs-split",
    "title": "Pull Lanes songs split",
