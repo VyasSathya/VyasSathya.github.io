@@ -30,18 +30,20 @@ def write(name, y):
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{HERE}/parts/{name}.wav', '-b:a', '160k', f'{HERE}/parts/{name}.mp3'], check=True)
     os.remove(f'{HERE}/parts/{name}.wav')
 for k in ('drums', 'bass', 'brass', 'woodwinds', 'strings', 'guitar'): shutil.copy(f'{S}/{k}.mp3', f'{HERE}/parts/{k}.mp3')
-shutil.copy(f'{S}/voice_bom.mp3', f'{HERE}/parts/bom_bass.mp3'); shutil.copy(f'{S}/voice_doowah_lo.mp3', f'{HERE}/parts/doowah.mp3')
 sub, _ = sf.read(f'{F}/bass_sub.wav', dtype='float32'); write('bass_sub', sub[:N])
-lead2 = sf.read(f'{S}/voice_lead.wav', dtype='float32')[0] + sf.read(f'{S}/voice_scat.wav', dtype='float32')[0]; tl = meter.integrated_loudness(lead2)
-tb = meter.integrated_loudness(sf.read(f'{S}/voice_bom.wav', dtype='float32')[0])
-for name, adv, tone, tgt in (('tune_lead', 60, (180, 6000), tl), ('tune_multi', 40, (150, 6000), tl), ('tune_chorus', 60, (180, 6000), tl), ('bom_lowend', 50, (40, 4000), tb)):
-    y = place(f'{F}/c_{name}.wav', adv, tone, tgt)
-    if name.startswith('bom'):   # sit it inside the band: short hits, low mids trimmed, band room, 1 dB under the bass
-        sf.write(f'{HERE}/parts/_{name}.wav', y, SR, subtype='FLOAT')
-        subprocess.run(['python', 'C:/Dev/toybox/music-kit/stems/voice_fit.py', f'{HERE}/parts/_{name}.wav', f'{HERE}/parts/_{name}_fit.wav', '--level-to', f'{S}/bass.wav',
-                        '--offset-db', '-1', '--room', 'D:/music-battler-work/songs/suno_sneaky/stems/reverb_ir.npy'], check=True)
-        y = sf.read(f'{HERE}/parts/_{name}_fit.wav', dtype='float32')[0]; os.remove(f'{HERE}/parts/_{name}.wav'); os.remove(f'{HERE}/parts/_{name}_fit.wav')
-    write(name, y)
+# every voice goes through the fit pass he chose ("after sounds better", 2026-11-23): raw voices next to the band stems
+RAW = 'D:/music-battler-work/songs/sneaky_parts/set_raw'; T = 'D:/music-battler-work/songs/demo_fit'; shutil.rmtree(T, ignore_errors=True); os.makedirs(f'{T}/in')
+for k in ('bass', 'brass', 'woodwinds', 'guitar', 'drums', 'strings'): shutil.copy(f'{S}/{k}.wav', f'{T}/in/{k}.wav')
+shutil.copy(f'{RAW}/voice_bom.wav', f'{T}/in/bom_bass.wav'); shutil.copy(f'{RAW}/voice_doowah_lo.wav', f'{T}/in/doowah.wav')
+for name, adv, tone in (('tune_lead', 60, (180, 6000)), ('tune_multi', 40, (150, 6000)), ('tune_chorus', 60, (180, 6000)), ('bom_lowend', 50, (40, 4000))):
+    sf.write(f'{T}/in/{name}.wav', place(f'{F}/c_{name}.wav', adv, tone, -24), SR, subtype='FLOAT')
+P = ['bom_bass=bass', 'bom_lowend=bass', 'doowah=guitar', 'tune_lead=woodwinds', 'tune_multi=woodwinds', 'tune_chorus=woodwinds']
+HP = ['bom_bass=110', 'bom_lowend=110', 'doowah=160', 'tune_lead=200', 'tune_multi=200', 'tune_chorus=200']
+subprocess.run(['python', 'C:/Dev/toybox/music-kit/stems/voices_fit.py', f'{T}/in', f'{T}/out', *sum([['--pair', x] for x in P], []), '--shape', 'doowah=brass',
+                *sum([['--hp', x] for x in HP], []), '--room', 'D:/music-battler-work/songs/suno_sneaky/stems/reverb_ir.npy', '--target', '-1', '--skip', 'eq,comp,distance', '--wet', '.9'],
+               check=True, capture_output=True)
+for name in ('bom_bass', 'bom_lowend', 'doowah', 'tune_lead', 'tune_multi', 'tune_chorus'):
+    write(name, sf.read(f'{T}/out/{name}.wav', dtype='float32')[0])
 layers = {}
 for f in sorted(os.listdir(f'{HERE}/parts')):
     if not f.endswith('.mp3'): continue
