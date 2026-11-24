@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "band-survivors",
+   "key": "band-survivors",
+   "title": "Band Survivors",
+   "url": "p/band-survivors/index.html",
+   "added": "2026-11-23",
+   "v": "20261123181826"
+  },
+  {
    "id": "band-hand",
    "key": "band-hand",
    "title": "Band Hand",
