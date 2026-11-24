@@ -1,0 +1,566 @@
+{
+ "about": "Painted mouth spot per card picture: x and y (top line) as shares of the picture width and height, width = atlas cell size as a share of the picture height. Found from the eyes (top line 15% of the eye height below the eye whites), checked by eye. Atlases are band-survivors mouths-<atlas>.webp (9 cells: closed, small, ah, oh, ee, smile, frown, open-cheer, hurt).",
+ "atlas_by_family": {
+  "drums": "drumline",
+  "bass": "low_end",
+  "brass": "brass",
+  "strings": "strings",
+  "woodwinds": "undertone",
+  "guitar": "overdrive",
+  "bells": "strings",
+  "lead": "chorus",
+  "chant": "shanty",
+  "choir": "session",
+  "drone": "undertone",
+  "scat": "weather",
+  "multi": "session"
+ },
+ "cards": {
+  "scout_snare": {
+   "family": "drums",
+   "atlas": "drumline",
+   "x": 0.508,
+   "y": 0.299,
+   "width": 0.2
+  },
+  "moon_howl_taiko": {
+   "family": "drums",
+   "atlas": "drumline",
+   "x": 0.514,
+   "y": 0.373,
+   "width": 0.261
+  },
+  "sting_kit": {
+   "family": "drums",
+   "atlas": "drumline",
+   "x": 0.651,
+   "y": 0.264,
+   "width": 0.16
+  },
+  "pack_kick": {
+   "family": "drums",
+   "atlas": "drumline",
+   "x": 0.512,
+   "y": 0.269,
+   "width": 0.218
+  },
+  "doubloon_tambourine": {
+   "family": "drums",
+   "atlas": "drumline",
+   "x": 0.686,
+   "y": 0.319,
+   "width": 0.18
+  },
+  "bar_rattler": {
+   "family": "drums",
+   "atlas": "drumline",
+   "x": 0.518,
+   "y": 0.269,
+   "width": 0.19
+  },
+  "camp_tubist": {
+   "family": "bass",
+   "atlas": "low_end",
+   "x": 0.661,
+   "y": 0.557,
+   "width": 0.162
+  },
+  "root_mouse": {
+   "family": "bass",
+   "atlas": "low_end",
+   "x": 0.316,
+   "y": 0.692,
+   "width": 0.16
+  },
+  "lure_bassist": {
+   "family": "bass",
+   "atlas": "low_end",
+   "x": 0.453,
+   "y": 0.331,
+   "width": 0.162
+  },
+  "charge_tuba": {
+   "family": "bass",
+   "atlas": "low_end",
+   "x": 0.336,
+   "y": 0.472,
+   "width": 0.16
+  },
+  "crimson_tubist": {
+   "family": "bass",
+   "atlas": "low_end",
+   "x": 0.452,
+   "y": 0.344,
+   "width": 0.195
+  },
+  "road_tuba": {
+   "family": "bass",
+   "atlas": "low_end",
+   "x": 0.451,
+   "y": 0.465,
+   "width": 0.16
+  },
+  "ember_clarion": {
+   "family": "brass",
+   "atlas": "brass",
+   "x": 0.504,
+   "y": 0.499,
+   "width": 0.237
+  },
+  "muster_trombone": {
+   "family": "brass",
+   "atlas": "brass",
+   "x": 0.49,
+   "y": 0.247,
+   "width": 0.228
+  },
+  "sky_bugle": {
+   "family": "brass",
+   "atlas": "brass",
+   "x": 0.429,
+   "y": 0.251,
+   "width": 0.16
+  },
+  "grand_herald": {
+   "family": "brass",
+   "atlas": "brass",
+   "x": 0.568,
+   "y": 0.28,
+   "width": 0.16
+  },
+  "bastion_baritone": {
+   "family": "brass",
+   "atlas": "brass",
+   "x": 0.571,
+   "y": 0.383,
+   "width": 0.18
+  },
+  "copper_clarion": {
+   "family": "brass",
+   "atlas": "brass",
+   "x": 0.528,
+   "y": 0.371,
+   "width": 0.276
+  },
+  "bright_tremolo": {
+   "family": "strings",
+   "atlas": "strings",
+   "x": 0.313,
+   "y": 0.362,
+   "width": 0.16
+  },
+  "crest_violist": {
+   "family": "strings",
+   "atlas": "strings",
+   "x": 0.5,
+   "y": 0.397,
+   "width": 0.166
+  },
+  "flashy_fiddler": {
+   "family": "strings",
+   "atlas": "strings",
+   "x": 0.42,
+   "y": 0.309,
+   "width": 0.16
+  },
+  "flood_organ": {
+   "family": "strings",
+   "atlas": "strings",
+   "x": 0.474,
+   "y": 0.29,
+   "width": 0.16
+  },
+  "quake_cellos": {
+   "family": "strings",
+   "atlas": "strings",
+   "x": 0.541,
+   "y": 0.196,
+   "width": 0.273
+  },
+  "still_cellist": {
+   "family": "strings",
+   "atlas": "strings",
+   "x": 0.618,
+   "y": 0.187,
+   "width": 0.16
+  },
+  "gale_flutist": {
+   "family": "woodwinds",
+   "atlas": "undertone",
+   "x": 0.491,
+   "y": 0.455,
+   "width": 0.247
+  },
+  "bristle_distortion": {
+   "family": "woodwinds",
+   "atlas": "undertone",
+   "x": 0.471,
+   "y": 0.389,
+   "width": 0.195
+  },
+  "feedback_acolyte": {
+   "family": "woodwinds",
+   "atlas": "undertone",
+   "x": 0.509,
+   "y": 0.366,
+   "width": 0.209
+  },
+  "gain_warden": {
+   "family": "woodwinds",
+   "atlas": "undertone",
+   "x": 0.578,
+   "y": 0.32,
+   "width": 0.16
+  },
+  "wrung_amp": {
+   "family": "woodwinds",
+   "atlas": "undertone",
+   "x": 0.521,
+   "y": 0.323,
+   "width": 0.187
+  },
+  "gust_piper": {
+   "family": "woodwinds",
+   "atlas": "undertone",
+   "x": 0.527,
+   "y": 0.503,
+   "width": 0.176
+  },
+  "hail_imp": {
+   "family": "guitar",
+   "atlas": "overdrive",
+   "x": 0.38,
+   "y": 0.356,
+   "width": 0.19
+  },
+  "tone_thief": {
+   "family": "guitar",
+   "atlas": "overdrive",
+   "x": 0.554,
+   "y": 0.463,
+   "width": 0.16
+  },
+  "sixstring_courier": {
+   "family": "guitar",
+   "atlas": "overdrive",
+   "x": 0.342,
+   "y": 0.279,
+   "width": 0.166
+  },
+  "runaway_headliner": {
+   "family": "guitar",
+   "atlas": "overdrive",
+   "x": 0.398,
+   "y": 0.373,
+   "width": 0.166
+  },
+  "lone_fox": {
+   "family": "guitar",
+   "atlas": "overdrive",
+   "x": 0.385,
+   "y": 0.323,
+   "width": 0.18
+  },
+  "sleight_strummer": {
+   "family": "guitar",
+   "atlas": "overdrive",
+   "x": 0.336,
+   "y": 0.4,
+   "width": 0.2
+  },
+  "coin_chimes": {
+   "family": "bells",
+   "atlas": "strings",
+   "x": 0.557,
+   "y": 0.388,
+   "width": 0.19
+  },
+  "cog_bubbler": {
+   "family": "bells",
+   "atlas": "strings",
+   "x": 0.527,
+   "y": 0.455,
+   "width": 0.257
+  },
+  "lullaby_spring": {
+   "family": "bells",
+   "atlas": "strings",
+   "x": 0.465,
+   "y": 0.268,
+   "width": 0.215
+  },
+  "kettle_crooner": {
+   "family": "bells",
+   "atlas": "strings",
+   "x": 0.558,
+   "y": 0.467,
+   "width": 0.228
+  },
+  "toll_counter": {
+   "family": "bells",
+   "atlas": "strings",
+   "x": 0.471,
+   "y": 0.312,
+   "width": 0.223
+  },
+  "dawn_alarm": {
+   "family": "bells",
+   "atlas": "strings",
+   "x": 0.534,
+   "y": 0.432,
+   "width": 0.205
+  },
+  "skip_chorister": {
+   "family": "lead",
+   "atlas": "chorus",
+   "x": 0.508,
+   "y": 0.451,
+   "width": 0.333
+  },
+  "grand_chorale": {
+   "family": "lead",
+   "atlas": "chorus",
+   "x": 0.535,
+   "y": 0.53,
+   "width": 0.16
+  },
+  "rite_singer": {
+   "family": "lead",
+   "atlas": "chorus",
+   "x": 0.492,
+   "y": 0.475,
+   "width": 0.223
+  },
+  "watchtower_soprano": {
+   "family": "lead",
+   "atlas": "chorus",
+   "x": 0.573,
+   "y": 0.345,
+   "width": 0.166
+  },
+  "powder_monkey": {
+   "family": "lead",
+   "atlas": "chorus",
+   "x": 0.463,
+   "y": 0.474,
+   "width": 0.228
+  },
+  "wreck_diver": {
+   "family": "lead",
+   "atlas": "chorus",
+   "x": 0.407,
+   "y": 0.432,
+   "width": 0.233
+  },
+  "gilded_chanter": {
+   "family": "chant",
+   "atlas": "shanty",
+   "x": 0.545,
+   "y": 0.464,
+   "width": 0.257
+  },
+  "cutlass_baritone": {
+   "family": "chant",
+   "atlas": "shanty",
+   "x": 0.558,
+   "y": 0.421,
+   "width": 0.209
+  },
+  "harbor_matriarch": {
+   "family": "chant",
+   "atlas": "shanty",
+   "x": 0.551,
+   "y": 0.355,
+   "width": 0.214
+  },
+  "chart_master": {
+   "family": "chant",
+   "atlas": "shanty",
+   "x": 0.503,
+   "y": 0.447,
+   "width": 0.242
+  },
+  "tine_toad": {
+   "family": "chant",
+   "atlas": "shanty",
+   "x": 0.533,
+   "y": 0.382,
+   "width": 0.34
+  },
+  "big_hat_brigand": {
+   "family": "chant",
+   "atlas": "shanty",
+   "x": 0.525,
+   "y": 0.464,
+   "width": 0.19
+  },
+  "gong_golem": {
+   "family": "choir",
+   "atlas": "session",
+   "x": 0.502,
+   "y": 0.289,
+   "width": 0.21
+  },
+  "crimson_knell": {
+   "family": "choir",
+   "atlas": "session",
+   "x": 0.607,
+   "y": 0.523,
+   "width": 0.171
+  },
+  "doom_choir": {
+   "family": "choir",
+   "atlas": "session",
+   "x": 0.52,
+   "y": 0.408,
+   "width": 0.171
+  },
+  "bellows_imp": {
+   "family": "choir",
+   "atlas": "session",
+   "x": 0.551,
+   "y": 0.366,
+   "width": 0.16
+  },
+  "warm_dirge": {
+   "family": "choir",
+   "atlas": "session",
+   "x": 0.467,
+   "y": 0.562,
+   "width": 0.204
+  },
+  "circle_caller": {
+   "family": "choir",
+   "atlas": "session",
+   "x": 0.493,
+   "y": 0.326,
+   "width": 0.16
+  },
+  "glad_hummer": {
+   "family": "drone",
+   "atlas": "undertone",
+   "x": 0.429,
+   "y": 0.439,
+   "width": 0.189
+  },
+  "drone_feeder": {
+   "family": "drone",
+   "atlas": "undertone",
+   "x": 0.509,
+   "y": 0.513,
+   "width": 0.166
+  },
+  "thunder_ox": {
+   "family": "drone",
+   "atlas": "undertone",
+   "x": 0.549,
+   "y": 0.358,
+   "width": 0.195
+  },
+  "frost_throat": {
+   "family": "drone",
+   "atlas": "undertone",
+   "x": 0.461,
+   "y": 0.437,
+   "width": 0.228
+  },
+  "chamber_droner": {
+   "family": "drone",
+   "atlas": "undertone",
+   "x": 0.485,
+   "y": 0.3,
+   "width": 0.2
+  },
+  "loose_gale": {
+   "family": "drone",
+   "atlas": "undertone",
+   "x": 0.473,
+   "y": 0.317,
+   "width": 0.195
+  },
+  "stage_crew_chief": {
+   "family": "scat",
+   "atlas": "weather",
+   "x": 0.496,
+   "y": 0.349,
+   "width": 0.252
+  },
+  "storm_giant": {
+   "family": "scat",
+   "atlas": "weather",
+   "x": 0.509,
+   "y": 0.295,
+   "width": 0.18
+  },
+  "hail_shredder": {
+   "family": "scat",
+   "atlas": "weather",
+   "x": 0.5,
+   "y": 0.358,
+   "width": 0.323
+  },
+  "drainpipe_runaway": {
+   "family": "scat",
+   "atlas": "weather",
+   "x": 0.503,
+   "y": 0.402,
+   "width": 0.19
+  },
+  "moss_riffer": {
+   "family": "scat",
+   "atlas": "weather",
+   "x": 0.541,
+   "y": 0.565,
+   "width": 0.242
+  },
+  "swaggering_mate": {
+   "family": "scat",
+   "atlas": "weather",
+   "x": 0.469,
+   "y": 0.372,
+   "width": 0.204
+  },
+  "gatehouse_doubler": {
+   "family": "multi",
+   "atlas": "session",
+   "x": 0.527,
+   "y": 0.307,
+   "width": 0.166
+  },
+  "mad_party_doubler": {
+   "family": "multi",
+   "atlas": "session",
+   "x": 0.469,
+   "y": 0.345,
+   "width": 0.223
+  },
+  "shady_doorman": {
+   "family": "multi",
+   "atlas": "session",
+   "x": 0.509,
+   "y": 0.314,
+   "width": 0.185
+  },
+  "reed_section": {
+   "family": "multi",
+   "atlas": "session",
+   "x": 0.67,
+   "y": 0.34,
+   "width": 0.195
+  },
+  "high_justice_pianist": {
+   "family": "multi",
+   "atlas": "session",
+   "x": 0.499,
+   "y": 0.352,
+   "width": 0.22
+  },
+  "closing_time_doubler": {
+   "family": "multi",
+   "atlas": "session",
+   "x": 0.562,
+   "y": 0.521,
+   "width": 0.16
+  }
+ }
+}

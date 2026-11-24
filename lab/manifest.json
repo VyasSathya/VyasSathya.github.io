@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "band-hand",
+   "key": "band-hand",
+   "title": "Band Hand",
+   "url": "p/band-hand/index.html",
+   "added": "2026-11-23",
+   "v": "20261123214600"
+  },
+  {
    "id": "sing-island",
    "key": "sing-island",
    "title": "Sing Island",
@@ -55,14 +63,6 @@
    "url": "p/day-lawn-song/index.html",
    "added": "2026-11-23",
    "v": "20261123184651"
-  },
-  {
-   "id": "band-hand",
-   "key": "band-hand",
-   "title": "Band Hand",
-   "url": "p/band-hand/index.html",
-   "added": "2026-11-23",
-   "v": "20261123181248"
   },
   {
    "id": "game-mocks",
