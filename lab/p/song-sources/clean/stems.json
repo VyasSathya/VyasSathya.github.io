@@ -52,9 +52,10 @@
   }
  },
  "check": {
-  "sum_vs_full_db": -300.0,
-  "full_lufs": -16.0,
+  "sum_vs_full_db": -141.4,
+  "full_lufs": -16.5,
   "full_clipped": 0,
   "suno_parts_vs_suno_mix_db": -9.300000190734863
- }
+ },
+ "bom_fit": "voice_bom made into short hits, low mids trimmed, band room, 1 dB under the bass (voice_fit.py, 2026-11-23)"
 }
