@@ -1,0 +1,482 @@
+{
+ "drumline1": {
+  "picture": "drumline1",
+  "atlas": "drumline",
+  "x": 0.481,
+  "y": 0.3161,
+  "width": 0.2114,
+  "aspect": 0.7773
+ },
+ "drumline2": {
+  "picture": "drumline2",
+  "atlas": "drumline",
+  "x": 0.5196,
+  "y": 0.2773,
+  "width": 0.155,
+  "aspect": 0.6955
+ },
+ "drumline3": {
+  "picture": "drumline3",
+  "atlas": "drumline",
+  "x": 0.5072,
+  "y": 0.3216,
+  "width": 0.1656,
+  "aspect": 0.6273
+ },
+ "drumline4": {
+  "picture": "drumline4",
+  "atlas": "drumline",
+  "x": 0.5075,
+  "y": 0.3473,
+  "width": 0.229,
+  "aspect": 0.7545
+ },
+ "drumline5": {
+  "picture": "drumline5",
+  "atlas": "drumline",
+  "x": 0.4861,
+  "y": 0.3211,
+  "width": 0.2008,
+  "aspect": 0.8182
+ },
+ "drumline6": {
+  "picture": "drumline6",
+  "atlas": "drumline",
+  "x": 0.5936,
+  "y": 0.3545,
+  "width": 0.15,
+  "aspect": 0.9227
+ },
+ "low_end1": {
+  "picture": "low_end1",
+  "atlas": "low_end",
+  "x": 0.3155,
+  "y": 0.6986,
+  "width": 0.1057,
+  "aspect": 0.5727
+ },
+ "low_end2": {
+  "picture": "low_end2",
+  "atlas": "low_end",
+  "x": 0.4685,
+  "y": 0.3191,
+  "width": 0.1691,
+  "aspect": 0.5773
+ },
+ "low_end3": {
+  "picture": "low_end3",
+  "atlas": "low_end",
+  "x": 0.412,
+  "y": 0.3548,
+  "width": 0.1691,
+  "aspect": 0.5682
+ },
+ "low_end4": {
+  "picture": "low_end4",
+  "atlas": "low_end",
+  "x": 0.6708,
+  "y": 0.5575,
+  "width": 0.1303,
+  "aspect": 0.5455
+ },
+ "low_end5": {
+  "picture": "low_end5",
+  "atlas": "low_end",
+  "x": 0.4152,
+  "y": 0.5064,
+  "width": 0.1515,
+  "aspect": 0.75
+ },
+ "low_end6": {
+  "picture": "low_end6",
+  "atlas": "low_end",
+  "x": 0.4157,
+  "y": 0.2357,
+  "width": 0.1761,
+  "aspect": 0.7545
+ },
+ "brass1": {
+  "picture": "brass1",
+  "atlas": "brass",
+  "x": 0.5222,
+  "y": 0.3911,
+  "width": 0.2008,
+  "aspect": 0.5636
+ },
+ "brass2": {
+  "picture": "brass2",
+  "atlas": "brass",
+  "x": 0.5272,
+  "y": 0.3909,
+  "width": 0.2325,
+  "aspect": 0.7091
+ },
+ "brass3": {
+  "picture": "brass3",
+  "atlas": "brass",
+  "x": 0.4917,
+  "y": 0.4136,
+  "width": 0.162,
+  "aspect": 0.5455
+ },
+ "brass4": {
+  "picture": "brass4",
+  "atlas": "brass",
+  "x": 0.5503,
+  "y": 0.3798,
+  "width": 0.2078,
+  "aspect": 0.8818
+ },
+ "brass5": {
+  "picture": "brass5",
+  "atlas": "brass",
+  "x": 0.5474,
+  "y": 0.4191,
+  "width": 0.1867,
+  "aspect": 0.8864
+ },
+ "brass6": {
+  "picture": "brass6",
+  "atlas": "brass",
+  "x": 0.4128,
+  "y": 0.2939,
+  "width": 0.1937,
+  "aspect": 0.8864
+ },
+ "chorus1": {
+  "picture": "chorus1",
+  "atlas": "chorus",
+  "x": 0.4735,
+  "y": 0.5182,
+  "width": 0.2959,
+  "aspect": 0.9864
+ },
+ "chorus2": {
+  "picture": "chorus2",
+  "atlas": "chorus",
+  "x": 0.5089,
+  "y": 0.4752,
+  "width": 0.2783,
+  "aspect": 0.8955
+ },
+ "chorus3": {
+  "picture": "chorus3",
+  "atlas": "chorus",
+  "x": 0.5476,
+  "y": 0.5864,
+  "width": 0.2008,
+  "aspect": 0.6682
+ },
+ "chorus4": {
+  "picture": "chorus4",
+  "atlas": "chorus",
+  "x": 0.527,
+  "y": 0.5116,
+  "width": 0.1937,
+  "aspect": 0.6318
+ },
+ "chorus5": {
+  "picture": "chorus5",
+  "atlas": "chorus",
+  "x": 0.6901,
+  "y": 0.4789,
+  "width": 0.1295,
+  "aspect": 0.6455
+ },
+ "chorus6": {
+  "picture": "chorus6",
+  "atlas": "chorus",
+  "x": 0.5386,
+  "y": 0.277,
+  "width": 0.1303,
+  "aspect": 0.5
+ },
+ "strings1": {
+  "picture": "strings1",
+  "atlas": "strings",
+  "x": 0.3945,
+  "y": 0.4095,
+  "width": 0.1303,
+  "aspect": 0.4955
+ },
+ "strings2": {
+  "picture": "strings2",
+  "atlas": "strings",
+  "x": 0.5,
+  "y": 0.4161,
+  "width": 0.1409,
+  "aspect": 0.4773
+ },
+ "strings3": {
+  "picture": "strings3",
+  "atlas": "strings",
+  "x": 0.3071,
+  "y": 0.377,
+  "width": 0.1268,
+  "aspect": 0.5773
+ },
+ "strings4": {
+  "picture": "strings4",
+  "atlas": "strings",
+  "x": 0.6038,
+  "y": 0.4,
+  "width": 0.0881,
+  "aspect": 0.4818
+ },
+ "strings5": {
+  "picture": "strings5",
+  "atlas": "strings",
+  "x": 0.5275,
+  "y": 0.1773,
+  "width": 0.1374,
+  "aspect": 0.9091
+ },
+ "strings6": {
+  "picture": "strings6",
+  "atlas": "strings",
+  "x": 0.6092,
+  "y": 0.285,
+  "width": 0.2795,
+  "aspect": 0.7909
+ },
+ "overdrive1": {
+  "picture": "overdrive1",
+  "atlas": "overdrive",
+  "x": 0.5382,
+  "y": 0.4818,
+  "width": 0.1233,
+  "aspect": 0.5955
+ },
+ "overdrive2": {
+  "picture": "overdrive2",
+  "atlas": "overdrive",
+  "x": 0.3818,
+  "y": 0.373,
+  "width": 0.162,
+  "aspect": 0.75
+ },
+ "overdrive3": {
+  "picture": "overdrive3",
+  "atlas": "overdrive",
+  "x": 0.3344,
+  "y": 0.4125,
+  "width": 0.1691,
+  "aspect": 0.7136
+ },
+ "overdrive4": {
+  "picture": "overdrive4",
+  "atlas": "overdrive",
+  "x": 0.4007,
+  "y": 0.3857,
+  "width": 0.1409,
+  "aspect": 0.6864
+ },
+ "overdrive5": {
+  "picture": "overdrive5",
+  "atlas": "overdrive",
+  "x": 0.3399,
+  "y": 0.292,
+  "width": 0.1409,
+  "aspect": 0.6955
+ },
+ "overdrive6": {
+  "picture": "overdrive6",
+  "atlas": "overdrive",
+  "x": 0.3627,
+  "y": 0.4561,
+  "width": 0.1691,
+  "aspect": 0.7864
+ },
+ "undertone1": {
+  "picture": "undertone1",
+  "atlas": "undertone",
+  "x": 0.4267,
+  "y": 0.4643,
+  "width": 0.2182,
+  "aspect": 0.5273
+ },
+ "undertone2": {
+  "picture": "undertone2",
+  "atlas": "undertone",
+  "x": 0.5083,
+  "y": 0.5266,
+  "width": 0.1409,
+  "aspect": 0.5455
+ },
+ "undertone3": {
+  "picture": "undertone3",
+  "atlas": "undertone",
+  "x": 0.5316,
+  "y": 0.4982,
+  "width": 0.3065,
+  "aspect": 0.8636
+ },
+ "undertone4": {
+  "picture": "undertone4",
+  "atlas": "undertone",
+  "x": 0.5458,
+  "y": 0.3693,
+  "width": 0.162,
+  "aspect": 0.9182
+ },
+ "undertone5": {
+  "picture": "undertone5",
+  "atlas": "undertone",
+  "x": 0.4972,
+  "y": 0.3852,
+  "width": 0.3409,
+  "aspect": 0.8182
+ },
+ "undertone6": {
+  "picture": "undertone6",
+  "atlas": "undertone",
+  "x": 0.5419,
+  "y": 0.3298,
+  "width": 0.2008,
+  "aspect": 0.8682
+ },
+ "shanty1": {
+  "picture": "shanty1",
+  "atlas": "shanty",
+  "x": 0.55,
+  "y": 0.397,
+  "width": 0.3417,
+  "aspect": 0.9091
+ },
+ "shanty2": {
+  "picture": "shanty2",
+  "atlas": "shanty",
+  "x": 0.4037,
+  "y": 0.4345,
+  "width": 0.3955,
+  "aspect": 0.85
+ },
+ "shanty3": {
+  "picture": "shanty3",
+  "atlas": "shanty",
+  "x": 0.4038,
+  "y": 0.2359,
+  "width": 0.1726,
+  "aspect": 0.9091
+ },
+ "shanty4": {
+  "picture": "shanty4",
+  "atlas": "shanty",
+  "x": 0.4607,
+  "y": 0.4934,
+  "width": 0.1937,
+  "aspect": 0.8091
+ },
+ "shanty5": {
+  "picture": "shanty5",
+  "atlas": "shanty",
+  "x": 0.5323,
+  "y": 0.4786,
+  "width": 0.1585,
+  "aspect": 0.7045
+ },
+ "shanty6": {
+  "picture": "shanty6",
+  "atlas": "shanty",
+  "x": 0.5511,
+  "y": 0.49,
+  "width": 0.2114,
+  "aspect": 0.8227
+ },
+ "requiem1": {
+  "picture": "requiem1",
+  "atlas": "session",
+  "x": 0.6183,
+  "y": 0.537,
+  "width": 0.148,
+  "aspect": 0.4227
+ },
+ "requiem2": {
+  "picture": "requiem2",
+  "atlas": "session",
+  "x": 0.536,
+  "y": 0.5464,
+  "width": 0.1797,
+  "aspect": 0.6318
+ },
+ "requiem3": {
+  "picture": "requiem3",
+  "atlas": "session",
+  "x": 0.525,
+  "y": 0.385,
+  "width": 0.1375,
+  "aspect": 0.5409
+ },
+ "requiem4": {
+  "picture": "requiem4",
+  "atlas": "session",
+  "x": 0.4598,
+  "y": 0.3257,
+  "width": 0.1797,
+  "aspect": 0.7636
+ },
+ "requiem5": {
+  "picture": "requiem5",
+  "atlas": "session",
+  "x": 0.4735,
+  "y": 0.3361,
+  "width": 0.1832,
+  "aspect": 0.6864
+ },
+ "requiem6": {
+  "picture": "requiem6",
+  "atlas": "session",
+  "x": 0.5621,
+  "y": 0.3348,
+  "width": 0.1797,
+  "aspect": 0.7136
+ },
+ "weather1": {
+  "picture": "weather1",
+  "atlas": "weather",
+  "x": 0.5365,
+  "y": 0.5059,
+  "width": 0.2149,
+  "aspect": 0.8091
+ },
+ "weather2": {
+  "picture": "weather2",
+  "atlas": "weather",
+  "x": 0.5123,
+  "y": 0.3843,
+  "width": 0.1909,
+  "aspect": 0.7409
+ },
+ "weather3": {
+  "picture": "weather3",
+  "atlas": "weather",
+  "x": 0.524,
+  "y": 0.2993,
+  "width": 0.236,
+  "aspect": 0.8045
+ },
+ "weather4": {
+  "picture": "weather4",
+  "atlas": "weather",
+  "x": 0.4948,
+  "y": 0.3377,
+  "width": 0.229,
+  "aspect": 0.8727
+ },
+ "weather5": {
+  "picture": "weather5",
+  "atlas": "weather",
+  "x": 0.5137,
+  "y": 0.5086,
+  "width": 0.2325,
+  "aspect": 0.7455
+ },
+ "weather6": {
+  "picture": "weather6",
+  "atlas": "weather",
+  "x": 0.4753,
+  "y": 0.3264,
+  "width": 0.1691,
+  "aspect": 0.7364
+ }
+}
