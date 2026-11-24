@@ -166,7 +166,7 @@ function hexA(h,a){const n=parseInt(h.slice(1),16);return 'rgba('+(n>>16)+','+((
 /* ---------- audio: one clock ---------- */
 const AC=window.AudioContext||window.webkitAudioContext;
 let ac=null,bus=null;const BUF={},NOTES={},RATE={},LAYER={};
-let LS=1.6678,LE=58.373,LL=LE-LS,BEAT=.41696,t0=0,srcs=[];
+let LS=2.3601,LE=59.0623,LL=LE-LS,BEAT=.41693,t0=0,srcs=[];
 /* grouped parts: M members at most, stems grouped into M chunks (tune first for the lead singer, then rhythm, harmony, voices); the n-th member brings chunk n */
 const M_BAND=6;
 function chunkStems(stems,M){const ord=['drums','bass','guitar','strings','brass','voice_lead','woodwinds','voice_bom','voice_doowah_lo','voice_scat'].filter(x=>stems.includes(x));
