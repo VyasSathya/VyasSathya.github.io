@@ -1,0 +1,58 @@
+{
+ "runner": {
+  "picture": "runner",
+  "atlas": "chorus",
+  "x": 0.555,
+  "y": 0.475,
+  "width": 0.2
+ },
+ "drums": {
+  "picture": "drums",
+  "atlas": "drumline",
+  "x": 0.515,
+  "y": 0.315,
+  "width": 0.13
+ },
+ "bass": {
+  "picture": "bass",
+  "atlas": "low_end",
+  "x": 0.34,
+  "y": 0.495,
+  "width": 0.1
+ },
+ "woodwinds": {
+  "picture": "woodwinds",
+  "atlas": "undertone",
+  "x": 0.41,
+  "y": 0.375,
+  "width": 0.15
+ },
+ "guitar": {
+  "picture": "guitar",
+  "atlas": "overdrive",
+  "x": 0.475,
+  "y": 0.365,
+  "width": 0.12
+ },
+ "brass": {
+  "picture": "brass",
+  "atlas": "brass",
+  "x": 0.49,
+  "y": 0.44,
+  "width": 0.12
+ },
+ "strings": {
+  "picture": "strings",
+  "atlas": "strings",
+  "x": 0.42,
+  "y": 0.33,
+  "width": 0.1
+ },
+ "choir": {
+  "picture": "choir",
+  "atlas": "shanty",
+  "x": 0.505,
+  "y": 0.445,
+  "width": 0.28
+ }
+}
