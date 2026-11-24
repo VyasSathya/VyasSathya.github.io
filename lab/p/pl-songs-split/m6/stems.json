@@ -1,0 +1,126 @@
+{
+ "bpm": 116.0,
+ "bar_seconds": 2.069,
+ "first_downbeat_s": 2.069,
+ "sr": 48000,
+ "seconds": 114.117,
+ "stems": {
+  "bass": {
+   "lufs": -28.1,
+   "peak_db": -14.0
+  },
+  "brass": {
+   "lufs": -24.4,
+   "peak_db": -9.9
+  },
+  "drums": {
+   "lufs": -24.8,
+   "peak_db": -6.6
+  },
+  "guitar": {
+   "lufs": -34.5,
+   "peak_db": -17.5
+  },
+  "percussion": {
+   "lufs": -32.4,
+   "peak_db": -13.5
+  },
+  "woodwinds": {
+   "lufs": -31.1,
+   "peak_db": -10.7
+  },
+  "voice_voice_lead": {
+   "lufs": -22.8,
+   "peak_db": -9.0
+  },
+  "voice_voice_bom": {
+   "lufs": -22.9,
+   "peak_db": -10.6
+  },
+  "voice_voice_doowah_lo": {
+   "lufs": -22.8,
+   "peak_db": -7.0
+  },
+  "voice_voice_suno_line": {
+   "lufs": -22.8,
+   "peak_db": -8.5
+  }
+ },
+ "check": {
+  "sum_vs_full_db": -300.0,
+  "full_lufs": -16.5,
+  "full_clipped": 0,
+  "parts_vs_source_mix_db": -6.3
+ },
+ "voices_fit": {
+  "band_tuning_cents": -3.0,
+  "voices": {
+   "voice_lead": {
+    "tuning_cents": [
+     -50.0,
+     -3.0
+    ],
+    "average_offset_ms_kept": 11.6,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": 0.0
+   },
+   "voice_bom": {
+    "tuning_cents": [
+     -22.0,
+     -3.0
+    ],
+    "average_offset_ms_kept": 11.6,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": -1.0
+   },
+   "voice_doowah_lo": {
+    "tuning_cents": [
+     5.0,
+     -3.0
+    ],
+    "average_offset_ms_kept": 14.5,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": -4.2
+   },
+   "voice_suno_line": {
+    "tuning_cents": [
+     -5.0,
+     -3.0
+    ],
+    "average_offset_ms_kept": 5.8,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": 0.0
+   }
+  },
+  "voices_vs_band_lu": -4.2
+ },
+ "recipe": {
+  "folded": {
+   "keyboard": [
+    "synth",
+    0.65
+   ],
+   "synth": [
+    "strings",
+    0.69
+   ]
+  },
+  "bpm": 116.0,
+  "first_bar_s": 0.4,
+  "voice_notes": {
+   "lead": 308,
+   "bom": 338,
+   "doowah_lo": 185,
+   "scat": 385
+  },
+  "left_out_after_clean": [
+   "strings"
+  ]
+ },
+ "loop": {
+  "start_s": 2.069,
+  "end_s": 113.795,
+  "bars": 54,
+  "note": "play bar 0 (the pickup) once, then loop start_s..end_s"
+ }
+}
