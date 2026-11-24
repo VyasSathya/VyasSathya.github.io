@@ -319,13 +319,13 @@ function famBg(f){return f==='multi'?MULTI_BG:FAMS[f].col;}
 /* ---------------- audio ---------------- */
 var AC=window.AudioContext||window.webkitAudioContext;
 var ctx=null,master=null,bus=null,bufs={},gains={},songT0=0,audioOk=false,muted=false,notes=null,perf0=performance.now();
-var BEAT=0.41696,BAR=1.6678,LS=1.6678,LE=58.373,LL=LE-LS;
+var BEAT=0.41693,BAR=1.6677,LS=2.3601,LE=59.0623,LL=LE-LS;
 var FG={};
 STEMS.forEach(function(s){FG[s]=Math.max(1.4,Math.min(4,Math.pow(10,(-19-LUFS[s])/20)));});
 function now(){return audioOk?ctx.currentTime:(performance.now()-perf0)/1000;}
 function songPos(T){var p=T-songT0;if(p<LE)return Math.max(0,p);return LS+((p-LS)%LL);}
 function ahead(p,q){return q>=p?q-p:(LE-p)+(q-LS);}
-function nextGrid(T,unit){var p=songPos(T);var q=Math.ceil((p-1e-4)/unit)*unit;if(q>=LE-1e-3)q=LS;return T+ahead(p,q);}
+function nextGrid(T,unit){var p=songPos(T);var q=LS+Math.ceil((p-LS-1e-4)/unit)*unit;if(q>=LE-1e-3)q=LS;return T+ahead(p,q);}
 function notesIn(part,T,dur){
   var out=[];if(!notes)return out;var arr=notes[part]||[];var p=songPos(T);
   var rg=p+dur<=LE?[[p,p+dur]]:[[p,LE],[LS,LS+(p+dur-LE)]];
@@ -342,7 +342,7 @@ function buildNotes(){
   st.forEach(function(n){var l=bl[bl.length-1];if(l&&n[0]-l[0]<BEAT/2-0.01){if(Math.abs(n[0]-l[0])<0.03&&n[1]>l[1])l[1]=n[1];return;}bl.push([n[0],n[1],0.3]);});
   notes.bells=bl;
   var bs=notes.bass||[],dr=[];
-  for(var t=0;t<LE-0.01;t+=BAR){var pitch=bs.length?bs[0][1]:36;for(var i=0;i<bs.length&&bs[i][0]<=t+0.06;i++)pitch=bs[i][1];dr.push([t,pitch,BAR]);}
+  for(var t=LS%BAR;t<LE-0.01;t+=BAR){var pitch=bs.length?bs[0][1]:36;for(var i=0;i<bs.length&&bs[i][0]<=t+0.06;i++)pitch=bs[i][1];dr.push([t,pitch,BAR]);}
   notes.drone=dr;
   Object.keys(notes).forEach(function(p){
     var out=[];notes[p].forEach(function(n){var w=1;
@@ -354,7 +354,7 @@ function buildNotes(){
 function loadAudio(onProg){
   var total=STEMS.length+1,done=0;function tick(){done++;onProg(done/total);}
   try{ctx=new AC();}catch(e){ctx=null;}
-  var pn=fetch('audio/notes.json').then(function(r){return r.json();}).then(function(j){notes=j.notes;buildNotes();tick();}).catch(function(){tick();});
+  var pn=fetch('audio/notes.json').then(function(r){return r.json();}).then(function(j){notes=j.notes;if(j.loop){BEAT=j.beat;BAR=j.bar;LS=j.loop.start_s;LE=j.loop.end_s;LL=LE-LS;}buildNotes();tick();}).catch(function(){tick();});
   if(!ctx){return pn;}
   bus=ctx.createDynamicsCompressor();bus.threshold.value=-12;bus.ratio.value=4;bus.attack.value=0.005;bus.release.value=0.2;
   master=ctx.createGain();master.gain.value=0.95;bus.connect(master);master.connect(ctx.destination);
