@@ -220,15 +220,15 @@ const IS_TOUCH=matchMedia('(pointer:coarse)').matches||('ontouchstart' in window
 /* families in the order they break loose; each owns one stem of the song */
 const FAM=[
   {id:'drumline', name:'Drumline',        stem:'drums',           color:'#7bd35a', weight:1.3,  speed:1.1,  cost:6, wander:.3,  arrive:0},
-  {id:'low_end',  name:'Low End',         stem:'bass',            color:'#ff8a3d', weight:1.45, speed:1.0,  cost:6, wander:.25, arrive:0},
-  {id:'shanty',   name:'Shanty Crew',     stem:'voice_bom',       color:'#2fc79a', weight:.7,   speed:.95,  cost:3, wander:.3,  arrive:14, pack:3},
-  {id:'overdrive',name:'Overdrive',       stem:'guitar',          color:'#ff4f7b', weight:.6,   speed:1.3,  cost:5, wander:.7,  arrive:32},
-  {id:'strings',  name:'Strings',         stem:'strings',         color:'#e8b04a', weight:1.25, speed:.9,   cost:6, wander:.25, arrive:55},
-  {id:'brass',    name:'Brass',           stem:'brass',           color:'#ffc35c', weight:.9,   speed:1.0,  cost:5, wander:.35, arrive:80},
-  {id:'weather',  name:'Weather',         stem:'woodwinds',       color:'#5fb8ff', weight:.5,   speed:1.2,  cost:5, wander:.8,  arrive:105, fly:true},
-  {id:'requiem',  name:'Requiem',         stem:'voice_doowah_lo', color:'#8a6cf0', weight:1.25, speed:.85,  cost:6, wander:.25, arrive:130},
-  {id:'session',  name:'Session Players', stem:'voice_scat',      color:'#36c6d9', weight:.7,   speed:1.05, cost:5, wander:1.1, arrive:155},
-  {id:'chorus',   name:'Chorus',          stem:'voice_lead',      color:'#ff5fb0', weight:.9,   speed:1.25, cost:8, wander:.4,  arrive:180, diva:true},
+  {id:'low_end',  name:'Low End',         stem:'bass',            color:'#ff8a3d', weight:1.45, speed:1.0,  cost:6, wander:.25, arrive:6},
+  {id:'shanty',   name:'Shanty Crew',     stem:'voice_bom',       color:'#2fc79a', weight:.7,   speed:.95,  cost:3, wander:.3,  arrive:16, pack:3},
+  {id:'overdrive',name:'Overdrive',       stem:'guitar',          color:'#ff4f7b', weight:.6,   speed:1.3,  cost:5, wander:.7,  arrive:28},
+  {id:'strings',  name:'Strings',         stem:'strings',         color:'#e8b04a', weight:1.25, speed:.9,   cost:6, wander:.25, arrive:42},
+  {id:'brass',    name:'Brass',           stem:'brass',           color:'#ffc35c', weight:.9,   speed:1.0,  cost:5, wander:.35, arrive:56},
+  {id:'weather',  name:'Weather',         stem:'woodwinds',       color:'#5fb8ff', weight:.5,   speed:1.2,  cost:5, wander:.8,  arrive:70, fly:true},
+  {id:'requiem',  name:'Requiem',         stem:'voice_doowah_lo', color:'#8a6cf0', weight:1.25, speed:.85,  cost:6, wander:.25, arrive:86},
+  {id:'session',  name:'Session Players', stem:'voice_scat',      color:'#36c6d9', weight:.7,   speed:1.05, cost:5, wander:1.1, arrive:102},
+  {id:'chorus',   name:'Chorus',          stem:'voice_lead',      color:'#ff5fb0', weight:.9,   speed:1.25, cost:8, wander:.4,  arrive:118, diva:true},
 ];
 FAM.forEach((f,i)=>f.i=i);
 const STEM_FAM={}; FAM.forEach(f=>STEM_FAM[f.stem]=f.i);
@@ -293,12 +293,14 @@ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',pickPal
 
 /* ---------- images ---------- */
 const IMG={};
-const imgNames=['driver']; FAM.forEach(f=>{for(let k=1;k<=3;k++)imgNames.push(f.id+'-'+k);});
+const MOUTH={"atlas":{"drumline":"drumline","low_end":"low_end","shanty":"shanty","overdrive":"overdrive","strings":"strings","brass":"brass","weather":"weather","requiem":"undertone","session":"session","chorus":"chorus"},"pictures":{"drumline-1":{"x":0.5276,"y":0.3609,"width":0.1312},"drumline-2":{"x":0.385,"y":0.295,"width":0.075},"drumline-3":{"x":0.6598,"y":0.2792,"width":0.0979},"low_end-1":{"x":0.474,"y":0.4405,"width":0.1013},"low_end-2":{"x":0.3777,"y":0.2774,"width":0.1069},"low_end-3":{"x":0.4375,"y":0.323,"width":0.095},"shanty-1":{"x":0.635,"y":0.454,"width":0.14},"shanty-2":{"x":0.526,"y":0.445,"width":0.1},"shanty-3":{"x":0.5693,"y":0.4025,"width":0.1642},"overdrive-1":{"x":0.444,"y":0.508,"width":0.095},"overdrive-2":{"x":0.5439,"y":0.3916,"width":0.1189},"overdrive-3":{"x":0.4533,"y":0.4388,"width":0.0965},"strings-1":{"x":0.5283,"y":0.1528,"width":0.0938},"strings-2":{"x":0.488,"y":0.23,"width":0.075},"strings-3":{"x":0.4689,"y":0.3089,"width":0.1112},"brass-1":{"x":0.5214,"y":0.4258,"width":0.1593},"brass-2":{"x":0.3088,"y":0.1183,"width":0.1381},"brass-3":{"x":0.5128,"y":0.2955,"width":0.1299},"weather-1":{"x":0.6414,"y":0.5797,"width":0.1135},"weather-2":{"x":0.3036,"y":0.1864,"width":0.1611},"weather-3":{"x":0.4942,"y":0.3433,"width":0.0952},"requiem-1":{"x":0.5693,"y":0.3349,"width":0.1284},"requiem-2":{"x":0.5584,"y":0.359,"width":0.1543},"requiem-3":{"x":0.5639,"y":0.2912,"width":0.1034},"session-1":{"x":0.5322,"y":0.4848,"width":0.1566},"session-2":{"x":0.495,"y":0.343,"width":0.08},"session-3":{"x":0.3895,"y":0.438,"width":0.1229},"chorus-1":{"x":0.615,"y":0.6285,"width":0.1385},"chorus-2":{"x":0.4853,"y":0.3765,"width":0.1615},"chorus-3":{"x":0.4979,"y":0.2854,"width":0.1155}}}; // painted mouths per picture: x, y (top line), width as shares of the figure (mouths.json)
+const imgNames=['driver']; FAM.forEach(f=>{for(let k=1;k<=3;k++)imgNames.push(f.id+'-'+k);imgNames.push('mouths-'+MOUTH.atlas[f.id]);});
 const imgP=Promise.all(imgNames.map(n=>new Promise(res=>{const im=new Image();im.onload=()=>{IMG[n]=im;res();};im.onerror=()=>res();im.src='img/'+n+'.webp';})));
 
 /* ---------- audio: one Web Audio clock ---------- */
-const AU={ctx:null,ready:false,started:false,buf:{},nodes:{},notes:{},t0:0,decided:-1,feel:'normal',feelBar:{},next8:0,lastPos:null,shownFeel:'normal',kick:0};
+const AU={ctx:null,ready:false,started:false,buf:{},nodes:{},notes:{},enter:{},t0:0,decided:-1,feel:'normal',feelBar:{},next8:0,lastPos:null,shownFeel:'normal',kick:0};
 const STEMS=FAM.map(f=>f.stem);
+const LAYER={}; /* stem -> its gain node; every stem starts at time 0 at gain 0 and only its gain changes */
 let SIM=false;
 function now(){return AU.ctx&&AU.started?AU.ctx.currentTime:performance.now()/1000;}
 const FMAX=()=>AU.ctx?Math.min(20000,AU.ctx.sampleRate*.45):20000;
@@ -309,7 +311,11 @@ async function loadAudio(onP){
   try{AU.ctx=IS_TOUCH?new AC({sampleRate:32000}):new AC();}catch(e){AU.ctx=new AC();}
   const decode=ab=>new Promise((res,rej)=>{const p=AU.ctx.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);});
   const nj=await fetch('audio/notes.json').then(r=>r.json());
-  for(const k of STEMS){const a=(nj.compact[k]||[]).slice().sort((x,y)=>x[0]-y[0]);AU.notes[k]=a;}
+  for(const k of STEMS){const a=(nj.compact[k]||[]).slice().sort((x,y)=>x[0]-y[0]),out=[];
+    for(const n of a){let w=1;if(k==='drums'){const d=n[1];w=(d===36||d===49)?1.6:(d===38||d===37)?1.3:d===46?.8:.55;}
+      const last=out[out.length-1];if(last&&n[0]-last[0]<.03){last[3]=Math.max(last[3],w);last[2]=Math.max(last[2]||0,n[2]||0);continue;}
+      out.push([n[0],n[1],n[2]||0,w]);}
+    AU.notes[k]=out;}
   let done=0; onP(.05);
   const fetches=STEMS.map(k=>fetch('audio/'+k+'.mp3').then(r=>{if(!r.ok)throw new Error(k);return r.arrayBuffer();}));
   for(let i=0;i<STEMS.length;i++){
@@ -323,7 +329,7 @@ async function loadAudio(onP){
   for(let j=0;j<nd.length;j++)nd[j]=Math.random()*2-1; AU.noise=nb;
   AU.ready=true;
 }
-function startMusic(){
+function startSong(){
   const c=AU.ctx; if(!c||!AU.ready)return false;
   try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
   if(c.state!=='running')c.resume();
@@ -335,8 +341,8 @@ function startMusic(){
   AU.t0=c.currentTime+.15;
   for(const k of STEMS){
     const src=c.createBufferSource(); src.buffer=AU.buf[k]; src.loop=true; src.loopStart=LOOP_S; src.loopEnd=LOOP_E;
-    const g=c.createGain(); g.gain.value=.5;
-    const f=c.createBiquadFilter(); f.type='lowpass'; f.frequency.value=2400; f.Q.value=.5;
+    const g=c.createGain(); g.gain.value=0;
+    const f=c.createBiquadFilter(); f.type='lowpass'; f.frequency.value=FMAX(); f.Q.value=.5;
     src.connect(g); g.connect(f);
     let last=f, p=null;
     if(c.createStereoPanner){p=c.createStereoPanner(); last.connect(p); last=p;}
@@ -344,22 +350,29 @@ function startMusic(){
     if(k==='drums'){fg=c.createGain(); ff=c.createBiquadFilter(); ff.type='lowpass'; ff.frequency.value=FMAX(); last.connect(fg); fg.connect(ff); last=ff;}
     last.connect(master);
     src.start(AU.t0,0);
-    AU.nodes[k]={src,g,f,p,fg,ff};
+    AU.nodes[k]={src,g,f,p,fg,ff}; LAYER[k]=g;
   }
   AU.started=true; AU.next8=Math.ceil((c.currentTime-AU.t0)/E8);
+  setLayer(true);
   return true;
 }
-function applyMix(at){
+/* one stem per family: on while at least one of its members is on stage, else silent */
+function partGain(k){return G&&G.on[STEM_FAM[k]]>0?1:0;}
+function nextBarCtx(){const c=AU.ctx.currentTime;return Math.max(c,nextGrid(c+.02,BAR));}
+function levelBus(at){const n=STEMS.filter(k=>partGain(k)>0).length;AU.master.gain.setTargetAtTime(.95/(1+.04*n),at,.3);}
+/* every gain that changes moves on the next bar line of the one song clock (now, when asked) */
+function setLayer(now_){
   if(!AU.started)return;
-  for(const f of FAM){
-    const n=AU.nodes[f.stem]; if(!n)continue;
-    const on=G.on[f.i], e=G.esc[f.i];
-    let g,cut,pan=0;
-    if(on>0){g=[0,1,1.16,1.3,1.4][Math.min(on,4)]*Math.max(.7,1-.06*e); cut=FMAX(); pan=SPOT[f.id][0]/220*.45;}
-    else{g=.5*Math.max(.3,1-.16*e); cut=e>0?1600:2400;}
-    n.g.gain.setTargetAtTime(g,at,.12); n.f.frequency.setTargetAtTime(cut,at,.12);
-    if(n.p)n.p.pan.setTargetAtTime(pan,at,.25);
+  const c=AU.ctx, at=now_?c.currentTime:nextBarCtx();
+  for(const k of STEMS){
+    const gp=LAYER[k]&&LAYER[k].gain; if(!gp)continue;
+    const want=partGain(k), was=AU.enter[k]!=null;
+    if(want>0&&!was)AU.enter[k]=at; else if(want===0)AU.enter[k]=null;
+    gp.cancelScheduledValues(c.currentTime); gp.setValueAtTime(gp.value,c.currentTime);
+    if(now_)gp.setValueAtTime(want,c.currentTime); else gp.setTargetAtTime(want,at,.05);
+    const n=AU.nodes[k]; if(n&&n.p&&want>0)n.p.pan.setTargetAtTime(SPOT[FAM[STEM_FAM[k]].id][0]/220*.45,at,.25);
   }
+  levelBus(at);
 }
 const FEEL={half:{g:.5,f:1000},normal:{g:1,f:20000},double:{g:1.3,f:20000}};
 const feelF=f=>Math.min(FEEL[f].f,FMAX());
@@ -416,12 +429,12 @@ function audioTick(){
   if(!AU.started)return;
   const c=AU.ctx, n=c.currentTime;
   const nb=nextGrid(n,BAR), bi=Math.round((nb-AU.t0)/BAR);
-  if(bi!==AU.decided&&nb-n<.35){AU.decided=bi; decideFeel(bi,nb); if(G.mixDirty){applyMix(nb);G.mixDirty=false;}}
+  if(bi!==AU.decided&&nb-n<.35){AU.decided=bi; decideFeel(bi,nb);}
   /* extra hits on 8ths when the van is flat out */
   if(AU.next8<Math.ceil((n-AU.t0)/E8))AU.next8=Math.ceil((n-AU.t0)/E8);
   while(AU.t0+AU.next8*E8<n+.2){
     const k=AU.next8, t=AU.t0+k*E8, bar=Math.floor(k/8);
-    if(AU.feelBar[bar]==='double'&&t>AU.t0+LOOP_S-.01){
+    if(AU.feelBar[bar]==='double'&&t>AU.t0+LOOP_S-.01&&G.on[0]>0&&AU.enter.drums!=null&&t>=AU.enter.drums){
       const p=k%8; sfxNoise(t,.045,p%2?.11:.06,'highpass',7500);
       if(p===3||p===7)sfxKick(t,.32);
       if(p===7)sfxNoise(t,.09,.06,'bandpass',2200,.8);
@@ -439,15 +452,24 @@ function audioTick(){
 }
 function lowerBound(a,t){let lo=0,hi=a.length;while(lo<hi){const m=(lo+hi)>>1;if(a[m][0]<=t)lo=m+1;else hi=m;}return lo;}
 function fireNotes(a,b){
+  const c=AU.ctx, t=c.currentTime;
   for(const k of STEMS){
     const arr=AU.notes[k]; if(!arr||!arr.length)continue;
     const fi=STEM_FAM[k]; const list=G.stageList[fi];
     let i=lowerBound(arr,a);
     while(i<arr.length&&arr[i][0]<=b){
       const nt=arr[i];
-      if(k==='drums'&&(nt[1]===36||nt[1]===35))AU.kick=1;
-      if(list&&list.length){for(const m of list){m.hit=1;} G.famFlash[fi]=1;
-        if(Math.random()<.22){const m=list[Math.floor(Math.random()*list.length)];addNote(m,FAM[fi].color);}}
+      if(k==='drums'&&(nt[1]===36||nt[1]===35)&&G.on[0]>0)AU.kick=1;
+      if(list&&list.length&&AU.enter[k]!=null&&t>=AU.enter[k]){
+        G.famFlash[fi]=1;
+        const sing=k.indexOf('voice')===0;
+        for(const m of list){
+          m.hit=Math.min(1.5,.55+.45*nt[3]); m.nf=1; m.lastHeard=t;
+          if(sing){m.mc=(k==='voice_bom'||k==='voice_doowah_lo')?3:(nt[2]>=.4?2:4);m.mUntil=t+Math.max(.12,Math.min(nt[2],1.2));}
+          else{m.mc=1;m.mUntil=t+.11;}
+          if(!m.hide&&t-(m.puffT||0)>.28){m.puffT=t;addNote(m,FAM[fi].color);}
+        }
+      }
       i++;
     }
   }
@@ -506,9 +528,10 @@ function newGame(){
     van:{x:0,y:330,vx:0,vy:0,face:1,dir:-Math.PI/2,speed:0,wheel:0,hist:[],dust:0},
     tools:{mic:{lvl:1,cd:1.2,pend:0,flash:0}},mods:{engine:0,venue:0,vibes:0,sound:0},
     fx:[],parts:[],spawnT:1.2,waveI:0,tents:TENT_A.map((a,i)=>({a:a*DEG,x:Math.cos(a*DEG)*TENT_R,y:Math.sin(a*DEG)*TENT_R,open:i===0||i===2,flash:0,openedAt:0})),
-    switchT:16,rhythm:false,full:false,lastMin:false,sx:0,sy:0,shake:0,input:{x:0,y:0},mixDirty:true,time:0,backup:0,regen:0};
+    switchT:16,rhythm:false,full:false,lastMin:false,sx:0,sy:0,shake:0,input:{x:0,y:0},time:0,backup:0,regen:0};
   cam.x=0;cam.y=230;
   buildLineup(); buildTools(); hudAll();
+  setLayer(true); /* a new run starts silent */
 }
 const vanMax=()=>430*(1+.12*G.mods.engine);
 
@@ -612,7 +635,9 @@ function slotFor(m){
 }
 function arrive(m){
   m.state='onstage';m.z=STAGE_H;m.x=m.tx;m.y=m.ty;m.pop=1;
-  G.stageList[m.f].push(m); G.on[m.f]++; const first=!G.ever[m.f]; G.ever[m.f]=true; G.mixDirty=true;
+  G.stageList[m.f].push(m); G.on[m.f]++; const first=!G.ever[m.f]; G.ever[m.f]=true;
+  m.dim=.6; m.lastHeard=-9; m.mUntil=0; m.mc=0; m.nf=0;
+  if(G.on[m.f]===1)setLayer(); /* its one stem fades in on the next bar line */
   for(let i=0;i<16;i++)G.parts.push({k:'conf',x:m.x,y:m.y,z:STAGE_H+60,vx:rnd(-120,120),vy:rnd(-80,80),vz:rnd(120,300),life:1.3,max:1.3,s:rnd(5,9),c:i%2?FAM[m.f].color:(i%3?'#ffffff':'#ff9f1c'),r:rnd(0,6),vr:rnd(-12,12)});
   sPluck(); addXp(1); popSlot(m.f);
   if(first&&G.mode==='play'){banner(FAM[m.f].name+' on stage',true);}
@@ -621,7 +646,7 @@ function arrive(m){
   updLineup();
 }
 function escape(m){
-  m.state='gone'; G.esc[m.f]++; G.mixDirty=true;
+  m.state='gone'; G.esc[m.f]++; /* only loose members escape: a member on stage keeps its stem */
   G.crowd=Math.max(0,G.crowd-FAM[m.f].cost); G.shake=Math.max(G.shake,7);
   const gt=GATES[m.g]; gt.burst=1;
   for(let i=0;i<14;i++)G.parts.push({k:'spark',x:m.x,y:m.y,z:30,vx:rnd(-160,160),vy:rnd(-160,160),vz:rnd(40,200),life:.7,max:.7,s:rnd(3,6),c:i%2?'#e2483d':'#ff4f7b'});
@@ -724,6 +749,11 @@ function updateFxOnly(dt){
     else if(p.k==='note'){p.vz*=.985;}}
   G.parts=G.parts.filter(p=>p.life>0);
   for(let i=0;i<FAM.length;i++)G.famFlash[i]=Math.max(0,G.famFlash[i]-dt*5);
+  { const t=AU.started?AU.ctx.currentTime:0;
+    for(const m of G.members){if(m.state!=='onstage')continue; m.nf=Math.max(0,(m.nf||0)-dt*7);
+      const k=FAM[m.f].stem, resting=AU.enter[k]==null||t<AU.enter[k]||t-m.lastHeard>.7; /* its part is resting: dim a little */
+      if(!m.entered&&AU.enter[k]!=null&&t>=AU.enter[k]){m.entered=true;m.pop=1;} /* jumps when its stem comes in */
+      m.dim+=((resting?.6:1)-m.dim)*Math.min(1,dt*8);} }
   for(const g of GATES)g.burst=Math.max(0,(g.burst||0)-dt*1.5);
   AU.kick=Math.max(0,AU.kick-dt*6);
   /* camera */
@@ -787,7 +817,7 @@ function endGame(win){
   $('#end').classList.remove('hidden');
   if(win)sCheer(true);
 }
-$('#again').addEventListener('click',()=>{startMusic();startRun();});
+$('#again').addEventListener('click',()=>{startSong();startRun();});
 
 /* ---------- HUD ---------- */
 function buildLineup(){
@@ -987,8 +1017,29 @@ function drawMember(m){
       rg.addColorStop(0,hexA(f.color,.55*m.hit*P.glow+.15*m.hit));rg.addColorStop(1,hexA(f.color,0));cx.fillStyle=rg;cx.beginPath();cx.arc(p.X,cyH,hgt*.7,0,TAU);cx.fill();}}
   else if(m.state==='held'){rot=Math.sin(G.time*10)*.12;sy=1.04;}
   else{bob=Math.abs(Math.sin(m.anim))*7*Z;rot=Math.sin(m.anim)*.09;sy=1+Math.abs(Math.cos(m.anim))*.03;}
+  if(onst)cx.globalAlpha=m.dim==null?1:m.dim;
   cx.save(); cx.translate(p.X,p.Y-zh-bob); cx.rotate(rot); cx.scale(sx*face,sy);
-  cx.drawImage(im,-w/2,-hgt,w,hgt); cx.restore();
+  cx.drawImage(im,-w/2,-hgt,w,hgt);
+  drawMouth(m,im,w,hgt,onst);
+  cx.restore();
+  if(onst&&m.nf>.02){ /* a short flash in its colour on each of its own notes */
+    const cyH=p.Y-zh-bob-hgt*.55, r=hgt*.32*(.7+m.nf*.5);
+    cx.save(); cx.globalCompositeOperation='lighter';
+    const gr=cx.createRadialGradient(p.X,cyH,1,p.X,cyH,r); gr.addColorStop(0,hexA(f.color,.85*Math.min(1,m.nf))); gr.addColorStop(1,hexA(f.color,0));
+    cx.fillStyle=gr; cx.beginPath(); cx.arc(p.X,cyH,r,0,TAU); cx.fill(); cx.restore();}
+  cx.globalAlpha=1;
+}
+/* painted mouth on the figure: open on its own notes, a big grin on the beat it comes in */
+function drawMouth(m,im,w,hgt,onst){
+  const mo=MOUTH.pictures[m.img], at=IMG['mouths-'+MOUTH.atlas[FAM[m.f].id]]; if(!mo||!at)return;
+  const t=AU.started?AU.ctx.currentTime:0, sing=FAM[m.f].stem.indexOf('voice')===0;
+  let c;
+  if(!onst)c=m.state==='loose'&&m.eta<5?6:5;
+  else if(m.pop>.15)c=7;
+  else if(t<m.mUntil)c=m.mc;
+  else c=sing?0:5;
+  const cs=Math.max(mo.width*1.5,.2)*hgt;
+  cx.drawImage(at,c*256,0,256,256,(mo.x-.5)*w-cs/2,-hgt+mo.y*hgt-cs*.25,cs,cs);
 }
 function drawVan(){
   const v=G.van, p=proj(v.x,v.y), s=150*Z/200, maxS=vanMax(), sp=v.speed/maxS;
@@ -1139,7 +1190,7 @@ document.addEventListener('visibilitychange',()=>{
 $('#hint').textContent=IS_TOUCH?'Drag anywhere to drive the van.':'Drive with WASD or the arrow keys.';
 $('#castRow').innerHTML=['drumline-1','chorus-1','overdrive-1','low_end-1','brass-1'].map(n=>'<img src="img/'+n+'.webp" alt="">').join('');
 const go=$('#go');
-go.addEventListener('click',()=>{startMusic();startRun();});
+go.addEventListener('click',()=>{startSong();startRun();});
 newGame(); resize();
 requestAnimationFrame(frame);
 loadAudio(p=>{go.textContent='Tuning up '+Math.round(p*100)+'%';})
@@ -1165,6 +1216,11 @@ window.BR={
   mix(){const o={};for(const k in AU.nodes)o[k]={g:+AU.nodes[k].g.gain.value.toFixed(3),f:Math.round(AU.nodes[k].f.frequency.value),fg:AU.nodes[k].fg?+AU.nodes[k].fg.gain.value.toFixed(2):undefined};return o;},
   bringAll(){for(const f of FAM){const m=spawn(f.i,G.tents[0]);m.state='climb';m.ct=0;m.sx0=m.x;m.sy0=m.y;const s=slotFor(m);m.tx=s[0];m.ty=s[1];}},
   setT(t){G.t=t;}, setCrowd(c){G.crowd=c;}, pick,
+  STEMS, LAYER,
+  gains(){const o={};for(const k of STEMS)o[k]=LAYER[k]?+LAYER[k].gain.value.toFixed(3):null;return o;},
+  layerGain(k){return LAYER[k]&&LAYER[k].gain.value;},
+  enter(){return Object.assign({},AU.enter);}, songTime(){return AU.started?AU.ctx.currentTime-AU.t0:null;}, BAR,
+  bring(fi){const m=spawn(fi,G.tents[0]);m.state='climb';m.ct=0;m.sx0=m.x;m.sy0=m.y;const s=slotFor(m);m.tx=s[0];m.ty=s[1];return m;},
 };
 })();
 </script>

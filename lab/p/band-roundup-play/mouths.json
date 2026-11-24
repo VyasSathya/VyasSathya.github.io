@@ -1,0 +1,167 @@
+{
+ "about": "Painted mouths per picture: x and y (top line of the mouth) as shares of the picture width and height, width as a share of the height. Atlas per family is img/mouths-<atlas>.webp, 9 frames of 256 px: 0 closed, 1 small open, 2 open, 3 O, 4 wide, 5 smile, 6 frown, 7 big grin, 8 hurt.",
+ "atlas": {
+  "drumline": "drumline",
+  "low_end": "low_end",
+  "shanty": "shanty",
+  "overdrive": "overdrive",
+  "strings": "strings",
+  "brass": "brass",
+  "weather": "weather",
+  "requiem": "undertone",
+  "session": "session",
+  "chorus": "chorus"
+ },
+ "pictures": {
+  "drumline-1": {
+   "x": 0.5276,
+   "y": 0.3609,
+   "width": 0.1312
+  },
+  "drumline-2": {
+   "x": 0.385,
+   "y": 0.295,
+   "width": 0.075
+  },
+  "drumline-3": {
+   "x": 0.6598,
+   "y": 0.2792,
+   "width": 0.0979
+  },
+  "low_end-1": {
+   "x": 0.474,
+   "y": 0.4405,
+   "width": 0.1013
+  },
+  "low_end-2": {
+   "x": 0.3777,
+   "y": 0.2774,
+   "width": 0.1069
+  },
+  "low_end-3": {
+   "x": 0.4375,
+   "y": 0.323,
+   "width": 0.095
+  },
+  "shanty-1": {
+   "x": 0.635,
+   "y": 0.454,
+   "width": 0.14
+  },
+  "shanty-2": {
+   "x": 0.526,
+   "y": 0.445,
+   "width": 0.1
+  },
+  "shanty-3": {
+   "x": 0.5693,
+   "y": 0.4025,
+   "width": 0.1642
+  },
+  "overdrive-1": {
+   "x": 0.444,
+   "y": 0.508,
+   "width": 0.095
+  },
+  "overdrive-2": {
+   "x": 0.5439,
+   "y": 0.3916,
+   "width": 0.1189
+  },
+  "overdrive-3": {
+   "x": 0.4533,
+   "y": 0.4388,
+   "width": 0.0965
+  },
+  "strings-1": {
+   "x": 0.5283,
+   "y": 0.1528,
+   "width": 0.0938
+  },
+  "strings-2": {
+   "x": 0.488,
+   "y": 0.23,
+   "width": 0.075
+  },
+  "strings-3": {
+   "x": 0.4689,
+   "y": 0.3089,
+   "width": 0.1112
+  },
+  "brass-1": {
+   "x": 0.5214,
+   "y": 0.4258,
+   "width": 0.1593
+  },
+  "brass-2": {
+   "x": 0.3088,
+   "y": 0.1183,
+   "width": 0.1381
+  },
+  "brass-3": {
+   "x": 0.5128,
+   "y": 0.2955,
+   "width": 0.1299
+  },
+  "weather-1": {
+   "x": 0.6414,
+   "y": 0.5797,
+   "width": 0.1135
+  },
+  "weather-2": {
+   "x": 0.3036,
+   "y": 0.1864,
+   "width": 0.1611
+  },
+  "weather-3": {
+   "x": 0.4942,
+   "y": 0.3433,
+   "width": 0.0952
+  },
+  "requiem-1": {
+   "x": 0.5693,
+   "y": 0.3349,
+   "width": 0.1284
+  },
+  "requiem-2": {
+   "x": 0.5584,
+   "y": 0.359,
+   "width": 0.1543
+  },
+  "requiem-3": {
+   "x": 0.5639,
+   "y": 0.2912,
+   "width": 0.1034
+  },
+  "session-1": {
+   "x": 0.5322,
+   "y": 0.4848,
+   "width": 0.1566
+  },
+  "session-2": {
+   "x": 0.495,
+   "y": 0.343,
+   "width": 0.08
+  },
+  "session-3": {
+   "x": 0.3895,
+   "y": 0.438,
+   "width": 0.1229
+  },
+  "chorus-1": {
+   "x": 0.615,
+   "y": 0.6285,
+   "width": 0.1385
+  },
+  "chorus-2": {
+   "x": 0.4853,
+   "y": 0.3765,
+   "width": 0.1615
+  },
+  "chorus-3": {
+   "x": 0.4979,
+   "y": 0.2854,
+   "width": 0.1155
+  }
+ }
+}
