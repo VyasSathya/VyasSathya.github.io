@@ -193,7 +193,7 @@ function buildLevel(N){
   var B=N.bar_seconds,T0=N.first_downbeat_s,END=N.loop.end_s,BEAT=N.beat_seconds,secs=N.sections;
   function secOf(t){for(var i=0;i<secs.length;i++)if(t>=secs[i].start_s&&t<secs[i].end_s)return secs[i].index;return secs.length-1;}
   var cps=secs.slice(1).map(function(s){return s.start_s;});
-  var members=MEMBERS.map(function(m,i){var t=T0+(m.bar-1)*B+B*0.5;return {id:m.id,i:i,bar:m.bar,t:Math.round(t/BEAT)*BEAT,got:false};});
+  var members=MEMBERS.map(function(m,i){var t=T0+(m.bar-1)*B+B*0.5;return {id:m.id,i:i,bar:m.bar,t:T0+Math.round((t-T0)/BEAT)*BEAT,got:false};});
   var P=N.parts;
   // candidates: bass notes -> spikes, snare hits -> slide bars
   var ev=[];
@@ -613,8 +613,8 @@ function render(rdt){
   $('sun').style.transform='scale('+(1+0.035*bas)+')';
   // sky: beat lines, city that pumps with the drums
   if(L){
-    var b0=Math.floor((vt-PX/SPEED)/L.BEAT),b1=Math.ceil((vt+(W-PX)/SPEED)/L.BEAT);
-    for(var b=b0;b<=b1;b++){var x=sx(b*L.BEAT,vt);var bar=(b%4)===0;g.fillStyle=bar?'rgba(255,255,255,.10)':'rgba(255,255,255,.05)';g.fillRect(x-1,0,bar?2:2,GROUND);}
+    var b0=Math.floor((vt-L.T0-PX/SPEED)/L.BEAT),b1=Math.ceil((vt-L.T0+(W-PX)/SPEED)/L.BEAT);
+    for(var b=b0;b<=b1;b++){var x=sx(L.T0+b*L.BEAT,vt);var bar=(b%4)===0;g.fillStyle=bar?'rgba(255,255,255,.10)':'rgba(255,255,255,.05)';g.fillRect(x-1,0,bar?2:2,GROUND);}
   }
   drawCity(CITY1,0.07,vt*SPEED*0.12,kick,0);
   drawCity(CITY2,0.12,vt*SPEED*0.25,snr,2);
@@ -728,7 +728,7 @@ function heightAt(t){
   return hist.length?hist[0]:[t,0,false];
 }
 function drawRunner(vt,kick){
-  var beatPh=L?((vt/L.BEAT)%1+1)%1:0,bop=Math.exp(-beatPh/0.12);
+  var beatPh=L?(((vt-L.T0)/L.BEAT)%1+1)%1:0,bop=Math.exp(-beatPh/0.12);
   var p=playerBox();
   if(state==='run'||state==='won'){hist.push([vt,py,p.sl]);if(hist.length>400)hist.splice(0,hist.length-400);}
   // parade of band members behind
@@ -747,7 +747,7 @@ function drawRunner(vt,kick){
   var scx=1+0.2*squash,scy=1-0.2*squash,rot=0,yb=0;
   if(p.sl){scx=1.25;scy=0.5;rot=0.12;}
   else if(!grounded){rot=-0.25*Math.max(-1,Math.min(1,vy/JUMP_V));scx=0.94;scy=1.06;}
-  else{yb=-4*Math.sin(beatPh*Math.PI);rot=(Math.floor(vt/L.BEAT)%2?1:-1)*0.05;scy*=1-0.05*bop;scx*=1+0.05*bop;}
+  else{yb=-4*Math.sin(beatPh*Math.PI);rot=(Math.floor((vt-L.T0)/L.BEAT)%2?1:-1)*0.05;scy*=1-0.05*bop;scx*=1+0.05*bop;}
   drawChar('runner',PX,by+yb+1,72,rot,scx,scy,'rgba(255,120,190,.75)');
 }
 function drawChar(k,cx,bottom,h,rot,scx,scy,glow){

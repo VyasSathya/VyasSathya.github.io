@@ -1,8 +1,8 @@
 {
  "idea": "sneaky",
- "bpm": 143.9,
- "bar_seconds": 1.6678,
- "first_downbeat_s": 1.6678,
+ "bpm": 143.91,
+ "bar_seconds": 1.6677,
+ "first_downbeat_s": 2.3601,
  "sr": 48000,
  "seconds": 59.801,
  "source": {
@@ -101,9 +101,41 @@
  },
  "voices_v2": "lead: the sax tune all the way, the trombone where it rests; doo-wah: guitar chord bottoms, strings where the guitar is thin",
  "loop": {
-  "start_s": 1.6678,
-  "end_s": 58.373,
+  "start_s": 2.3601,
+  "end_s": 59.0623,
   "bars": 34,
   "note": "play bar 0 (the pickup) once, then loop start_s..end_s; the files run on to let the last notes ring out"
+ },
+ "retimed": {
+  "set": "sneaky_parts/set_clean",
+  "bpm": [
+   143.9,
+   143.91
+  ],
+  "first_downbeat_s": [
+   1.6678,
+   2.3601
+  ],
+  "band_midi_lag_ms": 18.0,
+  "drum_audio": [
+   {
+    "within_30ms": 1.0,
+    "median_ms": 8.2
+   },
+   {
+    "within_30ms": 0.966,
+    "median_ms": 9.5
+   }
+  ],
+  "drum_notes": [
+   {
+    "within_30ms": 0.993,
+    "median_ms": 7.9
+   },
+   {
+    "within_30ms": 0.829,
+    "median_ms": 15.4
+   }
+  ]
  }
 }
