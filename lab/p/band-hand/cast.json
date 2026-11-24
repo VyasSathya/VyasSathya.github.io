@@ -1,0 +1,522 @@
+{
+ "cast": {
+  "drums": [
+   {
+    "k": "scout_snare",
+    "n": "Scout Snare",
+    "ar": 0.63
+   },
+   {
+    "k": "moon_howl_taiko",
+    "n": "Moon Howl Taiko",
+    "ar": 0.725
+   },
+   {
+    "k": "sting_kit",
+    "n": "Sting Kit",
+    "ar": 0.81
+   },
+   {
+    "k": "pack_kick",
+    "n": "Pack Kick",
+    "ar": 0.8
+   },
+   {
+    "k": "doubloon_tambourine",
+    "n": "Doubloon Tambourine",
+    "ar": 0.845
+   },
+   {
+    "k": "bar_rattler",
+    "n": "Bar Rattler",
+    "ar": 0.695
+   }
+  ],
+  "bass": [
+   {
+    "k": "camp_tubist",
+    "n": "Camp Tubist",
+    "ar": 0.545
+   },
+   {
+    "k": "root_mouse",
+    "n": "Root Mouse",
+    "ar": 0.57
+   },
+   {
+    "k": "lure_bassist",
+    "n": "Lure Bassist",
+    "ar": 0.53
+   },
+   {
+    "k": "charge_tuba",
+    "n": "Charge Tuba",
+    "ar": 0.535
+   },
+   {
+    "k": "crimson_tubist",
+    "n": "Crimson Tubist",
+    "ar": 0.725
+   },
+   {
+    "k": "road_tuba",
+    "n": "Road Tuba",
+    "ar": 0.61
+   }
+  ],
+  "brass": [
+   {
+    "k": "ember_clarion",
+    "n": "Ember Clarion",
+    "ar": 0.555
+   },
+   {
+    "k": "muster_trombone",
+    "n": "Muster Trombone",
+    "ar": 0.755
+   },
+   {
+    "k": "sky_bugle",
+    "n": "Sky Bugle",
+    "ar": 0.565
+   },
+   {
+    "k": "grand_herald",
+    "n": "Grand Herald",
+    "ar": 0.405
+   },
+   {
+    "k": "bastion_baritone",
+    "n": "Bastion Baritone",
+    "ar": 0.63
+   },
+   {
+    "k": "copper_clarion",
+    "n": "Copper Clarion",
+    "ar": 0.71
+   }
+  ],
+  "strings": [
+   {
+    "k": "bright_tremolo",
+    "n": "Bright Tremolo",
+    "ar": 0.575
+   },
+   {
+    "k": "crest_violist",
+    "n": "Crest Violist",
+    "ar": 0.475
+   },
+   {
+    "k": "flashy_fiddler",
+    "n": "Flashy Fiddler",
+    "ar": 0.53
+   },
+   {
+    "k": "flood_organ",
+    "n": "Flood Organ",
+    "ar": 0.58
+   },
+   {
+    "k": "quake_cellos",
+    "n": "Quake Cellos",
+    "ar": 0.91
+   },
+   {
+    "k": "still_cellist",
+    "n": "Still Cellist",
+    "ar": 0.57
+   }
+  ],
+  "woodwinds": [
+   {
+    "k": "gale_flutist",
+    "n": "Gale Flutist",
+    "ar": 0.54
+   },
+   {
+    "k": "bristle_distortion",
+    "n": "Bristle Distortion",
+    "ar": 0.695
+   },
+   {
+    "k": "feedback_acolyte",
+    "n": "Feedback Acolyte",
+    "ar": 0.56
+   },
+   {
+    "k": "gain_warden",
+    "n": "Gain Warden",
+    "ar": 0.385
+   },
+   {
+    "k": "wrung_amp",
+    "n": "Wrung Amp",
+    "ar": 0.49
+   },
+   {
+    "k": "gust_piper",
+    "n": "Gust Piper",
+    "ar": 0.46
+   }
+  ],
+  "guitar": [
+   {
+    "k": "hail_imp",
+    "n": "Hail Imp",
+    "ar": 0.75
+   },
+   {
+    "k": "tone_thief",
+    "n": "Tone Thief",
+    "ar": 0.6
+   },
+   {
+    "k": "sixstring_courier",
+    "n": "Sixstring Courier",
+    "ar": 0.695
+   },
+   {
+    "k": "runaway_headliner",
+    "n": "Runaway Headliner",
+    "ar": 0.685
+   },
+   {
+    "k": "lone_fox",
+    "n": "Lone Fox",
+    "ar": 0.715
+   },
+   {
+    "k": "sleight_strummer",
+    "n": "Sleight Strummer",
+    "ar": 0.715
+   }
+  ],
+  "bells": [
+   {
+    "k": "coin_chimes",
+    "n": "Coin Chimes",
+    "ar": 0.745
+   },
+   {
+    "k": "cog_bubbler",
+    "n": "Cog Bubbler",
+    "ar": 0.74
+   },
+   {
+    "k": "lullaby_spring",
+    "n": "Lullaby Spring",
+    "ar": 0.67
+   },
+   {
+    "k": "kettle_crooner",
+    "n": "Kettle Crooner",
+    "ar": 0.6
+   },
+   {
+    "k": "toll_counter",
+    "n": "Toll Counter",
+    "ar": 0.685
+   },
+   {
+    "k": "dawn_alarm",
+    "n": "Dawn Alarm",
+    "ar": 0.705
+   }
+  ],
+  "lead": [
+   {
+    "k": "skip_chorister",
+    "n": "Skip Chorister",
+    "ar": 0.895
+   },
+   {
+    "k": "grand_chorale",
+    "n": "Grand Chorale",
+    "ar": 0.5
+   },
+   {
+    "k": "rite_singer",
+    "n": "Rite Singer",
+    "ar": 0.625
+   },
+   {
+    "k": "watchtower_soprano",
+    "n": "Watchtower Soprano",
+    "ar": 0.545
+   },
+   {
+    "k": "powder_monkey",
+    "n": "Powder Monkey",
+    "ar": 0.81
+   },
+   {
+    "k": "wreck_diver",
+    "n": "Wreck Diver",
+    "ar": 0.805
+   }
+  ],
+  "chant": [
+   {
+    "k": "gilded_chanter",
+    "n": "Gilded Chanter",
+    "ar": 0.825
+   },
+   {
+    "k": "cutlass_baritone",
+    "n": "Cutlass Baritone",
+    "ar": 0.69
+   },
+   {
+    "k": "harbor_matriarch",
+    "n": "Harbor Matriarch",
+    "ar": 0.64
+   },
+   {
+    "k": "chart_master",
+    "n": "Chart Master",
+    "ar": 0.76
+   },
+   {
+    "k": "tine_toad",
+    "n": "Tine Toad",
+    "ar": 0.91
+   },
+   {
+    "k": "big_hat_brigand",
+    "n": "Big Hat Brigand",
+    "ar": 0.705
+   }
+  ],
+  "choir": [
+   {
+    "k": "gong_golem",
+    "n": "Gong Golem",
+    "ar": 0.76
+   },
+   {
+    "k": "crimson_knell",
+    "n": "Crimson Knell",
+    "ar": 0.42
+   },
+   {
+    "k": "doom_choir",
+    "n": "Doom Choir",
+    "ar": 0.5
+   },
+   {
+    "k": "bellows_imp",
+    "n": "Bellows Imp",
+    "ar": 0.585
+   },
+   {
+    "k": "warm_dirge",
+    "n": "Warm Dirge",
+    "ar": 0.53
+   },
+   {
+    "k": "circle_caller",
+    "n": "Drum Circle Caller",
+    "ar": 0.38
+   }
+  ],
+  "drone": [
+   {
+    "k": "glad_hummer",
+    "n": "Glad Hummer",
+    "ar": 0.53
+   },
+   {
+    "k": "drone_feeder",
+    "n": "Drone Feeder",
+    "ar": 0.545
+   },
+   {
+    "k": "thunder_ox",
+    "n": "Thunder Ox",
+    "ar": 0.915
+   },
+   {
+    "k": "frost_throat",
+    "n": "Frost Throat",
+    "ar": 0.575
+   },
+   {
+    "k": "chamber_droner",
+    "n": "Chamber Droner",
+    "ar": 0.5
+   },
+   {
+    "k": "loose_gale",
+    "n": "Loose Gale",
+    "ar": 0.735
+   }
+  ],
+  "scat": [
+   {
+    "k": "stage_crew_chief",
+    "n": "Stage Crew Chief",
+    "ar": 0.7
+   },
+   {
+    "k": "storm_giant",
+    "n": "Storm Giant",
+    "ar": 0.57
+   },
+   {
+    "k": "hail_shredder",
+    "n": "Hail Shredder",
+    "ar": 0.97
+   },
+   {
+    "k": "drainpipe_runaway",
+    "n": "Drainpipe Runaway",
+    "ar": 0.57
+   },
+   {
+    "k": "moss_riffer",
+    "n": "Moss Riffer",
+    "ar": 0.67
+   },
+   {
+    "k": "swaggering_mate",
+    "n": "Swaggering Mate",
+    "ar": 0.705
+   }
+  ],
+  "multi": [
+   {
+    "k": "gatehouse_doubler",
+    "n": "Gatehouse Doubler",
+    "ar": 0.46
+   },
+   {
+    "k": "mad_party_doubler",
+    "n": "Mad Party Doubler",
+    "ar": 0.72
+   },
+   {
+    "k": "shady_doorman",
+    "n": "Shady Doorman",
+    "ar": 0.79
+   },
+   {
+    "k": "reed_section",
+    "n": "Reed Section",
+    "ar": 0.705
+   },
+   {
+    "k": "high_justice_pianist",
+    "n": "High Justice Pianist",
+    "ar": 0.68
+   },
+   {
+    "k": "closing_time_doubler",
+    "n": "Closing Time Doubler",
+    "ar": 0.69
+   }
+  ]
+ },
+ "leaders": [
+  {
+   "k": "L_battle_drum_kesh",
+   "n": "Battle Drum Kesh",
+   "ar": 0.6
+  },
+  {
+   "k": "L_fossil_bandmaster",
+   "n": "Fossil Bandmaster",
+   "ar": 0.66
+  },
+  {
+   "k": "L_brass_lion",
+   "n": "Brass Lion",
+   "ar": 0.505
+  },
+  {
+   "k": "L_spy_fiddler_nix",
+   "n": "Spy Fiddler Nix",
+   "ar": 0.445
+  },
+  {
+   "k": "L_gearhand_choirmaster",
+   "n": "Gearhand Choirmaster",
+   "ar": 0.6
+  },
+  {
+   "k": "L_crystal_cantor",
+   "n": "Crystal Cantor",
+   "ar": 0.505
+  },
+  {
+   "k": "L_old_drone_ummo",
+   "n": "Old Drone Ummo",
+   "ar": 0.765
+  },
+  {
+   "k": "L_carnival_barker_ozzy",
+   "n": "Carnival Barker Ozzy",
+   "ar": 0.855
+  },
+  {
+   "k": "L_feedback_overlord",
+   "n": "Feedback Overlord",
+   "ar": 0.6
+  },
+  {
+   "k": "L_encore_champion",
+   "n": "Encore Champion",
+   "ar": 0.51
+  },
+  {
+   "k": "L_dice_roller_jo",
+   "n": "Dice Roller Jo",
+   "ar": 0.6
+  },
+  {
+   "k": "L_coin_baron_grub",
+   "n": "Coin Baron Grub",
+   "ar": 0.81
+  },
+  {
+   "k": "L_shanty_pup_rigg",
+   "n": "Shanty Pup Rigg",
+   "ar": 0.815
+  },
+  {
+   "k": "L_monk_of_many_drums",
+   "n": "Monk Of Many Drums",
+   "ar": 0.485
+  },
+  {
+   "k": "L_war_bugle_gorm",
+   "n": "War Bugle Gorm",
+   "ar": 0.685
+  },
+  {
+   "k": "L_tide_siren_velle",
+   "n": "Tide Siren Velle",
+   "ar": 0.465
+  },
+  {
+   "k": "L_masquerade_count",
+   "n": "Masquerade Count",
+   "ar": 0.99
+  },
+  {
+   "k": "L_velvet_cat",
+   "n": "Velvet Cat",
+   "ar": 0.96
+  },
+  {
+   "k": "L_hatmage_zazz",
+   "n": "Hatmage Zazz",
+   "ar": 0.545
+  },
+  {
+   "k": "L_talent_hound_ziggy",
+   "n": "Talent Hound Ziggy",
+   "ar": 0.72
+  }
+ ]
+}
