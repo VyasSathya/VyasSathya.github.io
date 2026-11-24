@@ -164,9 +164,18 @@ function hexA(h,a){const n=parseInt(h.slice(1),16);return 'rgba('+(n>>16)+','+((
 
 /* ---------- audio: one clock ---------- */
 const AC=window.AudioContext||window.webkitAudioContext;
-let ac=null,bus=null,bufFull=null;const BUF={},NOTES={},RATE={},LAYER={};
+let ac=null,bus=null;const BUF={},NOTES={},RATE={},LAYER={};
 let LS=1.6678,LE=58.373,LL=LE-LS,BEAT=.41696,t0=0,srcs=[];
-const BOOST=Math.pow(10,4/20)-1; // a part you own sits 4 dB forward
+/* grouped parts: M members at most, stems grouped into M chunks (rhythm, harmony, tune, voices); the n-th member brings chunk n */
+const M_BAND=6;
+function chunkStems(stems,M){const ord=['drums','bass','guitar','strings','brass','voice_lead','woodwinds','voice_bom','voice_doowah_lo','voice_scat'].filter(x=>stems.includes(x));
+  stems.forEach(x=>{if(!ord.includes(x))ord.push(x);});if(M>=ord.length)return ord.map(x=>[x]);
+  const has=x=>ord.includes(x);let g=[['drums','bass'],['guitar','strings','brass'],['voice_lead','woodwinds'],['voice_bom','voice_doowah_lo','voice_scat']].map(a=>a.filter(has)).filter(a=>a.length);
+  while(g.length>M){const b=g.pop();g[g.length-1]=g[g.length-1].concat(b);}
+  while(g.length<M){let bi=0;g.forEach((a,i)=>{if(a.length>=g[bi].length)bi=i;});const a=g[bi],h=Math.ceil(a.length/2);g.splice(bi,1,a.slice(0,h),a.slice(h));}
+  return g;}
+let CHUNKS=[];
+function partGain(p){const n=Math.min(CHUNKS.length,PARTS.filter(q=>owned[q]).length);for(let i=0;i<n;i++)if(CHUNKS[i].includes(p))return 1;return 0;}
 function decode(ab){return new Promise((res,rej)=>{const p=ac.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);});}
 function buildNotes(nj){
   for(const p of PARTS){
@@ -176,8 +185,8 @@ function buildNotes(nj){
       let w=1;
       if(p==='drums'){const k=n[1];w=(k===36||k===49)?1.6:(k===38||k===37)?1.3:k===46?.8:.55;}
       const last=out[out.length-1];
-      if(last&&t-last.t<.03){last.w=Math.max(last.w,w);continue;}
-      out.push({t,w});
+      if(last&&t-last.t<.03){last.w=Math.max(last.w,w);last.d=Math.max(last.d,n[2]||0);continue;}
+      out.push({t,w,d:n[2]||0});
     }
     NOTES[p]=out;
     const sw=out.filter(o=>o.t>=LS).reduce((a,o)=>a+o.w,0);
@@ -189,24 +198,28 @@ async function loadAudio(prog){
   try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
   const nj=await (await fetch('audio/notes.json')).json();
   LS=nj.loop.start_s;LE=nj.loop.end_s;LL=LE-LS;BEAT=nj.beat_seconds;buildNotes(nj);
-  const files=['full',...PARTS];let done=0;
+  CHUNKS=chunkStems(PARTS,M_BAND);const files=[...PARTS];let done=0;
   await Promise.all(files.map(async f=>{const ab=await (await fetch('audio/'+f+'.mp3')).arrayBuffer();const b=await decode(ab);
-    if(f==='full')bufFull=b;else BUF[f]=b;prog(++done/files.length);}));
+    BUF[f]=b;prog(++done/files.length);}));
   const lim=ac.createDynamicsCompressor();lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.002;lim.release.value=.12;
   bus=ac.createGain();bus.gain.value=0;bus.connect(lim);lim.connect(ac.destination);
 }
+/* a member owns one chunk of stems: its notes are the merged notes of every stem in the chunk */
+function assignChunk(m,idx){m.ci=idx;m.stems=idx<CHUNKS.length?CHUNKS[idx]:[m.part];
+  m.list=[].concat(...m.stems.map(q=>NOTES[q])).sort((a,b)=>a.t-b.t);m.rate=m.stems.reduce((a,q)=>a+RATE[q],0);
+  m.flash=0;m.dim=1;m.lean=0;m.leanUntil=0;m.jump=0;m.lastHeard=0;m.enterU=null;m.heldSing=m.stems.some(q=>q.indexOf('voice')===0);}
 function lat(){return ac.outputLatency||ac.baseLatency||0;}
 function startSong(){
   stopSong();const when=ac.currentTime+.06;t0=when;
   const mk=(buf,gain)=>{const s=ac.createBufferSource();s.buffer=buf;s.loop=true;s.loopStart=LS;s.loopEnd=LE;const gn=ac.createGain();gn.gain.value=gain;
     s.connect(gn);gn.connect(bus);s.start(when,0);srcs.push(s);return gn;};
-  mk(bufFull,1);
-  for(const p of PARTS)LAYER[p]=mk(BUF[p],owned[p]?BOOST:0);
+  for(const p of PARTS)LAYER[p]=mk(BUF[p],partGain(p));
   levelBus(.05);
 }
 function stopSong(){for(const s of srcs){try{s.stop();}catch(e){}}srcs=[];}
-function levelBus(tc){const n=PARTS.filter(p=>owned[p]).length;const v=.92/(1+BOOST*n/10);bus.gain.cancelScheduledValues(ac.currentTime);bus.gain.setTargetAtTime(v,ac.currentTime,tc||.3);}
-function setLayer(p){if(!LAYER[p])return;const gp=LAYER[p].gain;gp.cancelScheduledValues(ac.currentTime);gp.setTargetAtTime(owned[p]?BOOST:0,ac.currentTime,.15);levelBus();}
+function levelBus(tc){const n=PARTS.filter(p=>owned[p]).length;const v=.95/(1+.06*n);bus.gain.cancelScheduledValues(ac.currentTime);bus.gain.setTargetAtTime(v,ac.currentTime,tc||.3);}
+function nextBarCtx(){const u=ac.currentTime-t0;const bar=BEAT*4;if(u<LS)return t0+LS;return t0+LS+Math.ceil((u-LS)/bar-1e-6)*bar;}
+function setLayer(){const at=Math.max(ac.currentTime,nextBarCtx());for(const q of PARTS){if(!LAYER[q])continue;const gp=LAYER[q].gain;gp.cancelScheduledValues(ac.currentTime);gp.setValueAtTime(gp.value,ac.currentTime);gp.setTargetAtTime(partGain(q),at,.02);}levelBus();}
 function songRaw(){return ac.currentTime-t0-lat();}
 function pos(u){return u<LE?u:LS+((u-LS)%LL);}
 
@@ -220,7 +233,7 @@ const dist2=(ax,ay,bx,by)=>{const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy;};
 
 function reset(){
   Object.assign(S,{inv:0,t:0,kills:0,lvl:1,xp:0,need:4,pend:0,hp:100,max:100,x:0,y:0,face:1,fa:0,hurt:0,shake:0,camx:0,camy:0,spawnAcc:0,events:{},boss:null,walk:0,endT:0});
-  owned={voice_lead:1};band=[{part:'voice_lead',lv:1,x:0,y:0,bop:0,face:1,lead:true}];
+  owned={voice_lead:1};band=[{part:'voice_lead',lv:1,x:0,y:0,bop:0,face:1,lead:true}];assignChunk(band[0],0);
   enemies=[];shots=[];fx=[];gems=[];texts=[];fireLog.length=0;
   renderSlots();
 }
@@ -281,7 +294,7 @@ function fireNotes(){
   const u=songRaw();let a=lastU;lastU=u;
   if(u<=a)return;if(u-a>.25)a=u-.25;
   const pa=pos(a),pb=pos(u);
-  for(const m of band){const list=NOTES[m.part];if(!list)continue;
+  for(const m of band){const list=m.list;if(!list||m.enterU!==null)continue;
     if(pb>=pa)eachIn(list,pa,pb,m);else{eachIn(list,pa,LE,m);eachIn(list,LS-1e-6,pb,m);}}
 }
 function eachIn(list,a,b,m){let lo=0,hi=list.length;while(lo<hi){const mid=(lo+hi)>>1;if(list[mid].t<=a)lo=mid+1;else hi=mid;}
@@ -289,8 +302,10 @@ function eachIn(list,a,b,m){let lo=0,hi=list.length;while(lo<hi){const mid=(lo+h
 
 function fire(m,note){
   const p=m.part,lv=m.lv,f=FAM[p];
-  const dmg=f.dps*(m.lead?1:1.2)*(1+.3*(lv-1))*note.w/RATE[p];
-  m.bop=1;pulseSlot(p);
+  const dmg=f.dps*(m.lead?1:1.2)*(1+.3*(lv-1))*note.w/m.rate;
+  m.bop=Math.min(1.5,.55+.45*note.w);m.flash=Math.min(1.3,.6+.4*note.w);m.lastHeard=ac.currentTime;pulseSlot(p);
+  if(m.heldSing&&note.d>=.4)m.leanUntil=ac.currentTime+Math.min(note.d,1.2);
+  voiceFx(m,note);
   if(fireLog.length>600)fireLog.shift();fireLog.push({p,t:note.t,at:pos(songRaw())});
   const ox=m.x,oy=m.y-(m.lead?26:18);
   switch(p){
@@ -317,6 +332,18 @@ function fire(m,note){
       shots.push({k:'spr',x:ox,y:oy,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp,r:7,life:rnd(.45,.65),dmg:dmg*.35,col:f.col});}break;}
   }
 }
+function voiceFx(m,note){
+  let c=0;for(const q of fx)if(q.k==='snote')c++;if(c>36)return;
+  const f=FAM[m.part],h=m.lead?66:50,big=note.w>=1.2;
+  fx.push({k:'snote',x:m.x+rnd(-8,8),y:m.y-h*.8,vx:rnd(-22,22),vy:-rnd(46,70),rot:rnd(-.4,.4),vr:rnd(-1.5,1.5),t:0,life:.75,col:f.col,s:(m.lead?.8:.62)*(big?1.2:1),w:note.w});}
+function memberTick(dt){const now=ac.currentTime,u=now-t0-lat();
+  for(const m of band){m.bop=Math.max(0,m.bop-dt*6);m.flash=Math.max(0,m.flash-dt*7);
+    if(m.enterU!==null&&u>=m.enterU){m.enterU=null;m.jump=1;m.bop=1;m.lastHeard=now;
+      for(let i=0;i<2;i++)fx.push({k:'pop',x:m.x,y:m.y-(m.lead?30:22),r:26+i*22,t:-i*.09,life:.5,col:FAM[m.part].col});}
+    m.jump=Math.max(0,m.jump-dt*2.6);
+    const resting=m.enterU!==null||now-m.lastHeard>.7;
+    m.dim+=((resting?.6:1)-m.dim)*Math.min(1,dt*8);
+    m.lean+=(((now<m.leanUntil)?1:0)-m.lean)*Math.min(1,dt*9);}}
 function jag(pts){const out=[pts[0]];for(let i=1;i<pts.length;i++){const[a,b]=[pts[i-1],pts[i]];for(let s=1;s<=4;s++){const t=s/4;out.push(s===4?b:[a[0]+(b[0]-a[0])*t+rnd(-9,9),a[1]+(b[1]-a[1])*t+rnd(-9,9)]);}}return out;}
 
 /* ---------- hits, kills, drops ---------- */
@@ -361,7 +388,8 @@ function openLevel(){
 function choose(i){
   if(S.mode!=='level'||!choices[i]||performance.now()-lvAt<300)return;const c=choices[i];
   if(c.heal)S.hp=Math.min(S.max,S.hp+40);
-  else if(c.isNew){owned[c.p]=1;band.push({part:c.p,lv:1,x:S.x+rnd(-20,20),y:S.y+rnd(-20,20),bop:1,face:1});setLayer(c.p);
+  else if(c.isNew){owned[c.p]=1;const nm={part:c.p,lv:1,x:S.x+rnd(-20,20),y:S.y+rnd(-20,20),bop:0,face:1};assignChunk(nm,band.length);band.push(nm);
+    nm.enterU=Math.max(ac.currentTime,nextBarCtx())-t0;setLayer();
     for(let k=0;k<10;k++)fx.push({k:'puff',x:S.x,y:S.y-20,vx:rnd(-80,80),vy:rnd(-80,80),r:rnd(6,10),t:0,life:.4});}
   else{owned[c.p]++;for(const m of band)if(m.part===c.p){m.lv=owned[c.p];m.bop=1;}}
   renderSlots();S.pend--;$('#sLevel').classList.remove('on');
@@ -411,7 +439,7 @@ function update(dt){
   S.hp=Math.min(S.max,S.hp+dt*.8);S.inv=Math.max(0,(S.inv||0)-dt);
   // band formation
   const others=band.filter(m=>!m.lead),n=others.length;
-  for(const m of band){m.bop=Math.max(0,m.bop-dt*6);if(m.lead){m.x=S.x;m.y=S.y;continue;}}
+  memberTick(dt);for(const m of band){if(m.lead){m.x=S.x;m.y=S.y;continue;}}
   others.forEach((m,i)=>{const an=i/Math.max(1,n)*6.283+S.t*.35,r=60+n*5;const tx=S.x+Math.cos(an)*r,ty=S.y+Math.sin(an)*r*.78;
     const k=Math.min(1,dt*3.2);const ox=m.x;m.x+=(tx-m.x)*k;m.y+=(ty-m.y)*k;if(Math.abs(m.x-ox)>.4)m.face=m.x<ox?-1:1;});
   fireNotes();
@@ -469,7 +497,7 @@ function update(dt){
     if(q.mag){q.sp=Math.min(560,q.sp+dt*900);const k=Math.min(1,q.sp*dt/Math.max(d,1));q.x+=(S.x-q.x)*k;q.y+=(S.y-16-q.y)*k;}
     if(d<18){q.got=true;gainXP(q.v);if(q.heal)S.hp=Math.min(S.max,S.hp+25);}}
   gems=gems.filter(q=>!q.got);
-  for(const f of fx){f.t+=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.k==='note'){f.vy+=180*dt;f.rot+=f.vr*dt;}else{f.vx*=.9;f.vy*=.9;}}}
+  for(const f of fx){f.t+=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.k==='note'){f.vy+=180*dt;f.rot+=f.vr*dt;}else if(f.k==='snote'){f.rot+=f.vr*dt;}else{f.vx*=.9;f.vy*=.9;}}}
   fx=fx.filter(f=>f.t<f.life);
   for(const tx of texts)tx.t+=dt;texts=texts.filter(tx=>tx.t<.5);
   if(S.pend>0&&S.mode==='play')openLevel();
@@ -505,6 +533,17 @@ function noteShape(x,y,s,col,rot){
   g.beginPath();g.moveTo(2.4,5);g.lineTo(2.4,-12);g.quadraticCurveTo(10,-8,8,0);g.stroke();
   g.restore();
 }
+function drawMember(m,img,h,yo,hurt,rot0){
+  const b=m.bop,f=FAM[m.part],jp=Math.sin((1-m.jump)*Math.PI)*(m.jump>0?26:0);
+  const sx=1+.2*b,sy=1-.24*b,rot=(rot0||0)-m.lean*.2*m.face;
+  const x=m.x,y=m.y+(yo||0)-jp;
+  g.globalAlpha=m.dim;
+  spr(img,x,y,h,m.face,sx,sy,hurt||0,rot);
+  if(m.flash>.02){g.save();g.globalCompositeOperation='lighter';const r=h*.3*(.7+m.flash*.5);
+    const gr=g.createRadialGradient(x,y-h*.52,1,x,y-h*.52,r);gr.addColorStop(0,hexA(f.col,.9*Math.min(1,m.flash)));gr.addColorStop(1,hexA(f.col,0));
+    g.fillStyle=gr;g.beginPath();g.arc(x,y-h*.52,r,0,7);g.fill();g.restore();}
+  g.globalAlpha=1;
+}
 function draw(){
   g.setTransform(1,0,0,1,0,0);
   g.fillStyle='#1E524C';g.fillRect(0,0,cv.width,cv.height);
@@ -531,9 +570,9 @@ function draw(){
       spr(e.img,e.x,e.y-hop,e.h,e.face,1,1,e.flash,rot);
       if(e.boss){const bw=110;g.fillStyle='#0A1E1D';g.fillRect(e.x-bw/2-2,e.y+12,bw+4,10);g.fillStyle='#FF5F7A';g.fillRect(e.x-bw/2,e.y+14,bw*Math.max(0,e.hp/e.max),6);}
     }else if(k===1){const m=o,b=m.bop;shadow(m.x,m.y,46);
-      spr(FAM[m.part].img,m.x,m.y,50,m.face,1+.12*b,1-.14*b,0,0);
+      drawMember(m,FAM[m.part].img,50);
     }else{const b=band[0]?band[0].bop:0,walkb=S.walk>0?Math.abs(Math.sin(S.walk*12))*3:0;shadow(S.x,S.y,60);
-      spr('player',S.x,S.y-walkb,66,S.face,1+.1*b,1-.12*b,S.hurt>.6?(S.hurt-.6):0,S.walk>0?Math.sin(S.walk*12)*.05:0);
+      if(band[0])drawMember(band[0],'player',66,-walkb,S.hurt>.6?(S.hurt-.6):0,S.walk>0?Math.sin(S.walk*12)*.05:0);else spr('player',S.x,S.y-walkb,66,S.face,1,1,0,0);
       // hp
       const bw=44;g.fillStyle='#0A1E1D';g.fillRect(S.x-bw/2-2,S.y+9,bw+4,8);g.fillStyle=S.hp<30?'#FF5F7A':'#7CF29A';g.fillRect(S.x-bw/2,S.y+11,bw*S.hp/S.max,4);
     }
@@ -553,7 +592,9 @@ function draw(){
   for(const f of fx){const q=f.t/f.life;
     if(f.k==='puff'){g.fillStyle='rgba(255,255,255,'+(1-q)*.95+')';g.beginPath();g.arc(f.x,f.y,f.r*(1+q*.8),0,7);g.fill();}
     else if(f.k==='note'){g.globalAlpha=1-q*q;noteShape(f.x,f.y,1.3*f.s,f.col,f.rot);g.globalAlpha=1;}
-    else if(f.k==='pop'){g.strokeStyle=hexA(f.col,1-q);g.lineWidth=4*(1-q)+1;g.beginPath();g.arc(f.x,f.y,f.r*(.5+q*.6),0,7);g.stroke();}
+    else if(f.k==='snote'){if(f.t<0)continue;const a=1-q*q;g.globalAlpha=a;noteShape(f.x,f.y,f.s,f.col,f.rot);
+      g.strokeStyle=hexA(f.col,.7*(1-q));g.lineWidth=2.4;g.beginPath();g.arc(f.x,f.y+8,6+q*16*f.s,-2.3,-.8);g.stroke();g.globalAlpha=1;}
+    else if(f.k==='pop'){if(f.t<0)continue;g.strokeStyle=hexA(f.col,1-q);g.lineWidth=4*(1-q)+1;g.beginPath();g.arc(f.x,f.y,f.r*(.5+q*.6),0,7);g.stroke();}
     else if(f.k==='cone'){g.save();g.translate(f.x,f.y);g.rotate(f.an);const a=1-q;const gr=g.createLinearGradient(0,0,f.R,0);gr.addColorStop(0,hexA(f.col,.9*a));gr.addColorStop(1,hexA(f.col,.05));
       g.fillStyle=gr;g.beginPath();g.moveTo(0,0);g.arc(0,0,f.R*(.7+q*.3),-f.half,f.half);g.closePath();g.fill();g.restore();}
     else if(f.k==='zap'){g.lineJoin='round';g.lineCap='round';g.beginPath();f.pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));
@@ -603,13 +644,13 @@ function frame(now){
   const dt=Math.min(.05,(now-prevT)/1000);prevT=now;
   if(S.mode==='play')update(dt);
   else if(S.mode==='over'){for(const f of fx){f.t+=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.k==='note')f.vy+=180*dt;}}fx=fx.filter(f=>f.t<f.life);
-    for(const m of band){m.bop=Math.max(0,m.bop-dt*6);}if(S.endT>=RUN)fireNotesVisual();}
+    memberTick(dt);if(S.endT>=RUN)fireNotesVisual();}
   if(S.mode==='play'||S.mode==='over'){S.camx+=(S.x-S.camx)*Math.min(1,dt*8);S.camy+=(S.y-S.camy)*Math.min(1,dt*8);}
   draw();if(S.mode!=='start')hud();
 }
 // after a win the band keeps bopping to the song
 function fireNotesVisual(){const u=songRaw();let a=lastU;lastU=u;if(u<=a)return;if(u-a>.25)a=u-.25;const pa=pos(a),pb=pos(u);
-  for(const m of band){const l=NOTES[m.part];const f=(x,y)=>{let lo=0,hi=l.length;while(lo<hi){const mid=(lo+hi)>>1;if(l[mid].t<=x)lo=mid+1;else hi=mid;}if(lo<l.length&&l[lo].t<=y)m.bop=1;};
+  for(const m of band){const l=m.list;const f=(x,y)=>{let lo=0,hi=l.length;while(lo<hi){const mid=(lo+hi)>>1;if(l[mid].t<=x)lo=mid+1;else hi=mid;}if(lo<l.length&&l[lo].t<=y){const nt=l[lo];m.bop=Math.min(1.5,.55+.45*nt.w);m.flash=1;m.lastHeard=ac.currentTime;voiceFx(m,nt);}};
     if(pb>=pa)f(pa,pb);else{f(pa,LE);f(LS-1e-6,pb);}}}
 
 /* ---------- boot ---------- */
@@ -619,8 +660,8 @@ Promise.all([Promise.all(imgKeys.map(loadImg)),loadAudio(p=>{$('#bStart').textCo
   .then(()=>{const b=$('#bStart');b.disabled=false;b.textContent='Play';})
   .catch(err=>{console.error(err);$('#bStart').textContent='Could not load';});
 
-window.__bs={S,get band(){return band;},get enemies(){return enemies;},get owned(){return owned;},get shots(){return shots;},get gems(){return gems;},fireLog,NOTES,RATE,
-  songPos:()=>pos(songRaw()),gainXP:v=>{gainXP(v);},choose,setTime:t=>{S.t=t;},god:on=>{S.god=on;},ctx:()=>ac,layerGain:p=>LAYER[p]&&LAYER[p].gain.value,busGain:()=>bus&&bus.gain.value};
+window.__bs={chunks:()=>CHUNKS,S,get band(){return band;},get enemies(){return enemies;},get owned(){return owned;},get shots(){return shots;},get gems(){return gems;},fireLog,NOTES,RATE,
+  songPos:()=>pos(songRaw()),gainXP:v=>{gainXP(v);},choose,setTime:t=>{S.t=t;},god:on=>{S.god=on;},ctx:()=>ac,chunks:()=>CHUNKS,layerGain:p=>LAYER[p]&&LAYER[p].gain.value,busGain:()=>bus&&bus.gain.value};
 })();
 </script>
 </body>
