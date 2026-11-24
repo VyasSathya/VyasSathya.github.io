@@ -152,7 +152,8 @@ const IM={};
 function whiteOf(i){const c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);
   x.globalCompositeOperation='source-in';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);return c;}
 function loadImg(k){return new Promise(res=>{const i=new Image();i.onload=()=>{IM[k]={i,w:whiteOf(i),a:i.naturalWidth/i.naturalHeight};res();};i.onerror=()=>res();i.src='img/'+k+'.webp';});}
-const imgKeys=[...new Set([...PARTS.map(p=>FAM[p].img),...Object.values(CREW).map(c=>c.img)])];
+const MOUTH={"voice_lead":{"picture":"player","atlas":"chorus","x":0.5527,"y":0.6176,"width":0.223},"drums":{"picture":"drums","atlas":"drumline","x":0.5169,"y":0.3141,"width":0.135},"bass":{"picture":"bass","atlas":"low_end","x":0.5222,"y":0.5358,"width":0.0315},"guitar":{"picture":"guitar","atlas":"overdrive","x":0.3411,"y":0.3355,"width":0.1072},"strings":{"picture":"strings","atlas":"strings","x":0.5062,"y":0.4475,"width":0.105},"brass":{"picture":"brass","atlas":"brass","x":0.459,"y":0.2901,"width":0.139},"woodwinds":{"picture":"woodwinds","atlas":"undertone","x":0.4746,"y":0.4454,"width":0.1271},"voice_bom":{"picture":"voice_bom","atlas":"shanty","x":0.5098,"y":0.5033,"width":0.3918},"voice_doowah_lo":{"picture":"voice_doowah_lo","atlas":"session","x":0.5529,"y":0.3144,"width":0.1261},"voice_scat":{"picture":"voice_scat","atlas":"weather","x":0.4985,"y":0.4172,"width":0.2753}}; // painted mouths: picture, atlas, x, y (top line), width as shares of the figure (mouths.json)
+const imgKeys=[...new Set([...PARTS.map(p=>FAM[p].img),...Object.values(MOUTH).map(o=>'mouths-'+o.atlas),...Object.values(CREW).map(c=>c.img)])];
 
 /* bubble sprites, made once per colour */
 const BUB={};
@@ -175,7 +176,8 @@ function chunkStems(stems,M){const ord=['drums','bass','guitar','strings','brass
   while(g.length<M){let bi=0;g.forEach((a,i)=>{if(a.length>=g[bi].length)bi=i;});const a=g[bi],h=Math.ceil(a.length/2);g.splice(bi,1,a.slice(0,h),a.slice(h));}
   return g;}
 let CHUNKS=[];
-function partGain(p){const n=Math.min(CHUNKS.length,PARTS.filter(q=>owned[q]).length);for(let i=0;i<n;i++)if(CHUNKS[i].includes(p))return 1;return 0;}
+const ORDER=['voice_lead','drums','bass','guitar','strings','brass','woodwinds','voice_bom','voice_doowah_lo','voice_scat'];
+function partGain(p){return owned[p]?1:0;} // one stem per member
 function decode(ab){return new Promise((res,rej)=>{const p=ac.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);});}
 function buildNotes(nj){
   for(const p of PARTS){
@@ -198,16 +200,16 @@ async function loadAudio(prog){
   try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
   const nj=await (await fetch('audio/notes.json')).json();
   LS=nj.loop.start_s;LE=nj.loop.end_s;LL=LE-LS;BEAT=nj.beat_seconds;buildNotes(nj);
-  CHUNKS=chunkStems(PARTS,M_BAND);const files=[...PARTS];let done=0;
+  CHUNKS=ORDER.map(x=>[x]);const files=[...PARTS];let done=0;
   await Promise.all(files.map(async f=>{const ab=await (await fetch('audio/'+f+'.mp3')).arrayBuffer();const b=await decode(ab);
     BUF[f]=b;prog(++done/files.length);}));
   const lim=ac.createDynamicsCompressor();lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.002;lim.release.value=.12;
   bus=ac.createGain();bus.gain.value=0;bus.connect(lim);lim.connect(ac.destination);
 }
 /* a member owns one chunk of stems: its notes are the merged notes of every stem in the chunk */
-function assignChunk(m,idx){m.ci=idx;m.stems=idx<CHUNKS.length?CHUNKS[idx]:[m.part];
+function assignChunk(m,idx){m.ci=idx;m.stems=[m.part];
   m.list=[].concat(...m.stems.map(q=>NOTES[q])).sort((a,b)=>a.t-b.t);m.rate=m.stems.reduce((a,q)=>a+RATE[q],0);
-  m.flash=0;m.dim=1;m.lean=0;m.leanUntil=0;m.jump=0;m.lastHeard=0;m.enterU=null;m.heldSing=m.stems.some(q=>q.indexOf('voice')===0);}
+  m.mc=0;m.mUntil=0;m.flash=0;m.dim=1;m.lean=0;m.leanUntil=0;m.jump=0;m.lastHeard=0;m.enterU=null;m.heldSing=m.stems.some(q=>q.indexOf('voice')===0);}
 function lat(){return ac.outputLatency||ac.baseLatency||0;}
 function startSong(){
   stopSong();const when=ac.currentTime+.06;t0=when;
@@ -232,7 +234,7 @@ const rnd=(a,b)=>a+Math.random()*(b-a);
 const dist2=(ax,ay,bx,by)=>{const dx=ax-bx,dy=ay-by;return dx*dx+dy*dy;};
 
 function reset(){
-  Object.assign(S,{inv:0,t:0,kills:0,lvl:1,xp:0,need:4,pend:0,hp:100,max:100,x:0,y:0,face:1,fa:0,hurt:0,shake:0,camx:0,camy:0,spawnAcc:0,events:{},boss:null,walk:0,endT:0});
+  Object.assign(S,{forceAt:-99,inv:0,t:0,kills:0,lvl:1,xp:0,need:4,pend:0,hp:100,max:100,x:0,y:0,face:1,fa:0,hurt:0,shake:0,camx:0,camy:0,spawnAcc:0,events:{},boss:null,walk:0,endT:0});
   owned={voice_lead:1};band=[{part:'voice_lead',lv:1,x:0,y:0,bop:0,face:1,lead:true}];assignChunk(band[0],0);
   enemies=[];shots=[];fx=[];gems=[];texts=[];fireLog.length=0;
   renderSlots();
@@ -306,6 +308,8 @@ function fire(m,note){
   m.bop=Math.min(1.5,.55+.45*note.w);m.flash=Math.min(1.3,.6+.4*note.w);m.lastHeard=ac.currentTime;pulseSlot(p);
   if(m.heldSing&&note.d>=.4)m.leanUntil=ac.currentTime+Math.min(note.d,1.2);
   voiceFx(m,note);
+  if(m.heldSing){m.mc=(p==='voice_bom'||p==='voice_doowah_lo')?3:(note.d>=.4?2:4);m.mUntil=ac.currentTime+Math.max(.12,Math.min(note.d,1.2));}
+  else{m.mc=1;m.mUntil=ac.currentTime+.11;}
   if(fireLog.length>600)fireLog.shift();fireLog.push({p,t:note.t,at:pos(songRaw())});
   const ox=m.x,oy=m.y-(m.lead?26:18);
   switch(p){
@@ -373,8 +377,8 @@ let choices=[],lvAt=0;
 function openLevel(){
   S.mode='level';joy=null;
   const pool=[];
-  for(const p of PARTS){if(!owned[p])pool.push({p,isNew:true,w:2.2});else if(owned[p]<MAXLV)pool.push({p,isNew:false,w:1});}
-  choices=[];
+  const nx=ORDER.find(q=>!owned[q]);for(const p of PARTS){if(p!==nx&&owned[p]&&owned[p]<MAXLV)pool.push({p,isNew:false,w:1});}
+  const no=PARTS.filter(q=>owned[q]).length;choices=(nx&&S.t>=16+21*(no-1))?[{p:nx,isNew:true}]:[];
   while(choices.length<3&&pool.length){let tw=pool.reduce((a,c)=>a+c.w,0),r=Math.random()*tw,i=0;for(;i<pool.length-1;i++){r-=pool[i].w;if(r<=0)break;}choices.push(pool.splice(i,1)[0]);}
   if(choices.length<3)choices.push({heal:true});
   const box=$('#cards');box.innerHTML='';
@@ -500,6 +504,10 @@ function update(dt){
   for(const f of fx){f.t+=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.k==='note'){f.vy+=180*dt;f.rot+=f.vr*dt;}else if(f.k==='snote'){f.rot+=f.vr*dt;}else{f.vx*=.9;f.vy*=.9;}}}
   fx=fx.filter(f=>f.t<f.life);
   for(const tx of texts)tx.t+=dt;texts=texts.filter(tx=>tx.t<.5);
+  { // pacing: a new member about every 21 s from 20 s, so all 10 are in well before the boss
+    const n=PARTS.filter(q=>owned[q]).length;
+    if(n<10&&S.mode==='play'&&S.pend===0&&S.t>=20+21*(n-1)&&S.t-(S.forceAt||-99)>=10){S.forceAt=S.t;S.pend++;S.lvl++;}
+  }
   if(S.pend>0&&S.mode==='play')openLevel();
   if(S.t>=RUN&&S.mode==='play')win();
 }
@@ -542,7 +550,16 @@ function drawMember(m,img,h,yo,hurt,rot0){
   if(m.flash>.02){g.save();g.globalCompositeOperation='lighter';const r=h*.3*(.7+m.flash*.5);
     const gr=g.createRadialGradient(x,y-h*.52,1,x,y-h*.52,r);gr.addColorStop(0,hexA(f.col,.9*Math.min(1,m.flash)));gr.addColorStop(1,hexA(f.col,0));
     g.fillStyle=gr;g.beginPath();g.arc(x,y-h*.52,r,0,7);g.fill();g.restore();}
+  drawMouth(m,img,h,x,y,rot,sx,sy,hurt);
   g.globalAlpha=1;
+}
+function drawMouth(m,img,h,x,y,rot,sx,sy,hurt){
+  const mo=MOUTH[m.part],at=IM['mouths-'+(mo&&mo.atlas)],im=IM[img];if(!mo||!at||!im)return;
+  const now=ac.currentTime;let c;
+  if(m.lead&&S.hurt>.3)c=8;else if(m.jump>.05)c=7;else if(now<m.mUntil)c=m.mc;else c=m.heldSing?0:5;
+  const w=h*im.a,cs=Math.max(mo.width*h,26); // at least about 14 px of mouth on a phone
+  g.save();g.translate(x,y);if(rot)g.rotate(rot);g.scale(m.face*sx,sy);
+  g.drawImage(at.i,c*256,0,256,256,(mo.x-.5)*w-cs/2,-h+mo.y*h-cs*.25,cs,cs);g.restore();
 }
 function draw(){
   g.setTransform(1,0,0,1,0,0);
@@ -650,7 +667,7 @@ function frame(now){
 }
 // after a win the band keeps bopping to the song
 function fireNotesVisual(){const u=songRaw();let a=lastU;lastU=u;if(u<=a)return;if(u-a>.25)a=u-.25;const pa=pos(a),pb=pos(u);
-  for(const m of band){const l=m.list;const f=(x,y)=>{let lo=0,hi=l.length;while(lo<hi){const mid=(lo+hi)>>1;if(l[mid].t<=x)lo=mid+1;else hi=mid;}if(lo<l.length&&l[lo].t<=y){const nt=l[lo];m.bop=Math.min(1.5,.55+.45*nt.w);m.flash=1;m.lastHeard=ac.currentTime;voiceFx(m,nt);}};
+  for(const m of band){const l=m.list;const f=(x,y)=>{let lo=0,hi=l.length;while(lo<hi){const mid=(lo+hi)>>1;if(l[mid].t<=x)lo=mid+1;else hi=mid;}if(lo<l.length&&l[lo].t<=y){const nt=l[lo];m.bop=Math.min(1.5,.55+.45*nt.w);m.flash=1;m.lastHeard=ac.currentTime;voiceFx(m,nt);m.mc=m.heldSing?(m.part==='voice_bom'||m.part==='voice_doowah_lo'?3:nt.d>=.4?2:4):1;m.mUntil=ac.currentTime+Math.max(.12,Math.min(nt.d,1.2));}};
     if(pb>=pa)f(pa,pb);else{f(pa,LE);f(LS-1e-6,pb);}}}
 
 /* ---------- boot ---------- */
