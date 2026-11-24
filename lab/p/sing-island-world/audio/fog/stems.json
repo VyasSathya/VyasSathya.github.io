@@ -1,7 +1,7 @@
 {
- "bpm": 97.89,
- "bar_seconds": 2.4517,
- "first_downbeat_s": 2.4517,
+ "bpm": 98.01,
+ "bar_seconds": 2.4487,
+ "first_downbeat_s": 3.3998,
  "sr": 48000,
  "seconds": 150.744,
  "stems": {
@@ -121,9 +121,41 @@
   ]
  },
  "loop": {
-  "start_s": 2.4517,
-  "end_s": 149.5537,
+  "start_s": 3.3998,
+  "end_s": 150.3236,
   "bars": 60,
   "note": "play bar 0 (the pickup) once, then loop start_s..end_s"
+ },
+ "retimed": {
+  "set": "picks/f1_out/set",
+  "bpm": [
+   97.89,
+   98.01
+  ],
+  "first_downbeat_s": [
+   2.4517,
+   3.3998
+  ],
+  "band_midi_lag_ms": 18.0,
+  "drum_audio": [
+   {
+    "within_30ms": 0.566,
+    "median_ms": 23.9
+   },
+   {
+    "within_30ms": 0.872,
+    "median_ms": 6.6
+   }
+  ],
+  "drum_notes": [
+   {
+    "within_30ms": 0.625,
+    "median_ms": 21.2
+   },
+   {
+    "within_30ms": 0.842,
+    "median_ms": 12.8
+   }
+  ]
  }
 }
