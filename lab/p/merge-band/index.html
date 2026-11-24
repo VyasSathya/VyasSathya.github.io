@@ -322,7 +322,7 @@ function elCenter(el){const r=el.getBoundingClientRect(),s=scr.getBoundingClient
 const AC=window.AudioContext||window.webkitAudioContext;
 let ac=null,bus=null,lim=null,t0=0,running=false,fakeT0=performance.now();
 const BUF={};const LAYER={};
-let LS=1.6678,LE=58.373,LL=LE-LS,BEAT=.41696;let NOTES={},BASSN=[];
+let LS=2.3601,LE=59.0623,LL=LE-LS,BEAT=.41693;let NOTES={},BASSN=[];
 function decode(ab){return new Promise((res,rej)=>{const p=ac.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);});}
 async function loadAudio(prog){
   const nj=await (await fetch('audio/notes.json')).json();

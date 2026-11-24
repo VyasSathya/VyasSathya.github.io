@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "merge-band",
+   "key": "merge-band",
+   "title": "Merge Band",
+   "url": "p/merge-band/index.html",
+   "added": "2026-11-24",
+   "v": "20261124013934"
+  },
+  {
    "id": "sing-island",
    "key": "sing-island",
    "title": "Sing Island",
@@ -23,14 +31,6 @@
    "url": "p/sing-island-world/index.html",
    "added": "2026-11-24",
    "v": "20261124013849"
-  },
-  {
-   "id": "merge-band",
-   "key": "merge-band",
-   "title": "Merge Band",
-   "url": "p/merge-band/index.html",
-   "added": "2026-11-23",
-   "v": "20261123213922"
   },
   {
    "id": "song-run",
