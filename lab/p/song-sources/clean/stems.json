@@ -57,5 +57,53 @@
   "full_clipped": 0,
   "suno_parts_vs_suno_mix_db": -9.300000190734863
  },
- "bom_fit": "voice_bom made into short hits, low mids trimmed, band room, 1 dB under the bass (voice_fit.py, 2026-11-23)"
+ "voices_fit": {
+  "band_tuning_cents": 3.0,
+  "voices": {
+   "voice_bom": {
+    "tuning_cents": [
+     -20.0,
+     3.0
+    ],
+    "average_offset_ms_kept": 5.8,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": -1.2
+   },
+   "voice_lead": {
+    "tuning_cents": [
+     -23.0,
+     3.0
+    ],
+    "average_offset_ms_kept": 17.4,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": 0.0
+   },
+   "voice_scat": {
+    "tuning_cents": [
+     -21.0,
+     3.0
+    ],
+    "average_offset_ms_kept": 14.5,
+    "groove_shift_ms_median": 14.5,
+    "lufs_vs_partner": -1.2
+   },
+   "voice_doowah_lo": {
+    "tuning_cents": [
+     -36.0,
+     3.0
+    ],
+    "average_offset_ms_kept": -5.8,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": -5.4
+   }
+  },
+  "voices_vs_band_lu": -3.1
+ },
+ "voices_v2": "lead: the sax tune all the way, the trombone where it rests; doo-wah: guitar chord bottoms, strings where the guitar is thin",
+ "loop": {
+  "start_s": 1.6678,
+  "end_s": 58.373,
+  "bars": 34,
+  "note": "play bar 0 (the pickup) once, then loop start_s..end_s; the files run on to let the last notes ring out"
+ }
 }
