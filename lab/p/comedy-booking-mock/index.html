@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Comedy booking mock v2</title>
+<title>Comedy booking mock v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@ svg{display:block;flex:none}
 .strip span{flex:1}.strip span.av{flex:none}
 .days{display:flex;gap:6px;padding:12px 20px 4px;overflow-x:auto;scrollbar-width:none}
 .days::-webkit-scrollbar{display:none}
-.days button{flex:none;height:36px;padding:0 14px;border-radius:18px;font-weight:600;font-size:14px;color:var(--ink2);background:var(--fill)}
+.days{gap:2px;padding:10px 14px 0}.days button{flex:1;min-width:46px;padding:6px 0 8px;border-radius:14px;font-weight:700;font-size:17px;color:var(--ink);text-align:center}.days button small{display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:2px}.days button.on small{color:inherit;opacity:.7}.tile{width:56px;height:56px;border-radius:14px;background:var(--fill);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:16px;letter-spacing:-.02em;line-height:1.1}.tile small{font-size:10.500px;font-weight:600;color:var(--ink3);letter-spacing:.04em;margin-top:2px}.tile.alt{background:var(--accent);color:var(--accent-ink)}.tile.alt small{color:inherit;opacity:.7}.it .m .sk{font-size:12.500px;font-weight:600;color:var(--ink);margin-top:1px}.mode{display:flex;margin:16px 20px 0;padding:4px;border-radius:14px;background:var(--fill)}.mode button{flex:1;height:38px;border-radius:10px;font-weight:600;text-align:center;color:var(--ink2)}.mode button.on{background:var(--app);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}.addtrip{margin:14px 20px 0;padding:12px 14px;border-radius:12px;border:1.500px dashed var(--ink3);display:flex;gap:10px;align-items:center;font-weight:600;width:calc(100% - 40px);color:var(--ink2)}
 .days button.on{background:var(--ink);color:var(--app)}
 .seg{display:flex;gap:22px;padding:14px 20px 0;border-bottom:1px solid var(--line)}
 .seg button{padding-bottom:10px;font-weight:600;color:var(--ink3);border-bottom:2px solid transparent;margin-bottom:-1px}
@@ -159,7 +159,7 @@ svg{display:block;flex:none}
   <div class="veil" id="veil"></div><div class="sheet" id="sheet"></div><div class="toast" id="toast"></div>
 </div>
 <script>
-const P={mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/>',
+const P={ticket:'<path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h13A1.5 1.5 0 0 1 20 8.5V10a2 2 0 0 0 0 4v1.500a1.500 1.500 0 0 1-1.500 1.500h-13A1.500 1.500 0 0 1 4 15.500V14a2 2 0 0 0 0-4z"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/>',
  cal:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
  inbox:'<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.500V17A2.500 2.500 0 0 1 4 14.500z"/>',
  user:'<circle cx="12" cy="8.5" r="3.7"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
@@ -182,6 +182,7 @@ const D='·',N='–';
 const AREAS={
  home:{name:'Brooklyn',sub:'Home',days:[['Today','Mon Nov 23'],['Tue 24','Tue Nov 24'],['Wed 25','Wed Nov 25'],['Thu 26','Thu Nov 26'],['Fri 27','Fri Nov 27'],['Sat 28','Sat Nov 28'],['Sun 29','Sun Nov 29']]},
  austin:{name:'Austin',sub:`Dec 4 ${N} 8`,days:[['Fri 4','Fri Dec 4'],['Sat 5','Sat Dec 5'],['Sun 6','Sun Dec 6'],['Mon 7','Mon Dec 7'],['Tue 8','Tue Dec 8']]},
+ li:{name:'Long Island',sub:`Nov 25 ${N} 29`,days:[['Wed 25','Wed Nov 25'],['Thu 26','Thu Nov 26'],['Fri 27','Fri Nov 27'],['Sat 28','Sat Nov 28'],['Sun 29','Sun Nov 29']]},
  chicago:{name:'Chicago',sub:`Dec 14 ${N} 17`,days:[['Mon 14','Mon Dec 14'],['Tue 15','Tue Dec 15'],['Wed 16','Wed Dec 16'],['Thu 17','Thu Dec 17']]}};
 const mic=(get,cost)=>({k:'mic',get,cost});
 const show=(pay,host,on,ig)=>({k:'show',pay,host,on,ig});
@@ -202,6 +203,18 @@ const RAW=[
  ['sd','home',5,20,'Side Door','Halfmoon Bar','Bushwick',show('$40','Rae Sutton',0,'sidedoorbk')],
  ['m9','home',6,17,'Sunday Mic',"Marlow's",'Bed-Stuy',mic('Sign up online by noon','$5')],
  ['ss','home',6,19,'Sunday Showcase','Halfmoon Bar','Bushwick',{...show('$60','Maya Okafor',1),mine:1}],
+ ['bm','home',1,19,'Audition Mic','Pearl Street Cellar','Bushwick',{...show('','Dana Whitlock',1),sk:'Booking mic',note:'bookers watch',f:[['Stage time','5 min'],['Who watches','Pearl Street bookers'],['Get on','Sign up online by noon']],cta:'Sign up'}],
+ ['rb','home',2,21.5,'Roast Battle','The Low Room','Williamsburg',{...show('','Devin Park',1),sk:'Competition',note:'$100 to the winner',f:[['Format','Head to head, three rounds'],['Prize','$100'],['Sign up','By Tuesday']],cta:'Sign up'}],
+ ['br','home',3,19,'Fresh Faces','Halfmoon Bar','Bushwick',{...show('','Maya Okafor',1),sk:'Bringer',note:'bring 3',f:[['Stage time','6 min'],['Bring','3 people'],['Pays','No']],cta:'Ask for a spot'}],
+ ['bf','home',5,14,'Borough Fest Auditions','Pearl Street Cellar','Bushwick',{...show('','Dana Whitlock',1),sk:'Festival',note:'apply by Fri',f:[['Festival','Jan 14 \u2013 17'],['Apply by','Fri Nov 27'],['Fee','$25']],cta:'Apply'}],
+ ['l1','li',0,19,'Brass Rail Mic','The Brass Rail','Huntington',mic('List at the door, 6:30','One drink')],
+ ['l2','li',0,21,'Night Before','The Brass Rail','Huntington',show('$40','Gina Russo',0,'brassrailcomedy')],
+ ['l3','li',1,20,'Thanksgiving Leftovers','Main Street Tap','Patchogue',show('$50','Tom Kessler',1)],
+ ['l8','li',1,21.5,'Turkey Night Late Show','The Brass Rail','Huntington',show('$40','Gina Russo',0,'brassrailcomedy')],
+ ['l5','li',2,18,'Tap Room Mic','Main Street Tap','Patchogue',mic('Bucket, 5:45','Free')],
+ ['l4','li',2,20,'Black Friday Showcase','The Brass Rail','Huntington',show('$60','Gina Russo',0,'brassrailcomedy')],
+ ['l6','li',3,20,'Saturday at the Rail','The Brass Rail','Huntington',show('$60','Gina Russo',0,'brassrailcomedy')],
+ ['l7','li',4,18,'Sunday Mic','Main Street Tap','Patchogue',mic('Bucket, 5:45','Free')],
  ['a1','austin',0,19,'Porchlight Mic','Porchlight','South Congress',mic('Sign up from 6:30','Free')],
  ['a2','austin',0,22,'Cedar Room Late Show','Cedar Room','East Austin',show('$50','Ana Ruiz',1)],
  ['a3','austin',1,18,'Lantern Mic','The Lantern','East Austin',mic('List at the door, 5:30','Free')],
@@ -232,7 +245,7 @@ const COMICS=[
  {n:'Hannah Weiss',loc:'Visiting from Austin',when:`Nov 27 ${N} 29`,rate:45,clean:1},
  {n:'Cole Jensen',loc:'Brooklyn',rate:40,un:`Booked 7:30 ${N} 9:30`,clean:1}];
 
-const S={role:'start',tab:'stage',stack:[],sheet:null,ob:1,obRole:'comic',area:'home',day:0,kind:'all',
+const S={role:'start',tab:'home',trips:['austin','chicago'],stack:[],sheet:null,ob:1,obRole:'comic',area:'home',day:0,kind:'all',
  accepted:false,going:{},asked:{},offered:{},thumbs:{},usual:true,showUn:false,bdate:0};
 
 /* ---------- pieces ---------- */
@@ -258,15 +271,16 @@ function stage(){
 function itemPage(id){
   const it=item(id),t=tm(it.h),isMic=it.k==='mic',on=it.mine||(it.req&&S.accepted);
   let foot;
-  if(isMic)foot=`<button class="btn ${S.going[id]?'':'pri'} grow" data-act="going:${id}">${S.going[id]?ic('check',20)+' Going':"I'm going"}</button>`;
+  if(it.cta)foot=`<button class="btn pri grow">${it.cta}</button>`;
+  else if(isMic)foot=`<button class="btn ${S.going[id]?'':'pri'} grow" data-act="going:${id}">${S.going[id]?ic('check',20)+' Going':"I'm going"}</button>`;
   else if(on)foot=`<button class="btn grow off">${ic('check',20)} You're on this show</button>`;
   else if(it.req)foot=`<button class="btn acc grow" data-go="push:thread">See Dana's request</button>`;
   else if(it.on)foot=`<button class="btn ${S.asked[id]?'off':'pri'} grow" data-act="ask:${id}">${S.asked[id]?ic('check',20)+' Asked':'Ask for a spot'}</button>`;
   else foot=`<button class="btn pri grow">${ic('ig',20)} Ask on Instagram</button>`;
   return {top:`<div class="nav"><button class="ib" data-go="back">${ic('back')}</button><span class="sp"></span><button class="ib" data-sheet="fix">${ic('dots')}</button></div>`,
-  body:`<div class="pg"><div class="k">${isMic?'Open mic':'Show'}</div><h1>${it.n}</h1><p><b>${dateOf(it)} ${D} ${t[0]} ${t[1]}</b></p><p>${it.v}, ${it.hood}</p>
+  body:`<div class="pg"><div class="k">${isMic?'Open mic':(it.sk||'Show')}</div><h1>${it.n}</h1><p><b>${dateOf(it)} ${D} ${t[0]} ${t[1]}</b></p><p>${it.v}, ${it.hood}</p>
    <button class="fresh" data-sheet="fix"><i></i>Running ${D} checked today</button></div>
-  <div class="facts">${isMic?`<div><span>Get on</span><b>${it.get}</b></div><div><span>Stage time</span><b>5 min</b></div><div><span>Cost</span><b>${it.cost}</b></div>`
+  <div class="facts">${it.f?it.f.map(x=>`<div><span>${x[0]}</span><b>${x[1]}</b></div>`).join(''):isMic?`<div><span>Get on</span><b>${it.get}</b></div><div><span>Stage time</span><b>5 min</b></div><div><span>Cost</span><b>${it.cost}</b></div>`
    :`<div><span>Spots</span><b>7 ${N} 10 min</b></div><div><span>Pays</span><b>${it.pay}</b></div><div><span>Books</span><b>Two weeks out</b></div>`}</div>
   ${it.host?`<div class="who">${av(it.host)}<div class="m"><b>${it.host}</b><span>${it.on?'Runs it':'Runs it '+D+' @'+it.ig}</span></div><button class="btn sm ${it.on?'':'off'}">Message</button><button class="btn sm sq">${ic('ig',18)}</button></div>`:''}
   ${it.host&&!it.on?`<button class="claim">Run this show? Claim it</button>`:''}`,
@@ -294,7 +308,7 @@ function inbox(){
 }
 function thread(){
   return {top:`<div class="nav"><button class="ib" data-go="back">${ic('back')}</button>${av('Dana Whitlock',34)}<div class="t" style="padding-left:10px"><b>Dana Whitlock</b><span>Laugh Riot</span></div></div>`,
-  body:`<div class="msgs"><div class="bub">Saw you at the Low Room last month. I have a spot on the 27th if you are around.</div>${reqBlock()}${S.accepted?`<div class="bub me">I'm in. See you Friday.</div>`:''}</div>`,
+  body:`<div class="msgs"><div class="bub">Saw you at the Low Room last month. I have a spot on the 27th if you are around.</div>${reqBlock()}</div>`,
   foot:`<div class="comp"><button class="ib" data-sheet="plus" style="background:var(--fill)">${ic('plus',20)}</button><div class="in">Message</div></div>`,noTabs:1};
 }
 function chat(n){
@@ -306,20 +320,38 @@ function me(){
   const comic=S.role==='comic';
   return {top:`<div class="head"><div class="t"><div class="big">${comic?'Profile':'Account'}</div></div></div>`,
   body:`<div class="prof">${av('Jordan Vale',64)}<div><h2>Jordan Vale</h2><p>Brooklyn ${D} @jordanvale</p></div></div>
+  <div class="mode"><button class="${comic?'on':''}" ${comic?'':'data-act="switch"'}>Performing</button><button class="${comic?'':'on'}" ${comic?'data-act="switch"':''}>Booking</button></div>
   ${comic?`<div class="tape"><div class="pl">${ic('play',26)}</div><b>Tight five</b><span>5:12</span></div>
   <div class="lbl">Rates</div>
   <div class="ln"><div class="m"><b>Spot</b><span>5 ${N} 10 min</span></div><span class="r">$40</span></div>
   <div class="ln"><div class="m"><b>Feature</b><span>15 ${N} 20 min</span></div><span class="r">$120</span></div>
   <div class="ln"><div class="m"><b>Headline</b><span>30 min and up</span></div><span class="r">$300</span></div>
   <div class="lbl">Where you'll be</div>
-  <button class="ln" data-act="area:home">${ic('home',20)}<div class="m"><b>Brooklyn</b><span>Home</span></div></button>
-  <button class="ln" data-act="area:austin">${ic('plane',20)}<div class="m"><b>Austin</b><span>Dec 4 ${N} 8</span></div></button>
-  <button class="ln" data-act="area:chicago">${ic('plane',20)}<div class="m"><b>Chicago</b><span>Dec 14 ${N} 17</span></div></button>
-  <button class="ln" data-sheet="where">${ic('plus',20)}<div class="m"><b>Add a trip</b></div></button>`
+  ${['home',...S.trips].map(k=>`<button class="ln" data-act="area:${k}">${ic(k==='home'?'home':'plane',20)}<div class="m"><b>${AREAS[k].name}</b><span>${AREAS[k].sub}</span></div></button>`).join('')}
+  <button class="ln" data-sheet="addtrip">${ic('plus',20)}<div class="m"><b>Add a trip</b></div></button>`
   :`<div class="lbl">Your show</div><div class="ln">${ic('mic',20)}<div class="m"><b>Side Door</b><span>Saturdays ${D} Halfmoon Bar, Bushwick</span></div></div>`}
   <div class="lbl">Account</div>
-  <button class="ln" data-act="switch">${ic('swap',20)}<div class="m"><b>${comic?'Switch to booking':'Switch to performing'}</b></div>${ic('right',18)}</button>
   <button class="ln" data-act="restart">${ic('user',20)}<div class="m"><b>Sign out</b></div></button>`};
+}
+
+const dl=(full,today)=>{const p=full.split(' ');return `<small>${today?'Today':p[0]}</small>${p[2]}`};
+const showRow=it=>{const t=tm(it.h);return `<button class="it" data-go="push:it:${it.id}"><div class="tile ${it.sk?'alt':''}">${t[0]}<small>${t[1]}</small></div><div class="m"><b>${it.n}</b><span>${it.v} ${D} ${it.hood}</span>${it.sk?`<span class="sk">${it.sk} ${D} ${it.note}</span>`:''}</div>${mark(it)}</button>`};
+function home2(){
+  const mine=ITEMS.filter(x=>x.mine||(x.req&&S.accepted)||S.going[x.id]||S.asked[x.id]);
+  const grp=a=>{const by={};mine.filter(x=>x.a===a).sort((x,y)=>x.d-y.d||x.h-y.h).forEach(x=>(by[x.d]=by[x.d]||[]).push(x));
+    return Object.keys(by).map(d=>`<div class="lbl">${a==='home'&&d==='0'?'Tonight':AREAS[a].days[d][1]}</div>${by[d].map(x=>rowOf(x)).join('')}`).join('')};
+  return {top:`<div class="head"><div class="t"><div class="big">Mon, Nov 23</div><div class="sub">Brooklyn</div></div><button data-go="tab:me">${av('Jordan Vale',38)}</button></div>`,
+  body:`${!S.accepted?`<button class="strip" data-go="push:thread">${av('Dana Whitlock',28)}<span>Dana wants you Friday</span>${ic('right',18)}</button>`:''}
+  ${grp('home')}
+  ${S.trips.map(k=>`<button class="trip" data-act="area:${k}">${ic('plane',18)} ${AREAS[k].name} <span>${AREAS[k].sub}</span>${ic('right',16)}</button>${grp(k)||`<button class="it" data-act="area:${k}"><div class="tm" style="color:var(--ink3)">${ic('plus',20)}</div><div class="m"><span>Find a show</span></div></button>`}`).join('')}
+  <button class="addtrip" data-sheet="addtrip">${ic('plus',18)} Add a trip</button>`};
+}
+function browse(kind){
+  const A=AREAS[S.area];
+  const list=ITEMS.filter(x=>x.a===S.area&&x.d===S.day&&x.k===kind).sort((a,b)=>a.h-b.h);
+  return {top:`<div class="head"><div class="t"><button class="big" data-sheet="where">${A.name} ${ic('down',22)}</button><div class="sub">${A.sub}</div></div></div>`,
+  body:`<div class="days">${A.days.map((d,i)=>`<button class="${i===S.day?'on':''}" data-act="day:${i}">${dl(d[1],S.area==='home'&&i===0)}</button>`).join('')}</div>
+  <div style="border-top:1px solid var(--line);margin-top:10px">${list.length?list.map(x=>kind==='mic'?rowOf(x):showRow(x)).join(''):`<div class="lbl">Nothing listed yet</div>`}</div>`};
 }
 
 /* ---------- booker ---------- */
@@ -348,7 +380,7 @@ function past(){
 function comics(){
   let list=COMICS.filter(c=>(S.showUn||!c.un)&&(!S.usual||(c.rate<=50&&c.clean)));
   return {top:`<div class="head"><div class="t"><div class="big">Comics</div><div class="sub">Free and in Brooklyn that night</div></div></div>`,
-  body:`<div class="days">${BD.map((d,i)=>`<button class="${i===S.bdate?'on':''}" data-act="bdate:${i}">${d[1]}</button>`).join('')}</div>
+  body:`<div class="days" style="padding-right:160px">${BD.map((d,i)=>`<button class="${i===S.bdate?'on':''}" data-act="bdate:${i}">${dl(d[0])}</button>`).join('')}</div>
   <button class="pref" data-sheet="pref">${ic('tune',20)}<div class="m"><b>${S.usual?'Your usual':'Everyone'}</b><span>${S.usual?`Up to $50 ${D} clean ${D} local and visiting`:'No filters'}</span></div>${ic('down',18)}</button>
   <div>${list.map(c=>`<button class="ln ${c.un?'dim':''}" data-go="push:comic:${c.n}">${av(c.n,48)}<div class="m"><b>${c.n}</b><span>${c.un||c.loc+(c.when?' '+D+' '+c.when:'')}</span></div>${S.offered[c.n]?`<span class="mk q">Asked</span>`:`<span class="r">$${c.rate}</span>`}</button>`).join('')}</div>`};
 }
@@ -367,12 +399,13 @@ function comicPage(n){
 /* ---------- start ---------- */
 function start(){
   if(S.ob===1)return {raw:`<div class="ob"><h1>Stage time,<br>wherever you are.</h1><button class="opt ${S.obRole==='comic'?'on':''}" data-act="obrole:comic">I do comedy</button><button class="opt ${S.obRole==='booker'?'on':''}" data-act="obrole:booker">I book shows</button><div class="sp"></div><button class="btn pri" data-act="ob:2" style="height:56px">Continue</button></div>`};
-  return {raw:`<div class="ob"><h1>Where are you based?</h1><div class="fld">${ic('home',20)} Brooklyn, NY</div><div class="fld">${ic('ig',20)} @jordanvale</div><div class="sp"></div><button class="btn pri" data-act="obdone" style="height:56px">Show me tonight</button></div>`};
+  return {raw:`<div class="ob"><h1>Where are you based?</h1><div class="fld">${ic('home',20)} Brooklyn, NY</div><div class="fld">${ic('ig',20)} @jordanvale</div><div class="sp"></div><button class="btn pri" data-act="obdone" style="height:56px">Continue</button></div>`};
 }
 
 /* ---------- sheets ---------- */
 const SH={
- where:()=>`<h4>Where</h4>${Object.keys(AREAS).map(k=>`<button class="ln" data-act="area:${k}">${ic(k==='home'?'home':'plane',20)}<div class="m"><b>${AREAS[k].name}</b><span>${AREAS[k].sub}</span></div>${S.area===k?ic('check',20):''}</button>`).join('')}<button class="ln" data-close>${ic('plus',20)}<div class="m"><b>Add a trip</b><span>City and dates</span></div></button>`,
+ where:()=>`<h4>Where</h4>${['home',...S.trips].map(k=>`<button class="ln" data-act="area:${k}">${ic(k==='home'?'home':'plane',20)}<div class="m"><b>${AREAS[k].name}</b><span>${AREAS[k].sub}</span></div>${S.area===k?ic('check',20):''}</button>`).join('')}<button class="ln" data-sheet="addtrip">${ic('plus',20)}<div class="m"><b>Add a trip</b><span>City and dates</span></div></button>`,
+ addtrip:()=>`<h4>Add a trip</h4><div style="padding:8px 20px 0"><div class="fld">${ic('plane',20)} Long Island, NY</div><div class="fld">${ic('cal',20)} Wed Nov 25 ${N} Sun Nov 29</div><button class="btn pri" data-act="addtrip" style="width:100%;height:52px">Add trip</button></div>`,
  fix:()=>`<h4>Something changed?</h4>${['Not running tonight','New time','Moved','Gone for good'].map(x=>`<button class="ln" data-act="fixed"><div class="m"><b>${x}</b></div></button>`).join('')}`,
  more:()=>`<h4>Laugh Riot</h4>${['Counter with a different rate','Offer another date','Reply with a note'].map(x=>`<button class="ln" data-close><div class="m"><b>${x}</b></div></button>`).join('')}`,
  plus:()=>`<h4>Send</h4>${(S.role==='comic'?['My tape','My rates','My open dates']:['A spot on my show','Call time and running order']).map(x=>`<button class="ln" data-close><div class="m"><b>${x}</b></div></button>`).join('')}`,
@@ -382,15 +415,15 @@ const SH={
 };
 
 /* ---------- shell ---------- */
-const TABS={comic:[['stage','mic','Mics & Shows'],['cal','cal','Calendar'],['inbox','inbox','Inbox'],['me','user','Profile']],
- booker:[['stage','cal','Shows'],['comics','people','Comics'],['inbox','inbox','Inbox'],['me','user','Account']]};
+const TABS={comic:[['home','home','Home'],['mics','mic','Mics'],['shows','ticket','Shows'],['inbox','inbox','Inbox'],['me','user','Profile']],
+ booker:[['home','cal','Shows'],['comics','people','Comics'],['inbox','inbox','Inbox'],['me','user','Account']]};
 function screen(){
   if(S.role==='start')return start();
   const top=S.stack[S.stack.length-1];
   if(top){const [k,...a]=top.split(':'),arg=a.join(':');
     return k==='it'?itemPage(arg):k==='thread'?thread():k==='chat'?chat(arg):k==='night'?night(arg):k==='past'?past():comicPage(arg)}
   if(S.tab==='inbox')return inbox(); if(S.tab==='me')return me();
-  if(S.role==='comic')return S.tab==='cal'?calendar():stage();
+  if(S.role==='comic')return S.tab==='mics'?browse('mic'):S.tab==='shows'?browse('show'):home2();
   return S.tab==='comics'?comics():bshows();
 }
 function render(keep){
@@ -413,10 +446,11 @@ document.getElementById('phone').addEventListener('click',e=>{
   const [k,...a]=b.dataset.act.split(':'),arg=a.join(':');let keep=1;
   if(k==='day')S.day=+arg;
   else if(k==='kind')S.kind=arg;
-  else if(k==='area'){S.area=arg;S.day=0;S.tab='stage';S.stack=[];S.sheet=null;keep=0}
+  else if(k==='area'){S.area=arg;S.day=0;if(S.tab!=='mics'&&S.tab!=='shows')S.tab='shows';S.stack=[];S.sheet=null;keep=0}
+  else if(k==='addtrip'){if(!S.trips.includes('li'))S.trips.unshift('li');S.area='li';S.day=1;S.tab='shows';S.stack=[];S.sheet=null;keep=0;toast('Long Island bookers can see you Nov 25 \u2013 29')}
   else if(k==='going'){S.going[arg]=!S.going[arg];if(S.going[arg])toast('On your calendar')}
   else if(k==='ask'){S.asked[arg]=1;toast('Sent with your tape and rate')}
-  else if(k==='accept'){S.accepted=true;toast('On your calendar')}
+  else if(k==='accept'){S.accepted=true;toast("You're on")}
   else if(k==='decline')toast('Declined');
   else if(k==='fixed'){S.sheet=null;toast('Thanks, updated for everyone')}
   else if(k==='find'){S.bdate=+arg;S.tab='comics';S.stack=[];keep=0}
@@ -425,16 +459,16 @@ document.getElementById('phone').addEventListener('click',e=>{
   else if(k==='usual'){S.usual=arg==='1';S.sheet=null;if(S.usual)toast('Saved as your usual')}
   else if(k==='offer'){S.offered[arg]=1;toast('Offer sent to '+arg.split(' ')[0])}
   else if(k==='thumb'){const [n,d]=arg.split(':');S.thumbs[n]=S.thumbs[n]===d?null:d}
-  else if(k==='switch'){S.role=S.role==='comic'?'booker':'comic';S.tab='stage';S.stack=[];keep=0}
+  else if(k==='switch'){S.role=S.role==='comic'?'booker':'comic';S.tab='home';S.stack=[];keep=0}
   else if(k==='restart'){S.role='start';S.ob=1;keep=0}
   else if(k==='obrole')S.obRole=arg;
   else if(k==='ob')S.ob=+arg;
-  else if(k==='obdone'){S.role=S.obRole;S.tab='stage';S.stack=[];keep=0}
+  else if(k==='obdone'){S.role=S.obRole;S.tab='home';S.stack=[];keep=0}
   render(keep);
 });
 (function(){const h=decodeURIComponent(location.hash.slice(1)).split('/').filter(Boolean),q=new URLSearchParams(location.search);
-  if(h[0]&&h[0]!=='start'){S.role=h[0];S.tab=h[1]||'stage';S.stack=h.slice(2)}else if(h[0]==='start')S.ob=+h[1]||1;
-  if(q.get('area'))S.area=q.get('area');if(q.get('day'))S.day=+q.get('day');if(q.get('acc'))S.accepted=true;if(q.get('sheet'))S.sheet=q.get('sheet');if(q.get('un'))S.showUn=true;
+  if(h[0]&&h[0]!=='start'){S.role=h[0];S.tab=h[1]||'home';S.stack=h.slice(2)}else if(h[0]==='start')S.ob=+h[1]||1;
+  if(q.get('trip'))S.trips.unshift('li');if(q.get('going'))q.get('going').split(',').forEach(x=>S.going[x]=1);if(q.get('area'))S.area=q.get('area');if(q.get('day'))S.day=+q.get('day');if(q.get('acc'))S.accepted=true;if(q.get('sheet'))S.sheet=q.get('sheet');if(q.get('un'))S.showUn=true;
   render()})();
 </script>
 </body>
