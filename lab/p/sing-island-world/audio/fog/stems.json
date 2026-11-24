@@ -1,0 +1,129 @@
+{
+ "bpm": 97.89,
+ "bar_seconds": 2.4517,
+ "first_downbeat_s": 2.4517,
+ "sr": 48000,
+ "seconds": 150.744,
+ "stems": {
+  "bass": {
+   "lufs": -27.3,
+   "peak_db": -9.8
+  },
+  "brass": {
+   "lufs": -24.2,
+   "peak_db": -5.1
+  },
+  "drums": {
+   "lufs": -24.9,
+   "peak_db": -5.9
+  },
+  "keyboard": {
+   "lufs": -29.2,
+   "peak_db": -9.3
+  },
+  "percussion": {
+   "lufs": -40.1,
+   "peak_db": -10.3
+  },
+  "strings": {
+   "lufs": -32.1,
+   "peak_db": -6.9
+  },
+  "synth": {
+   "lufs": -27.8,
+   "peak_db": -10.9
+  },
+  "vocals": {
+   "lufs": -29.0,
+   "peak_db": -16.2
+  },
+  "woodwinds": {
+   "lufs": -24.6,
+   "peak_db": -11.7
+  },
+  "voice_voice_lead": {
+   "lufs": -22.3,
+   "peak_db": -10.5
+  },
+  "voice_voice_bom": {
+   "lufs": -22.3,
+   "peak_db": -9.3
+  },
+  "voice_voice_doowah_lo": {
+   "lufs": -22.3,
+   "peak_db": -6.0
+  },
+  "voice_voice_suno_line": {
+   "lufs": -22.3,
+   "peak_db": -6.9
+  }
+ },
+ "check": {
+  "sum_vs_full_db": -300.0,
+  "full_lufs": -16.5,
+  "full_clipped": 0,
+  "parts_vs_source_mix_db": -8.4
+ },
+ "voices_fit": {
+  "band_tuning_cents": 3.0,
+  "voices": {
+   "voice_lead": {
+    "tuning_cents": [
+     17.0,
+     3.0
+    ],
+    "average_offset_ms_kept": -5.8,
+    "groove_shift_ms_median": 23.2,
+    "lufs_vs_partner": -3.4
+   },
+   "voice_bom": {
+    "tuning_cents": [
+     -22.0,
+     3.0
+    ],
+    "average_offset_ms_kept": -5.8,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": -0.7
+   },
+   "voice_doowah_lo": {
+    "tuning_cents": [
+     41.0,
+     3.0
+    ],
+    "average_offset_ms_kept": -5.8,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": -4.4
+   },
+   "voice_suno_line": {
+    "tuning_cents": [
+     6.0,
+     3.0
+    ],
+    "average_offset_ms_kept": -11.6,
+    "groove_shift_ms_median": 20.3,
+    "lufs_vs_partner": -3.7
+   }
+  },
+  "voices_vs_band_lu": -3.0
+ },
+ "recipe": {
+  "folded": {},
+  "bpm": 97.89,
+  "first_bar_s": 1.708,
+  "voice_notes": {
+   "lead": 247,
+   "bom": 257,
+   "doowah_lo": 303,
+   "scat": 193
+  },
+  "left_out_after_clean": [
+   "guitar"
+  ]
+ },
+ "loop": {
+  "start_s": 2.4517,
+  "end_s": 149.5537,
+  "bars": 60,
+  "note": "play bar 0 (the pickup) once, then loop start_s..end_s"
+ }
+}

@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "sing-island-world",
+   "key": "sing-island-world",
+   "title": "Sing Island World",
+   "url": "p/sing-island-world/index.html",
+   "added": "2026-11-23",
+   "v": "20261123223443"
+  },
+  {
    "id": "band-hand",
    "key": "band-hand",
    "title": "Band Hand",

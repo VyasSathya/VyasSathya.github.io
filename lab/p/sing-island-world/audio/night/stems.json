@@ -1,0 +1,113 @@
+{
+ "bpm": 110.01,
+ "bar_seconds": 2.1816,
+ "first_downbeat_s": 2.1816,
+ "sr": 48000,
+ "seconds": 150.792,
+ "stems": {
+  "bass": {
+   "lufs": -27.4,
+   "peak_db": -10.0
+  },
+  "brass": {
+   "lufs": -23.0,
+   "peak_db": -7.0
+  },
+  "drums": {
+   "lufs": -24.9,
+   "peak_db": -6.0
+  },
+  "guitar": {
+   "lufs": -42.5,
+   "peak_db": -19.3
+  },
+  "keyboard": {
+   "lufs": -44.1,
+   "peak_db": -23.4
+  },
+  "percussion": {
+   "lufs": -38.0,
+   "peak_db": -10.6
+  },
+  "strings": {
+   "lufs": -28.1,
+   "peak_db": -8.4
+  },
+  "synth": {
+   "lufs": -30.7,
+   "peak_db": -13.5
+  },
+  "woodwinds": {
+   "lufs": -31.3,
+   "peak_db": -13.8
+  },
+  "voice_voice_lead": {
+   "lufs": -22.3,
+   "peak_db": -9.3
+  },
+  "voice_voice_bom": {
+   "lufs": -22.4,
+   "peak_db": -10.0
+  },
+  "voice_voice_doowah_lo": {
+   "lufs": -22.3,
+   "peak_db": -6.6
+  }
+ },
+ "check": {
+  "sum_vs_full_db": -300.0,
+  "full_lufs": -16.89,
+  "full_clipped": 0,
+  "parts_vs_source_mix_db": -8.9
+ },
+ "voices_fit": {
+  "band_tuning_cents": 4.0,
+  "voices": {
+   "voice_lead": {
+    "tuning_cents": [
+     6.0,
+     4.0
+    ],
+    "average_offset_ms_kept": -11.6,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": 0.0
+   },
+   "voice_bom": {
+    "tuning_cents": [
+     2.0,
+     4.0
+    ],
+    "average_offset_ms_kept": -17.4,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": 0.0
+   },
+   "voice_doowah_lo": {
+    "tuning_cents": [
+     -19.0,
+     4.0
+    ],
+    "average_offset_ms_kept": -29.0,
+    "groove_shift_ms_median": 8.7,
+    "lufs_vs_partner": -4.9
+   }
+  },
+  "voices_vs_band_lu": -4.2
+ },
+ "recipe": {
+  "folded": {},
+  "bpm": 110.01,
+  "first_bar_s": 0.71,
+  "voice_notes": {
+   "lead": 404,
+   "bom": 341,
+   "doowah_lo": 262
+  },
+  "left_out_after_clean": []
+ },
+ "loop": {
+  "start_s": 2.1816,
+  "end_s": 150.5304,
+  "bars": 68,
+  "note": "play bar 0 (the pickup) once, then loop start_s..end_s"
+ }
+}

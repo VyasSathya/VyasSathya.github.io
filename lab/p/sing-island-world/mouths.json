@@ -1,0 +1,21 @@
+{
+ "about": "Painted mouth per species picture: x and y (top line) as shares of the picture width and height, width = atlas cell size as a share of the picture height. Atlases are mouths-<atlas>.webp (9 cells: closed, small, ah, oh, ee, smile, frown, open-cheer, hurt). The sing-island pictures keep their sing-island spots; the new ones are placed from the eye whites (top line just under the eyes) and checked by eye.",
+ "thumpling": {"picture": "drums", "atlas": "drumline", "x": 0.515, "y": 0.305, "width": 0.12},
+ "bommo": {"picture": "voice_bom", "atlas": "shanty", "x": 0.54, "y": 0.40, "width": 0.34},
+ "tinka": {"picture": "bell_bear", "atlas": "strings", "x": 0.532, "y": 0.49, "width": 0.15},
+ "plinker": {"picture": "bass", "atlas": "low_end", "x": 0.45, "y": 0.515, "width": 0.09},
+ "hoot": {"picture": "bone_thimble", "atlas": "brass", "x": 0.417, "y": 0.38, "width": 0.13},
+ "doowop": {"picture": "voice_doowah_lo", "atlas": "session", "x": 0.47, "y": 0.29, "width": 0.14},
+ "clonk": {"picture": "rib_whisper", "atlas": "strings", "x": 0.5, "y": 0.435, "width": 0.12},
+ "fizz": {"picture": "skip_chorister", "atlas": "weather", "x": 0.512, "y": 0.44, "width": 0.2},
+ "strummer": {"picture": "guitar", "atlas": "overdrive", "x": 0.40, "y": 0.375, "width": 0.10},
+ "reedle": {"picture": "woodwinds", "atlas": "undertone", "x": 0.535, "y": 0.505, "width": 0.08},
+ "flutey": {"picture": "island_whistler", "atlas": "undertone", "x": 0.414, "y": 0.39, "width": 0.14},
+ "shanty": {"picture": "cutlass_baritone", "atlas": "shanty", "x": 0.573, "y": 0.40, "width": 0.14},
+ "blarp": {"picture": "brass", "atlas": "brass", "x": 0.56, "y": 0.345, "width": 0.13},
+ "fiddlewisp": {"picture": "strings", "atlas": "strings", "x": 0.43, "y": 0.32, "width": 0.08},
+ "cellow": {"picture": "scythe_hand", "atlas": "strings", "x": 0.342, "y": 0.29, "width": 0.1},
+ "sunny": {"picture": "tiny_peep", "atlas": "chorus", "x": 0.477, "y": 0.47, "width": 0.2},
+ "moony": {"picture": "masquerade_mezzo", "atlas": "chorus", "x": 0.5, "y": 0.50, "width": 0.14},
+ "foghorn": {"picture": "voice_scat", "atlas": "weather", "x": 0.52, "y": 0.295, "width": 0.12}
+}
