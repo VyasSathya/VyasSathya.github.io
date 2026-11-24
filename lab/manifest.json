@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "sing-island",
+   "key": "sing-island",
+   "title": "Sing Island",
+   "url": "p/sing-island/index.html",
+   "added": "2026-11-24",
+   "v": "20261124013921"
+  },
+  {
    "id": "band-hand",
    "key": "band-hand",
    "title": "Band Hand",
@@ -15,14 +23,6 @@
    "url": "p/sing-island-world/index.html",
    "added": "2026-11-24",
    "v": "20261124013849"
-  },
-  {
-   "id": "sing-island",
-   "key": "sing-island",
-   "title": "Sing Island",
-   "url": "p/sing-island/index.html",
-   "added": "2026-11-23",
-   "v": "20261123213937"
   },
   {
    "id": "merge-band",
