@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "band-roundup",
+   "key": "band-roundup",
+   "title": "Band Roundup mock",
+   "url": "p/band-roundup/index.html",
+   "added": "2026-11-23",
+   "v": "20261123173406"
+  },
+  {
    "id": "song-ideas-2",
    "key": "song-ideas-2",
    "title": "Song ideas 2",
