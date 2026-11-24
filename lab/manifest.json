@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "pl-notes-band",
+   "key": "pl-notes-band",
+   "title": "Pull Lanes band, note by note",
+   "url": "p/pl-notes-band/index.html",
+   "added": "2026-11-24",
+   "v": "20261124143021"
+  },
+  {
    "id": "pl-studio-band",
    "key": "pl-studio-band",
    "title": "Pull Lanes band, part by part",
