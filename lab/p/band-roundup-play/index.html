@@ -212,7 +212,7 @@ const $=s=>document.querySelector(s);
 try{const th=new URLSearchParams(location.search).get('theme');if(th)document.documentElement.setAttribute('data-theme',th);}catch(e){}
 
 /* ---------- constants ---------- */
-const LOOP_S=1.6678, LOOP_E=58.373, BAR=(LOOP_E-LOOP_S)/34, BEAT=BAR/4, E8=BEAT/2;
+const LOOP_S=2.3601, LOOP_E=59.0623, BAR=(LOOP_E-LOOP_S)/34, BEAT=BAR/4, E8=BEAT/2, PH=LOOP_S%BAR;
 const R=1000, STAGE_R=220, STAGE_H=26, TENT_R=540, TILT=0.64, RUN=300, GATE_HALF=0.075;
 const DEG=Math.PI/180, TAU=Math.PI*2;
 const IS_TOUCH=matchMedia('(pointer:coarse)').matches||('ontouchstart' in window);
@@ -305,7 +305,7 @@ let SIM=false;
 function now(){return AU.ctx&&AU.started?AU.ctx.currentTime:performance.now()/1000;}
 const FMAX=()=>AU.ctx?Math.min(20000,AU.ctx.sampleRate*.45):20000;
 function songPos(t){const e=t-AU.t0; if(e<LOOP_E)return e; return LOOP_S+((e-LOOP_S)%(LOOP_E-LOOP_S));}
-function nextGrid(t,step){return AU.t0+Math.ceil((t-AU.t0)/step-1e-6)*step;}
+function nextGrid(t,step){const g=AU.t0+PH;return g+Math.ceil((t-g)/step-1e-6)*step;}
 async function loadAudio(onP){
   const AC=window.AudioContext||window.webkitAudioContext; if(!AC)throw new Error('no audio');
   try{AU.ctx=IS_TOUCH?new AC({sampleRate:32000}):new AC();}catch(e){AU.ctx=new AC();}
@@ -352,7 +352,7 @@ function startSong(){
     src.start(AU.t0,0);
     AU.nodes[k]={src,g,f,p,fg,ff}; LAYER[k]=g;
   }
-  AU.started=true; AU.next8=Math.ceil((c.currentTime-AU.t0)/E8);
+  AU.started=true; AU.next8=Math.ceil((c.currentTime-AU.t0-PH)/E8);
   setLayer(true);
   return true;
 }
@@ -428,12 +428,12 @@ function sTool(id,t){
 function audioTick(){
   if(!AU.started)return;
   const c=AU.ctx, n=c.currentTime;
-  const nb=nextGrid(n,BAR), bi=Math.round((nb-AU.t0)/BAR);
+  const nb=nextGrid(n,BAR), bi=Math.round((nb-AU.t0-PH)/BAR);
   if(bi!==AU.decided&&nb-n<.35){AU.decided=bi; decideFeel(bi,nb);}
   /* extra hits on 8ths when the van is flat out */
-  if(AU.next8<Math.ceil((n-AU.t0)/E8))AU.next8=Math.ceil((n-AU.t0)/E8);
-  while(AU.t0+AU.next8*E8<n+.2){
-    const k=AU.next8, t=AU.t0+k*E8, bar=Math.floor(k/8);
+  if(AU.next8<Math.ceil((n-AU.t0-PH)/E8))AU.next8=Math.ceil((n-AU.t0-PH)/E8);
+  while(AU.t0+PH+AU.next8*E8<n+.2){
+    const k=AU.next8, t=AU.t0+PH+k*E8, bar=Math.floor(k/8);
     if(AU.feelBar[bar]==='double'&&t>AU.t0+LOOP_S-.01&&G.on[0]>0&&AU.enter.drums!=null&&t>=AU.enter.drums){
       const p=k%8; sfxNoise(t,.045,p%2?.11:.06,'highpass',7500);
       if(p===3||p===7)sfxKick(t,.32);
@@ -448,7 +448,7 @@ function audioTick(){
   if(AU.lastPos==null)AU.lastPos=pos;
   if(pos>=AU.lastPos)fireNotes(AU.lastPos,pos); else{fireNotes(AU.lastPos,LOOP_E);fireNotes(LOOP_S,pos);}
   AU.lastPos=pos;
-  const fb=AU.feelBar[Math.floor((n-lat-AU.t0)/BAR)]; if(fb&&fb!==AU.shownFeel){AU.shownFeel=fb;showFeel(fb);}
+  const fb=AU.feelBar[Math.floor((n-lat-AU.t0-PH)/BAR)]; if(fb&&fb!==AU.shownFeel){AU.shownFeel=fb;showFeel(fb);}
 }
 function lowerBound(a,t){let lo=0,hi=a.length;while(lo<hi){const m=(lo+hi)>>1;if(a[m][0]<=t)lo=m+1;else hi=m;}return lo;}
 function fireNotes(a,b){
@@ -842,7 +842,7 @@ function hudFrame(){
   if(s!==lastClock){lastClock=s;$('#clock').textContent=s;}
   const pct=Math.round(100*G.crowd/G.crowdMax);
   if(pct!==lastCrowd){lastCrowd=pct;const f=$('#crowdFill');f.style.width=pct+'%';f.style.backgroundColor='hsl('+Math.round(clamp(pct/100,0,1)*125)+',62%,50%)';}
-  const bi=AU.started?Math.floor((now()-AU.t0)/BEAT)%4:-1;
+  const bi=AU.started?Math.floor((now()-AU.t0-PH)/BEAT)%4:-1;
   if(bi!==lastBeat){lastBeat=bi;const sp=$('#beats').children;for(let i=0;i<4;i++)sp[i].classList.toggle('on',i===bi);}
   for(const id in G.tools){const el=document.getElementById('tool-'+id);if(el)el.classList.toggle('fire',G.tools[id].flash>.3);}
 }
@@ -850,7 +850,7 @@ let banT=0;
 function banner(txt,small){const b=$('#banner');b.textContent=txt;b.className='banner'+(small?' small':'');void b.offsetWidth;b.classList.add('show');}
 
 /* ---------- drawing ---------- */
-function beatPhase(){const t=now()-(AU.started?AU.t0:0);return ((t/BEAT)%1+1)%1;}
+function beatPhase(){const t=now()-(AU.started?AU.t0+PH:0);return ((t/BEAT)%1+1)%1;}
 function drawGround(){
   cx.fillStyle=P.out; cx.fillRect(0,0,W,H);
   const c=proj(0,0);
