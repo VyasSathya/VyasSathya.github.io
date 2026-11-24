@@ -35,7 +35,13 @@ sub, _ = sf.read(f'{F}/bass_sub.wav', dtype='float32'); write('bass_sub', sub[:N
 lead2 = sf.read(f'{S}/voice_lead.wav', dtype='float32')[0] + sf.read(f'{S}/voice_scat.wav', dtype='float32')[0]; tl = meter.integrated_loudness(lead2)
 tb = meter.integrated_loudness(sf.read(f'{S}/voice_bom.wav', dtype='float32')[0])
 for name, adv, tone, tgt in (('tune_lead', 60, (180, 6000), tl), ('tune_multi', 40, (150, 6000), tl), ('tune_chorus', 60, (180, 6000), tl), ('bom_lowend', 50, (40, 4000), tb)):
-    write(name, place(f'{F}/c_{name}.wav', adv, tone, tgt))
+    y = place(f'{F}/c_{name}.wav', adv, tone, tgt)
+    if name.startswith('bom'):   # sit it inside the band: short hits, low mids trimmed, band room, 1 dB under the bass
+        sf.write(f'{HERE}/parts/_{name}.wav', y, SR, subtype='FLOAT')
+        subprocess.run(['python', 'C:/Dev/toybox/music-kit/stems/voice_fit.py', f'{HERE}/parts/_{name}.wav', f'{HERE}/parts/_{name}_fit.wav', '--level-to', f'{S}/bass.wav',
+                        '--offset-db', '-1', '--room', 'D:/music-battler-work/songs/suno_sneaky/stems/reverb_ir.npy'], check=True)
+        y = sf.read(f'{HERE}/parts/_{name}_fit.wav', dtype='float32')[0]; os.remove(f'{HERE}/parts/_{name}.wav'); os.remove(f'{HERE}/parts/_{name}_fit.wav')
+    write(name, y)
 layers = {}
 for f in sorted(os.listdir(f'{HERE}/parts')):
     if not f.endswith('.mp3'): continue
