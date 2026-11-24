@@ -46,7 +46,11 @@ svg.i{display:block}
 .plot.open .plus{display:grid}
 .mon{position:absolute;pointer-events:none}
 .bod{position:absolute;inset:0;transform-origin:50% 100%;animation:breathe 2.4s ease-in-out infinite}
-.bod img{position:absolute;inset:0;width:100%;height:100%;display:block;transform-origin:50% 100%;filter:drop-shadow(0 4px 3px rgba(0,0,0,.22))}
+.mon{transition:filter .25s}
+.mon.rest{filter:brightness(.74) saturate(.72)}
+.fig{position:absolute;inset:0;transform-origin:50% 100%}
+.bod img{position:absolute;inset:0;width:100%;height:100%;display:block;filter:drop-shadow(0 4px 3px rgba(0,0,0,.22))}
+.mouth{position:absolute;background-repeat:no-repeat;pointer-events:none}
 .cbw{position:absolute;left:0;transform:translateX(-50%);cursor:pointer}
 .cb{position:relative;display:flex;align-items:center;gap:3px;background:#fff;border-radius:14px;padding:3px 9px 3px 3px;font-weight:700;font-size:14px;color:#231C33;box-shadow:0 3px 0 rgba(35,28,51,.2);animation:float 1.6s ease-in-out infinite;white-space:nowrap}
 .cb::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0}
@@ -221,6 +225,7 @@ svg.i{display:block}
 'use strict';
 var IMG='img/', AUD='audio/';
 var LS=1.6678, LE=58.373, L=LE-LS, BAR=1.6678, BREED_S=10;
+var EARN=3; // coin pace: a normal player hears all ten parts in about 3 minutes
 // parts of the song, one monster each. band monsters are bought; singers are bred from two band monsters
 var PARTS=[
  {id:'drums',name:'Scout Snare',fam:'Drums',col:'#4A7BFF',price:50,earn:90,asp:.629},
@@ -237,6 +242,7 @@ var PARTS=[
 var P={}; PARTS.forEach(function(p){P[p.id]=p;});
 var PLOTS=[[82,272],[195,262],[308,272],[66,410],[195,402],[324,410],[74,552],[316,552],[80,694],[300,694]];
 var MH=88;
+var MOUTH={"drums":{"atlas":"drumline","x":0.515,"y":0.305,"width":0.12},"bass":{"atlas":"low_end","x":0.45,"y":0.515,"width":0.09},"guitar":{"atlas":"overdrive","x":0.4,"y":0.375,"width":0.1},"strings":{"atlas":"strings","x":0.43,"y":0.32,"width":0.08},"brass":{"atlas":"brass","x":0.56,"y":0.345,"width":0.13},"woodwinds":{"atlas":"undertone","x":0.535,"y":0.505,"width":0.08},"voice_bom":{"atlas":"shanty","x":0.54,"y":0.4,"width":0.34},"voice_scat":{"atlas":"weather","x":0.52,"y":0.295,"width":0.12},"voice_doowah_lo":{"atlas":"session","x":0.47,"y":0.29,"width":0.14},"voice_lead":{"atlas":"chorus","x":0.55,"y":0.565,"width":0.17}}; // painted mouths: atlas, x, y (top line), width as shares of the figure height (mouths.json)
 var KEY='sing-island-v1';
 
 function fresh(){return {coins:120,gems:5,xp:0,lvl:1,plots:PLOTS.map(function(){return null;}),store:PLOTS.map(function(){return 0;}),breed:null,pending:null,full:false,mute:false};}
@@ -281,11 +287,14 @@ function buildMon(i,id,drop){
   var pe=plotEls[i], p=P[id], h=monH(id), w=Math.round(h*p.asp);
   if(pe.mon)pe.mon.remove(); if(pe.cbw)pe.cbw.remove();
   var m=el('div','mon','left:'+(-w/2)+'px;top:'+(-h-6)+'px;width:'+w+'px;height:'+h+'px');
-  var b=el('div','bod','animation-delay:-'+(i*.37).toFixed(2)+'s');var img=el('img');img.src=IMG+id+'.webp';img.alt=p.name;img.draggable=false;b.appendChild(img);m.appendChild(b);
+  var b=el('div','bod','animation-delay:-'+(i*.37).toFixed(2)+'s'),fig=el('div','fig');var img=el('img');img.src=IMG+id+'.webp';img.alt=p.name;img.draggable=false;fig.appendChild(img);
+  var mo=MOUTH[id],mouth=null;
+  if(mo){var cs=Math.max(mo.width*h,24);mouth=el('i','mouth','left:'+(mo.x*w-cs/2).toFixed(1)+'px;top:'+(mo.y*h-cs*.25).toFixed(1)+'px;width:'+cs.toFixed(1)+'px;height:'+cs.toFixed(1)+'px;background-image:url('+IMG+'mouths-'+mo.atlas+'.webp);background-size:'+(cs*9).toFixed(1)+'px '+cs.toFixed(1)+'px');mouth._cs=cs;fig.appendChild(mouth);}
+  b.appendChild(fig);m.appendChild(b);m.classList.add('rest');
   pe.root.insertBefore(m,pe.root.querySelector('.hit'));
   var cbw=el('div','cbw','top:'+(-h-40)+'px;display:none'), cbb=el('div','cbb'), cb=el('div','cb','animation-delay:-'+(i*.21).toFixed(2)+'s','<svg class="i" width="22" height="22"><use href="#coin"/></svg><span>0</span>');
   cbb.appendChild(cb);cbw.appendChild(cbb);pe.root.appendChild(cbw);onTap(cbw,function(){tapPlot(i);});
-  pe.mon=m;pe.img=img;pe.cbw=cbw;pe.cbb=cbb;pe.cb=cb;pe.cbn=cb.querySelector('span');
+  pe.mon=m;pe.img=fig;pe.pic=img;pe.mouth=mouth;pe.mc=-1;pe.mUntil=0;pe.mOpen=0;pe.heard=0;pe.rest=true;setMouth(pe,P[id].sing?0:5);pe.cbw=cbw;pe.cbb=cbb;pe.cb=cb;pe.cbn=cb.querySelector('span');
   pe.root.classList.remove('empty');
   if(drop){
     m.animate([{transform:'translateY(-120px) scale(.6,1.3)',opacity:0},{transform:'translateY(0) scale(1.25,.75)',opacity:1,offset:.55},{transform:'translateY(-14px) scale(.92,1.1)',offset:.75},{transform:'translateY(0) scale(1,1)'}],{duration:620,easing:'ease-out'});
@@ -327,44 +336,63 @@ onTap(nest,function(ev){
 });
 
 /* ---------- audio ---------- */
-var AC=window.AudioContext||window.webkitAudioContext, ac=null, master=null, floorG=null, gains={}, bufs={}, T0=null, partOn={}, notes={}, started=false;
-try{ac=new AC();}catch(e){ac=null;}
+/* one song clock: every stem starts together at t0 at gain 0; a monster owns exactly one stem and only its gain changes.
+   Nothing else plays (no full mix). A new monster's stem comes in on the next bar line; a removed one goes out. */
+var AC=window.AudioContext||window.webkitAudioContext, ac=null, master=null, bus=null, bufs={}, T0=null, partOn={}, notes={}, started=false, LAYER={};
+var gains=LAYER; // debug alias
+try{ac=new AC({latencyHint:'interactive'});}catch(e){ac=null;}
 function decode(ab){return new Promise(function(res,rej){var p=ac.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);});}
-var loadN=0, loadTot=PARTS.length+2;
+var loadN=0, loadTot=PARTS.length+1;
 function prog(){loadN++;$('ldArc').setAttribute('stroke-dasharray',(415*loadN/loadTot).toFixed(1)+' 415');}
 var loaded=Promise.all([
   fetch(AUD+'notes.json').then(function(r){return r.json();}).then(function(nj){
-    PARTS.forEach(function(p){var a=(nj.compact[p.id]||[]).filter(function(n){return n[0]>=LS&&n[0]<LE;}).sort(function(x,y){return x[0]-y[0];});notes[p.id]=a;p.per=p.earn/Math.max(1,a.length);});
+    if(nj.loop){LS=nj.loop.start_s;LE=nj.loop.end_s;L=LE-LS;}if(nj.bar_seconds)BAR=nj.bar_seconds;
+    PARTS.forEach(function(p){var a=(nj.compact[p.id]||[]).filter(function(n){return n[0]>=LS&&n[0]<LE;}).sort(function(x,y){return x[0]-y[0];});notes[p.id]=a;p.per=p.earn*EARN/Math.max(1,a.length);});
     prog();
   })
-].concat(['full'].concat(PARTS.map(function(p){return p.id;})).map(function(id){
-  return fetch(AUD+id+'.mp3').then(function(r){return r.arrayBuffer();}).then(decode).then(function(b){bufs[id]=b;prog();});
+].concat(PARTS.map(function(p){
+  return fetch(AUD+p.id+'.mp3').then(function(r){return r.arrayBuffer();}).then(decode).then(function(b){bufs[p.id]=b;prog();});
 }))).then(function(){$('playBtn').classList.remove('load');return true;}).catch(function(err){console.warn('load',err);$('playBtn').classList.remove('load');return false;});
 
+function partGain(id){return S.plots.indexOf(id)>=0?1:0;} // one stem per monster on the island
+function onCount(){return S.plots.filter(Boolean).length;}
+function songT(t){var e=t-T0;return e<LE?e:LS+((e-LS)%L);}
+function startSong(){
+  master=ac.createGain();master.gain.value=S.mute?0:.9;master.connect(ac.destination);
+  var lim=ac.createDynamicsCompressor();lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.002;lim.release.value=.12;
+  bus=ac.createGain();bus.gain.value=.95;bus.connect(lim);lim.connect(master);
+  T0=ac.currentTime+.06;
+  PARTS.forEach(function(p){var gn=ac.createGain();gn.gain.value=0;gn.connect(bus);LAYER[p.id]=gn;
+    if(!bufs[p.id])return;var s=ac.createBufferSource();s.buffer=bufs[p.id];s.loop=true;s.loopStart=LS;s.loopEnd=LE;s.connect(gn);s.start(T0,0);});
+}
+function levelBus(tc){var n=onCount();bus.gain.cancelScheduledValues(ac.currentTime);bus.gain.setTargetAtTime(.95/(1+.06*n),ac.currentTime,tc||.3);}
+function nextBarCtx(){var u=ac.currentTime+.03-T0;if(u<LS)return T0+LS;return T0+LS+Math.ceil((u-LS)/BAR-1e-6)*BAR;}
+/* each stem goes to partGain at its own entry time (partOn, always a bar line); stems already in stay put */
+function setLayer(){
+  var now=ac.currentTime,nb=Math.max(now,nextBarCtx());
+  PARTS.forEach(function(p){var q=p.id,gp=LAYER[q].gain,want=partGain(q);
+    var at=want?Math.max(now,partOn[q]!=null?partOn[q]:nb):nb;
+    if(!want)partOn[q]=null;
+    gp.cancelScheduledValues(now);gp.setValueAtTime(gp.value,now);gp.setTargetAtTime(want,at,.02);});
+  levelBus();
+}
+/* the bar line a newly placed monster enters on: the next bar, or two bars after the last one still waiting, so parts arrive one at a time */
+function entryBar(){var t=nextBarCtx();PARTS.forEach(function(p){var o=partOn[p.id];if(o!=null&&o>ac.currentTime&&o+2*BAR>t)t=o+2*BAR;});return t;}
+function partIn(id){
+  if(!started){return;}
+  var tb=entryBar();partOn[id]=tb;setLayer();
+  slots[id].classList.add('w');
+  setTimeout(function(){slots[id].classList.remove('w','e');refreshSong();},Math.max(0,(tb-ac.currentTime)*1000));
+  return tb;
+}
+function partOut(id){partOn[id]=null;setLayer();refreshSong();}
 function startAudio(){
   if(started||!ac)return; started=true;
   try{ac.resume();}catch(e){}
-  master=ac.createGain();master.gain.value=S.mute?0:.9;master.connect(ac.destination);
-  floorG=ac.createGain();floorG.connect(master);
-  T0=ac.currentTime+.15;
-  function src(id,g){if(!bufs[id])return;var s=ac.createBufferSource();s.buffer=bufs[id];s.loop=true;s.loopStart=LS;s.loopEnd=LE;s.connect(g);s.start(T0,0);}
-  src('full',floorG);
-  PARTS.forEach(function(p){var g=ac.createGain();g.gain.value=0;g.connect(master);gains[p.id]=g;src(p.id,g);});
-  S.plots.forEach(function(id){if(id){gains[id].gain.value=1;partOn[id]=T0;}});
-  setFloor();
-}
-function setFloor(){if(!floorG)return;var n=onCount();floorG.gain.setTargetAtTime(.075*(1-n/10)+.02,ac.currentTime,.3);}
-function onCount(){return S.plots.filter(Boolean).length;}
-function songT(t){var e=t-T0;return e<LE?e:LS+((e-LS)%L);}
-function nextBar(){var now=ac.currentTime+.04;if(now<T0)return T0;var st=songT(now);var k=Math.ceil(st/BAR-1e-6);var bt=Math.min(k*BAR,LE);return now+(bt-st);}
-function partIn(id){
-  if(!started){return;}
-  var tb=nextBar();var g=gains[id].gain;
-  g.cancelScheduledValues(0);g.setValueAtTime(0,ac.currentTime);g.setValueAtTime(0,tb-.005);g.linearRampToValueAtTime(1,tb+.04);
-  partOn[id]=tb;
-  slots[id].classList.add('w');
-  setTimeout(function(){slots[id].classList.remove('w','e');refreshSong();setFloor();},Math.max(0,(tb-ac.currentTime)*1000));
-  return tb;
+  startSong();
+  // a saved island comes back one part at a time too, on bar lines
+  S.plots.forEach(function(id){if(id)partIn(id);});
+  setLayer();
 }
 
 /* sound effects */
@@ -439,7 +467,7 @@ function collect(i,quiet){
   return v;
 }
 function updBubble(i){var pe=plotEls[i];if(!pe.cbw)return;var v=Math.floor(S.store[i]);pe.cbw.style.display=v>=1?'block':'none';pe.cbn.textContent=fmt(v);pe.cb.classList.toggle('full',S.store[i]>=cap(S.plots[i]));}
-function cap(id){return P[id].earn*2;}
+function cap(id){return P[id].earn*EARN*2;}
 onTap($('bCollect'),function(){var tot=0;S.plots.forEach(function(id,i){if(id)tot+=collect(i,true);});if(tot>0){sfx('coin');}else bad(null);});
 
 /* ---------- plots tap ---------- */
@@ -533,21 +561,34 @@ function party(){
 var prevT=null;
 function lowerBound(a,t){var lo=0,hi=a.length;while(lo<hi){var m=(lo+hi)>>1;if(a[m][0]<=t)lo=m+1;else hi=m;}return lo;}
 function notesBetween(id,t0,t1,fn){var a=notes[id];if(!a)return;var i=lowerBound(a,t0);for(;i<a.length&&a[i][0]<=t1;i++)fn(a[i]);}
-var noteCols=['#fff','#FFE36B','#FF8FB8'];
+var puffs=0;
+function setMouth(pe,c){if(!pe.mouth||pe.mc===c)return;pe.mc=c;pe.mouth.style.backgroundPosition=(-c*pe.mouth._cs).toFixed(1)+'px 0';}
+/* rest look and mouth close, every frame: a monster whose part is resting (or not in yet) dims a little */
+function figTick(vt,now){S.plots.forEach(function(id,i){var pe=plotEls[i];if(!id||!pe.mon)return;
+  var rest=!started||partOn[id]==null||vt<partOn[id]||now-pe.heard>.7;
+  if(rest!==pe.rest){pe.rest=rest;pe.mon.classList.toggle('rest',rest);}
+  if(now>=pe.mUntil)setMouth(pe,P[id].sing?0:5);});}
 function onNote(i,id,n,now){
   var pe=plotEls[i],p=P[id];
   if(S.store[i]<cap(id))S.store[i]=Math.min(cap(id),S.store[i]+p.per);
+  // who makes this sound: its own mouth opens, it flashes in its colour, a note puffs off it
+  pe.heard=now;
+  if(p.sing){pe.mOpen=(id==='voice_bom'||id==='voice_doowah_lo')?3:((n[2]||0)>=.4?2:4);pe.mUntil=now+Math.max(.12,Math.min(n[2]||.2,1.2));}
+  else{pe.mOpen=1;pe.mUntil=now+.11;}
+  setMouth(pe,pe.mOpen);
   if(now-pe.lastHit>(id==='drums'?.1:.13)){
-    pe.lastHit=now;var len=Math.max(.12,Math.min(.45,n[2]||.2));
+    pe.lastHit=now;
+    pe.pic.animate([{filter:'drop-shadow(0 0 7px '+p.col+') drop-shadow(0 0 3px '+p.col+') brightness(1.28)'},{filter:'drop-shadow(0 0 0 transparent) drop-shadow(0 4px 3px rgba(0,0,0,.22)) brightness(1)'}],{duration:220,easing:'ease-out'});var len=Math.max(.12,Math.min(.45,n[2]||.2));
     if(p.sing){pe.img.animate([{transform:'scale(1,1)'},{transform:'scale(.93,1.12) rotate('+(n[1]%2?-3:3)+'deg)',offset:.3},{transform:'scale(.97,1.06)',offset:.75},{transform:'scale(1,1)'}],{duration:len*1000+120,easing:'ease-out'});}
     else{var amt=id==='drums'||id==='bass'?.1:.07;pe.img.animate([{transform:'scale(1,1) translateY(0)'},{transform:'scale('+(1+amt)+','+(1-amt)+') translateY(0)',offset:.2},{transform:'scale('+(1-amt*.5)+','+(1+amt*.6)+') translateY(-4px)',offset:.55},{transform:'scale(1,1) translateY(0)'}],{duration:Math.min(320,len*1000+140),easing:'ease-out'});}
     slots[id].animate([{transform:'scale(1.22)',boxShadow:'0 0 10px '+p.col},{transform:'scale(1)',boxShadow:'0 0 0 transparent'}],{duration:200});
     if(pe.cbw&&pe.cbw.style.display!=='none')pe.cbb.animate([{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:160});
   }
   var pt=PLOTS[i],h=monH(id);
-  if(now-pe.lastNote>(p.sing?.35:.7)){pe.lastNote=now;
-    var d=el('div','fx','left:'+(pt[0]+h*.22)+'px;top:'+(pt[1]-h-4)+'px;color:'+noteCols[(i+n[1])%3],'<svg class="i" width="18" height="18"><use href="#note"/></svg>');d.style.zIndex=300;fxl.appendChild(d);
-    d.animate([{transform:'translate(0,0) scale(.5)',opacity:0},{transform:'translate(4px,-10px) scale(1)',opacity:1,offset:.2},{transform:'translate(16px,-48px) scale(.9)',opacity:0}],{duration:1200,easing:'ease-out'}).onfinish=function(){d.remove();};}
+  if(now-pe.lastNote>.14&&puffs<36){pe.lastNote=now;puffs++;
+    var big=p.sing||id==='drums'&&(n[1]===36||n[1]===49),sz=big?18:14,dx=(Math.random()*2-1)*14,rot=(Math.random()*2-1)*18;
+    var d=el('div','fx','left:'+(pt[0]+h*.2-sz/2)+'px;top:'+(pt[1]-h-2)+'px;color:'+p.col+';filter:drop-shadow(0 1px 0 #231C33) drop-shadow(0 -1px 0 #231C33) drop-shadow(1px 0 0 #231C33) drop-shadow(-1px 0 0 #231C33)','<svg class="i" width="'+sz+'" height="'+sz+'"><use href="#note"/></svg>');d.style.zIndex=300;fxl.appendChild(d);
+    d.animate([{transform:'translate(0,0) scale(.5) rotate(0)',opacity:0},{transform:'translate('+(dx*.3)+'px,-10px) scale(1) rotate('+(rot*.4)+'deg)',opacity:1,offset:.18},{transform:'translate('+dx+'px,-44px) scale(.85) rotate('+rot+'deg)',opacity:0}],{duration:750,easing:'ease-out'}).onfinish=function(){d.remove();puffs--;};}
   if(now-pe.lastCoin>1.1&&S.store[i]<cap(id)){pe.lastCoin=now;
     var c=el('div','fx','left:'+(pt[0]-h*.25-8)+'px;top:'+(pt[1]-h)+'px','<svg class="i" width="16" height="16"><use href="#coin"/></svg>');fxl.appendChild(c);
     c.animate([{transform:'translateY(0) scale(.4)',opacity:0},{transform:'translateY(-14px) scale(1.15)',opacity:1,offset:.3},{transform:'translateY(-30px) scale(.8)',opacity:0}],{duration:800,easing:'ease-out'}).onfinish=function(){c.remove();};}
@@ -561,6 +602,7 @@ function frame(){
   if(!started||ac.currentTime<T0)return;
   var vt=ac.currentTime-(ac.outputLatency||0)-(ac.baseLatency||0);if(vt<T0)return;
   var cur=songT(vt),now=performance.now()/1000;
+  if(prevT!=null&&cur<prevT&&prevT-cur<L*.5)cur=prevT; // latency jitter, not a loop wrap: never replay the whole loop
   if(prevT!=null&&cur!==prevT){
     S.plots.forEach(function(id,i){
       if(!id||partOn[id]==null||vt<partOn[id])return;
@@ -571,6 +613,7 @@ function frame(){
     });
   }
   prevT=cur;
+  figTick(vt,now);
   if(now-lastSave>2){lastSave=now;save();$('bCollect').classList.toggle('has',S.store.some(function(v){return v>=1;}));}
 }
 
@@ -585,7 +628,7 @@ document.addEventListener('visibilitychange',function(){save();if(!ac||!started)
 window.addEventListener('pagehide',save);
 renderNest(true);refresh();addXp(0);
 requestAnimationFrame(frame);
-window.SI={S:S,P:P,PLOTS:PLOTS,songT:function(){return started?songT(ac.currentTime):null;},started:function(){return started;},gains:gains,partOn:partOn,ac:function(){return ac;}};
+window.SI={layerGains:function(){var o={};PARTS.forEach(function(p){o[p.id]=LAYER[p.id]?LAYER[p.id].gain.value:0;});return o;},busGain:function(){return bus&&bus.gain.value;},sources:function(){return Object.keys(bufs);},plotEls:plotEls,S:S,P:P,PLOTS:PLOTS,songT:function(){return started?songT(ac.currentTime):null;},started:function(){return started;},gains:gains,partOn:partOn,ac:function(){return ac;}};
 })();
 </script>
 </body>

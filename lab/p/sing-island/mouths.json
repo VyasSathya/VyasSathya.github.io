@@ -1,0 +1,12 @@
+{
+ "drums": {"picture": "drums", "atlas": "drumline", "x": 0.515, "y": 0.305, "width": 0.12},
+ "bass": {"picture": "bass", "atlas": "low_end", "x": 0.45, "y": 0.515, "width": 0.09},
+ "guitar": {"picture": "guitar", "atlas": "overdrive", "x": 0.40, "y": 0.375, "width": 0.10},
+ "strings": {"picture": "strings", "atlas": "strings", "x": 0.43, "y": 0.32, "width": 0.08},
+ "brass": {"picture": "brass", "atlas": "brass", "x": 0.56, "y": 0.345, "width": 0.13},
+ "woodwinds": {"picture": "woodwinds", "atlas": "undertone", "x": 0.535, "y": 0.505, "width": 0.08},
+ "voice_bom": {"picture": "voice_bom", "atlas": "shanty", "x": 0.54, "y": 0.40, "width": 0.34},
+ "voice_scat": {"picture": "voice_scat", "atlas": "weather", "x": 0.52, "y": 0.295, "width": 0.12},
+ "voice_doowah_lo": {"picture": "voice_doowah_lo", "atlas": "session", "x": 0.47, "y": 0.29, "width": 0.14},
+ "voice_lead": {"picture": "voice_lead", "atlas": "chorus", "x": 0.55, "y": 0.565, "width": 0.17}
+}
