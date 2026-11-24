@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Comedy booking mock v3</title>
+<title>Comedy booking mock v5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#eceae4;--app:#fbfaf7;--ink:#16150f;--ink2:#6b6a62;--ink3:#a3a199;--line:#ebe9e2;--fill:#f1efe8;
   --accent:#f2b233;--accent-ink:#1a1400;--ok:#1f7a4d;--bezel:#16150f;--shadow:0 30px 80px rgba(22,21,15,.2)}
@@ -69,7 +69,7 @@ svg{display:block;flex:none}
 .pg p b{color:var(--ink);font-weight:600}
 .fresh{display:inline-flex;align-items:center;gap:8px;margin:16px 0 0;height:32px;padding:0 12px;border-radius:16px;background:var(--fill);font-weight:600;font-size:13.5px}
 .fresh i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
-.facts{margin:20px 20px 0;border-top:1px solid var(--line)}
+.tabs button.ctr svg{width:46px;height:46px;padding:11px;box-sizing:border-box;border-radius:50%;background:var(--accent);color:var(--accent-ink);margin-top:-18px;box-shadow:0 0 0 5px var(--app)}.tabs button.ctr{color:var(--ink)}.ttl{display:block;font:inherit;font-size:28px;font-weight:700;letter-spacing:-.02em;border:0;background:none;color:var(--ink);width:100%;padding:20px 20px 0;outline:none}.facts button{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);width:100%;align-items:center}.facts button b{display:flex;gap:6px;align-items:center}.facts button b svg{color:var(--ink3)}.facts{margin:20px 20px 0;border-top:1px solid var(--line)}
 .facts div{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
 .facts span{color:var(--ink2)}
 .facts b{font-weight:600;text-align:right}
@@ -150,6 +150,46 @@ svg{display:block;flex:none}
 .ob .opt.on{background:var(--ink);color:var(--app)}
 .fld{height:56px;border-radius:16px;background:var(--fill);display:flex;align-items:center;gap:10px;padding:0 16px;font-weight:600;margin-bottom:10px;font-size:17px}
 .sp{flex:1}
+#view{position:relative}
+.scroll{padding-bottom:112px}
+.tabs{position:absolute;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));border:1px solid var(--line);border-radius:34px;padding:7px 6px;align-items:center;background:color-mix(in srgb,var(--app) 78%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 12px 32px rgba(0,0,0,.18);z-index:4}
+.tabs button{padding:5px 0;gap:3px;transition:transform .12s}
+.tabs button:active{transform:scale(.9)}
+.tabs button.ctr{font-size:0;gap:0;padding:0}
+.tabs button.ctr svg{width:50px;height:50px;padding:13px;margin:0;box-shadow:none;transition:box-shadow .2s}
+.tabs button.ctr.on svg{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 32%,transparent)}
+.po{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(150deg,var(--a),var(--b));color:var(--c);text-align:left}
+.po>i{position:absolute;inset:0;pointer-events:none}
+.po.d0>i{background:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,0) 88%);clip-path:polygon(41% 0,59% 0,96% 100%,4% 100%)}
+.po.d1>i{background:repeating-radial-gradient(circle at 82% 12%,rgba(255,255,255,.17) 0 2px,transparent 2px 15px)}
+.po.d2>i{background:repeating-linear-gradient(135deg,rgba(255,255,255,.13) 0 10px,transparent 10px 24px)}
+.po>b{position:relative;font-weight:900;text-transform:uppercase;letter-spacing:-.04em;line-height:.9}
+.po em{position:relative;font-style:normal;font-weight:600;font-size:14px;opacity:.94;margin-top:10px;display:flex;align-items:center;gap:10px}
+.po.hero{height:236px;border-radius:26px;padding:18px}
+.po.hero.sm{height:168px}
+.po.top{height:300px;border-radius:26px;padding:20px}
+.po.md{width:164px;height:196px;border-radius:20px;padding:12px}
+.po.th{width:60px;height:76px;border-radius:12px;padding:6px;flex:none}
+.po .pill{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.96);color:#14130f;font-weight:700;font-size:12.5px;padding:5px 10px;border-radius:12px}
+.po.md .pill{top:10px;left:10px;font-size:11.5px;padding:4px 8px}
+.po>.mk{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.7);color:#fff}
+.po .ov{position:absolute;top:10px;left:10px;right:10px;display:flex}
+.ib.gl{background:rgba(0,0,0,.38);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.po .open{background:transparent;border-color:rgba(255,255,255,.85)}
+.po .stack .av{box-shadow:0 0 0 2px rgba(0,0,0,.28)}
+.hb{display:block;width:100%;padding:0 20px;margin-top:12px;transition:transform .15s}
+.hb:active,.cd:active{transform:scale(.975)}
+.hs{display:flex;gap:12px;overflow-x:auto;padding:0 20px;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.cd{flex:none;width:164px;transition:transform .15s}
+.cd>b{display:block;font-weight:600;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd>span{display:block;font-size:13.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it,.ln{transition:background .12s}
+button.it:active,button.ln:active{background:var(--fill)}
+.enter{animation:rise .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+.cf{position:absolute;top:40%;width:8px;height:12px;border-radius:2px;z-index:8;pointer-events:none;animation:cf 1.25s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes cf{0%{transform:translate(0,0) rotate(0);opacity:1}30%{transform:translate(calc(var(--x)*.6),-130px) rotate(calc(var(--r)*.4));opacity:1}100%{transform:translate(var(--x),360px) rotate(var(--r));opacity:0}}
 </style>
 </head>
 <body>
@@ -245,10 +285,22 @@ const COMICS=[
  {n:'Hannah Weiss',loc:'Visiting from Austin',when:`Nov 27 ${N} 29`,rate:45,clean:1},
  {n:'Cole Jensen',loc:'Brooklyn',rate:40,un:`Booked 7:30 ${N} 9:30`,clean:1}];
 
-const S={role:'start',tab:'home',trips:['austin','chicago'],stack:[],sheet:null,ob:1,obRole:'comic',area:'home',day:0,kind:'all',
+const S={role:'start',tab:'home',nk:'show',made:[],trips:['austin','chicago'],stack:[],sheet:null,ob:1,obRole:'comic',area:'home',day:0,kind:'all',
  accepted:false,going:{},asked:{},offered:{},thumbs:{},usual:true,showUn:false,bdate:0};
 
 /* ---------- pieces ---------- */
+const PAL=[['#ff5a36','#a50f2d','#fff'],['#4a35ff','#150b6b','#fff'],['#12a876','#06402f','#fff'],['#ffc23d','#f0622a','#1a1400'],['#f0468f','#5d1a99','#fff'],['#17b3d1','#143c8f','#fff'],['#8a4dff','#ff4f9a','#fff'],['#1d1c19','#3b3832','#f5bd45']];
+const hs=x=>{let h=7;for(const c of x)h=(h*31+c.charCodeAt(0))>>>0;return h};
+function poster(it,cls,w,base,over='',under=''){
+  const h=hs(it.id),p=it.k==='mic'?['#2d2b26','#141310','#f5bd45']:PAL[h%8];
+  const lw=Math.max(...it.n.split(' ').map(x=>x.length)),fs=Math.max(6,Math.min(base,Math.floor(w/(lw*.66))));
+  return `<div class="po ${cls} d${h%3}" style="--a:${p[0]};--b:${p[1]};--c:${p[2]}"><i></i>${over}<b style="font-size:${fs}px">${it.n}</b>${under}</div>`;
+}
+function burst(){const ph=document.getElementById('phone');for(let i=0;i<36;i++){const c=document.createElement('i');c.className='cf';
+  c.style.cssText=`left:${(50+Math.random()*50-25).toFixed(0)}%;background:${['#f5bd45','#ff5a36','#4a35ff','#12a876','#f0468f'][i%5]};--x:${(Math.random()*280-140)|0}px;--r:${(Math.random()*720-360)|0}deg;animation-delay:${(Math.random()*.12).toFixed(2)}s`;
+  ph.appendChild(c);setTimeout(()=>c.remove(),1600)}}
+const dkey=it=>{const p=dateOf(it).split(' ');return (p[1]==='Dec'?100:0)+ +p[2]+it.h/100};
+const dtile=x=>{const p=x.split(' ');return `<div class="tile">${p[2]}<small>${p[1].toUpperCase()}</small></div>`};
 function mark(it){
   if(it.mine||(it.req&&S.accepted))return `<span class="mk">You're on</span>`;
   if(it.req)return `<span class="mk">Wants you</span>`;
@@ -277,8 +329,9 @@ function itemPage(id){
   else if(it.req)foot=`<button class="btn acc grow" data-go="push:thread">See Dana's request</button>`;
   else if(it.on)foot=`<button class="btn ${S.asked[id]?'off':'pri'} grow" data-act="ask:${id}">${S.asked[id]?ic('check',20)+' Asked':'Ask for a spot'}</button>`;
   else foot=`<button class="btn pri grow">${ic('ig',20)} Ask on Instagram</button>`;
-  return {top:`<div class="nav"><button class="ib" data-go="back">${ic('back')}</button><span class="sp"></span><button class="ib" data-sheet="fix">${ic('dots')}</button></div>`,
-  body:`<div class="pg"><div class="k">${isMic?'Open mic':(it.sk||'Show')}</div><h1>${it.n}</h1><p><b>${dateOf(it)} ${D} ${t[0]} ${t[1]}</b></p><p>${it.v}, ${it.hood}</p>
+  const navb=g=>`<button class="ib ${g}" data-go="back">${ic('back')}</button><span class="sp"></span><button class="ib ${g}" data-sheet="fix">${ic('dots')}</button>`;
+  return {top:isMic?`<div class="nav">${navb('')}</div>`:'',
+  body:`${isMic?'':`<div style="padding:6px 12px 0">${poster(it,'top',310,56,`<div class="ov">${navb('gl')}</div>`)}</div>`}<div class="pg" ${isMic?'':'style="padding-top:18px"'}><div class="k">${isMic?'Open mic':(it.sk||'Show')}</div>${isMic?`<h1>${it.n}</h1>`:'<div style="height:8px"></div>'}<p><b>${dateOf(it)} ${D} ${t[0]} ${t[1]}</b></p><p>${it.v}, ${it.hood}</p>
    <button class="fresh" data-sheet="fix"><i></i>Running ${D} checked today</button></div>
   <div class="facts">${it.f?it.f.map(x=>`<div><span>${x[0]}</span><b>${x[1]}</b></div>`).join(''):isMic?`<div><span>Get on</span><b>${it.get}</b></div><div><span>Stage time</span><b>5 min</b></div><div><span>Cost</span><b>${it.cost}</b></div>`
    :`<div><span>Spots</span><b>7 ${N} 10 min</b></div><div><span>Pays</span><b>${it.pay}</b></div><div><span>Books</span><b>Two weeks out</b></div>`}</div>
@@ -335,15 +388,19 @@ function me(){
 }
 
 const dl=(full,today)=>{const p=full.split(' ');return `<small>${today?'Today':p[0]}</small>${p[2]}`};
-const showRow=it=>{const t=tm(it.h);return `<button class="it" data-go="push:it:${it.id}"><div class="tile ${it.sk?'alt':''}">${t[0]}<small>${t[1]}</small></div><div class="m"><b>${it.n}</b><span>${it.v} ${D} ${it.hood}</span>${it.sk?`<span class="sk">${it.sk} ${D} ${it.note}</span>`:''}</div>${mark(it)}</button>`};
+const showRow=it=>{const t=tm(it.h);return `<button class="it" data-go="push:it:${it.id}">${poster(it,'th',48,11)}<div class="m"><b>${it.n}</b><span>${it.v} ${D} ${it.hood}</span><span class="sk">${t[0]} ${t[1]}${it.sk?` ${D} ${it.sk} ${D} ${it.note}`:''}</span></div>${mark(it)}</button>`};
 function home2(){
-  const mine=ITEMS.filter(x=>x.mine||(x.req&&S.accepted)||S.going[x.id]||S.asked[x.id]);
-  const grp=a=>{const by={};mine.filter(x=>x.a===a).sort((x,y)=>x.d-y.d||x.h-y.h).forEach(x=>(by[x.d]=by[x.d]||[]).push(x));
-    return Object.keys(by).map(d=>`<div class="lbl">${a==='home'&&d==='0'?'Tonight':AREAS[a].days[d][1]}</div>${by[d].map(x=>rowOf(x)).join('')}`).join('')};
+  const mine=ITEMS.filter(x=>x.mine||(x.req&&S.accepted)||S.going[x.id]||S.asked[x.id]).sort((a,b)=>dkey(a)-dkey(b));
+  const ton=mine.filter(x=>x.a==='home'&&x.d===0),first=ton[0],rest=mine.filter(x=>x!==first);
+  const st=x=>x.mine||(x.req&&S.accepted)?'':S.going[x.id]?`Going ${D} `:`Asked ${D} `;
+  const card=x=>{const t=tm(x.h),p=dateOf(x).split(' ');return `<button class="cd" data-go="push:it:${x.id}">${poster(x,'md',140,24,`<span class="pill">${x.a==='home'&&x.d===0?'Tonight':p[0]+' '+p[2]} ${D} ${t[0]}</span>`)}<b>${x.n}</b><span>${st(x)}${x.a==='home'?x.v:AREAS[x.a].name}</span></button>`};
+  const t0=first&&tm(first.h);
   return {top:`<div class="head"><div class="t"><div class="big">Mon, Nov 23</div><div class="sub">Brooklyn</div></div><button data-go="tab:me">${av('Jordan Vale',38)}</button></div>`,
   body:`${!S.accepted?`<button class="strip" data-go="push:thread">${av('Dana Whitlock',28)}<span>Dana wants you Friday</span>${ic('right',18)}</button>`:''}
-  ${grp('home')}
-  ${S.trips.map(k=>`<button class="trip" data-act="area:${k}">${ic('plane',18)} ${AREAS[k].name} <span>${AREAS[k].sub}</span>${ic('right',16)}</button>${grp(k)||`<button class="it" data-act="area:${k}"><div class="tm" style="color:var(--ink3)">${ic('plus',20)}</div><div class="m"><span>Find a show</span></div></button>`}`).join('')}
+  ${first?`<button class="hb" data-go="push:it:${first.id}">${poster(first,'hero',310,50,`<span class="pill">Tonight ${D} ${t0[0]} ${t0[1]}</span>${mark(first)}`,`<em>${first.v} ${D} ${first.hood}</em>`)}</button>`:''}
+  ${rest.length?`<div class="lbl">Next up</div><div class="hs">${rest.map(card).join('')}</div>`:''}
+  <div class="lbl">Trips</div>
+  ${S.trips.map(k=>`<button class="it" data-act="area:${k}"><div class="tile">${ic('plane',22)}</div><div class="m"><b>${AREAS[k].name}</b><span>${AREAS[k].sub}</span></div><span class="r">${ic('right',18)}</span></button>`).join('')}
   <button class="addtrip" data-sheet="addtrip">${ic('plus',18)} Add a trip</button>`};
 }
 function browse(kind){
@@ -355,14 +412,31 @@ function browse(kind){
 }
 
 /* ---------- booker ---------- */
+const NEW={show:{n:'Late Side Door',when:'Fri Dec 4',t:'10:00 PM',rows:[['Where','Halfmoon Bar, Bushwick'],['Starts','Fri Dec 4, 10:00 PM'],['Repeats','Never'],['Spots','5'],['Pays','$40 a spot'],['Who can ask','Any comic']]},
+ mic:{n:'Halfmoon Mic',when:'Tue Dec 1',t:'6:00 PM',rows:[['Where','Halfmoon Bar, Bushwick'],['Starts','Tue Dec 1, 6:00 PM'],['Repeats','Every Tuesday'],['Get on','Bucket, 5:45'],['Stage time','5 min'],['Cost','Free']]}};
+function newOne(){
+  const n=NEW[S.nk];
+  return {top:`<div class="head"><div class="t"><div class="big">New</div></div></div>`,
+  body:`<div class="mode" style="margin-top:6px"><button class="${S.nk==='show'?'on':''}" data-act="nk:show">Show</button><button class="${S.nk==='mic'?'on':''}" data-act="nk:mic">Mic</button></div>
+  <div class="hb" id="np">${poster({id:'new'+S.nk,n:n.n||'Name',k:S.nk},'hero sm',310,44,`<span class="pill">${n.when} ${D} ${n.t}</span>`)}</div>
+  <input class="ttl" value="${n.n}" placeholder="Name">
+  <div class="facts" style="margin-top:14px">${n.rows.map(r=>`<button><span>${r[0]}</span><b>${r[1]} ${ic('right',16)}</b></button>`).join('')}</div>
+  <div style="padding:20px 20px 0"><button class="btn pri" style="width:100%;height:52px" data-act="create">${S.nk==='show'?'Create show':'List mic'}</button></div>`};
+}
+
 const BD=[['Sat Nov 28','Sat 28'],['Sat Dec 5','Sat 5'],['Sat Dec 12','Sat 12']];
 function lineup(i){const base=[['Priya Raman','Confirmed'],['Marcus Bell','Asked']];
   if(i>0)return i===1?[['Imani Brooks','Confirmed']]:[];
   return base.concat(Object.keys(S.offered).map(n=>[n,'Asked']))}
 function bshows(){
-  return {top:`<div class="head"><div class="t"><div class="big">Side Door</div><div class="sub">Saturdays ${D} Halfmoon Bar</div></div><button data-go="tab:me">${av('Jordan Vale',38)}</button></div>`,
-  body:`<div class="lbl">Coming up</div>${BD.map((d,i)=>{const l=lineup(i),o=Math.max(0,4-l.length);return `<button class="ln" data-go="push:night:${i}"><div class="m"><b>${d[0]}</b><span>8:00 PM</span></div><div class="stack">${l.map(x=>av(x[0],26)).join('')}${'<i class="open"></i>'.repeat(o)}</div>${ic('right',18)}</button>`}).join('')}
-  <div class="lbl">Last show</div><button class="ln" data-go="push:past"><div class="m"><b>Sat Nov 21</b><span>Book again?</span></div><div class="stack">${['Devin Park','Imani Brooks','Cole Jensen'].map(n=>av(n,26)).join('')}</div>${ic('right',18)}</button>`};
+  const sd={id:'sd',n:'Side Door',k:'show'};
+  const stk=i=>{const l=lineup(i),o=Math.max(0,4-l.length);return `<span class="stack">${l.map(x=>av(x[0],26)).join('')}${'<i class="open"></i>'.repeat(o)}</span>`};
+  return {top:`<div class="head"><div class="t"><div class="big">Your shows</div><div class="sub">Brooklyn</div></div><button data-go="tab:me">${av('Jordan Vale',38)}</button></div>`,
+  body:`<button class="hb" data-go="push:night:0">${poster(sd,'hero',310,50,`<span class="pill">${BD[0][0]} ${D} 8:00 PM</span>`,`<em>${stk(0)} Halfmoon Bar</em>`)}</button>
+  <div class="lbl">Coming up</div>
+  ${S.made.map(m=>m.k==='show'?`<button class="it" data-act="find:0">${dtile(m.when)}<div class="m"><b>${m.n}</b><span>${m.when.split(' ')[0]} ${D} ${m.t}</span></div><span class="stack">${'<i class="open"></i>'.repeat(4)}</span></button>`:`<div class="it">${dtile(m.when)}<div class="m"><b>${m.n}</b><span>${m.when.split(' ')[0]} ${D} ${m.t} ${D} Open mic</span></div><span class="mk">Listed</span></div>`).join('')}
+  ${BD.slice(1).map((d,j)=>`<button class="it" data-go="push:night:${j+1}">${dtile(d[0])}<div class="m"><b>Side Door</b><span>Sat ${D} 8:00 PM</span></div>${stk(j+1)}</button>`).join('')}
+  <div class="lbl">Last show</div><button class="it" data-go="push:past">${dtile('Sat Nov 21')}<div class="m"><b>Side Door</b><span>Book again?</span></div><span class="stack">${['Devin Park','Imani Brooks','Cole Jensen'].map(n=>av(n,26)).join('')}</span></button>`};
 }
 function night(i){
   const l=lineup(+i),o=Math.max(0,4-l.length);
@@ -415,8 +489,8 @@ const SH={
 };
 
 /* ---------- shell ---------- */
-const TABS={comic:[['home','home','Home'],['mics','mic','Mics'],['shows','ticket','Shows'],['inbox','inbox','Inbox'],['me','user','Profile']],
- booker:[['home','cal','Shows'],['comics','people','Comics'],['inbox','inbox','Inbox'],['me','user','Account']]};
+const TABS={comic:[['mics','mic','Mics'],['shows','ticket','Shows'],['home','home','Home'],['inbox','inbox','Inbox'],['me','user','Profile']],
+ booker:[['comics','people','Comics'],['new','plus','New'],['home','home','Home'],['inbox','inbox','Inbox'],['me','user','Account']]};
 function screen(){
   if(S.role==='start')return start();
   const top=S.stack[S.stack.length-1];
@@ -424,12 +498,12 @@ function screen(){
     return k==='it'?itemPage(arg):k==='thread'?thread():k==='chat'?chat(arg):k==='night'?night(arg):k==='past'?past():comicPage(arg)}
   if(S.tab==='inbox')return inbox(); if(S.tab==='me')return me();
   if(S.role==='comic')return S.tab==='mics'?browse('mic'):S.tab==='shows'?browse('show'):home2();
-  return S.tab==='comics'?comics():bshows();
+  return S.tab==='comics'?comics():S.tab==='new'?newOne():bshows();
 }
 function render(keep){
   const v=document.getElementById('view'),o=v.querySelector('.scroll'),y=keep&&o?o.scrollTop:0,s=screen();
-  v.innerHTML=s.raw||`${s.top||''}<div class="scroll">${s.body}</div>${s.foot||''}${s.noTabs?'':`<div class="tabs">${TABS[S.role].map(t=>`<button class="${S.tab===t[0]?'on':''}" data-go="tab:${t[0]}">${ic(t[1],24)}${t[2]}${t[0]==='inbox'&&S.role==='comic'&&!S.accepted?'<i class="dot"></i>':''}</button>`).join('')}</div>`}`;
-  const n=v.querySelector('.scroll');if(n)n.scrollTop=y;
+  v.innerHTML=s.raw||`${s.top||''}<div class="scroll">${s.body}</div>${s.foot||''}${s.noTabs?'':`<div class="tabs">${TABS[S.role].map(t=>`<button class="${S.tab===t[0]?'on':''}${t[0]==='home'?' ctr':''}" data-go="tab:${t[0]}">${ic(t[1],24)}${t[2]}${t[0]==='inbox'&&S.role==='comic'&&!S.accepted?'<i class="dot"></i>':''}</button>`).join('')}</div>`}`;
+  const n=v.querySelector('.scroll');if(n){n.scrollTop=y;if(!keep)n.classList.add('enter')}
   const ph=document.getElementById('phone');
   if(S.sheet){document.getElementById('sheet').innerHTML=SH[S.sheet]();ph.classList.add('opened')}else ph.classList.remove('opened');
   const h='#'+[S.role,S.tab,...S.stack].join('/');if(location.hash!==h)history.replaceState(null,'',h);
@@ -450,11 +524,13 @@ document.getElementById('phone').addEventListener('click',e=>{
   else if(k==='addtrip'){if(!S.trips.includes('li'))S.trips.unshift('li');S.area='li';S.day=1;S.tab='shows';S.stack=[];S.sheet=null;keep=0;toast('Long Island bookers can see you Nov 25 \u2013 29')}
   else if(k==='going'){S.going[arg]=!S.going[arg];if(S.going[arg])toast('On your calendar')}
   else if(k==='ask'){S.asked[arg]=1;toast('Sent with your tape and rate')}
-  else if(k==='accept'){S.accepted=true;toast("You're on")}
+  else if(k==='accept'){S.accepted=true;toast("You're on");burst()}
   else if(k==='decline')toast('Declined');
   else if(k==='fixed'){S.sheet=null;toast('Thanks, updated for everyone')}
   else if(k==='find'){S.bdate=+arg;S.tab='comics';S.stack=[];keep=0}
   else if(k==='bdate')S.bdate=+arg;
+  else if(k==='nk')S.nk=arg;
+  else if(k==='create'){const n=NEW[S.nk];S.made=S.made.filter(m=>m.k!==S.nk);S.made.unshift({k:S.nk,n:n.n,when:n.when,t:n.t});S.tab='home';S.stack=[];keep=0;toast(S.nk==='show'?'Show created':'Mic listed');burst()}
   else if(k==='un')S.showUn=!S.showUn;
   else if(k==='usual'){S.usual=arg==='1';S.sheet=null;if(S.usual)toast('Saved as your usual')}
   else if(k==='offer'){S.offered[arg]=1;toast('Offer sent to '+arg.split(' ')[0])}
@@ -466,9 +542,10 @@ document.getElementById('phone').addEventListener('click',e=>{
   else if(k==='obdone'){S.role=S.obRole;S.tab='home';S.stack=[];keep=0}
   render(keep);
 });
+document.addEventListener('input',e=>{if(e.target.classList.contains('ttl')){NEW[S.nk].n=e.target.value;const b=document.querySelector('#np b');if(b)b.textContent=e.target.value||'Name'}});
 (function(){const h=decodeURIComponent(location.hash.slice(1)).split('/').filter(Boolean),q=new URLSearchParams(location.search);
   if(h[0]&&h[0]!=='start'){S.role=h[0];S.tab=h[1]||'home';S.stack=h.slice(2)}else if(h[0]==='start')S.ob=+h[1]||1;
-  if(q.get('trip'))S.trips.unshift('li');if(q.get('going'))q.get('going').split(',').forEach(x=>S.going[x]=1);if(q.get('area'))S.area=q.get('area');if(q.get('day'))S.day=+q.get('day');if(q.get('acc'))S.accepted=true;if(q.get('sheet'))S.sheet=q.get('sheet');if(q.get('un'))S.showUn=true;
+  if(q.get('nk'))S.nk=q.get('nk');if(q.get('made'))q.get('made').split(',').forEach(k=>S.made.push({k,n:NEW[k].n,when:NEW[k].when,t:NEW[k].t}));if(q.get('trip'))S.trips.unshift('li');if(q.get('going'))q.get('going').split(',').forEach(x=>S.going[x]=1);if(q.get('area'))S.area=q.get('area');if(q.get('day'))S.day=+q.get('day');if(q.get('acc'))S.accepted=true;if(q.get('sheet'))S.sheet=q.get('sheet');if(q.get('un'))S.showUn=true;
   render()})();
 </script>
 </body>
