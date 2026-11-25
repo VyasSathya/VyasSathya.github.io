@@ -109,6 +109,9 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
 .tier.on{background:var(--gold);color:var(--ink);border-color:var(--ink)}
 .tier.lock{opacity:.35;cursor:default}
 #sPick .sub{margin:10px 0 16px;font-size:16px;min-height:20px}
+.opts{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.opt{height:38px;padding:0 16px;border-radius:19px;font-size:15px;font-weight:600;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.3)}
+.opt.off{opacity:.55;text-decoration:line-through}
 .prog{width:220px;height:10px;border-radius:6px;background:rgba(255,255,255,.15);margin:14px auto 0;overflow:hidden;visibility:hidden}
 .prog.on{visibility:visible}
 .prog i{display:block;height:100%;width:0;background:var(--gold)}
@@ -133,6 +136,7 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
   <h1 class="num">Band<br>Survivors</h1>
   <div class="troupe" id="troupe"></div>
   <button class="go" id="bStart" disabled>Loading</button>
+  <div class="opts"><button class="opt" data-opt="sound">Sound on</button><button class="opt" data-opt="music">Music on</button></div>
 </div>
 
 <div class="screen" id="sMap">
@@ -160,6 +164,7 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
   <h2 class="num">Paused</h2>
   <div style="height:22px"></div>
   <button class="go" id="bResume">Resume</button>
+  <div class="opts"><button class="opt" data-opt="sound">Sound on</button><button class="opt" data-opt="music">Music on</button></div>
   <button class="go ghost" id="bQuit">Leave the stage</button>
 </div>
 
@@ -226,6 +231,30 @@ const SAVE_KEY='bandSurvivors.tour.v1';
 let SAVE={cleared:{},perks:{}};
 try{const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(s&&s.cleared)SAVE=Object.assign({cleared:{},perks:{}},s);}catch(e){}
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(SAVE));}catch(e){}}
+
+/* ---------- sound effects: one player, per-id caps, never-drop for the big moments ----------
+   Cues come from sfx/cues.json (Creative lead's set from Toybox, cues/band-survivors.json): {id: {files: [...], gain,
+   cap (at most this many at once), gap (seconds between starts), keep (never dropped)}}. No file, no sound: the game
+   stays silent for that event. The Sound switch mutes effects only; the Music switch mutes the song. */
+const OPT_KEY='bandSurvivors.options.v1';let OPT={sound:true,music:true};
+try{const o=JSON.parse(localStorage.getItem(OPT_KEY)||'null');if(o)OPT=Object.assign(OPT,o);}catch(e){}
+function saveOpt(){try{localStorage.setItem(OPT_KEY,JSON.stringify(OPT));}catch(e){}}
+let sfxBus=null,CUES={};const SFXBUF={},SFXLIVE={},SFXLAST={};
+async function loadSfx(){if(SIM)return;try{CUES=await loadJSON('sfx/cues.json');}catch(e){CUES={};return;}
+  for(const id in CUES)for(const f of (CUES[id].files||[]))if(!SFXBUF[f])fetch('sfx/'+f).then(r=>r.arrayBuffer()).then(decode).then(b=>{SFXBUF[f]=b;}).catch(()=>{});}
+function sfx(id,vol){
+  if(SIM||!ac||!sfxBus||!OPT.sound)return;const c=CUES[id];if(!c||!c.files||!c.files.length)return;
+  const t=ac.currentTime,live=SFXLIVE[id]||0;
+  if(!c.keep&&(live>=(c.cap||4)||t-(SFXLAST[id]||-9)<(c.gap||0)))return;
+  const f=c.files[Math.floor(Math.random()*c.files.length)],buf=SFXBUF[f];if(!buf)return;
+  const src=ac.createBufferSource(),g=ac.createGain();src.buffer=buf;g.gain.value=(c.gain==null?1:c.gain)*(vol||1);
+  if(c.pitch)src.playbackRate.value=1+(Math.random()*2-1)*c.pitch;
+  src.connect(g);g.connect(sfxBus);src.start();SFXLIVE[id]=live+1;SFXLAST[id]=t;src.onended=()=>{SFXLIVE[id]=Math.max(0,(SFXLIVE[id]||1)-1);};}
+function setOpt(k,v){OPT[k]=v;saveOpt();if(!ac)return;
+  if(k==='sound'&&sfxBus)sfxBus.gain.setTargetAtTime(v?1:0,ac.currentTime,.05);
+  if(k==='music'&&bus&&S.mode!=='map'&&S.mode!=='start')levelBus(.05);renderOpt();}
+function renderOpt(){if(SIM)return;document.querySelectorAll('[data-opt]').forEach(b=>{const k=b.dataset.opt;b.classList.toggle('off',!OPT[k]);b.setAttribute('aria-pressed',OPT[k]?'true':'false');
+  b.textContent=(k==='sound'?'Sound':'Music')+(OPT[k]?' on':' off');});}
 const perk=k=>SAVE.perks[k]||0;
 
 let GM=null; // levels/game.json: the ramp, ranks, tiers and combos every engine shares
@@ -280,7 +309,8 @@ function buildNotes(nj){
 function ensureCtx(){if(SIM||ac)return;ac=new AC({latencyHint:'interactive',sampleRate:44100});
   try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
   const lim=ac.createDynamicsCompressor();lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.002;lim.release.value=.12;
-  bus=ac.createGain();bus.gain.value=0;bus.connect(lim);lim.connect(ac.destination);}
+  bus=ac.createGain();bus.gain.value=0;bus.connect(lim);lim.connect(ac.destination);
+  sfxBus=ac.createGain();sfxBus.gain.value=OPT.sound?1:0;sfxBus.connect(lim);loadSfx();}
 async function loadLevel(lv,prog){
   LV=lv;PARTS=lv.parts.slice().sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
   const nj=await loadJSON('levels/'+lv.id+'/notes.json');
@@ -304,7 +334,7 @@ function startSong(){
   levelBus(.05);
 }
 function stopSong(){for(const s of srcs){try{s.stop();}catch(e){}}srcs=[];}
-function levelBus(tc){if(SIM)return;const n=PARTS.filter(p=>owned[p]).length;const v=.95/(1+.06*n);bus.gain.cancelScheduledValues(ac.currentTime);bus.gain.setTargetAtTime(v,ac.currentTime,tc||.3);}
+function levelBus(tc){if(SIM)return;const n=PARTS.filter(p=>owned[p]).length;const v=OPT.music?.95/(1+.06*n):0;bus.gain.cancelScheduledValues(ac.currentTime);bus.gain.setTargetAtTime(v,ac.currentTime,tc||.3);}
 function nextBarCtx(){const u=now()-t0;if(u<LS)return t0+LS;return t0+LS+Math.ceil((u-LS)/BAR-1e-6)*BAR;}
 function setLayer(){if(SIM)return;const at=Math.max(ac.currentTime,nextBarCtx());for(const q of PARTS){if(!LAYER[q])continue;const gp=LAYER[q].gain;gp.cancelScheduledValues(ac.currentTime);gp.setValueAtTime(gp.value,ac.currentTime);gp.setTargetAtTime(partGain(q),at,.02);}levelBus();}
 function songRaw(){return now()-t0-lat();}
@@ -525,12 +555,12 @@ function jag(pts){const out=[pts[0]];for(let i=1;i<pts.length;i++){const[a,b]=[p
 
 /* ---------- hits, kills, drops ---------- */
 function hit(e,d,kx,ky){
-  if(e.dead)return;e.hp-=d;e.flash=.1;const res=e.boss?.08:e.elite?.35:1;e.kx+=kx*res;e.ky+=ky*res;
+  if(e.dead)return;sfx(e.boss?'hit_boss':'hit');e.hp-=d;e.flash=.1;const res=e.boss?.08:e.elite?.35:1;e.kx+=kx*res;e.ky+=ky*res;
   if(!SIM){if(texts.length>30)texts.shift();texts.push({x:e.x+rnd(-6,6),y:e.y-e.h-4,v:Math.max(1,Math.round(d)),t:0,big:d>=40});}
   if(e.hp<=0)kill(e);
 }
 function kill(e){
-  e.dead=true;S.kills++;
+  e.dead=true;sfx(e.boss?'boss_down':e.elite?'elite_down':'kill');S.kills++;
   if(REP){rev('kill',e.x,e.y-e.h*.4,e.h/50);if(e.boss){rev('boss',e.x,e.y-e.h*.4,0);if(S.mode==='play')rnote('Band',e.final?'beat the final boss':'beat a mini-boss','',e.x,e.y);}}
   const s=e.h/50;
   if(!SIM){for(let i=0;i<7;i++){const an=i/7*6.28+rnd(-.3,.3);fx.push({k:'puff',x:e.x,y:e.y-e.h*.4,vx:Math.cos(an)*rnd(30,70)*s,vy:Math.sin(an)*rnd(30,70)*s,r:rnd(7,12)*s,t:0,life:rnd(.35,.5)});}
@@ -561,6 +591,7 @@ function makeChoices(){
   return c.slice(0,NC);
 }
 function openLevel(){
+  sfx('level_up');
   S.mode='level';joy=null;choices=makeChoices();
   if(SIM){S.mode='play';choose(botPick(choices),true);return;}
   const box=$('#cards');box.innerHTML='';
@@ -614,9 +645,9 @@ function onBar(b,gb){ // b: bar in the loop, gb: bars since the song began
   if(afterFill&&S.t>25&&S.t-S.lastRing>15){S.lastRing=S.t;const grp=ringOf(pool[Math.floor(Math.random()*pool.length)],Math.round((24+12*e)*Math.min(1.6,1+vsMin()/15)),R);if(REP&&grp.length>=20)swarms.push({g:grp,t:S.t});}
   if(!S.boss&&!S.bossDone){
     const isDrop=b===LV.drop,isMoment=LV.moments.includes(b);
-    if(S.t>=FINAL_AT&&(isDrop||isMoment||(b%8===0&&e>=.6)||(S.t>=FINAL_AT+12&&b%4===0))){const[x,y]=edgePoint();S.boss=spawn('boss',x,y,{final:true});S.shake=.4;ringOf(pool[0],20,R);if(!SIM)flashMoment();return;}
+    if(S.t>=FINAL_AT&&(isDrop||isMoment||(b%8===0&&e>=.6)||(S.t>=FINAL_AT+12&&b%4===0))){const[x,y]=edgePoint();S.boss=spawn('boss',x,y,{final:true});sfx('boss_in');S.shake=.4;ringOf(pool[0],20,R);if(!SIM)flashMoment();return;}
     if(isMoment&&S.t>20&&S.t-S.lastMini>20&&S.t<FINAL_AT-40){S.lastMini=S.t;const mid=!S.midDone&&vsMin()>=RP().mid_at_m;if(mid)S.midDone=true;
-      const[x,y]=edgePoint();S.boss=spawn('boss',x,y,{big:mid?.9:.75,mid});S.shake=.25;if(!SIM)flashMoment();}
+      const[x,y]=edgePoint();S.boss=spawn('boss',x,y,{big:mid?.9:.75,mid});sfx('elite_in');S.shake=.25;if(!SIM)flashMoment();}
   }
   const every=TIER().elite_every_bars;
   if(LV.elites.length&&S.t>35&&((LV.chorus||[]).includes(b)||(every&&b%every===0))){const n=1+Math.floor(vsMin()/6);for(let i=0;i<n;i++){const[x,y]=edgePoint();spawn('elite',x,y);}}
@@ -642,7 +673,7 @@ function buildCombos(){COMBOS=[];const win=GM.combo_window_s;
 function openCase(){
   const ready=COMBOS.filter(c=>!combos.some(k=>k.id===c.id)&&owned[c.a]>=GM.combo_min_level&&owned[c.b]>=GM.combo_min_level);
   if(ready.length){const c=ready[Math.floor(Math.random()*ready.length)];combos.push(Object.assign({},c,{enterU:null,combo:true}));
-    banner(c.name+'!',FAM[c.a].col);if(REP){rev('combo',S.x,S.y-50,rid(RCOL,FAM[c.a].col));rnote('Band','got the '+c.name+' combo from a case','',S.x,S.y);}if(!SIM)for(let i=0;i<14;i++)fx.push({k:'note',x:S.x+rnd(-30,30),y:S.y-50,vx:rnd(-120,120),vy:-rnd(120,220),rot:0,vr:rnd(-4,4),t:0,life:1.2,col:i%2?FAM[c.a].col:FAM[c.b].col,s:1.2});return;}
+    banner(c.name+'!',FAM[c.a].col);sfx('combo');if(REP){rev('combo',S.x,S.y-50,rid(RCOL,FAM[c.a].col));rnote('Band','got the '+c.name+' combo from a case','',S.x,S.y);}if(!SIM)for(let i=0;i<14;i++)fx.push({k:'note',x:S.x+rnd(-30,30),y:S.y-50,vx:rnd(-120,120),vy:-rnd(120,220),rot:0,vr:rnd(-4,4),t:0,life:1.2,col:i%2?FAM[c.a].col:FAM[c.b].col,s:1.2});return;}
   const up=band.filter(m=>m.lv<MAXLV);
   if(up.length){const m=up[Math.floor(Math.random()*up.length)];owned[m.part]++;for(const o of band)if(o.part===m.part){o.lv=owned[m.part];o.bop=1;}renderSlots();banner(FAM[m.part].name+' up',FAM[m.part].col);return;}
   S.hp=Math.min(S.max,S.hp+30);banner('Snack','#FF9EC0');
@@ -703,7 +734,7 @@ function update(dt){
     for(let ix=cx-1;ix<=cx+1;ix++)for(let iy=cy-1;iy<=cy+1;iy++){const c=grid.get(((ix+5000)*10007)+(iy+5000));if(!c)continue;
       for(const o of c){if(o===e||o.dead)continue;const sx=e.x-o.x,sy=e.y-o.y,dd=sx*sx+sy*sy,rr=(e.r+o.r)*.9;
         if(dd<rr*rr&&dd>.01){const l=Math.sqrt(dd),push=(rr-l)*.5;const wE=e.boss?.1:1;e.x+=sx/l*push*wE;e.y+=sy/l*push*wE;}}}
-    if(d<e.r+16&&e.cd<=0&&!(S.inv>0)){e.cd=RP().enemy_hit_cooldown_s;if(!S.god){S.hp-=e.dmg*armor;if(SIM){const k=e.final?'final':e.boss?'mini':e.elite?'elite':'crowd';S.dmgLog[k]=(S.dmgLog[k]||0)+Math.round(e.dmg*armor);}S.hurt=1;S.inv=RP().hit_invincible_s;S.shake=Math.max(S.shake,.12);}
+    if(d<e.r+16&&e.cd<=0&&!(S.inv>0)){e.cd=RP().enemy_hit_cooldown_s;if(!S.god){S.hp-=e.dmg*armor;sfx('hurt');if(SIM){const k=e.final?'final':e.boss?'mini':e.elite?'elite':'crowd';S.dmgLog[k]=(S.dmgLog[k]||0)+Math.round(e.dmg*armor);}S.hurt=1;S.inv=RP().hit_invincible_s;S.shake=Math.max(S.shake,.12);}
       S.minHp=Math.min(S.minHp,Math.max(0,S.hp)/S.max);
       if(S.hp<=0&&S.mode==='play'){if(perk('encore')&&!S.revived){S.revived=true;S.hp=S.max*.5;S.inv=2;for(const o of enemies)if(!o.boss&&dist2(o.x,o.y,S.x,S.y)<200*200){o.hp=0;kill(o);}}else{S.hp=0;lose();return;}}}
   }
@@ -745,7 +776,7 @@ function update(dt){
   for(const q of gems){q.t+=dt;const d=Math.sqrt(dist2(q.x,q.y,S.x,S.y-16));
     if(d<magR||S.bossDone)q.mag=true;
     if(q.mag){q.sp=Math.min(560,q.sp+dt*900);const k=Math.min(1,q.sp*dt/Math.max(d,1));q.x+=(S.x-q.x)*k;q.y+=(S.y-16-q.y)*k;}
-    if(d<18){q.got=true;if(q.box)openCase();else gainXP(q.v);if(q.heal)S.hp=Math.min(S.max,S.hp+25);}}
+    if(d<18){q.got=true;sfx(q.box?'case_open':q.heal?'pickup_heal':'pickup');if(q.box)openCase();else gainXP(q.v);if(q.heal)S.hp=Math.min(S.max,S.hp+25);}}
   gems=gems.filter(q=>!q.got);
   if(!SIM){for(const f of fx){f.t+=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.k==='note'){f.vy+=180*dt;f.rot+=f.vr*dt;}else if(f.k==='snote'){f.rot+=f.vr*dt;}else{f.vx*=.9;f.vy*=.9;}}}
     fx=fx.filter(f=>f.t<f.life);for(const tx of texts)tx.t+=dt;texts=texts.filter(tx=>tx.t<.5);}
@@ -935,7 +966,7 @@ async function begin(){
   reset();repReset();startSong();lastU=songRaw();
   S.mode='play';if(!SIM){hideAll();$('#hud').classList.add('on');}
 }
-function lose(){S.mode='over';S.endT=S.t;if(SIM)return;bus.gain.setTargetAtTime(.45,ac.currentTime,.4);
+function lose(){S.mode='over';S.endT=S.t;if(SIM)return;sfx('lose');bus.gain.setTargetAtTime(.45,ac.currentTime,.4);
   setTimeout(()=>{$('#oT').textContent='Knocked out';$('#oS').textContent=LV.title+'  -  '+fmt(S.endT);$('#bAgain').textContent='Retry';$('#bAgain').style.display='';$('#oP').innerHTML='';fillBand();show('#sOver',true);},700);}
 let perkChoices=[];
 function win(){S.mode='over';S.endT=S.t;S.won=true;overRec=3;
@@ -943,7 +974,7 @@ function win(){S.mode='over';S.endT=S.t;S.won=true;overRec=3;
   const first=bestTier(LV.id)<0;SAVE.cleared[LV.id]=Math.max(bestTier(LV.id),TIER_I);
   perkChoices=first?Object.keys(PERKS).filter(k=>perk(k)<(PERK_MAX[k]||3)).sort(()=>Math.random()-.5).slice(0,3):[];
   if(SIM){if(perkChoices.length)SAVE.perks[perkChoices[0]]=perk(perkChoices[0])+1;return;}
-  persist();
+  persist();sfx('win');
   setTimeout(()=>{$('#oT').textContent='Encore!';$('#oS').textContent=LV.title+', '+GM.tiers[TIER_I].name+' cleared'+(perkChoices.length?'. Take one for the tour:':'');
     fillBand();const box=$('#oP');box.innerHTML='';
     perkChoices.forEach(k=>{const p=PERKS[k],b=document.createElement('button');b.className='card';b.style.setProperty('--c',hexA(p.col,.6));
@@ -962,6 +993,8 @@ function toMap(){if(perkChoices.length){SAVE.perks[perkChoices[0]]=perk(perkChoi
 if(!SIM){
   $('#pb').addEventListener('click',togglePause);
   $('#bResume').addEventListener('click',togglePause);
+  document.querySelectorAll('[data-opt]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();ensureCtx();setOpt(b.dataset.opt,!OPT[b.dataset.opt]);}));renderOpt();
+  document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button'))sfx('ui_tap');},true);
   $('#bQuit').addEventListener('click',()=>{show('#sPause',false);toMap();});
   $('#bStart').addEventListener('click',()=>{ensureCtx();ac.resume();renderMap();});
   $('#bGo').addEventListener('click',goLevel);

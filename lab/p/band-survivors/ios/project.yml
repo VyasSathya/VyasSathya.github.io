@@ -1,0 +1,49 @@
+name: BandSurvivors
+options:
+  projectFormat: xcode15_3
+  bundleIdPrefix: com.vyassathya
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1"
+    DEVELOPMENT_TEAM: ZTHW3V7VS6
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+targets:
+  BandSurvivors:
+    type: application
+    platform: iOS
+    sources:
+      - path: BandSurvivors
+        excludes: [Web]
+      - path: BandSurvivors/Web   # the game, put here by ci/mac_run.py from the folder ci/mac.sh sends; not in git
+        type: folder
+        buildPhase: resources
+    info:
+      path: BandSurvivors/Info.plist
+      properties:
+        CFBundleDisplayName: Band Survivors   # working title until he picks the store name
+        CFBundleName: Band Survivors
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        LSRequiresIPhoneOS: true
+        LSApplicationCategoryType: public.app-category.games
+        UIRequiresFullScreen: true
+        UIStatusBarHidden: true
+        UIViewControllerBasedStatusBarAppearance: true
+        UILaunchScreen:
+          UIColorName: LaunchBg
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIRequiredDeviceCapabilities: [arm64]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.vyassathya.bandsurvivors
+        PRODUCT_NAME: BandSurvivors
+        TARGETED_DEVICE_FAMILY: "1"   # at target level: xcodegen's iOS preset sets 1,2 on the target and beats the project value
+        CODE_SIGN_STYLE: Automatic
