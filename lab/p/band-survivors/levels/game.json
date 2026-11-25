@@ -1,0 +1,35 @@
+{
+ "about": "Band Survivors rules shared by every level and every engine (the web game reads this; a Unity version reads the same file). Times in a run are VS minutes m = 15 * t / run length. Sources: docs/research/survivors-difficulty-numbers.md 3.3-3.4 (Vampire Survivors game data) and survivors-genre-learnings.md section 10; numbers marked 'ours' were set by tools/sim.mjs.",
+ "ramp": {
+  "hp_base": 8, "hp_growth_per_m": 1.22, "hp_per_diff": 0.04,
+  "spawn_base": 0.8, "spawn_growth_per_m": 1.10, "spawn_per_diff": 0.03,
+  "floor_base": 15, "floor_growth_per_m": 1.15, "cap": 270,
+  "horde": {"from_m": 11, "to_m": 14, "floor": 200, "rank": 0, "hp_mult": 0.15},
+  "enemy_damage": [[0, 5], [1.5, 10], [12, 14]], "damage_per_diff": 0.04,
+  "elite_damage": 20, "boss_damage": 30,
+  "enemy_speed_per_s": 0.0011,
+  "rank_at_m": [0, 0, 2, 4, 4, 6, 8],
+  "regen_per_s": 0.2, "hit_invincible_s": 0.3, "enemy_hit_cooldown_s": 0.7,
+  "xp_base": 5, "xp_step": 5,
+  "mini_hp_per_level": 50, "mid_hp_per_level": 150, "boss_hp_per_level": 200, "mid_at_m": 10,
+  "final_before_end_s": 40, "member_first_s": 15
+ },
+ "ranks": [{"hp": 1, "spd": 46, "h": 44}, {"hp": 0.8, "spd": 55, "h": 40}, {"hp": 1.2, "spd": 52, "h": 44}, {"hp": 1.6, "spd": 44, "h": 48}, {"hp": 1.3, "spd": 60, "h": 46}, {"hp": 2.1, "spd": 42, "h": 50}, {"hp": 2.5, "spd": 50, "h": 52}],
+ "elites": [{"hp": 16, "spd": 36, "h": 78}, {"hp": 20, "spd": 34, "h": 84}],
+ "tiers": [
+  {"id": "open-mic", "name": "Open Mic", "rule": "The song as written"},
+  {"id": "club", "name": "Club", "rule": "A bigger crowd", "spawn": 1.25},
+  {"id": "hall", "name": "Hall", "rule": "Tougher elites, twice as often", "elite_hp": 1.5, "elite_every_bars": 8},
+  {"id": "arena", "name": "Arena", "rule": "Bosses hit twice as hard, enemies tougher", "boss_damage": 2, "hp": 1.2},
+  {"id": "stadium", "name": "Stadium", "rule": "Faster crowd, two cards per level up", "speed": 1.15, "cards": 2}
+ ],
+ "combos": [
+  {"id": "groove", "name": "Groove", "a": "drums", "b": "bass", "atk": "A shockwave on every kick and bass hit together"},
+  {"id": "horns", "name": "Horn section", "a": "brass", "b": "woodwinds", "atk": "A wide sweep where the horns play together"},
+  {"id": "harmony", "name": "Harmony", "a": "voice_lead", "b": "voice_doowah_lo", "atk": "Bubbles that split in three"},
+  {"id": "power", "name": "Power chord", "a": "guitar", "b": "strings", "atk": "A beam through the crowd both ways"},
+  {"id": "keys", "name": "Light show", "a": "keyboard", "b": "synth", "atk": "Stars rain on the crowd"},
+  {"id": "pocket", "name": "In the pocket", "a": "drums", "b": "percussion", "atk": "A ring that pulls enemies in"}
+ ],
+ "combo_min_level": 2, "combo_dps": 34, "combo_window_s": 0.06
+}

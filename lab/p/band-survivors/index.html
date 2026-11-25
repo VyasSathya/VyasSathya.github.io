@@ -102,6 +102,12 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
 #sPick .crew{max-width:100%}
 #sPick .crew img{display:block;min-width:0;max-width:19vw;object-fit:contain;object-position:bottom;filter:drop-shadow(0 4px 3px rgba(0,0,0,.3))}
 #sPick .crew img.boss{height:110px}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:420px;margin:4px 0 0}
+.tier{height:34px;padding:0 13px;border-radius:17px;font-size:15px;font-weight:600;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2)}
+.tier.won{border-color:rgba(124,242,154,.6)}
+.tier.on{background:var(--gold);color:var(--ink);border-color:var(--ink)}
+.tier.lock{opacity:.35;cursor:default}
+#sPick .sub{margin:10px 0 16px;font-size:16px;min-height:20px}
 .prog{width:220px;height:10px;border-radius:6px;background:rgba(255,255,255,.15);margin:14px auto 0;overflow:hidden;visibility:hidden}
 .prog.on{visibility:visible}
 .prog i{display:block;height:100%;width:0;background:var(--gold)}
@@ -137,7 +143,8 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
 <div class="screen dim" id="sPick">
   <h2 class="num" id="pkT"></h2>
   <div class="crew" id="pkC"></div>
-  <div style="height:14px"></div>
+  <div class="tiers" id="pkTiers"></div>
+  <div class="sub" id="pkR"></div>
   <button class="go" id="bGo">Play</button>
   <div class="prog" id="pkP"><i></i></div>
   <button class="go ghost" id="bBack">Back</button>
@@ -196,9 +203,6 @@ const FAM={
 const ORDER=['voice_lead','drums','bass','keyboard','guitar','brass','woodwinds','strings','synth','percussion','voice_bom','voice_doowah_lo','vocals','voice_scat','voice_suno_line'];
 const MAXLV=5;
 /* enemies of a place: its pictures weakest first, with the sneaky crew's numbers by rank */
-const RANK=[{hp:1,spd:46,h:44},{hp:.8,spd:55,h:40},{hp:1.2,spd:52,h:44},{hp:1.6,spd:44,h:48},{hp:1.3,spd:60,h:46},{hp:2.1,spd:42,h:50},{hp:2.5,spd:50,h:52}];
-const RANK_AT=[0,0,1.5,3,3,5,7]; // the VS minute (m, below) each rank joins
-const ELITE=[{hp:16,spd:36,h:78},{hp:20,spd:34,h:84}];
 const MOUTH={"voice_lead":{"picture":"player","atlas":"chorus","x":0.5527,"y":0.6176,"width":0.223},"drums":{"picture":"drums","atlas":"drumline","x":0.5169,"y":0.3141,"width":0.135},"bass":{"picture":"bass","atlas":"low_end","x":0.5222,"y":0.5358,"width":0.0315},"guitar":{"picture":"guitar","atlas":"overdrive","x":0.3411,"y":0.3355,"width":0.1072},"strings":{"picture":"strings","atlas":"strings","x":0.5062,"y":0.4475,"width":0.105},"brass":{"picture":"brass","atlas":"brass","x":0.459,"y":0.2901,"width":0.139},"woodwinds":{"picture":"woodwinds","atlas":"undertone","x":0.4746,"y":0.4454,"width":0.1271},"voice_bom":{"picture":"voice_bom","atlas":"shanty","x":0.5098,"y":0.5033,"width":0.3918},"voice_doowah_lo":{"picture":"voice_doowah_lo","atlas":"session","x":0.5529,"y":0.3144,"width":0.1261},"voice_scat":{"picture":"voice_scat","atlas":"weather","x":0.4985,"y":0.4172,"width":0.2753},
   "keyboard":{"picture":"keyboard","atlas":"strings","x":0.56,"y":0.43,"width":0.2},"percussion":{"picture":"percussion","atlas":"drumline","x":0.39,"y":0.46,"width":0.16},"synth":{"picture":"synth","atlas":"undertone","x":0.49,"y":0.39,"width":0.17},"vocals":{"picture":"vocals","atlas":"chorus","x":0.5,"y":0.52,"width":0.21},"voice_suno_line":{"picture":"voice_suno_line","atlas":"shanty","x":0.6,"y":0.5,"width":0.21}};
 
@@ -220,8 +224,7 @@ try{const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(s&&s.cleared)S
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(SAVE));}catch(e){}}
 const perk=k=>SAVE.perks[k]||0;
 
-/* tuning knobs the balance check moves (tools/sim.mjs); report numbers in docs/research/survivors-difficulty-numbers.md */
-const TUNE={cap:200,bossT:8,miniT:4,xpK:3,hpG:1.17,hpDiff:.04,spawnK:1,spawnDiff:.03,floorK:1,dmgDiff:.04,bandK:1}; // VS's 1.27 per minute is the reference; 1.17 is where our note-driven band holds (sim)
+let GM=null; // levels/game.json: the ramp, ranks, tiers and combos every engine shares
 
 /* ---------- assets ---------- */
 const IM={};
@@ -239,10 +242,10 @@ function mixHex(h,k,t){const a=parseInt(h.slice(1),16),b=parseInt(k.slice(1),16)
 /* ---------- levels ---------- */
 let LEVELS=[],LV=null,PARTS=[];
 async function loadJSON(u){return (await fetch(u)).json();}
-async function loadLevels(){const idx=await loadJSON('levels/levels.json');
+async function loadLevels(){GM=await loadJSON('levels/game.json');const idx=await loadJSON('levels/levels.json');
   LEVELS=await Promise.all(idx.map(x=>loadJSON('levels/'+x.id+'/level.json')));LEVELS.sort((a,b)=>a.order-b.order);}
 const UNLOCK_ALL=/[?&]all=1/.test(location.search||'');
-function unlocked(i){return UNLOCK_ALL||i===0||!!SAVE.cleared[LEVELS[i-1].id];}
+function unlocked(i){return UNLOCK_ALL||i===0||bestTier(LEVELS[i-1].id)>=0;}
 
 /* ---------- audio: one clock ---------- */
 const AC=window.AudioContext||window.webkitAudioContext;
@@ -278,7 +281,7 @@ async function loadLevel(lv,prog){
   LV=lv;PARTS=lv.parts.slice().sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
   const nj=await loadJSON('levels/'+lv.id+'/notes.json');
   LS=nj.loop.start_s;LE=nj.loop.end_s;LL=LE-LS;BEAT=nj.beat_seconds;BAR=nj.bar_seconds;NB=nj.loop.bars;
-  for(const k in NOTES)delete NOTES[k];buildNotes(nj);
+  for(const k in NOTES)delete NOTES[k];buildNotes(nj);buildCombos();
   const pics=[...new Set([...PARTS.map(p=>FAM[p].img),...PARTS.map(p=>'mouths-'+MOUTH[p].atlas),...lv.enemies,...lv.elites,lv.boss])];
   if(SIM){audioFor=lv.id;return;}
   ensureCtx();
@@ -314,11 +317,11 @@ function memberAt(k){const n=PARTS.length;return n<=2?15:15+(FINAL_AT-30-15)*(k-
 function reset(){
   RUN=Math.round(LV.minutes*60);FINAL_AT=RUN-40;
   Object.assign(S,{forceAt:-99,inv:0,t:0,kills:0,lvl:1,xp:0,need:5,pend:0,max:100+20*perk('lungs'),x:0,y:0,face:1,fa:0,hurt:0,shake:0,camx:0,camy:0,spawnAcc:0,
-    boss:null,bossDone:false,bossT:0,dmgLog:{},walk:0,endT:0,lastRing:-99,lastMini:-99,minHp:1,revived:false,won:false});
+    boss:null,bossDone:false,bossT:0,midDone:false,dmgLog:{},walk:0,endT:0,lastRing:-99,lastMini:-99,minHp:1,revived:false,won:false});
   S.hp=S.max;
   owned={voice_lead:1};band=[{part:'voice_lead',lv:1,x:0,y:0,bop:0,face:1,lead:true}];assignNotes(band[0]);
   if(perk('roadie')&&PARTS.includes('drums')){owned.drums=1;const m={part:'drums',lv:1,x:20,y:10,bop:0,face:1};assignNotes(m);band.push(m);}
-  enemies=[];shots=[];fx=[];gems=[];texts=[];fireLog.length=0;lastBar=-1;
+  enemies=[];shots=[];fx=[];gems=[];texts=[];combos=[];fireLog.length=0;lastBar=-1;S.need=GM.ramp.xp_base;
   renderSlots();
 }
 function assignNotes(m){m.list=NOTES[m.part];m.rate=RATE[m.part];
@@ -384,12 +387,12 @@ function fireNotes(){
   const u=songRaw();let a=lastU;lastU=u;
   if(u<=a)return;if(u-a>.25)a=u-.25;
   const pa=pos(a),pb=pos(u);
-  for(const m of band){const list=m.list;if(!list||m.enterU!==null)continue;
+  for(const m of band.concat(combos)){const list=m.list;if(!list||m.enterU!==null)continue;
     if(pb>=pa)eachIn(list,pa,pb,m);else{eachIn(list,pa,LE,m);eachIn(list,LS-1e-6,pb,m);}}
 }
 function eachIn(list,a,b,m){let lo=0,hi=list.length;while(lo<hi){const mid=(lo+hi)>>1;if(list[mid].t<=a)lo=mid+1;else hi=mid;}
-  for(let i=lo;i<list.length&&list[i].t<=b;i++)fire(m,list[i]);}
-function dmgMul(){return TUNE.bandK*(1+.12*perk('loud'));}
+  for(let i=lo;i<list.length&&list[i].t<=b;i++)(m.combo?fireCombo:fire)(m,list[i]);}
+function dmgMul(){return 1+.12*perk('loud');}
 function fire(m,note){
   const p=m.part,lv=m.lv,f=FAM[p];
   const dmg=f.dps*(m.lead?1:1.2)*(1+.3*(lv-1))*note.w/m.rate*dmgMul();
@@ -464,16 +467,16 @@ function kill(e){
   if(!SIM){for(let i=0;i<7;i++){const an=i/7*6.28+rnd(-.3,.3);fx.push({k:'puff',x:e.x,y:e.y-e.h*.4,vx:Math.cos(an)*rnd(30,70)*s,vy:Math.sin(an)*rnd(30,70)*s,r:rnd(7,12)*s,t:0,life:rnd(.35,.5)});}
     fx.push({k:'note',x:e.x,y:e.y-e.h*.6,vx:rnd(-40,40),vy:-rnd(110,150),rot:rnd(-.4,.4),vr:rnd(-3,3),t:0,life:.9,col:FAM[PARTS[Math.floor(Math.random()*PARTS.length)]].col,s:s});}
   if(e.boss){S.boss=null;S.shake=.6;if(e.final){S.bossDone=true;S.bossT=S.t;}
-    for(let i=0;i<(e.final?24:10);i++)dropGem(e.x+rnd(-60,60),e.y+rnd(-40,40),3,i===0);
+    for(let i=0;i<(e.final?24:10);i++)dropGem(e.x+rnd(-60,60),e.y+rnd(-40,40),3,i===0);if(!e.final)gems.push({x:e.x,y:e.y,v:0,heal:false,box:true,mag:false,sp:0,t:0});
     if(!SIM)for(let i=0;i<20;i++)fx.push({k:'note',x:e.x+rnd(-40,40),y:e.y-60,vx:rnd(-120,120),vy:-rnd(140,260),rot:0,vr:rnd(-4,4),t:0,life:1.4,col:LV.accent,s:1.4});}
-  else if(e.elite){dropGem(e.x,e.y,8,true);}
+  else if(e.elite){dropGem(e.x,e.y,8,true);gems.push({x:e.x+12,y:e.y,v:0,heal:false,box:true,mag:false,sp:0,t:0});}
   else dropGem(e.x,e.y,1,false);
 }
 function dropGem(x,y,v,heal){
-  if(gems.length>420&&!heal){let b=null,bd=1e9;for(const q of gems){const d=dist2(x,y,q.x,q.y);if(d<bd){bd=d;b=q;}}if(b){b.v+=v;return;}}
+  if(gems.length>420&&!heal&&v>0){let b=null,bd=1e9;for(const q of gems){const d=dist2(x,y,q.x,q.y);if(d<bd){bd=d;b=q;}}if(b){b.v+=v;return;}}
   gems.push({x,y,v,heal,mag:false,sp:0,t:0});
 }
-function gainXP(v){S.xp+=v;while(S.xp>=S.need){S.xp-=S.need;S.lvl++;S.need=5+(S.lvl-1)*TUNE.xpK;S.pend++;}} // VS uses 10 per level; ours has 10 to 13 members to level, so the step is smaller
+function gainXP(v){S.xp+=v;while(S.xp>=S.need){S.xp-=S.need;S.lvl++;S.need=GM.ramp.xp_base+(S.lvl-1)*GM.ramp.xp_step;S.pend++;}}
 
 /* ---------- level up ---------- */
 let choices=[],lvAt=0;
@@ -483,9 +486,10 @@ function makeChoices(){
   for(const p of PARTS){if(owned[p]&&owned[p]<MAXLV)pool.push({p,isNew:false,w:1});}
   const no=PARTS.filter(q=>owned[q]).length;const nx=nextParts();
   const c=[];if(nx.length&&S.t>=memberAt(no)-12)nx.slice(0,2).forEach(p=>c.push({p,isNew:true}));
-  while(c.length<3&&pool.length){let tw=pool.reduce((a,x)=>a+x.w,0),r=Math.random()*tw,i=0;for(;i<pool.length-1;i++){r-=pool[i].w;if(r<=0)break;}c.push(pool.splice(i,1)[0]);}
-  if(c.length<3)c.push({heal:true});
-  return c;
+  const NC=TIER().cards||3;
+  while(c.length<NC&&pool.length){let tw=pool.reduce((a,x)=>a+x.w,0),r=Math.random()*tw,i=0;for(;i<pool.length-1;i++){r-=pool[i].w;if(r<=0)break;}c.push(pool.splice(i,1)[0]);}
+  if(c.length<NC)c.push({heal:true});
+  return c.slice(0,NC);
 }
 function openLevel(){
   S.mode='level';joy=null;choices=makeChoices();
@@ -509,21 +513,26 @@ function choose(i,sim){
   if(S.pend>0)openLevel();else{S.mode='play';lastU=songRaw();}
 }
 
-/* ---------- the director: the ramp (VS curves by share of the run) on the song's beat, bosses on its big moments ---------- */
-function vsMin(){return Math.min(16,15*S.t/RUN);} // our run is VS minutes 0-15 (docs/research/survivors-difficulty-numbers.md 3.1)
-function bandDps(){let v=0;for(const m of band)v+=FAM[m.part].dps*(m.lead?1:1.2)*(1+.3*(m.lv-1));return v*dmgMul();} // boss health follows the band you built (VS: boss HP x player level)
-function hpScale(){const d=LV.diff-1;return 8*Math.pow(TUNE.hpG,vsMin())*(1+TUNE.hpDiff*d)*(LV.hard||1);} // hard: the per-song knob tools/sim.mjs --calibrate sets
-function enemyDmg(){const m=vsMin();return (5+m*5/12+(m>=12?4:0))*(1+TUNE.dmgDiff*(LV.diff-1));}
-function spawnRate(){const m=vsMin();return .8*Math.min(10,1+.8*m)*TUNE.spawnK*(1+TUNE.spawnDiff*(LV.diff-1));}
-function aliveFloor(){return Math.min(TUNE.cap-20,15*Math.pow(1.3,vsMin()))*TUNE.floorK;} // VS holds 15 to 300 on a big screen; a phone screen fits fewer
+/* ---------- the director: the ramp from levels/game.json (VS game data by share of the run) on the song's beat;
+   rings on drum fills, elites on chorus downbeats, mini-bosses on the big moments, the final boss on the drop ---------- */
+function vsMin(){return Math.min(16,15*S.t/RUN);} // our run is VS minutes 0-15 (docs/research/survivors-difficulty-numbers.md 3.2)
+function bandDps(){let v=0;for(const m of band)v+=FAM[m.part].dps*(m.lead?1:1.2)*(1+.3*(m.lv-1));return v*dmgMul();}
+const RP=()=>GM.ramp,D=()=>LV.diff-1,TIER=()=>tierRules();
+function hpScale(){const r=RP();return r.hp_base*Math.pow(r.hp_growth_per_m,vsMin())*(1+r.hp_per_diff*D())*(LV.hard||1)*(TIER().hp||1);} // hard: the per-song knob tools/sim.mjs --calibrate sets
+function enemyDmg(){const m=vsMin();let v=5;for(const[at,d]of RP().enemy_damage)if(m>=at)v=d;return v*(1+RP().damage_per_diff*D());}
+function spawnRate(){const r=RP();return r.spawn_base*Math.pow(r.spawn_growth_per_m,vsMin())*(1+r.spawn_per_diff*D())*(TIER().spawn||1);}
+function hordeOn(){const h=RP().horde,m=vsMin();return h&&m>=h.from_m&&m<h.to_m;}
+function aliveFloor(){const r=RP();let f=Math.min(r.cap,r.floor_base*Math.pow(r.floor_growth_per_m,vsMin()));if(hordeOn())f=Math.max(f,r.horde.floor);return f;}
 function energyNow(){const u=pos(songRaw());if(u<LS)return .4;const b=Math.floor((u-LS)/BAR)%NB;return LV.energy[b]==null?.5:LV.energy[b];}
-function rankPool(){const m=vsMin(),p=[];LV.enemies.forEach((k,i)=>{if(m>=(RANK_AT[i]||7))p.push(i);});return p.length?p:[0];}
+function rankPool(){const m=vsMin(),at=RP().rank_at_m,p=[];LV.enemies.forEach((k,i)=>{if(m>=(at[i]==null?8:at[i]))p.push(i);});return p.length?p:[0];}
 function spawn(kind,x,y,opt){
-  opt=opt||{};let st,img,hp,dmg;const hs=hpScale();
-  if(kind==='boss'){img=LV.boss;st={spd:opt.final?74:66,h:126};hp=bandDps()*(opt.final?TUNE.bossT:TUNE.miniT)*(1+TUNE.hpDiff*(LV.diff-1));dmg=(opt.final?22:16)*(1+TUNE.dmgDiff*(LV.diff-1));}
-  else if(kind==='elite'){const i=opt.i!=null?opt.i:Math.floor(Math.random()*LV.elites.length);img=LV.elites[i];st=ELITE[i%2];hp=st.hp*hs;dmg=13*(1+vsMin()/15);}
-  else{const i=kind;img=LV.enemies[i];st=RANK[i]||RANK[RANK.length-1];hp=st.hp*hs*rnd(.9,1.1);dmg=enemyDmg();}
-  const e={img,x,y,hp,max:hp,spd:st.spd*(kind==='boss'?1:rnd(.9,1.1))*(1+S.t/900)*1.1,h:st.h*(opt.big||1),r:st.h*(opt.big||1)*.34,flash:0,kx:0,ky:0,cd:0,
+  opt=opt||{};let st,img,hp,dmg;const hs=hpScale(),r=RP(),dd=1+r.damage_per_diff*D(),knob=(1+r.hp_per_diff*D())*(LV.hard||1)*(TIER().hp||1);
+  if(kind==='boss'){img=LV.boss;st={spd:opt.final?74:66,h:126};
+    hp=(opt.final?r.boss_hp_per_level:opt.mid?r.mid_hp_per_level:r.mini_hp_per_level)*S.lvl*knob; // VS: boss health = base x player level
+    dmg=r.boss_damage*dd*(TIER().boss_damage||1);}
+  else if(kind==='elite'){const i=opt.i!=null?opt.i:Math.floor(Math.random()*LV.elites.length);img=LV.elites[i];st=GM.elites[i%2];hp=st.hp*hs*(TIER().elite_hp||1);dmg=r.elite_damage*dd;}
+  else{const i=kind;img=LV.enemies[i];st=GM.ranks[i]||GM.ranks[GM.ranks.length-1];hp=st.hp*hs*rnd(.9,1.1)*(opt.weak||1);dmg=enemyDmg();}
+  const e={img,x,y,hp,max:hp,spd:st.spd*(kind==='boss'?1:rnd(.9,1.1))*(1+S.t*r.enemy_speed_per_s)*1.1*(TIER().speed||1),h:st.h*(opt.big||1),r:st.h*(opt.big||1)*.34,flash:0,kx:0,ky:0,cd:0,
     elite:kind==='elite',boss:kind==='boss',final:!!opt.final,seed:Math.random()*9,dead:false,dmg,slowT:0};
   enemies.push(e);return e;
 }
@@ -532,26 +541,65 @@ function edgePoint(){const hw=W/2/Z+50,hh=H/2/Z+60;const side=Math.random()*(hw+
 function ringOf(kind,n,R){for(let i=0;i<n;i++){const an=i/n*6.28;spawn(kind,S.x+Math.cos(an)*R,S.y+Math.sin(an)*R*.85);}}
 function onBar(b,gb){ // b: bar in the loop, gb: bars since the song began
   const e=LV.energy[b]||0,R=Math.max(W,H)/2/Z+70,pool=rankPool();
-  if(b%8===0&&S.t>30&&e>=.5&&S.t-S.lastRing>28){S.lastRing=S.t;ringOf(pool[Math.floor(Math.random()*pool.length)],Math.round((26+12*e)*Math.min(1.6,1+vsMin()/15)),R);}
+  const fills=LV.fills&&LV.fills.length?LV.fills:null,afterFill=fills?fills.includes((b+NB-1)%NB):(b%8===0&&e>=.5);
+  if(afterFill&&S.t>25&&S.t-S.lastRing>15){S.lastRing=S.t;ringOf(pool[Math.floor(Math.random()*pool.length)],Math.round((24+12*e)*Math.min(1.6,1+vsMin()/15)),R);}
   if(!S.boss&&!S.bossDone){
     const isDrop=b===LV.drop,isMoment=LV.moments.includes(b);
     if(S.t>=FINAL_AT&&(isDrop||isMoment||(b%8===0&&e>=.6)||(S.t>=FINAL_AT+12&&b%4===0))){const[x,y]=edgePoint();S.boss=spawn('boss',x,y,{final:true});S.shake=.4;ringOf(pool[0],20,R);if(!SIM)flashMoment();return;}
-    if(isMoment&&S.t>25&&S.t-S.lastMini>20&&S.t<FINAL_AT-40){S.lastMini=S.t;const[x,y]=edgePoint();S.boss=spawn('boss',x,y,{big:.75});S.shake=.25;if(!SIM)flashMoment();}
+    if(isMoment&&S.t>20&&S.t-S.lastMini>20&&S.t<FINAL_AT-40){S.lastMini=S.t;const mid=!S.midDone&&vsMin()>=RP().mid_at_m;if(mid)S.midDone=true;
+      const[x,y]=edgePoint();S.boss=spawn('boss',x,y,{big:mid?.9:.75,mid});S.shake=.25;if(!SIM)flashMoment();}
   }
-  if(b%16===4&&S.t>45&&LV.elites.length){const n=1+Math.floor(vsMin()/6);for(let i=0;i<n;i++){const[x,y]=edgePoint();spawn('elite',x,y);}}
+  const every=TIER().elite_every_bars;
+  if(LV.elites.length&&S.t>35&&((LV.chorus||[]).includes(b)||(every&&b%every===0))){const n=1+Math.floor(vsMin()/6);for(let i=0;i<n;i++){const[x,y]=edgePoint();spawn('elite',x,y);}}
 }
 function flashMoment(){fx.push({k:'pop',x:S.x,y:S.y-20,r:260,t:0,life:.6,col:LV.accent});}
 function director(dt){
   const u=songRaw();if(u>=LS){const gb=Math.floor((u-LS)/BAR);if(gb!==lastBar){if(lastBar>=0||gb===0)for(let k=Math.max(lastBar+1,gb-2);k<=gb;k++)onBar(k%NB,k);lastBar=gb;}}
   if(S.bossDone)return;
-  const alive=enemies.length,pool=rankPool();
+  const alive=enemies.length,pool=rankPool(),cap=RP().cap;
   const finalUp=S.boss&&S.boss.final; // the final boss fight thins the crowd, as Survivor.io's boss arenas stop the waves
   S.spawnAcc+=dt*spawnRate()*(.65+.7*energyNow())*(finalUp?.25:1); // busier where the song is louder
-  // spawns land on the beat, in small groups
-  const ph=((pos(u)-LS)/BEAT)%1;const onBeat=ph<.12||S.spawnAcc>6;
-  while(onBeat&&S.spawnAcc>=1){S.spawnAcc-=1;if(alive<TUNE.cap){const[x,y]=edgePoint();spawn(pool[Math.floor(Math.random()*pool.length)],x,y);}}
-  const fl=finalUp?0:aliveFloor();if(alive<fl)for(let i=0;i<Math.min(8,fl-alive);i++){const[x,y]=edgePoint();spawn(pool[Math.floor(Math.random()*pool.length)],x,y);}
+  const ph=((pos(u)-LS)/BEAT)%1;const onBeat=ph<.12||S.spawnAcc>6; // spawns land on the beat, in small groups
+  while(onBeat&&S.spawnAcc>=1){S.spawnAcc-=1;if(alive<cap){const[x,y]=edgePoint();spawn(pool[Math.floor(Math.random()*pool.length)],x,y);}}
+  const fl=finalUp?0:aliveFloor();if(alive<fl)for(let i=0;i<Math.min(8,fl-alive);i++){const[x,y]=edgePoint();if(hordeOn())spawn(RP().horde.rank,x,y,{weak:RP().horde.hp_mult});else spawn(pool[Math.floor(Math.random()*pool.length)],x,y);}
 }
+
+/* ---------- combos: two members whose parts play together fuse, delivered by an instrument case ---------- */
+let COMBOS=[],combos=[];
+function buildCombos(){COMBOS=[];const win=GM.combo_window_s;
+  for(const c of GM.combos){if(!PARTS.includes(c.a)||!PARTS.includes(c.b))continue;const A=NOTES[c.a],B=NOTES[c.b];let j=0;const list=[];
+    for(const n of A){while(j<B.length&&B[j].t<n.t-win)j++;if(j<B.length&&Math.abs(B[j].t-n.t)<=win)list.push({t:n.t,w:Math.max(1,Math.min(2,n.w)),d:0});}
+    if(list.length<8)continue;const sw=list.filter(o=>o.t>=LS).reduce((a,o)=>a+o.w,0);COMBOS.push(Object.assign({},c,{list,rate:Math.max(.2,sw/LL)}));}}
+function openCase(){
+  const ready=COMBOS.filter(c=>!combos.some(k=>k.id===c.id)&&owned[c.a]>=GM.combo_min_level&&owned[c.b]>=GM.combo_min_level);
+  if(ready.length){const c=ready[Math.floor(Math.random()*ready.length)];combos.push(Object.assign({},c,{enterU:null,combo:true}));
+    banner(c.name+'!',FAM[c.a].col);if(!SIM)for(let i=0;i<14;i++)fx.push({k:'note',x:S.x+rnd(-30,30),y:S.y-50,vx:rnd(-120,120),vy:-rnd(120,220),rot:0,vr:rnd(-4,4),t:0,life:1.2,col:i%2?FAM[c.a].col:FAM[c.b].col,s:1.2});return;}
+  const up=band.filter(m=>m.lv<MAXLV);
+  if(up.length){const m=up[Math.floor(Math.random()*up.length)];owned[m.part]++;for(const o of band)if(o.part===m.part){o.lv=owned[m.part];o.bop=1;}renderSlots();banner(FAM[m.part].name+' up',FAM[m.part].col);return;}
+  S.hp=Math.min(S.max,S.hp+30);banner('Snack','#FF9EC0');
+}
+function banner(text,col){if(SIM)return;fx.push({k:'banner',text,col,x:S.x,y:S.y-96,t:0,life:1.8});}
+function fireCombo(c,note){
+  const a=band.find(m=>m.part===c.a),b=band.find(m=>m.part===c.b);if(!a||!b)return;
+  const lv=(a.lv+b.lv)/2,dmg=GM.combo_dps*(1+.3*(lv-1))*note.w/c.rate*dmgMul(),ox=S.x,oy=S.y-24;
+  a.bop=b.bop=1.2;a.flash=b.flash=1.2;
+  switch(c.id){
+    case 'groove':shots.push({k:'ring',x:ox,y:oy+10,r:0,R:200,t:0,life:.3,dmg,hit:new Set(),col:FAM.bass.col,push:140});break;
+    case 'pocket':shots.push({k:'ring',x:ox,y:oy+10,r:0,R:190,t:0,life:.35,dmg,hit:new Set(),col:FAM.percussion.col,push:-90});break;
+    case 'horns':{const an=aimFrom(ox,oy,300),R=240,half=1.1;for(const e of enemies){if(e.dead)continue;const dx=e.x-ox,dy=e.y-e.h*.4-oy,d=Math.hypot(dx,dy);if(d>R+e.r)continue;
+      let da=Math.atan2(dy,dx)-an;da=Math.atan2(Math.sin(da),Math.cos(da));if(Math.abs(da)<half)hit(e,dmg,Math.cos(an)*90,Math.sin(an)*90);}
+      if(!SIM)fx.push({k:'cone',x:ox,y:oy,an,R,half,t:0,life:.3,col:FAM.brass.col});break;}
+    case 'harmony':{const base=aimFrom(ox,oy,380);for(let i=0;i<3;i++){const an=base+(i-1)*.5;shots.push({k:'bub',x:ox,y:oy,vx:Math.cos(an)*240,vy:Math.sin(an)*240,r:15,life:2.2,dmg,col:FAM.voice_doowah_lo.col,pop:58});}break;}
+    case 'power':{const an=aimFrom(ox,oy,500);for(const k of[0,Math.PI])shots.push({k:'line',x:ox,y:oy,vx:Math.cos(an+k)*900,vy:Math.sin(an+k)*900,an:an+k,life:.6,dmg,hit:new Set(),col:FAM.guitar.col,r:22});break;}
+    case 'keys':{const tg=nearestN(ox,oy,10,420);for(let i=0;i<4&&tg.length;i++){const e=tg[Math.floor(Math.random()*tg.length)],x=e.x,y=e.y-e.h*.4,R=46;
+      for(const o of enemies){if(!o.dead&&dist2(x,y,o.x,o.y-o.h*.4)<(R+o.r)*(R+o.r))hit(o,dmg/2,0,0);}if(!SIM)fx.push({k:'star',x,y,R,t:0,life:.35,col:FAM.keyboard.col});}break;}
+  }
+}
+
+/* ---------- venue tiers: each adds one rule, stacked (Brotato Danger, 20MTD Darkness) ---------- */
+let TIER_I=0;
+function tierRules(){const out={};for(let i=1;i<=TIER_I;i++){const t=GM.tiers[i];for(const k in t){if(k==='id'||k==='name'||k==='rule')continue;out[k]=(k==='cards'||k==='elite_every_bars')?t[k]:(out[k]||1)*t[k];}}return out;}
+function bestTier(id){const v=SAVE.cleared[id];return v===true?0:typeof v==='number'?v:-1;}
 
 /* ---------- update ---------- */
 const GRID=48;let grid=new Map();
@@ -563,7 +611,7 @@ function update(dt){
   if(Math.abs(dx)>.05)S.face=dx<0?-1:1;
   if(dx||dy){S.fa=Math.atan2(dy,dx);S.walk+=dt;}else S.walk=0;
   S.hurt=Math.max(0,S.hurt-dt*2.5);S.shake=Math.max(0,S.shake-dt);
-  S.hp=Math.min(S.max,S.hp+dt*(.2+.35*perk('snack')));S.inv=Math.max(0,(S.inv||0)-dt);
+  S.hp=Math.min(S.max,S.hp+dt*(RP().regen_per_s+.35*perk('snack')));S.inv=Math.max(0,(S.inv||0)-dt);
   const others=band.filter(m=>!m.lead),n=others.length;
   memberTick(dt);for(const m of band){if(m.lead){m.x=S.x;m.y=S.y;}}
   others.forEach((m,i)=>{const an=i/Math.max(1,n)*6.283+S.t*.35,r=60+n*5;const tx=S.x+Math.cos(an)*r,ty=S.y+Math.sin(an)*r*.78;
@@ -585,14 +633,14 @@ function update(dt){
     for(let ix=cx-1;ix<=cx+1;ix++)for(let iy=cy-1;iy<=cy+1;iy++){const c=grid.get(((ix+5000)*10007)+(iy+5000));if(!c)continue;
       for(const o of c){if(o===e||o.dead)continue;const sx=e.x-o.x,sy=e.y-o.y,dd=sx*sx+sy*sy,rr=(e.r+o.r)*.9;
         if(dd<rr*rr&&dd>.01){const l=Math.sqrt(dd),push=(rr-l)*.5;const wE=e.boss?.1:1;e.x+=sx/l*push*wE;e.y+=sy/l*push*wE;}}}
-    if(d<e.r+16&&e.cd<=0&&!(S.inv>0)){e.cd=.7;if(!S.god){S.hp-=e.dmg*armor;if(SIM){const k=e.final?'final':e.boss?'mini':e.elite?'elite':'crowd';S.dmgLog[k]=(S.dmgLog[k]||0)+Math.round(e.dmg*armor);}S.hurt=1;S.inv=.3;S.shake=Math.max(S.shake,.12);}
+    if(d<e.r+16&&e.cd<=0&&!(S.inv>0)){e.cd=RP().enemy_hit_cooldown_s;if(!S.god){S.hp-=e.dmg*armor;if(SIM){const k=e.final?'final':e.boss?'mini':e.elite?'elite':'crowd';S.dmgLog[k]=(S.dmgLog[k]||0)+Math.round(e.dmg*armor);}S.hurt=1;S.inv=RP().hit_invincible_s;S.shake=Math.max(S.shake,.12);}
       S.minHp=Math.min(S.minHp,Math.max(0,S.hp)/S.max);
       if(S.hp<=0&&S.mode==='play'){if(perk('encore')&&!S.revived){S.revived=true;S.hp=S.max*.5;S.inv=2;for(const o of enemies)if(!o.boss&&dist2(o.x,o.y,S.x,S.y)<200*200){o.hp=0;kill(o);}}else{S.hp=0;lose();return;}}}
   }
   for(const s of shots){
     s.life-=dt;
     if(s.k==='ring'){s.t+=dt;const q=Math.min(1,s.t/s.life);s.r=s.R*(1-Math.pow(1-q,2.2));
-      for(const e of enemies){if(e.dead||s.hit.has(e))continue;const d=Math.sqrt(dist2(s.x,s.y,e.x,e.y-e.h*.3));if(d<s.r+e.r*.6){s.hit.add(e);const a=Math.atan2(e.y-s.y,e.x-s.x);if(s.slow)e.slowT=s.slow;hit(e,s.dmg,Math.cos(a)*60,Math.sin(a)*60);}}
+      for(const e of enemies){if(e.dead||s.hit.has(e))continue;const d=Math.sqrt(dist2(s.x,s.y,e.x,e.y-e.h*.3));if(d<s.r+e.r*.6){s.hit.add(e);const a=Math.atan2(e.y-s.y,e.x-s.x);if(s.slow)e.slowT=s.slow;const pu=s.push||60;hit(e,s.dmg,Math.cos(a)*pu,Math.sin(a)*pu);}}
       continue;}
     if(s.k==='wave'){s.r+=s.sp*dt;if(s.r>=s.R)s.life=0;
       for(const e of enemies){if(e.dead||s.hit.has(e))continue;const dx=e.x-s.x,dy=e.y-e.h*.4-s.y,d=Math.hypot(dx,dy);if(Math.abs(d-s.r)>16+e.r)continue;
@@ -627,7 +675,7 @@ function update(dt){
   for(const q of gems){q.t+=dt;const d=Math.sqrt(dist2(q.x,q.y,S.x,S.y-16));
     if(d<magR||S.bossDone)q.mag=true;
     if(q.mag){q.sp=Math.min(560,q.sp+dt*900);const k=Math.min(1,q.sp*dt/Math.max(d,1));q.x+=(S.x-q.x)*k;q.y+=(S.y-16-q.y)*k;}
-    if(d<18){q.got=true;gainXP(q.v);if(q.heal)S.hp=Math.min(S.max,S.hp+25);}}
+    if(d<18){q.got=true;if(q.box)openCase();else gainXP(q.v);if(q.heal)S.hp=Math.min(S.max,S.hp+25);}}
   gems=gems.filter(q=>!q.got);
   if(!SIM){for(const f of fx){f.t+=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.k==='note'){f.vy+=180*dt;f.rot+=f.vr*dt;}else if(f.k==='snote'){f.rot+=f.vr*dt;}else{f.vx*=.9;f.vy*=.9;}}}
     fx=fx.filter(f=>f.t<f.life);for(const tx of texts)tx.t+=dt;texts=texts.filter(tx=>tx.t<.5);}
@@ -657,6 +705,11 @@ function ground(){
     }
   }
 }
+function drawCase(x,y){ // an instrument case: the genre's chest
+  g.save();g.translate(x,y);g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(0,12,18,5,0,0,7);g.fill();
+  g.fillStyle='#8A4B2A';g.strokeStyle='#231C33';g.lineWidth=3;g.beginPath();g.roundRect(-17,-10,34,20,7);g.fill();g.stroke();
+  g.fillStyle=LV.accent;g.fillRect(-3,-3,6,6);g.beginPath();g.moveTo(-7,-10);g.quadraticCurveTo(0,-19,7,-10);g.stroke();
+  g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=2;g.beginPath();g.moveTo(-12,-5);g.lineTo(10,-5);g.stroke();g.restore();}
 function shadow(x,y,w){g.fillStyle='rgba(0,0,0,.24)';g.beginPath();g.ellipse(x,y,w*.42,w*.14,0,0,7);g.fill();}
 function spr(key,x,y,h,face,sx,sy,flash,rot){
   const im=IM[key];if(!im)return;const w=h*im.a;
@@ -702,6 +755,7 @@ function draw(){
   let ph=0;if(ac&&S.mode!=='start'){const u=pos(songRaw());ph=((u-LS)/BEAT)%1;if(ph<0)ph+=1;}
   const pr=1-ph;g.strokeStyle='rgba(255,255,255,'+(.25+.45*pr*pr*pr)+')';g.lineWidth=3;g.beginPath();g.ellipse(S.x,S.y+2,30+pr*pr*6,10+pr*pr*2,0,0,7);g.stroke();
   for(const q of gems){const bob=Math.sin(q.t*5+q.x)*2;
+    if(q.box){drawCase(q.x,q.y-8+bob);continue;}
     if(q.heal){noteShape(q.x,q.y-6+bob,1.25,'#FFD84A',-.1);}
     else noteShape(q.x,q.y-4+bob,q.v>1?1.05:.75,q.v>1?'#FFD84A':'#7FE3FF',-.15);}
   const list=[];
@@ -745,6 +799,8 @@ function draw(){
     else if(f.k==='pop'){if(f.t<0)continue;g.strokeStyle=hexA(f.col,1-q);g.lineWidth=4*(1-q)+1;g.beginPath();g.arc(f.x,f.y,f.r*(.5+q*.6),0,7);g.stroke();}
     else if(f.k==='star'){const a=1-q,R=f.R*(.6+q*.5);g.save();g.translate(f.x,f.y);g.rotate(q*1.5);g.fillStyle=hexA(f.col,.75*a);g.strokeStyle='rgba(255,255,255,'+a+')';g.lineWidth=2.5;
       g.beginPath();for(let i=0;i<10;i++){const rr=i%2?R*.45:R,an=i*Math.PI/5-Math.PI/2;g.lineTo(Math.cos(an)*rr,Math.sin(an)*rr);}g.closePath();g.fill();g.stroke();g.restore();}
+    else if(f.k==='banner'){const a=q<.75?1:1-(q-.75)/.25,y=f.y-q*26,sz=26*(q<.12?.6+q/.12*.4:1);g.font='700 '+sz+'px Fredoka, system-ui, sans-serif';g.textAlign='center';g.lineJoin='round';
+      g.globalAlpha=a;g.lineWidth=6;g.strokeStyle='#231C33';g.strokeText(f.text,S.x,y);g.fillStyle=f.col;g.fillText(f.text,S.x,y);g.globalAlpha=1;}
     else if(f.k==='beam'){const a=1-q;g.lineCap='round';g.strokeStyle=hexA(f.col,.5*a);g.lineWidth=12;g.beginPath();g.moveTo(f.x,f.y);g.lineTo(f.ex,f.ey);g.stroke();
       g.strokeStyle='rgba(255,255,255,'+a+')';g.lineWidth=3.5;g.stroke();}
     else if(f.k==='cone'){g.save();g.translate(f.x,f.y);g.rotate(f.an);const a=1-q;const gr=g.createLinearGradient(0,0,f.R,0);gr.addColorStop(0,hexA(f.col,.9*a));gr.addColorStop(1,hexA(f.col,.05));
@@ -772,12 +828,12 @@ function renderMap(){
   for(const k in PERKS){const n=perk(k);if(!n)continue;const p=PERKS[k];const d=document.createElement('div');d.className='chip';
     d.innerHTML='<i style="--c:'+p.col+'">'+p.ic+'</i>'+p.name+(n>1?' x'+n:'');pk.appendChild(d);}
   const box=$('#path');box.innerHTML='';
-  const nextI=LEVELS.findIndex((l,i)=>unlocked(i)&&!SAVE.cleared[l.id]);
+  const nextI=LEVELS.findIndex((l,i)=>unlocked(i)&&bestTier(l.id)<0);
   const pts=[];
-  LEVELS.forEach((l,i)=>{const open=unlocked(i),done=!!SAVE.cleared[l.id];
+  LEVELS.forEach((l,i)=>{const open=unlocked(i),bt=bestTier(l.id),done=bt>=0;
     const n=document.createElement('button');n.className='node'+(i%2?' r':'')+(open?'':' lock')+(i===nextI?' next':'');
     n.innerHTML='<div class="badge" style="--c:'+l.accent+'"><img src="img/'+l.boss+'.webp" alt="">'+(done?'<span class="mark">'+CHECK+'</span>':open?'':'<span class="mark">'+LOCK+'</span>')+'</div>'+
-      '<div><div class="t">'+l.title+'</div><div class="s">'+Math.round(l.bpm)+' bpm, '+fmt(l.minutes*60)+'</div></div>';
+      '<div><div class="t">'+l.title+'</div><div class="s">'+(done?GM.tiers[bt].name+' cleared':Math.round(l.bpm)+' bpm, '+fmt(l.minutes*60))+'</div></div>';
     if(open)n.addEventListener('click',()=>openPick(i));box.appendChild(n);});
   // the road between the stops
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','road');box.prepend(svg);
@@ -792,6 +848,10 @@ function openPick(i){pickI=i;const l=LEVELS[i];
   $('#pkT').textContent=l.title;
   const c=$('#pkC');c.innerHTML='';[...l.enemies.slice(0,3),l.boss,...l.elites.slice(0,1)].forEach((k,j)=>{const im=document.createElement('img');im.src='img/'+k+'.webp';im.alt='';
     im.style.height=(k===l.boss?110:k===l.elites[0]?84:58+j*4)+'px';if(k===l.boss)im.className='boss';c.appendChild(im);});
+  const bt=bestTier(l.id),tb=$('#pkTiers');tb.innerHTML='';TIER_I=Math.min(GM.tiers.length-1,Math.max(0,bt+1));
+  const pickT=i=>{TIER_I=i;[...tb.children].forEach((x,j)=>x.classList.toggle('on',j===i));$('#pkR').textContent=GM.tiers[i].rule;};
+  GM.tiers.forEach((t,i)=>{const b=document.createElement('button');b.className='tier'+(i>bt+1&&!UNLOCK_ALL?' lock':'')+(i<=bt?' won':'');b.textContent=t.name;
+    if(!(i>bt+1&&!UNLOCK_ALL))b.addEventListener('click',()=>pickT(i));tb.appendChild(b);});pickT(TIER_I);
   $('#bGo').disabled=false;$('#bGo').textContent='Play';$('#pkP').classList.remove('on');
   show('#sPick',true);}
 async function goLevel(){const l=LEVELS[pickI];const b=$('#bGo');b.disabled=true;b.textContent='Loading';const pr=$('#pkP');pr.classList.add('on');pr.firstChild.style.width='0';
@@ -809,11 +869,11 @@ function lose(){S.mode='over';S.endT=S.t;if(SIM)return;bus.gain.setTargetAtTime(
 let perkChoices=[];
 function win(){S.mode='over';S.endT=S.t;S.won=true;
   for(const e of enemies){e.hp=0;kill(e);}enemies=[];S.shake=.3;
-  const first=!SAVE.cleared[LV.id];SAVE.cleared[LV.id]=true;
+  const first=bestTier(LV.id)<0;SAVE.cleared[LV.id]=Math.max(bestTier(LV.id),TIER_I);
   perkChoices=first?Object.keys(PERKS).filter(k=>perk(k)<(PERK_MAX[k]||3)).sort(()=>Math.random()-.5).slice(0,3):[];
   if(SIM){if(perkChoices.length)SAVE.perks[perkChoices[0]]=perk(perkChoices[0])+1;return;}
   persist();
-  setTimeout(()=>{$('#oT').textContent='Encore!';$('#oS').textContent=LV.title+' cleared'+(perkChoices.length?'. Take one for the tour:':'');
+  setTimeout(()=>{$('#oT').textContent='Encore!';$('#oS').textContent=LV.title+', '+GM.tiers[TIER_I].name+' cleared'+(perkChoices.length?'. Take one for the tour:':'');
     fillBand();const box=$('#oP');box.innerHTML='';
     perkChoices.forEach(k=>{const p=PERKS[k],b=document.createElement('button');b.className='card';b.style.setProperty('--c',hexA(p.col,.6));
       b.innerHTML='<div class="pic"><svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="'+p.col+'" stroke="#231C33" stroke-width="4"/><text x="32" y="43" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="30" fill="#231C33">'+p.ic+'</text></svg></div><div><div class="nm">'+p.name+'</div><div class="ln">'+p.ln+'</div></div>';
@@ -882,7 +942,7 @@ function botSteer(){ // look in 16 directions, walk the one with the fewest enem
   botDir=best;
 }
 async function simRun(id,opt){
-  opt=opt||{};BOT=opt.bot||'kite';Object.assign(TUNE,opt.tune||{});SAVE={cleared:{},perks:Object.assign({},opt.perks||{})};
+  opt=opt||{};BOT=opt.bot||'kite';botDir=null;Object.assign(GM.ramp,opt.tune||{});TIER_I=opt.tier||0;SAVE={cleared:{},perks:Object.assign({},opt.perks||{})};
   const lv=LEVELS.find(l=>l.id===id);await loadLevel(lv,()=>{});simT=0;await begin();
   const dt=1/30,cap=RUN+150;let t=0;
   const trace=[];let nt=0;
@@ -890,7 +950,7 @@ async function simRun(id,opt){
     if(opt.trace&&S.t>=nt){nt+=10;trace.push([Math.round(S.t),Math.round(S.hp),enemies.length,band.length,S.kills,S.lvl,fireLog.length,Math.round(hpScale()),enemies.length?Math.round(Math.min(...enemies.map(e=>Math.hypot(e.x-S.x,e.y-S.y)))):0,S.boss?Math.round(S.boss.hp)+"/"+Math.round(S.boss.max)+"@"+Math.round(Math.hypot(S.boss.x-S.x,S.boss.y-S.y)):"-",Math.round(bandDps())]);}}
   if(opt.trace)console.log('t hp enemies band kills lvl fires hpScale nearest\n'+trace.map(r=>r.join(' ')).join('\n'));
   return {level:id,bot:BOT,result:S.won?'win':S.mode==='over'?'lose':'timeout',t:Math.round(S.t),bossAt:Math.round(FINAL_AT),run:RUN,
-    bossKillT:S.bossT?Math.round(S.bossT):null,dmgLog:JSON.stringify(S.dmgLog),minHp:Math.round(S.minHp*100),kills:S.kills,lvl:S.lvl,band:band.length+'/'+PARTS.length};
+    bossKillT:S.bossT?Math.round(S.bossT):null,combos:combos.map(c=>c.id).join('+'),dmgLog:JSON.stringify(S.dmgLog),minHp:Math.round(S.minHp*100),kills:S.kills,lvl:S.lvl,band:band.length+'/'+PARTS.length};
 }
 
 /* ---------- boot ---------- */
@@ -900,7 +960,7 @@ if(!SIM){
   loadLevels().then(()=>{const b=$('#bStart');b.disabled=false;b.textContent='Play';})
     .catch(err=>{console.error(err);$('#bStart').textContent='Could not load';});
 }
-window.__bs={S,get band(){return band;},get enemies(){return enemies;},get owned(){return owned;},get shots(){return shots;},get gems(){return gems;},fireLog,NOTES,RATE,TUNE,SAVE:()=>SAVE,
+window.__bs={S,get band(){return band;},get enemies(){return enemies;},get owned(){return owned;},get shots(){return shots;},get gems(){return gems;},fireLog,NOTES,RATE,GM:()=>GM,SAVE:()=>SAVE,combos:()=>combos,openCase:()=>openCase(),
   levels:()=>LEVELS,loadLevels,simRun,songPos:()=>pos(songRaw()),gainXP:v=>{gainXP(v);},choose,setTime:t=>{S.t=t;},god:on=>{S.god=on;},ctx:()=>ac,
   layerGain:p=>LAYER[p]&&LAYER[p].gain.value,busGain:()=>bus&&bus.gain.value,unlockAll:()=>{LEVELS.forEach(l=>SAVE.cleared[l.id]=true);persist();},
   play:i=>{pickI=i;return goLevel();},map:()=>renderMap()};

@@ -26,6 +26,17 @@
   52
  ],
  "drop": 40,
+ "fills": [
+  27,
+  39,
+  47
+ ],
+ "chorus": [
+  32,
+  40,
+  44,
+  52
+ ],
  "energy": [
   0.064,
   0.31,
@@ -98,6 +109,7 @@
  "ground": "#1F5A6E",
  "accent": "#7FE3FF",
  "source": "Pull Lanes canal, idea 1, at 116",
- "lead": "dry, made earlier D:/music-battler-work/band-survivors\\dry\\canal_voice_lead.wav",
- "hard": 1.97
+ "set_folder": "D:/music-battler-work/songs/pl116/canal_idea1_out/set",
+ "lead": "as in the set",
+ "hard": 1
 }

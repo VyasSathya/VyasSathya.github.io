@@ -26,6 +26,17 @@
   56
  ],
  "drop": 56,
+ "fills": [
+  3,
+  11,
+  19,
+  39
+ ],
+ "chorus": [
+  40,
+  48,
+  56
+ ],
  "energy": [
   0,
   0.018,
@@ -102,6 +113,7 @@
  "ground": "#5A4A2A",
  "accent": "#FFE680",
  "source": "Pull Lanes day lawn, idea 2, at 116",
- "lead": "dry, made earlier D:/music-battler-work/band-survivors\\dry\\bell-garden_voice_lead.wav",
- "hard": 1.1
+ "set_folder": "D:/music-battler-work/songs/pl116/daylawn_idea2_out/set",
+ "lead": "as in the set",
+ "hard": 1.32
 }

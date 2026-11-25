@@ -13,16 +13,37 @@ Play: https://vyasapps.dev/lab/p/band-survivors/ (Web Lab id `band-survivors`). 
   speed, pickup range, damage, armour, regen, start with the drummer, get back up once), kept for the rest of the tour.
 - **A stop**: its own place (ground colour, accent), its own crew of enemies weakest first, two elites and a boss, all
   from the cast pictures. Run length grows along the tour (3:30 to 6:15).
-- **The song drives it**: spawns land on the beat, in bigger groups where the song is louder; swarm rings come at
-  section starts with high energy; mini-bosses enter on the song's big moments; the final boss enters on the drop (or
-  the next big moment) after the full band is in. While the final boss is up the crowd thins, as in Survivor.io.
+- **Venue tiers per song** (Brotato Danger, 20MTD Darkness): Open Mic, Club, Hall, Arena, Stadium. Each adds one
+  rule on top of the ones before (bigger crowd; tougher elites twice as often; bosses hit twice as hard; faster crowd and
+  two cards per level up). Clearing a tier opens the next; the map shows the best tier cleared.
+- **The song drives it**: spawns land on the beat, more where the song is louder; a ring of enemies lands on the
+  downbeat after each drum fill; elites enter on chorus downbeats; mini-bosses on the song's big moments (one of them,
+  past VS minute 10, is the bigger mid boss); the final boss on the drop (or the next big moment) after the full band is
+  in. While the final boss is up the crowd thins, as in Survivor.io.
+- **Instrument cases** (the genre's chests) drop from elites and mini-bosses. A case gives a **band combo** when two
+  members that play together are both level 2 or more: Groove (drums and bass), Horn section (brass and woodwinds),
+  Harmony (lead and doo-wah), Power chord (guitar and strings), Light show (keys and synth), In the pocket (drums and
+  shaker). A combo fires only on the notes where both parts sound together, so it adds nothing new to the mix. With no
+  combo ready, a case levels up a member.
 - **Held notes attack as one wave** (an arc rolling out for the note's length), never as a stream of shots.
-- **Difficulty**: the Vampire Survivors ramp (`docs/research/survivors-difficulty-numbers.md`) on our own base numbers,
-  with our run taken as VS minutes 0 to 15: enemy health `x hpG^m`, spawns `0.8 * min(10, 1 + 0.8m)`, an on-screen floor
-  `15 * 1.3^m`, enemy damage 5 to 14, regen 0.2/s, enemy ranks joining at m 1.5 / 3 / 5 / 7. Damage comes from the notes
-  and is balanced here: `hpG` is 1.17 (VS 1.27 is too steep for a band whose damage is set by the song), the on-screen
-  cap is 200 (a phone screen), boss health follows the band you built (VS scales boss health by player level), and each
-  song has its own `hard` from the balance check.
+- **Difficulty**: `levels/game.json`, from Vampire Survivors' own game data (`docs/research/survivors-difficulty-numbers.md`
+  3.3-3.4), with our run taken as VS minutes 0 to 15: enemy health `8 x 1.22^m` (VS 1.24), spawns `0.8 x 1.10^m`, an
+  on-screen floor `15 x 1.15^m` with the minute 11-14 horde (200 weak enemies), enemy damage 5 / 10 / 14, elites 20,
+  bosses 30, boss health 200 x player level (mini 50, mid 150), regen 0.2/s, XP need `5 + 5 x (level - 1)` (VS 10: we
+  have 10 to 13 members to level), hit invincibility 0.3 s (VS 0.12 s made it much harder, since our enemies also wait
+  0.7 s between hits). Each song has its own `hard` from the balance check.
+
+## Data a 3D version reads
+
+Everything a level needs is plain data, with nothing tied to the web page:
+- `levels/game.json`: the ramp, enemy ranks, elites, tiers, combos and their numbers.
+- `levels/<id>/level.json`: the song's parts, loop length in bars, energy per bar, big moments, drop, drum fills,
+  chorus downbeats, crew, elites, boss, colours, run length, difficulty, `hard`, and `set_folder` (the full-quality
+  wav set on D:).
+- `levels/<id>/notes.json`: tempo, bar and beat length, the loop, and every note of every part (time, pitch, length).
+- `levels/<id>/<part>.mp3`: one per part, mono. The wavs are in `set_folder`.
+Times inside a run are VS minutes (`m = 15 x t / run length`), and song events are bars, so a Unity version with its own
+run length and clock plays the same schedule.
 
 ## Add a level from a new song
 
@@ -46,6 +67,8 @@ One command per song. From this folder:
 - `--diff` is the stop's place on the tour: run length is 3.5 min plus 0.35 per step, and each step adds a little
   enemy health, spawns and damage.
 - It writes `levels/<id>/` (part mp3s, `notes.json`, `level.json`) and adds the stop to `levels/levels.json`.
+
+`--meta-only` redoes only `notes.json` and `level.json` (big moments, fills, chorus bars) and keeps the mp3s.
 
 Then balance it and publish:
 

@@ -2,7 +2,7 @@
 # Rebuild every Band Survivors level from its song set (the songs on D:). One make_level.py call per song.
 set -e
 cd "$(dirname "$0")/.."
-M="python tools/make_level.py"
+M="python tools/make_level.py $EXTRA"
 P=D:/music-battler-work/songs
 $M --set $P/sneaky_parts/set_clean --lead-wav $P/sneaky_parts/set_clean_dry/voice_lead.wav --id sneaky --title "Sneaky Harbour" --order 1 --diff 1 \
   --enemies p_cabin,p_seal,p_pogo,p_mate,p_lock,p_commodore,p_cutlass --elites p_brig,p_purser --boss p_chief \

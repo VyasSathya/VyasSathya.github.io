@@ -27,6 +27,19 @@
   40
  ],
  "drop": 4,
+ "fills": [
+  7,
+  15,
+  27,
+  39,
+  55
+ ],
+ "chorus": [
+  4,
+  24,
+  44,
+  60
+ ],
  "energy": [
   0,
   0.038,
@@ -113,6 +126,7 @@
  "ground": "#2B2350",
  "accent": "#C9A2FF",
  "source": "Suno clip 5b50ffee (Night B, take 1)",
- "lead": "dry, made earlier D:/music-battler-work/band-survivors\\dry\\night-market_voice_lead.wav",
- "hard": 1.12
+ "set_folder": "D:/music-battler-work/songs/picks/b1_out/set",
+ "lead": "as in the set",
+ "hard": 1.15
 }

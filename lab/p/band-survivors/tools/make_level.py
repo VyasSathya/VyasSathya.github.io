@@ -36,6 +36,7 @@ ap.add_argument('--lead-pair', help='part the lead voice rides (default: woodwin
 ap.add_argument('--lead-wav', help='an already dry lead (skips the refit)')
 ap.add_argument('--keep-room', action='store_true', help='leave the lead as it is in the set')
 ap.add_argument('--refit', action='store_true', help='make the dry lead again even if one was made before')
+ap.add_argument('--meta-only', action='store_true', help='only redo notes.json and level.json (no lead refit, no mp3s)')
 ap.add_argument('--enemies', default=''); ap.add_argument('--elites', default=''); ap.add_argument('--boss', default='')
 ap.add_argument('--ground', default='#1E524C'); ap.add_argument('--accent', default='#FFD84A'); ap.add_argument('--blurb', default='')
 ap.add_argument('--source', default='')
@@ -64,7 +65,7 @@ log = {}
 
 # ---------- 2. the lead dry
 lead_src = os.path.join(S, 'voice_lead.wav')
-if 'voice_lead' in parts and not a.keep_room:
+if 'voice_lead' in parts and not a.keep_room and not a.meta_only:
     wet = rd(lead_src); target = meter.integrated_loudness(wet)
     cache = os.path.join(WORK, 'dry', a.id + '_voice_lead.wav')
     if a.lead_wav: dry = rd(a.lead_wav); log['lead'] = 'dry, given file ' + a.lead_wav
@@ -84,12 +85,12 @@ if 'voice_lead' in parts and not a.keep_room:
     sf.write(lead_src, dry, SR, subtype='FLOAT'); log['lead_lufs'] = round(target, 1)
 
 # ---------- 3. mp3 per part
-sizes = {}
-for p in parts:
+sizes = {p: os.path.getsize(os.path.join(L, p + '.mp3')) for p in parts if os.path.exists(os.path.join(L, p + '.mp3'))}
+for p in ([] if a.meta_only else parts):
     src = lead_src if p == 'voice_lead' else os.path.join(S, p + '.wav'); dst = os.path.join(L, p + '.mp3')
     run('ffmpeg', '-v', 'error', '-y', '-i', src, '-ac', '1', '-ar', '44100', '-b:a', '80k' if p == 'voice_lead' else '56k', dst)
     sizes[p] = os.path.getsize(dst)
-for f in os.listdir(L):   # parts no longer in the set
+for f in ([] if a.meta_only else os.listdir(L)):   # parts no longer in the set
     if f.endswith('.mp3') and f[:-4] not in parts: os.remove(os.path.join(L, f))
 
 # ---------- 4. notes
@@ -118,6 +119,19 @@ for s, b in lift:
     if all(abs(b - m) >= 12 for m in moments): moments.append(b)
     if len(moments) == 3: break
 drop = moments[0]; moments = sorted(moments)
+# drum fills: a bar whose second half has far more drum hits than usual; a ring of enemies lands on the next downbeat
+dr = compact.get('drums') or compact.get('percussion') or []
+half = np.zeros(nb); first = np.zeros(nb)
+for t, _, _ in dr:
+    x = (t - LS) / BAR; b = int(x)
+    if 0 <= b < nb: (half if x - b >= .5 else first)[b] += 1
+medh = np.median(half[half > 0]) if (half > 0).any() else 0
+ends = [b for b in range(3, nb, 4) if half[b] > 0]   # phrase ends, where a drummer plays a fill
+lift_ = {b: half[b] / max(1, first[b]) * min(1.5, half[b] / max(1, medh)) for b in ends}
+fills = sorted(int(b) for b in sorted(ends, key=lambda b: -lift_[b])[:max(2, nb // 12)] if lift_[b] >= 1.05)
+# chorus downbeats: a 4-bar block much louder than the one before it (elites land there)
+blocks = [float(energy[b:b + 4].mean()) for b in range(0, nb, 4)]; p70 = float(np.percentile(blocks, 70))
+chorus = [i * 4 for i in range(len(blocks)) if blocks[i] >= p70 and (i == 0 or blocks[i - 1] < blocks[i] - .08)]
 notes = dict(bpm=nj['bpm'], beat_seconds=round(60 / nj['bpm'], 5), bar_seconds=BAR, first_downbeat_s=nj['first_downbeat_s'],
              loop=dict(start_s=LS, end_s=LE, bars=nb), compact=compact)
 json.dump(notes, open(os.path.join(L, 'notes.json'), 'w'), separators=(',', ':'))
@@ -135,13 +149,15 @@ def pic(name, h):
 spl = lambda s: [x for x in s.split(',') if x]
 level = dict(id=a.id, title=a.title, blurb=a.blurb, order=a.order, diff=a.diff,
              minutes=a.minutes or round(3.5 + .35 * (a.diff - 1), 2), bpm=nj['bpm'], parts=parts,
-             loop_bars=nb, moments=[int(b) for b in moments], drop=int(drop), energy=[round(float(e), 3) for e in energy],
+             loop_bars=nb, moments=[int(b) for b in moments], drop=int(drop), fills=fills, chorus=chorus, energy=[round(float(e), 3) for e in energy],
              enemies=[pic(n, 150) for n in spl(a.enemies)], elites=[pic(n, 260) for n in spl(a.elites)],
              boss=pic(a.boss, 360) if a.boss else '', ground=a.ground, accent=a.accent,
-             source=a.source or info.get('source') or S, lead=log.get('lead', 'as in the set'))
+             source=a.source or info.get('source') or S, set_folder=os.path.abspath(S).replace(os.sep, '/'), lead=log.get('lead', 'as in the set'))
+old = os.path.join(L, 'level.json')
+if os.path.exists(old): level['hard'] = json.load(open(old)).get('hard', 1)   # keep the balance check's knob
 json.dump(level, open(os.path.join(L, 'level.json'), 'w'), indent=1)
 idx = os.path.join(GAME, 'levels', 'levels.json')
 lv = json.load(open(idx)) if os.path.exists(idx) else []
 lv = [x for x in lv if x['id'] != a.id] + [dict(id=a.id, order=a.order)]
 lv.sort(key=lambda x: x['order']); json.dump(lv, open(idx, 'w'), indent=1)
-print(json.dumps(dict(id=a.id, parts=parts, bars=nb, moments=level['moments'], drop=drop, mb=round(sum(sizes.values()) / 1e6, 1), lead=log.get('lead')), indent=1))
+print(json.dumps(dict(id=a.id, parts=parts, bars=nb, moments=level['moments'], drop=drop, fills=len(fills), chorus=chorus, mb=round(sum(sizes.values()) / 1e6, 1), lead=log.get('lead')), indent=1))

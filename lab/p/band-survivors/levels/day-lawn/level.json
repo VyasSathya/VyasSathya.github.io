@@ -26,6 +26,18 @@
   60
  ],
  "drop": 60,
+ "fills": [
+  31,
+  63,
+  71,
+  75
+ ],
+ "chorus": [
+  20,
+  28,
+  60,
+  68
+ ],
  "energy": [
   0.541,
   0.666,
@@ -124,6 +136,7 @@
  "ground": "#2F6E45",
  "accent": "#FFD84A",
  "source": "Suno clip 18b55201 (Day lawn A, take 1)",
- "lead": "dry, made earlier D:/music-battler-work/band-survivors\\dry\\day-lawn_voice_lead.wav",
- "hard": 1.12
+ "set_folder": "D:/music-battler-work/songs/picks/a1_out/set",
+ "lead": "as in the set",
+ "hard": 0.85
 }

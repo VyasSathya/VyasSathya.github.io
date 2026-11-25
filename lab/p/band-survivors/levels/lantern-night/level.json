@@ -27,6 +27,18 @@
   48
  ],
  "drop": 36,
+ "fills": [
+  7,
+  11,
+  55,
+  59,
+  63
+ ],
+ "chorus": [
+  36,
+  48,
+  56
+ ],
  "energy": [
   0.195,
   0.397,
@@ -110,6 +122,7 @@
  "ground": "#3A2340",
  "accent": "#FF8A3D",
  "source": "Pull Lanes night, idea 2, at 116",
- "lead": "dry, made earlier D:/music-battler-work/band-survivors\\dry\\lantern-night_voice_lead.wav",
- "hard": 1
+ "set_folder": "D:/music-battler-work/songs/pl116/night_idea2_out/set",
+ "lead": "as in the set",
+ "hard": 1.15
 }

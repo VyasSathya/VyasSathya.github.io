@@ -28,6 +28,17 @@
   48
  ],
  "drop": 4,
+ "fills": [
+  3,
+  19,
+  27,
+  43,
+  47
+ ],
+ "chorus": [
+  20,
+  48
+ ],
  "energy": [
   0.089,
   0.104,
@@ -113,6 +124,7 @@
  "ground": "#2E4A3A",
  "accent": "#9AF3FF",
  "source": "Pull Lanes harbour fog, idea 1, at 116",
- "lead": "dry, made earlier D:/music-battler-work/band-survivors\\dry\\marsh_voice_lead.wav",
- "hard": 1.13
+ "set_folder": "D:/music-battler-work/songs/pl116/fog_idea1_out/set",
+ "lead": "as in the set",
+ "hard": 1.15
 }

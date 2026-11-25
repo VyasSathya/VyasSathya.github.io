@@ -25,6 +25,15 @@
   32
  ],
  "drop": 32,
+ "fills": [
+  7,
+  31
+ ],
+ "chorus": [
+  8,
+  24,
+  32
+ ],
  "energy": [
   0.643,
   0.644,
@@ -78,6 +87,7 @@
  "ground": "#1E524C",
  "accent": "#FF5FA2",
  "source": "Suno clip bd151f71 (Sneaky)",
- "lead": "dry, given file D:/music-battler-work/songs/sneaky_parts/set_clean_dry/voice_lead.wav",
- "hard": 1
+ "set_folder": "D:/music-battler-work/songs/sneaky_parts/set_clean",
+ "lead": "as in the set",
+ "hard": 0.85
 }
