@@ -1,5 +1,6 @@
 {
  "about": "Recorded effect files for Sing Island World. Put <event>.m4a beside this file and add the event name to files; the page plays it instead of the made-up sound. Events: tap, buy, place, coin, feed, levelup, breed, hatch, travel, full, bad, dup.",
  "ext": ".m4a",
- "files": []
+ "files": ["tap", "buy", "place", "coin", "feed", "levelup", "breed", "hatch", "travel", "full", "bad", "dup"],
+ "source": "Creative lead, C:/Dev/toybox/assets/audio/made/sing-island-world/sfx-v1 (Kenney CC0; SOURCES.json beside this file)"
 }
