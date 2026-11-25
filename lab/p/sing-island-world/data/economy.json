@@ -47,19 +47,20 @@
  "levels": {
   "max": 10,
   "breed_gate": 4,
-  "treats_to_next": [
+  "feeds_per_level": 3,
+  "treats_per_feed": [
    0,
+   3,
    5,
-   10,
-   20,
+   8,
+   12,
+   18,
+   25,
    35,
-   55,
-   80,
-   110,
-   150,
-   200
+   45,
+   60
   ],
-  "note": "treats_to_next[L] = treats to go from level L to L+1 (index 0 unused); one feed = one level"
+  "note": "treats_per_feed[L] = treats for one feed at level L (index 0 unused); feeds_per_level feeds raise one level"
  },
  "bakery": {
   "recipes": [
@@ -128,7 +129,7 @@
    }
   },
   "odds": {
-   "note": "Children are drawn from the union of both parents' elements. Weights: each parent's own species = parent; species strictly between the bigger parent's tier and the union = between; the union itself = union[tier] plus union_per_level for every level both parents have above the gate. Only species that live on the island count.",
+   "note": "Two singles always make their double (MSM). From triples up the child is drawn from the union of both parents' elements. Weights: each parent's own species = parent; species strictly between the bigger parent's tier and the union = between; the union = union[tier] plus union_per_level for every level both parents have above the gate. Only species that live on the island count.",
    "parent": 3,
    "between": 2,
    "union": {
@@ -136,7 +137,10 @@
     "3": 3,
     "4": 2
    },
-   "union_per_level": 0.5
+   "union_per_level": 0.5,
+   "sure_union_tiers": [
+    2
+   ]
   },
   "travel_egg": {
    "from_tier": 4,

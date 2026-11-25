@@ -85,7 +85,9 @@ for (const s of SP.species) if (!IS.islands.some(I => Object.values(I.parts).inc
 for (const [id] of Object.entries(EC.shop.singles)) if (!byId[id] || byId[id].tier !== 1) bad(`shop sells ${id}, which is not a single`);
 for (const s of SP.species.filter(s => s.tier === 1)) if (!(s.id in EC.shop.singles)) bad(`single ${s.id} has no shop price`);
 const L = EC.levels;
-if (L.treats_to_next.length !== L.max) bad(`levels.treats_to_next has ${L.treats_to_next.length} steps, want ${L.max}`);
+if (!Array.isArray(L.treats_per_feed) || L.treats_per_feed.length !== L.max) bad(`levels.treats_per_feed needs ${L.max} entries`);
+if (!(L.feeds_per_level >= 1)) bad('levels.feeds_per_level missing');
+if (!(L.breed_gate >= 1 && L.breed_gate <= L.max)) bad('levels.breed_gate out of range');
 for (const t of ['1', '2', '3', '4']) {
   for (const m of ['real', 'fast']) {
     if (!(EC.breeding.times.breed[m][t] > 0) || !(EC.breeding.times.hatch[m][t] > 0)) bad(`breeding time missing for tier ${t} (${m})`);
