@@ -36,6 +36,7 @@ ap.add_argument('--lead-pair', help='part the lead voice rides (default: woodwin
 ap.add_argument('--lead-wav', help='an already dry lead (skips the refit)')
 ap.add_argument('--keep-room', action='store_true', help='leave the lead as it is in the set')
 ap.add_argument('--refit', action='store_true', help='make the dry lead again even if one was made before')
+ap.add_argument('--out', help='write the part set to this folder instead of levels/<id>; no tour stop is added and no pictures are copied (Sing Island World reads it this way)')
 ap.add_argument('--meta-only', action='store_true', help='only redo notes.json and level.json (no lead refit, no mp3s)')
 ap.add_argument('--enemies', default=''); ap.add_argument('--elites', default=''); ap.add_argument('--boss', default='')
 ap.add_argument('--ground', default='#1E524C'); ap.add_argument('--accent', default='#FFD84A'); ap.add_argument('--blurb', default='')
@@ -60,7 +61,7 @@ if not S or not os.path.exists(os.path.join(S, 'notes.json')): sys.exit('need --
 info = json.load(open(os.path.join(S, 'stems.json'))); nj = json.load(open(os.path.join(S, 'notes.json')))
 parts = sorted(f[:-4] for f in os.listdir(S) if f.endswith('.wav') and f != 'full.wav')
 parts = [p for p in parts if p in nj['compact'] and nj['compact'][p]]   # a part with no notes cannot attack
-L = os.path.join(GAME, 'levels', a.id); os.makedirs(L, exist_ok=True)
+L = a.out or os.path.join(GAME, 'levels', a.id); os.makedirs(L, exist_ok=True)
 log = {}
 
 # ---------- 2. the lead dry
@@ -139,6 +140,7 @@ json.dump(notes, open(os.path.join(L, 'notes.json'), 'w'), separators=(',', ':')
 # ---------- 6. place pictures
 from PIL import Image
 def pic(name, h):
+    if a.out: return name   # another game: it brings its own pictures
     src = os.path.join(CAST, name + '.webp')
     if not os.path.exists(src):
         if os.path.exists(os.path.join(GAME, 'img', name + '.webp')): return name
@@ -156,8 +158,9 @@ level = dict(id=a.id, title=a.title, blurb=a.blurb, order=a.order, diff=a.diff,
 old = os.path.join(L, 'level.json')
 if os.path.exists(old): level['hard'] = json.load(open(old)).get('hard', 1)   # keep the balance check's knob
 json.dump(level, open(os.path.join(L, 'level.json'), 'w'), indent=1)
-idx = os.path.join(GAME, 'levels', 'levels.json')
-lv = json.load(open(idx)) if os.path.exists(idx) else []
+idx = None if a.out else os.path.join(GAME, 'levels', 'levels.json')
+lv = json.load(open(idx)) if idx and os.path.exists(idx) else []
 lv = [x for x in lv if x['id'] != a.id] + [dict(id=a.id, order=a.order)]
-lv.sort(key=lambda x: x['order']); json.dump(lv, open(idx, 'w'), indent=1)
+lv.sort(key=lambda x: x['order'])
+if idx: json.dump(lv, open(idx, 'w'), indent=1)
 print(json.dumps(dict(id=a.id, parts=parts, bars=nb, moments=level['moments'], drop=drop, fills=len(fills), chorus=chorus, mb=round(sum(sizes.values()) / 1e6, 1), lead=log.get('lead')), indent=1))

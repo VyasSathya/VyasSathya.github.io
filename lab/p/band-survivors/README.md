@@ -68,6 +68,7 @@ One command per song. From this folder:
   enemy health, spawns and damage.
 - It writes `levels/<id>/` (part mp3s, `notes.json`, `level.json`) and adds the stop to `levels/levels.json`.
 
+`--out <folder>` writes the part set somewhere else (another game, e.g. Sing Island World) without adding a tour stop or copying pictures.
 `--meta-only` redoes only `notes.json` and `level.json` (big moments, fills, chorus bars) and keeps the mp3s.
 
 Then balance it and publish:
@@ -103,3 +104,12 @@ members; "idle" stands still. Each stop gets the tour perks a player would have 
 Also split and ready for the same command: Day lawn A take 2 (`picks/a2_out`), Night B take 2 (`picks/b2_out`),
 Harbour fog B take 2 (`picks/f2_out`), Pull Lanes night idea 4, rooftop B 1:53 and rooftop B extended
 (`D:/music-battler-work/songs/pl116/*_out/set`). They are second takes or other ideas of the same places.
+
+## Instant replay (dev only)
+
+The Toybox replay kit (`vendor/replay.js`, copied from `C:/Dev/toybox/web-kit/replay`) is wired in and off by default: a fresh
+load has `ThumbyardReplay.isDev() === false`, nothing records, nothing shows. Turn it on from the title screen: five taps on the
+title, or hold backquote for 3 s. Then play; the last moment replays with backquote (or the Replay button on a phone) and
+Enter or a tap ends it. Moments: a boss or mini-boss kill, a combo from an instrument case, the singer under 20% health for
+2 s, a swarm ring cleared. The song keeps playing and the replay changes no game time or notes. The headless check skips all of
+it (`window.__BS_SIM`). Test helpers on `__bs`: `replay()`, `testBoss()`, `hit(e, d)`.

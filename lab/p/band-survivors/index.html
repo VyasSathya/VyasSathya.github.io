@@ -76,6 +76,7 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
 .band{display:flex;gap:6px;justify-content:center;margin:4px 0 20px;flex-wrap:wrap;max-width:560px}
 .band .slot{width:42px;max-width:42px}
 #veil{position:fixed;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(255,60,90,0) 55%,rgba(255,60,90,.45))}
+#rpov{position:fixed;inset:0;pointer-events:none;z-index:60}
 
 /* the tour map */
 #sMap{justify-content:flex-start;padding-left:0;padding-right:0;overflow-y:auto;touch-action:pan-y;background:linear-gradient(#0E2E2B,#16403C 40%,#1B4A45)}
@@ -171,6 +172,9 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
   <button class="go ghost" id="bMap">Tour map</button>
 </div>
 
+<div id="rpov"></div>
+
+<script src="vendor/replay.js"></script>
 <script>
 (()=>{
 'use strict';
@@ -352,6 +356,70 @@ function moveDir(){
   const l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l;}return[dx,dy];
 }
 
+/* ---------- instant replay: the Toybox kit (vendor/replay.js), dev only ----------
+   Off until the hidden switch on the title screen (five taps on the title, or backquote held 3 s). While off nothing records and
+   nothing shows. It never runs in the balance check (SIM). The song keeps playing during a replay; the replay changes no game time. */
+const RST=16; // a row: 0 key, 1 kind (0 singer, 1 member, 2 enemy, 3 shot, 4 case), 2 x, 3 y, 4 face, 5 height (singer: walk), 6 flags, 7 id, 8..11 and 13..15 values, 12 mouth cell or colour
+const SHOTK=['ring','wave','bub','big','orbit','spr','heavy','boom','line','homing'];
+const RIMG=[],RCOL=[];
+const rid=(a,k)=>{let i=a.indexOf(k);if(i<0){i=a.length;a.push(k);}return i;};
+let RID=0,runId=0,overRec=0,RS=null,rclock=0,swarms=[],lowT=0,lowDone=false,hidScreens=[];
+let RB=null,RBase=0,RN=0;
+const rev=(n,x,y,z)=>{if(REP)REP.event(n,x,y,z||0);};
+const rnote=(who,name,why,x,y)=>{if(REP)REP.noteEvent(who,name,why,x,y,0);};
+function mouthCell(m){if(m.lead&&S.hurt>.3)return 8;if(m.jump>.05)return 7;if(now()<m.mUntil)return m.mc;return m.heldSing?0:5;}
+function put(key,kind,x,y,face,h,fl,id,a,b,c,d,col,e,f,g){const o=RBase+RN*RST;
+  RB[o]=key;RB[o+1]=kind;RB[o+2]=x;RB[o+3]=y;RB[o+4]=face;RB[o+5]=h;RB[o+6]=fl;RB[o+7]=id;RB[o+8]=a;RB[o+9]=b;RB[o+10]=c;RB[o+11]=d;RB[o+12]=col;RB[o+13]=e;RB[o+14]=f;RB[o+15]=g;RN++;}
+function repCapture(buf,base,max){ // the singer, the band, the enemies in view (boss and elites first), the shots and the instrument cases
+  RB=buf;RBase=base;RN=0;
+  const hx=W/2/Z*1.3+80,hy=H/2/Z*1.3+100,cx=S.camx,cy=S.camy;
+  const m0=band[0];if(m0)put(1,0,m0.x,m0.y,m0.face,S.walk,0,0,m0.bop,m0.flash,m0.lean,m0.jump,mouthCell(m0),m0.dim,S.hp/S.max,S.hurt);
+  for(let k=1;k<band.length;k++){const m=band[k];put(1+k,1,m.x,m.y,m.face,50,0,ORDER.indexOf(m.part),m.bop,m.flash,m.lean,m.jump,mouthCell(m),m.dim,0,0);}
+  const lim=max-70;
+  for(let pass=0;pass<2;pass++)for(const e of enemies){if(e.dead||RN>=lim)continue;const sp=e.boss||e.elite;if((pass===0)!==sp)continue;
+    if(!sp&&(Math.abs(e.x-cx)>hx||Math.abs(e.y-cy)>hy))continue;if(!e._rid)e._rid=++RID;
+    put(100+e._rid%2000,2,e.x,e.y,e.face||1,e.h,(e.boss?1:0)|(e.elite?2:0)|(e.final?4:0)|(e.slowT>0?8:0),rid(RIMG,e.img),e.flash,e.hp/e.max,e.seed,0,0,0,0,0);}
+  for(const s of shots){if(RN>=max-8)break;const ki=SHOTK.indexOf(s.k);if(ki<0||Math.abs(s.x-cx)>hx||Math.abs(s.y-cy)>hy)continue;if(!s._rid)s._rid=++RID;
+    const an=s.an!==undefined?s.an:(s.vx!==undefined?Math.atan2(s.vy,s.vx):0);
+    put(2200+s._rid%1800,3,s.x,s.y,0,0,0,ki,an,s.r||0,s.R||0,s.k==='ring'?Math.min(1,s.t/s.life):(s.t||0),rid(RCOL,s.col),s.half||0,0,0);}
+  let c=0;for(const q of gems){if(!q.box)continue;if(++c>8||RN>=max)break;put(4000+c,4,q.x,q.y,0,0,0,0,q.t,0,0,0,0,0,0,0);}
+  return RN;
+}
+function repSave(){ // keep what apply will overwrite; the replay draws from copies and the live objects are never touched
+  RS={enemies,shots,band,gems,fx,texts,x:S.x,y:S.y,hp:S.hp,hurt:S.hurt,walk:S.walk,shake:S.shake};
+  joy=null;S.shake=0;fx=[];texts=[];}
+function repApply(fr){
+  const b=fr.buf,st=fr.stride,n=fr.count,be=[],bm=[],bs=[],bc=[];let singer=null;rclock=fr.t;
+  const mem=(o,lead,part)=>({part,lead,x:b[o+2],y:b[o+3],face:b[o+4]||1,bop:b[o+8],flash:b[o+9],lean:b[o+10],jump:b[o+11],mc:b[o+12],mUntil:1e9,dim:b[o+13],heldSing:false,lv:1,enterU:null});
+  for(let k=0;k<n;k++){const o=k*st,kind=b[o+1]|0;
+    if(kind===0){S.x=b[o+2];S.y=b[o+3];S.walk=b[o+5];S.hp=b[o+14]*S.max;S.hurt=b[o+15];singer=mem(o,true,'voice_lead');}
+    else if(kind===1)bm.push(mem(o,false,ORDER[b[o+7]|0]));
+    else if(kind===2){const fl=b[o+6]|0;be.push({img:RIMG[b[o+7]|0],x:b[o+2],y:b[o+3],face:b[o+4]||1,h:b[o+5],r:b[o+5]*.34,boss:!!(fl&1),elite:!!(fl&2),final:!!(fl&4),slowT:(fl&8)?1:0,
+      flash:b[o+8],hp:b[o+9]*100,max:100,seed:b[o+10],dead:false});}
+    else if(kind===3){const an=b[o+8];bs.push({k:SHOTK[b[o+7]|0],x:b[o+2],y:b[o+3],an,r:b[o+9],R:b[o+10],t:b[o+11],life:1,col:RCOL[b[o+12]|0]||'#fff',half:b[o+13],vx:Math.cos(an)*235,vy:Math.sin(an)*235});}
+    else if(kind===4)bc.push({x:b[o+2],y:b[o+3],t:b[o+8],box:true});}
+  band=singer?[singer].concat(bm):bm;enemies=be;shots=bs;gems=bc;
+}
+function repRestore(){ // exactly once per replay: the live state goes back and the notes played meanwhile are not fired
+  if(!RS)return;({enemies,shots,band,gems,fx,texts}=RS);S.x=RS.x;S.y=RS.y;S.hp=RS.hp;S.hurt=RS.hurt;S.walk=RS.walk;S.shake=RS.shake;RS=null;joy=null;lastU=songRaw();}
+function repAge(dt){for(const f of fx){f.t+=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.k==='note'){f.vy+=180*dt;f.rot+=f.vr*dt;}else if(f.k!=='snote'){f.vx*=.9;f.vy*=.9;}}}fx=fx.filter(f=>f.t<f.life);}
+function repEvent(name,x,y,z){
+  if(name==='kill'){const s=z||1;for(let i=0;i<5;i++){const an=i/5*6.28;fx.push({k:'puff',x,y,vx:Math.cos(an)*50*s,vy:Math.sin(an)*50*s,r:9*s,t:0,life:.4});}}
+  else if(name==='pop'){const ci=Math.floor(z/1000);fx.push({k:'pop',x,y,r:z-ci*1000,t:0,life:.25,col:RCOL[ci]||'#fff'});}
+  else if(name==='boss'||name==='combo'){const col=name==='boss'?LV.accent:(RCOL[z|0]||'#fff');for(let i=0;i<14;i++)fx.push({k:'note',x:x+rnd(-40,40),y:y-50,vx:rnd(-120,120),vy:-rnd(140,260),rot:0,vr:rnd(-4,4),t:0,life:1.3,col,s:1.3});}
+}
+function repBegin(){$('#hud').style.visibility='hidden';$('#veil').style.visibility='hidden';
+  hidScreens=[...document.querySelectorAll('.screen.on')];hidScreens.forEach(e=>e.classList.remove('on'));$('#rpov').style.pointerEvents='auto';}
+function repEnd(){$('#hud').style.visibility='';$('#veil').style.visibility='';hidScreens.forEach(e=>e.classList.add('on'));hidScreens=[];$('#rpov').style.pointerEvents='none';}
+function repReset(){if(!REP)return;runId++;lowT=0;lowDone=false;swarms=[];}
+function lowCheck(dt){const f=S.hp/S.max;if(f<.2&&S.hp>0){lowT+=dt;if(lowT>=2&&!lowDone){lowDone=true;rnote('Lead','held on at '+Math.round(f*100)+'% health','',S.x,S.y);}}else{lowT=0;if(f>=.35)lowDone=false;}}
+function swarmCheck(){for(let i=swarms.length-1;i>=0;i--){const s=swarms[i];if(S.t-s.t>90){swarms.splice(i,1);continue;}
+  let alive=0;for(const e of s.g)if(!e.dead)alive++;if(!alive){swarms.splice(i,1);rnote('Band','cleared a swarm of '+s.g.length,'',S.x,S.y);}}}
+const REP=(!SIM&&window.ThumbyardReplay)?ThumbyardReplay.create({camera:'2d',stride:RST,maxEntities:340,sampleHz:30,eventsPerFrame:24,keyField:0,posFields:[2,3],stepFields:[1,4,6,7,12],angleFields:[8],
+  isActor:(b,i)=>b[i+1]<3,overlay:$('#rpov'),tapElement:$('#sStart h1'),isTitle:()=>S.mode==='start',
+  gameCamera:()=>({x:S.camx,y:S.camy,zoom:1}),viewSize:()=>({w:W/Z,h:H/Z}),level:()=>(S.mode==='play'||S.mode==='over')?runId:-1,
+  capture:repCapture,save:repSave,apply:repApply,restore:repRestore,drawFrame:(dt,cam)=>{repAge(dt);draw(cam);},onBegin:repBegin,onEnd:repEnd,onEvent:repEvent,zoomIn:1}):null;
+
 /* ---------- HUD ---------- */
 const slotEls={};
 function renderSlots(){
@@ -463,6 +531,7 @@ function hit(e,d,kx,ky){
 }
 function kill(e){
   e.dead=true;S.kills++;
+  if(REP){rev('kill',e.x,e.y-e.h*.4,e.h/50);if(e.boss){rev('boss',e.x,e.y-e.h*.4,0);if(S.mode==='play')rnote('Band',e.final?'beat the final boss':'beat a mini-boss','',e.x,e.y);}}
   const s=e.h/50;
   if(!SIM){for(let i=0;i<7;i++){const an=i/7*6.28+rnd(-.3,.3);fx.push({k:'puff',x:e.x,y:e.y-e.h*.4,vx:Math.cos(an)*rnd(30,70)*s,vy:Math.sin(an)*rnd(30,70)*s,r:rnd(7,12)*s,t:0,life:rnd(.35,.5)});}
     fx.push({k:'note',x:e.x,y:e.y-e.h*.6,vx:rnd(-40,40),vy:-rnd(110,150),rot:rnd(-.4,.4),vr:rnd(-3,3),t:0,life:.9,col:FAM[PARTS[Math.floor(Math.random()*PARTS.length)]].col,s:s});}
@@ -538,11 +607,11 @@ function spawn(kind,x,y,opt){
 }
 function edgePoint(){const hw=W/2/Z+50,hh=H/2/Z+60;const side=Math.random()*(hw+hh)*2;let x,y;
   if(side<hw*2){x=-hw+side;y=Math.random()<.5?-hh:hh+40;}else{y=-hh+(side-hw*2)/(hh*2)*hh*2;x=Math.random()<.5?-hw:hw;}return[S.x+x,S.y+y];}
-function ringOf(kind,n,R){for(let i=0;i<n;i++){const an=i/n*6.28;spawn(kind,S.x+Math.cos(an)*R,S.y+Math.sin(an)*R*.85);}}
+function ringOf(kind,n,R){const out=[];for(let i=0;i<n;i++){const an=i/n*6.28;out.push(spawn(kind,S.x+Math.cos(an)*R,S.y+Math.sin(an)*R*.85));}return out;}
 function onBar(b,gb){ // b: bar in the loop, gb: bars since the song began
   const e=LV.energy[b]||0,R=Math.max(W,H)/2/Z+70,pool=rankPool();
   const fills=LV.fills&&LV.fills.length?LV.fills:null,afterFill=fills?fills.includes((b+NB-1)%NB):(b%8===0&&e>=.5);
-  if(afterFill&&S.t>25&&S.t-S.lastRing>15){S.lastRing=S.t;ringOf(pool[Math.floor(Math.random()*pool.length)],Math.round((24+12*e)*Math.min(1.6,1+vsMin()/15)),R);}
+  if(afterFill&&S.t>25&&S.t-S.lastRing>15){S.lastRing=S.t;const grp=ringOf(pool[Math.floor(Math.random()*pool.length)],Math.round((24+12*e)*Math.min(1.6,1+vsMin()/15)),R);if(REP&&grp.length>=20)swarms.push({g:grp,t:S.t});}
   if(!S.boss&&!S.bossDone){
     const isDrop=b===LV.drop,isMoment=LV.moments.includes(b);
     if(S.t>=FINAL_AT&&(isDrop||isMoment||(b%8===0&&e>=.6)||(S.t>=FINAL_AT+12&&b%4===0))){const[x,y]=edgePoint();S.boss=spawn('boss',x,y,{final:true});S.shake=.4;ringOf(pool[0],20,R);if(!SIM)flashMoment();return;}
@@ -573,7 +642,7 @@ function buildCombos(){COMBOS=[];const win=GM.combo_window_s;
 function openCase(){
   const ready=COMBOS.filter(c=>!combos.some(k=>k.id===c.id)&&owned[c.a]>=GM.combo_min_level&&owned[c.b]>=GM.combo_min_level);
   if(ready.length){const c=ready[Math.floor(Math.random()*ready.length)];combos.push(Object.assign({},c,{enterU:null,combo:true}));
-    banner(c.name+'!',FAM[c.a].col);if(!SIM)for(let i=0;i<14;i++)fx.push({k:'note',x:S.x+rnd(-30,30),y:S.y-50,vx:rnd(-120,120),vy:-rnd(120,220),rot:0,vr:rnd(-4,4),t:0,life:1.2,col:i%2?FAM[c.a].col:FAM[c.b].col,s:1.2});return;}
+    banner(c.name+'!',FAM[c.a].col);if(REP){rev('combo',S.x,S.y-50,rid(RCOL,FAM[c.a].col));rnote('Band','got the '+c.name+' combo from a case','',S.x,S.y);}if(!SIM)for(let i=0;i<14;i++)fx.push({k:'note',x:S.x+rnd(-30,30),y:S.y-50,vx:rnd(-120,120),vy:-rnd(120,220),rot:0,vr:rnd(-4,4),t:0,life:1.2,col:i%2?FAM[c.a].col:FAM[c.b].col,s:1.2});return;}
   const up=band.filter(m=>m.lv<MAXLV);
   if(up.length){const m=up[Math.floor(Math.random()*up.length)];owned[m.part]++;for(const o of band)if(o.part===m.part){o.lv=owned[m.part];o.bop=1;}renderSlots();banner(FAM[m.part].name+' up',FAM[m.part].col);return;}
   S.hp=Math.min(S.max,S.hp+30);banner('Snack','#FF9EC0');
@@ -612,6 +681,7 @@ function update(dt){
   if(dx||dy){S.fa=Math.atan2(dy,dx);S.walk+=dt;}else S.walk=0;
   S.hurt=Math.max(0,S.hurt-dt*2.5);S.shake=Math.max(0,S.shake-dt);
   S.hp=Math.min(S.max,S.hp+dt*(RP().regen_per_s+.35*perk('snack')));S.inv=Math.max(0,(S.inv||0)-dt);
+  if(REP){lowCheck(dt);if(swarms.length)swarmCheck();}
   const others=band.filter(m=>!m.lead),n=others.length;
   memberTick(dt);for(const m of band){if(m.lead){m.x=S.x;m.y=S.y;}}
   others.forEach((m,i)=>{const an=i/Math.max(1,n)*6.283+S.t*.35,r=60+n*5;const tx=S.x+Math.cos(an)*r,ty=S.y+Math.sin(an)*r*.78;
@@ -662,11 +732,11 @@ function update(dt){
       if(s.hit&&s.hit.has(e))continue;
       const a=Math.atan2(s.vy,s.vx);
       if(s.k==='bub'){for(const o of enemies){if(!o.dead&&dist2(s.x,s.y,o.x,o.y-o.h*.4)<(s.pop+o.r)*(s.pop+o.r))hit(o,s.dmg,Math.cos(a)*40,Math.sin(a)*40);}
-        if(!SIM)fx.push({k:'pop',x:s.x,y:s.y,r:s.pop,t:0,life:.25,col:s.col});s.life=0;break;}
-      if(s.k==='heavy'){s.hit.add(e);hit(e,s.dmg,Math.cos(a)*170,Math.sin(a)*170);if(!SIM)fx.push({k:'pop',x:e.x,y:e.y-e.h*.4,r:22,t:0,life:.18,col:s.col});if(--s.pierce<0){s.life=0;break;}continue;}
+        if(!SIM)fx.push({k:'pop',x:s.x,y:s.y,r:s.pop,t:0,life:.25,col:s.col});if(REP)rev('pop',s.x,s.y,s.pop+rid(RCOL,s.col)*1000);s.life=0;break;}
+      if(s.k==='heavy'){s.hit.add(e);hit(e,s.dmg,Math.cos(a)*170,Math.sin(a)*170);if(!SIM)fx.push({k:'pop',x:e.x,y:e.y-e.h*.4,r:22,t:0,life:.18,col:s.col});if(REP)rev('pop',e.x,e.y-e.h*.4,22+rid(RCOL,s.col)*1000);if(--s.pierce<0){s.life=0;break;}continue;}
       if(s.k==='line'){s.hit.add(e);hit(e,s.dmg,Math.cos(a)*30,Math.sin(a)*30);continue;}
       if(s.k==='big'){s.hit.add(e);hit(e,s.dmg,Math.cos(a)*230,Math.sin(a)*230);continue;}
-      if(s.k==='homing'||s.k==='spr'){hit(e,s.dmg,Math.cos(a)*50,Math.sin(a)*50);if(!SIM)fx.push({k:'pop',x:s.x,y:s.y,r:s.k==='spr'?12:18,t:0,life:.16,col:s.col});s.life=0;break;}
+      if(s.k==='homing'||s.k==='spr'){hit(e,s.dmg,Math.cos(a)*50,Math.sin(a)*50);if(!SIM)fx.push({k:'pop',x:s.x,y:s.y,r:s.k==='spr'?12:18,t:0,life:.16,col:s.col});if(REP)rev('pop',s.x,s.y,(s.k==='spr'?12:18)+rid(RCOL,s.col)*1000);s.life=0;break;}
     }
   }
   shots=shots.filter(s=>s.life>0);
@@ -693,8 +763,8 @@ let GC={};
 function groundColors(){const b=LV?LV.ground:'#1E524C',a=LV?LV.accent:'#FFD84A';
   GC={base:b,blob:hexA(mixHex(b,'#ffffff',.25),.12),tuft:hexA(mixHex(b,a,.35),.45),pebA:hexA(mixHex(b,'#ffffff',.35),.3),pebB:hexA(mixHex(b,a,.5),.28),
     stone:mixHex(b,'#ffffff',.22),sh:hexA(mixHex(b,'#000000',.6),.35)};}
-function ground(){
-  const T=128,hw=W/2/Z,hh=H/2/Z,x0=Math.floor((S.camx-hw)/T)-1,x1=Math.floor((S.camx+hw)/T)+1,y0=Math.floor((S.camy-hh)/T)-1,y1=Math.floor((S.camy+hh)/T)+1;
+function ground(cx,cy,z){
+  const T=128,hw=W/2/z,hh=H/2/z,x0=Math.floor((cx-hw)/T)-1,x1=Math.floor((cx+hw)/T)+1,y0=Math.floor((cy-hh)/T)-1,y1=Math.floor((cy+hh)/T)+1;
   for(let ix=x0;ix<=x1;ix++)for(let iy=y0;iy<=y1;iy++){
     const r=hash(ix,iy),bx=ix*T,by=iy*T;
     if(r<.16){g.fillStyle=GC.blob;g.beginPath();g.ellipse(bx+64,by+64,90,52,0,0,7);g.fill();}
@@ -745,13 +815,14 @@ function drawMouth(m,img,h,x,y,rot,sx,sy,hurt){
   g.save();g.translate(x,y);if(rot)g.rotate(rot);g.scale(m.face*sx,sy);
   g.drawImage(at.i,c*256,0,256,256,(mo.x-.5)*w-cs/2,-h+mo.y*h-cs*.25,cs,cs);g.restore();
 }
-function draw(){
+function draw(cam){ // cam: the replay's camera ({x,y,zoom}); none for the live view
   g.setTransform(1,0,0,1,0,0);
   g.fillStyle=GC.base||'#1E524C';g.fillRect(0,0,cv.width,cv.height);
   if(!LV||S.mode==='start'||S.mode==='map')return;
   const sh=S.shake>0?S.shake*14:0;const shx=rnd(-sh,sh),shy=rnd(-sh,sh);
-  g.setTransform(DPR*Z,0,0,DPR*Z,DPR*(W/2-(S.camx-shx)*Z),DPR*(H/2-(S.camy-shy)*Z));
-  ground();
+  const zz=cam?Z*cam.zoom:Z,ccx=cam?cam.x:S.camx,ccy=cam?cam.y:S.camy,clk=cam?rclock:S.t;
+  g.setTransform(DPR*zz,0,0,DPR*zz,DPR*(W/2-(ccx-shx)*zz),DPR*(H/2-(ccy-shy)*zz));
+  ground(ccx,ccy,zz);
   let ph=0;if(ac&&S.mode!=='start'){const u=pos(songRaw());ph=((u-LS)/BEAT)%1;if(ph<0)ph+=1;}
   const pr=1-ph;g.strokeStyle='rgba(255,255,255,'+(.25+.45*pr*pr*pr)+')';g.lineWidth=3;g.beginPath();g.ellipse(S.x,S.y+2,30+pr*pr*6,10+pr*pr*2,0,0,7);g.stroke();
   for(const q of gems){const bob=Math.sin(q.t*5+q.x)*2;
@@ -765,7 +836,7 @@ function draw(){
   list.sort((a,b)=>a[0]-b[0]);
   for(const[y,k,o]of list){
     if(k===0){const e=o,w=e.h*.9;shadow(e.x,e.y,w);
-      const hop=Math.abs(Math.sin(S.t*9+e.seed))*3,rot=Math.sin(S.t*9+e.seed)*.07;
+      const hop=Math.abs(Math.sin(clk*9+e.seed))*3,rot=Math.sin(clk*9+e.seed)*.07;
       if(e.boss||e.elite){g.strokeStyle=e.boss?hexA(LV.accent,.75):'rgba(255,255,255,.45)';g.lineWidth=3;g.beginPath();g.ellipse(e.x,e.y,w*.46,w*.16,0,0,7);g.stroke();}
       if(e.slowT>0){g.strokeStyle='rgba(255,111,168,.5)';g.lineWidth=2;g.beginPath();g.ellipse(e.x,e.y-e.h*.5,e.r*1.1,e.r*.5,0,0,7);g.stroke();}
       spr(e.img,e.x,e.y-hop,e.h,e.face,1,1,(e.boss||e.elite)?Math.min(e.flash,.035):e.flash,rot); // big ones are hit every frame: a light flash, never a white blob
@@ -861,13 +932,13 @@ async function goLevel(){const l=LEVELS[pickI];const b=$('#bGo');b.disabled=true
 async function begin(){
   if(!SIM){try{if(ac.state!=='running')await ac.resume();}catch(e){}}
   groundColors();if(!SIM)document.documentElement.style.setProperty('--bg',LV.ground);
-  reset();startSong();lastU=songRaw();
+  reset();repReset();startSong();lastU=songRaw();
   S.mode='play';if(!SIM){hideAll();$('#hud').classList.add('on');}
 }
 function lose(){S.mode='over';S.endT=S.t;if(SIM)return;bus.gain.setTargetAtTime(.45,ac.currentTime,.4);
   setTimeout(()=>{$('#oT').textContent='Knocked out';$('#oS').textContent=LV.title+'  -  '+fmt(S.endT);$('#bAgain').textContent='Retry';$('#bAgain').style.display='';$('#oP').innerHTML='';fillBand();show('#sOver',true);},700);}
 let perkChoices=[];
-function win(){S.mode='over';S.endT=S.t;S.won=true;
+function win(){S.mode='over';S.endT=S.t;S.won=true;overRec=3;
   for(const e of enemies){e.hp=0;kill(e);}enemies=[];S.shake=.3;
   const first=bestTier(LV.id)<0;SAVE.cleared[LV.id]=Math.max(bestTier(LV.id),TIER_I);
   perkChoices=first?Object.keys(PERKS).filter(k=>perk(k)<(PERK_MAX[k]||3)).sort(()=>Math.random()-.5).slice(0,3):[];
@@ -882,6 +953,7 @@ function win(){S.mode='over';S.endT=S.t;S.won=true;
     show('#sOver',true);},1100);}
 function fillBand(){const b=$('#oB');b.innerHTML='';for(const m of band){const d=document.createElement('div');d.className='slot';d.innerHTML='<img src="img/'+FAM[m.part].img+'.webp" alt=""><span class="lv">'+m.lv+'</span>';b.appendChild(d);}}
 function togglePause(){
+  if(REP&&REP.isPlaying())REP.end();
   if(S.mode==='play'){S.mode='pause';joy=null;ac.suspend();show('#sPause',true);}
   else if(S.mode==='pause'){show('#sPause',false);ac.resume().then(()=>{S.mode='play';lastU=songRaw();});}
 }
@@ -906,12 +978,14 @@ if(!SIM){
 let prevT=0;
 function frame(nowMs){
   requestAnimationFrame(frame);
+  if(REP&&REP.update(nowMs)){prevT=nowMs;return;} // a replay is playing: it drew this frame
   const dt=Math.min(.05,(nowMs-(prevT||nowMs))/1000);prevT=nowMs;
   if(S.mode==='play')update(dt);
   else if(S.mode==='over'){for(const f of fx){f.t+=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.k==='note')f.vy+=180*dt;}}fx=fx.filter(f=>f.t<f.life);
-    memberTick(dt);if(S.won)fireNotesVisual();}
+    memberTick(dt);overRec-=dt;if(S.won)fireNotesVisual();}
   if(S.mode==='play'||S.mode==='over'){S.camx+=(S.x-S.camx)*Math.min(1,dt*8);S.camy+=(S.y-S.camy)*Math.min(1,dt*8);}
   draw();if(S.mode==='play'||S.mode==='level'||S.mode==='pause')hud();
+  if(REP&&(S.mode==='play'||(S.mode==='over'&&S.won&&overRec>0)))REP.record(nowMs);
 }
 // after a win the band keeps bopping to the song
 function fireNotesVisual(){const u=songRaw();let a=lastU;lastU=u;if(u<=a)return;if(u-a>.25)a=u-.25;const pa=pos(a),pb=pos(u);
@@ -963,7 +1037,8 @@ if(!SIM){
 window.__bs={S,get band(){return band;},get enemies(){return enemies;},get owned(){return owned;},get shots(){return shots;},get gems(){return gems;},fireLog,NOTES,RATE,GM:()=>GM,SAVE:()=>SAVE,combos:()=>combos,openCase:()=>openCase(),
   levels:()=>LEVELS,loadLevels,simRun,songPos:()=>pos(songRaw()),gainXP:v=>{gainXP(v);},choose,setTime:t=>{S.t=t;},god:on=>{S.god=on;},ctx:()=>ac,
   layerGain:p=>LAYER[p]&&LAYER[p].gain.value,busGain:()=>bus&&bus.gain.value,unlockAll:()=>{LEVELS.forEach(l=>SAVE.cleared[l.id]=true);persist();},
-  play:i=>{pickI=i;return goLevel();},map:()=>renderMap()};
+  play:i=>{pickI=i;return goLevel();},map:()=>renderMap(),
+  replay:()=>REP,testBoss:()=>{const e=spawn('boss',S.x+150,S.y,{big:.75});S.boss=e;return e;},hit:(e,d)=>hit(e,d,0,0)};
 })();
 </script>
 </body>
