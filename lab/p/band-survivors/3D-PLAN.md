@@ -13,8 +13,9 @@ art), each checked against the files named in its section. Megabonk numbers come
   for the finale, and a crowd in the hundreds.
 - Engine: Unity 6000.7.0b9, URP, a new project beside the card game (`C:/Dev/music-battler/unity-survivors`), reading
   the web game's level folders and `levels/game.json` directly, so one song pipeline feeds both.
-- Feel: Megabonk's run speed (10 m/s), jump and gravity, a chase camera; no slide, wall climb or slope surfing (the band
-  has to follow). Combat stays on the ground plane, so the web balance and the bot check carry over.
+- Feel: Megabonk's run speed (10 m/s), jump, gravity and camera; no slide, wall climb or slope surfing (the band has
+  to follow). From the full breakdown (3b): tips from kills buy placed instrument cases on Megabonk's price curve, cards
+  roll Megabonk's 5 rarities, a gear slot like its tomes, powerups, and its Difficulty stat as Heat. Combat stays on the ground plane, so the web balance and the bot check carry over.
 - Art: 91 of the 96 characters the 9 places need already have a 3D model with a mouth fit; 5 band members are missing
   and every model's back is unpainted. Moves are whole-body squash and stretch in code, as he ruled.
 - Audio: every part scheduled on one DSP clock, notes fired against that clock, each part switched on the bar.
@@ -29,8 +30,14 @@ art), each checked against the files named in its section. Megabonk numbers come
 | Map size | 320 m square for every place | side = 1.1 x run seconds (230 to 420 m) | 1.1 x run seconds, clamped to 230 to 420 m; M0's graybox is 320 m |
 | Air jumps | none | one | none at start (band follow, phone parity); a perk may add one |
 | Rooftops gaps | phone has no jump | 1-2 m gaps to jump | every gap has a ramp or plank too; gaps are a shortcut on PC, never required |
-| Camera | Megabonk's (11 behind, FOV 85) | at FOV 85 the cast is 24-39 px on a phone, under the 40 px floor | phone: 11 behind, FOV 60, fixed pitch; PC: FOV 85 option with free pitch. Checked at the look gate |
+| Camera | Megabonk's (11 behind, FOV 85) | at FOV 85 the cast is 24-39 px on a phone, under the 40 px floor | Megabonk's camera (11 behind, FOV 85) on both. C measured the cast at card size (1.45 u); at the plan's own scale (0.08 u per web px) bodies are 3.2 to 6.7 u and the smallest crew is about 64 px on a phone (3b.10 edit 1). Fixed pitch on phone, free on PC; checked at the look gate |
 | Phone orientation | portrait | sideways or upright | his to rule (portrait recommended: the web game and Survivor.io are portrait) |
+
+## Megabonk, completely
+
+Vyas: "we have megabonk so understand it ocmpletly". The full breakdown from the installed game's own files is
+`docs/research/megabonk-complete.md` (every system, every fact tagged with its source). Section 3b takes it system by
+system: take, change or skip, with the reason. Its list 3b.10 corrects earlier sections; where they differ, 3b.10 wins.
 
 ## Reading the tags
 
@@ -269,6 +276,268 @@ only. This keeps the 3D game on the same balance as the web game and lets the we
 
 Everything else (ramp, ranks, elites, tiers, combos, XP) is read from the existing keys and never copied into this
 block. The web ignores the block. The Band Survivors lead owns the file.
+
+
+---
+
+## 3b. Megabonk, system by system: take, change or skip
+
+Every system in `docs/research/megabonk-complete.md` (sections named sN below), judged against our rulings: damage from the
+song's notes, one song per run (3.5 to 6.3 min), parts heard only while owned, the full song as the reward, the ramp in
+`levels/game.json` balanced by the bot check. Numbers kept are named; "ours" means set here and proved by the bot check.
+
+Scale note used in every row: the plan's 0.08 u per web px makes our bodies singer 5.3 u (66 px), members 4.0 u (50 px),
+crew 3.2 to 4.2 u (ranks h 40 to 52), elites 6.2 to 6.7 u (78 to 84). Megabonk's player is 3.85 u (s2.2). So Megabonk's
+distances and speeds carry over in units as they are.
+
+### 3b.1 Movement and camera
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| Move keys, pad, number-key picks | WASD, Space, Ctrl; offers on number keys; Rewired (s2.1) | Take | WASD/stick, Space/A jump, 1-2-3 picks; no slide key | standard, already in plan 8.1 |
+| Interact key | F/E, range 5 u (s2.1) | Change | no key: walk into a case, jar or shrine; touch radius 5 u | phone has one stick; shrines are stand-on zones anyway |
+| Quick restart | hold R 1.0 s (s2.1) | Take | hold R / pad Back 1.0 s; phone: pause menu | one-more-run loop costs nothing |
+| Jump buffer | 4 ticks = 0.08 s (s2.1) | Take | 0.08 s | feel, free |
+| Random enemy targeting | 0.75 setting (s2.1) | Skip | each family aims as the web code does (nearest, aimFrom) | aim rules are sim-tested |
+| Auto-select offers | after level 200 (s2.1) | Skip | - | our runs end near level 25 to 35 |
+| Physics step | 50 Hz (s2.2) | Take | 50 Hz sim, render interpolates | plan 3.1 already |
+| Gravity | -19.62 plus extra 11 (s2.2) | Take | same | feel |
+| Run speed | 10 u/s x MoveSpeed (s2.2) | Take | 10 u/s; web singer 128 px/s x 0.08 = 10.2 u/s, the same | matches both |
+| Acceleration | 2700 per mass, friction 0.25 (s2.2) | Change | 0 to top in 0.1 s, stop in 0.1 s | one rule for stick and sim (plan 3.1) |
+| Jump | impulse 7, apex 0.8 to 1.25 u (s2.2) | Take | 7, PC and pad only | phone has no jump |
+| Air jumps | 1 for everyone (s2.2) | Change | 0; an item (Megabonk Flappy Feathers, +1 jump) adds one | band follow and phone parity |
+| Slide, slide-jump x1.4, bunny hop window 0.3 s | slide above 8 u/s, force 200, cd 0.5 s (s2.2) | Skip | - | speed tech breaks band follow; the song, not distance, times the run |
+| Slopes | walk 45 deg, surf 30 deg (s2.2) | Change | max 25 deg, no speed change | below the surf angle; sim stays planar |
+| Wall climb, ladders, rails, jump pads | climb x1.5, ladder 11, rail x1.5, pad force 35 (s2.2) | Skip | - | each one leaves the band behind; revisit pads after M2 (the trail stores jumps) |
+| Water, lava | x0.75, x0.9, 1 dmg/s (s2.2) | Skip | water is a wall | band follow; places use water as edges (plan 5.2) |
+| Fall damage | from 30 to 140 u/s landing (s2.2) | Skip | - | no cliffs |
+| Contact cooldown | 0.3 s player, damage cd 0.15 s (s2.2) | Take | 0.3 s invincible, 0.7 s per enemy (game.json) | same 0.3 s, ours sim-tested |
+| Unstuck, out of bounds | stuck 1 s then push 2000; teleport back (s2.2) | Take | singer and members: 1 s stuck then hop back | plan 4.1 lost-member hop matches |
+| Body | capsule 3.85 x r 0.7 (s2.2) | Change | heights from web px x 0.08 (scale note); cast scaled about 2.2 to 3.7x over the card size 1.45 | see 3b.10 edit 1 |
+| Movement as build input | Calcium speed dmg, Scarf +50% airborne, Golden Sneakers 0.1 gold/m (s2.2, s9.2) | Skip | - | no speed tech; nothing pays for air time |
+| Camera mode, distance | third person, 11 behind (s3) | Take | PC 11 behind + 0.5 per member | with true-scale bodies the cast is big enough (edit 1) |
+| Zoom-out | +15 u with speed (s3) | Change | +15 u with band size and crowd density | speed is flat for us |
+| FOV | 85 config, 90 to 135 setting (s3) | Take | 85 default, 70 to 110 setting | PC norm; phone keeps its fixed camera |
+| Pitch | free, clamp 90 (s3) | Change | 15 to 70 deg below horizon | threat is on the ground |
+| Collision radius | 1 (s3) | Take | 1 | hills and props |
+| Bob, landing dip 6 | (s3) | Take | bob on the beat, dip on landings | feel; bob on beats is free |
+| Death camera | pull 4 u, slow-mo 1 s (s3) | Change | pull 4 u, picture slow-mo 1 s; audio never slowed | timeScale must not touch the song (plan 7.4) |
+| Case camera | FOV to 40 (s3) | Change | FOV -15 for one bar, no zoom to 40 | the crowd stays readable while the song runs |
+| Final boss intro | cinematic bars 1 s, FOV push (s3) | Take | bars 1 s as the band climbs the main stage, push on the drop's downbeat | the finale is our biggest moment |
+| Options | FOV, sens 1.0/pad 3.2, smoothing 0.6, shake on/off, minimap 1.35, particle opacity (s3) | Take | same set | accessibility, free |
+| Near/far clip | 0.3/1000 (s3) | Change | 0.3/450 (plan 3.2) | smaller places |
+| Minimap and full map | 3D minimap, map in pause (s4.2) | Take | minimap with main stage, cases, shrines; full map on pause | exploration needs it |
+
+### 3b.2 World and spawns
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| Maps and stages | 3 maps, 3 stages each (600/540/480 s), Graveyard 1 x 960 s (s4.1) | Change | 9 places, one song each, one stage per run | one song per run |
+| Map size | 600 to 768 u, 60 to 77 s to cross (s4.2) | Change | side 1.1 x run seconds, 230 to 420 u (plan 5.1) | keeps Megabonk's cross time as about 0.11 of the run |
+| How a map is built | seeded tile grid 40 u, 20 u height steps; or heightmap x11 (s4.2) | Change | hand-made place per song, height 0 to 8 u, ramps only; props scattered by seed | landmarks and main stage tied to the song; 20 u steps are cliffs |
+| Scenery by count | Forest 1: 300 trees, 200 bushes, 150 rocks, 40 logs per 360k u^2 (s4.2) | Take | same density, seeded, per place kit | looks full at low cost |
+| Edge and bounds | cliff edge fill, teleport back (s4.2) | Take | soft edge (hedge, rail, water), teleport back | band follow |
+| Enemy teleport-back | cd about 10 s, takes 0.75 s, bosses 2 s, despawn after 30 s out of play (s4.2) | Take | over 100 u: to the spawn ring, cd 10 s, 0.75 s pop; bosses never; despawn 30 s | numbers fit |
+| Fog | 0.006 to 0.012 per stage (s4.2) | Take | 0.006 most; Harbour Fog 0.012 | Harbour Fog's theme |
+| Map events | sandstorm 8 to 18 s, tumbleweeds 2.2 s max 25, lava every 30 s for 25 s (s4.2) | Change | one event per place on song sections (fog rolls in on the breakdown, rain on the chorus) | the song is the clock |
+| Interactable density | chests 0.00012/u^2 = 46, shrines 0.000042 = 14, 15 charge, 8 greed, pots 40+15, silver pots 6+1, microwave 1-2 (s4.2) | Change | cases 6 to 10, shrines 3 to 5, jars by Megabonk pot density (plan 5.2) | Megabonk's 46 assumes rising prices cap purchases; our runs are 35 to 60% as long |
+| Stage timeline | new enemy card every 60 s; mini 30% and 80%; swarms 40% and 70% for 30 s (s4.3) | Change | song events (fills, chorus, moments); Megabonk's 30/40/70/80% shares are the fallback when a song's moments are missing or too early | see edit 11 |
+| Objective line | Find portal, defeat boss, enter portal; Time's up (s4.3) | Change | "Build the band", "Get to the main stage", "Play the finale" | our goal is the band |
+| Director | credit cards, cost 1 (mini 40), weight, cost influence 0.6 (s5) | Skip | game.json ranks with rank_at_m | the ramp is VS data, sim-tested |
+| Alive target | 5 to 205 linear x (1 + 0.7 D + 0.4 stage) (s5) | Skip | floor 15 x 1.15^m, horde 200, cap 270 (game.json) | one rule file |
+| Summon interval | 2 s, 1 s at 100% D (s5) | Change | on the beat, more on loud bars | the song drives spawns |
+| Caps | 400 alive, 700 pool, 500/s, 200 per cycle (s5) | Change | alive 270, pool 1000, keep 200 per spawn event | game.json cap; per-event cap guards rings and horde |
+| Swarm | one type 30 s, HP x1.3, speed x1.2, every 0.5 s (s5) | Change | drum-fill ring of one crew type and the m11-14 horde; no x1.3/x1.2 | already balanced in the web game |
+| Enemy HP formula | base x tier x (1 + 1.1 D + 0.1/min + stage step) (s5) | Skip | 8 x 1.22^m (game.json) | sim-tested |
+| Damage, speed, knockback growth | +2.8%/min each; stage speed steps (s5) | Skip | game.json damage steps, +0.11%/s speed, web knockback resist (boss 0.08, elite 0.35) | sim-tested |
+| Late-game rules | CC immunity from 20:00, armor pen from 60:00 (s5) | Skip | - | runs end by 6:18 |
+| Drops per kill | 1 XP, gold, powerup 1% (max 50), chest 0.05% (s5) | Take | 1 note, tips, powerup 1% (max 50 on the ground), case 0.05% | all four fit; tips are new (3b.5) |
+
+### 3b.3 Enemies
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| Basic melee | Goblin 7 HP spd 5, Skeleton 20/5.5, Mummy 8/5.5 (s6.1) | Take | rank 0 crew (game.json) | same role |
+| Fast fragile | Ghoul 9 HP spd 9, Tumblebone 7/11, Wisp 8/7.5 (s6.1) | Take | ranks 1 and 4 (spd 55, 60 px/s) | already in ranks |
+| Tanks and late types | Goblin Tank 40 HP after 180 s, Mummy Ancient 70 after 360 s, Red Ghost 100 after 720 s (s6.1) | Take | ranks 5 and 6 via rank_at_m | same idea as canSpawnAfterTime |
+| Flying | Bee, Ghost, Wisp, Head ignore terrain (s6.1) | Change | float_drift crew hover over hedges and water, still planar | visual only, sim unchanged |
+| Ranged | Cactus Shooter, lob arc 20 (s6.2) | Skip | - | the web balance has no ranged crew; add only with a bot-check pass |
+| Loot pinata | Golden/XP Skeleton 50 HP spd 6, runs from player, breaks into gold or XP, never teleports (s6.1) | Take | one per place: a fan with a tip bucket (tips) and a note-jar fan (XP), 50 HP x hpScale, spd 6 u/s | cheap chase moment, rewards exploring |
+| Challenge enemies | HP x7, elite x15, purple mark (s5, s10.2) | Take | request booth ring: x7 HP, marked | numbers fit |
+| Elites | 1% chance, body x1.5, crown, first drops a chest, elites drop chests, HP x10 (s5) | Change | on chorus downbeats (web), HP 16/20 x (game.json), body = web h ratio (x1.6 to 1.9, never under 1.5), crown, every elite drops a case | the song places them; web already drops cases |
+| Special attacks | charge 1 s, radius 4, cd 5 s, end lag 1 s, ground warning 2 s (s6.2) | Change | warning 4 beats (1.6 to 2.4 s at 98 to 144 BPM), impact on a downbeat | close to Megabonk's 2 s and readable by ear |
+| Minibosses | 250 to 320 HP, 2 to 3 attacks (slam, mud splash, spikes, laser) (s6.1, s6.2) | Change | on big moments, mini 50 / mid 150 x level (game.json), 2 attacks each from Megabonk's set, on drum and brass hits | genre-learnings rank 3 |
+| Stage boss | 8000 to 10000 base, x2.5/x5 per stage, roots, lasers, pillars (s6.1, s6.2) | Change | final boss 200 x level (game.json), Megabonk's attack shapes fired on the drop's drum and brass hits | boss lives inside the song |
+| Boss pylons | invulnerable at 66% and 33% while 3 pylons charge (s6.2) | Skip | - | the fight is the song's last 40 s; a heal phase would outlast it |
+| Final boss | own arena, steals a weapon every 3 s, goons every 60 s, pylons 5 s, 10 s grace after death (s6.3) | Change | main stage is the arena; no stealing; crowd thins (web); 10 s grace = the outro plays out | stealing a member silences a part during the full-song reward |
+| Final Swarm | at 0:00 HP +4^(t/60)-1, dmg +2^(t/60)-1, silver x up to 8 (s6.3) | Change | only during the finale vamp (plan 5.3 B): HP +25% and spawns +10% per 8-bar vamp loop, fans x(1 + 0.25 per loop) max x2; Endless mode later uses Megabonk's curve as is | the run ends with the song; waiting stays a choice |
+| Secret fights | Bandit 11000 HP, Bush 10000, frogs (s6.1, s10.2) | Change | one hidden rival busker per place from M2; beating it unlocks a member variant | exploration reward, ties to meta |
+| Boss orbs, meteors | orbs 1.5 s hops, meteors 200 (s6.2) | Skip | - | more patterns than a 40 s fight needs |
+
+### 3b.4 Your side: characters, weapons, tomes, items, rarity
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| Characters | 21: start weapon + passive + stat mods (+-2 to 15%) (s7) | Change | singers: starting member + one passive + small mods; 3 at M2, 2 free | genre-learnings rank 4; her lead is the same song's lead line re-voiced, never new music |
+| Passive scaling | +1 to 1.5% per level (Luck, damage, crit, XP) (s7) | Take | +1 to 1.5% per player level, e.g. Crooner held waves +1.5%/lv | small, readable, cheap to balance |
+| Character price | silver = field x 1.75, shown after 0 to 50 quests (s7) | Take | fans x 1.75 price shape, shown after 3 to 15 feats | see 3b.7 |
+| Character ranks | account XP x0.1 to 240 ranks (s7) | Skip | - | grind is the genre's top complaint |
+| Weapons | 30, slots start about 2, up to 4 (s8, s15) | Change | band members are the weapons; no slots, every part joins | the full song needs every part |
+| Weapon cooldown, duration | 0.3 to 2 s cycles (s8) | Skip | the part's notes are the trigger | the core rule |
+| Weapon level rolls | 2 stats per level from the weapon's pool, x rarity 1/1.2/1.4/1.6/2; Anvil 3 stats; cap 40 (s8) | Change | a member level rolls 2 stats from its family pool (dmg, size, pierce, count, wave length) x rarity; keep MAXLV 5 and the web's shape steps at lv 2 and 4 | build variety inside a 5-level cap |
+| Aim weapons | Sniper, Shotgun crosshair (s8) | Skip | - | one-stick phone |
+| Proc coefficient | 0.7 to 1.5 per weapon (s8, s9.2) | Change | per family: busy parts 0.6 to 0.8 (drums, scat), sparse parts 1.0 to 1.5 (bass, synth) | on-hit items need it, and it matches the Pull Lanes damage split |
+| Projectile caps | 80 without spacing, orbit 50 (s8) | Take | 80 per note event, 50 orbit | perf guard |
+| Tomes | 26 stat books to lv 99, few slots (s9.1) | Change | "gear": 8 kinds, 3 slots, cap 5: Damage +8%, Speed +15%, Size +10%, Sustain (Duration) +15%, Double (Quantity) +1, Magnet (Attraction) +75%, Health +25, Luck +8% | the classic passive layer; Cooldown and Projectile Speed cut (notes set timing) |
+| Cursed tome | +3.5% Difficulty per level (s9.1) | Change | "Encore demand" gear: +3.5% Heat per level, more tips | risk-for-reward the player picks |
+| Items | 87, stack uncapped (Anvil 1, Lamp 2, Joe's 10) (s9.2) | Change | a starter pool of about 20 from cases: Boss Buster +15%, Clover +10% luck, Golden Glove +15% tips, Gym Sauce +10% dmg, Backpack +1 count, Echo Shard (extra note), Key 10% free case, Old Mask +15% elites, Turbo Socks +15% speed, Oats +25 HP, Borgar heal drop 2%+1%, Brass Knuckles +25% within 8 u, Spicy Meatball 25% splash, Giant Fork megacrit x4, Sucky Magnet, Flappy Feathers (+1 jump), Za Warudo (one fatal hit), Anvil | stacking is why builds go absurd (s0 point 3); names in music terms |
+| Items skipped | Idle Juice, Campfire, Kevin, Speed Boi, Bob (Dead), Golden Sneakers (s9.2) | Skip | - | reward standing still, slow time against the song, or pay for distance |
+| Item rarity | Common 70, Rare 15, Epic 6, Legendary 1.5 (s9.3) | Take | same weights, gray/blue/pink/gold | known convention, solid data |
+| Level-up rarity | 5 tiers, weights not decoded (s9.3, s15) | Change | 60/25/10/4/1 (ours), magnitude 1/1.2/1.4/1.6/2 | Megabonk's array is unknown |
+| Luck | S = ln(1 + L) x 1.5, weight x 1.5^(-S(n-1-i)); sources Clover 10%, Luck tome 8%, shrine 5%, pot 0.5% (s9.3) | Take | same formula and sources | the one lever that shifts rarity |
+
+### 3b.5 Interactables
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| Chest price | 30 x 1.22^n + 35n (+ steps after 10): 30, 72, 115, 159, 206, 256 (s10.1) | Take | placed cases cost tips on this curve x a case-price multiplier the bot check sets; drop cases stay free | exploration is the economy (s0 point 2) |
+| Chest kinds | 5% free, Key 10%/stack, evil, ghost, elite drop (s10.1) | Change | 1 free placed case near the start; Key item; no evil chest | 5% of 8 cases is under one; the free one teaches the loop |
+| Chest opening | rarity rises 0.32 s per tier, FOV 40, coins, banish in the reveal (s10.1) | Change | pauses like a level-up (song plays); one tier per beat, reveal on the next drum fill, one-bar solo of the part (plan 7.3); banish allowed | the reveal lands on the music |
+| Pots | gold 0.3 x current chest price, big x2, +0.5% luck each (s10.1, s9.3) | Take | tip jars at 0.3 x current case price, big x2, +0.5% luck | jars stay worth breaking as prices rise |
+| Silver pots | 6 small + 1 big per map (s4.2) | Change | 1 to 2 gold-record jars per place give fans | meta currency from exploring |
+| Gold on screen | max 300, flies at up to 40 (s10.1) | Take | 300, fly 40 u/s | perf and feel |
+| Charge shrine | 5 s, 15 per map, 0.8% golden (3 legendary), pitch 0.5 to 1.5, stat values Max HP +15, Dmg +12%, Move +8%, Pickup +20%, Size +8%, Duration +8%, Luck +5%, Crit +5%, Projectiles +1 (s10.2) | Change | small stage: stand 2 bars (3.3 to 4.9 s at 144 to 98 BPM), pick 1 of 3 from Megabonk's stat list x rarity, 0.8% golden; unpitched riser sfx | 2 bars is Megabonk's 5 s; a pitched riser would clash with the song |
+| Greed shrine | +5% Difficulty per use for gold, 8 per map (s10.2) | Change | heckler: +5% Heat per talk, a tip payout scaled to case price; 1 per place | plan said +0.1, the prefab is 0.05 |
+| Moai | free item offer, 4 hidden luck modes (0.5x, 1x, 1.5x, all legendary), joke text (s10.2) | Take | fortune booth: pick 1 of 2 items, same 4 modes and a joke line per mode; 1 per place | free, funny, cheap |
+| Shady Guy | shop at hat rarity, price 30 x 1.22^(0.65 n) x (stage + 1), x2/x4/x8 Rare/Epic/Legendary, leaves after a buy (s10.2) | Take | merch stand, same formula without the stage term; leaves with a joke line | plan 5.1 misread 0.65 (edit 4) |
+| Microwave | clone an item, eats one of the same tier, limited uses, can explode; 1-2 per map (s10.2) | Change | loop pedal, 1 per place from stop 4 on | needs a few items first |
+| Challenge shrine | challenge enemies x7, elite x15, kill all for a reward (s10.2) | Change | request booth: marked ring on the next downbeat, x7 HP, clear in 8 bars for a case (plan 5.1) | song-timed |
+| Boss curse | extra boss for extra reward; 2 in a stage unlocks Speed Boi (s10.2) | Change | rival poster: a rival mini-boss on the next big moment, drops a case; 2 in a place is a feat | plan 5.1 |
+| Shrine of Succ | pulls all XP, range 100 (s10.2) | Take | spotlight: pulls every note within 100 u; 1 per place | quick relief, cheap |
+| Shrine of Balance | one stat up, one down (s10.2) | Skip | - | one map only, noise |
+| Boss portal | summon boss when ready, then next-stage portal (s10.2) | Change | the main stage (plan 5.3 B) | the finale is ours |
+| Secrets | banana, cage, boomboxes, tumbleweed 5% drops, frogs, gifts (s10.2) | Change | 1 to 3 per place (caged member, rival busker, hidden case); no boombox music | nothing heard that no member plays |
+| Powerups | 8 kinds, 1% per kill, max 50, durations not found (s10.3) | Change | 6 kinds, durations in bars: Mic drop (Nuke), Freeze (crowd stops 2 bars, song does not), Shield (1 hit), Solo (band dmg x1.5 for 4 bars, the Rage), Quick feet 4 bars, Magnet, plus Snack | time never stops; bars are our clock |
+
+### 3b.6 Progression in a run
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| XP per enemy | 1 each; elite multiplier unknown (s11) | Take | 1 per crew; elite 8, boss 30 or 72 (web dropGem) | matches the web |
+| XP curve | 7, then 5 + 5.325 i^1.065; lv 10 at 377 (s11) | Skip | 5 + 5 (L - 1) (game.json); lv 10 at 225 | 10 to 13 members must join in a short run |
+| Shard colours | blue, yellow, red, purple Echo (s11) | Take | note pickups coloured by value, purple for Echo | read value at a glance |
+| Shard merging | radius 0.5 to 8 u over 900 s; lists combine past 500 (s11) | Change | radius 0.5 to 8 u over the run length; merge past 420 (web) | same curve, our clock |
+| Pickup range | 5 u, +75% per Attraction (s11) | Change | 10.4 u (web 130 px), Magnet gear +75% | sim-tested |
+| Level-up screen | full pause, 4 slots, about 3 offers (s11, s14) | Take | pause, song keeps playing, 3 cards (Stadium 2) | the web rule |
+| Offer kinds | new weapon, weapon level, tome (s11) | Change | new member, member level, gear; Snack when the pool is empty | members first so the band completes on time (memberAt) |
+| Reroll, skip, banish | charges = shop level, max 6 each (s11) | Change | max 3 each, from the meta shop; banish never removes a part | the full song needs every part |
+| Gold in run | kills, pots, greed, items; resets per run (s10.1) | Take | tips: kills, jars, heckler; buys cases and merch; resets per run | gives exploring a purpose |
+| Level cap | 9999, weapon 40, tome 99 (s8, s11) | Change | members 5, gear 5 | short runs |
+
+### 3b.7 Meta
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| Silver | pots, challenge x1.5 to x2, Silver tome +12%, swarm multiplier, run end, 60 s timer (s12) | Change | fans: run end x venue tier (x1, 1.25, 1.5, 1.75, 2), gold-record jars, vamp multiplier | same sources, our modes |
+| Unlock price | field x 1.75 (s12) | Take | price in fans x 1.75 shape | proven pacing |
+| Features by runs | unlocks 1, leaderboards 2, quests 4, quick quests 5, shop 6 (s12) | Take | tour map run 1, feats 2, quick feats 3, shop 4 | first hour opens a thing per run (genre-learnings rank 8) |
+| Quests | 264 achievements unlock content, then bought with silver (s12) | Change | about 50 named feats unlock singers, member variants, gear, items | genre-learnings rank 5 and 8; a 9-stop game needs fewer |
+| Quick quests | 4 shown (s12) | Take | 4 | steady short goals |
+| Shop: Refresh, Skip, Banish | 8 base, +5, x1.3, 6 levels; shown at 20/30/40 quests (s12) | Change | 3 levels each, shown at 5/8/12 feats | runs are shorter |
+| Shop: weapon and tome slots | 25 and 35 base, 2 levels, +100 (s12) | Change | gear slots +1 x 2 only | members have no slots |
+| Shop: silver gain | 20 levels, x1.25 (s12) | Take | fan gain, 10 levels | refund-free mild grind |
+| Toggler | 50, after 40 unlocks (s12) | Take later | toggle items and gear in the pool | builds get steerable after M3 |
+| Boombox (pick music) | 5 (s12) | Skip | the Songbook plays back every part heard (genre-learnings rank 8) | the song is the level |
+| Hats | 22, quest unlocked (s12) | Take later | hats for the singer | the vinyl-toy look sells cosmetics |
+| Leaderboards | after 2 runs; challenges excluded (s12, s13) | Take later | Steam only | M5 |
+| Tour perks (ours) | none in Megabonk | Keep | lungs, feet, magnet, loud, skin, snack, roadie, encore | the web basis |
+
+### 3b.8 Difficulty
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| Tiers | Tier 1/2/3: HP 0.80/0.95/1.05, dmg 0.75/0.95/1.10, speed 0.85/0.98/1.065; Tier N = N stages (s5, s13) | Change | venue tiers Open Mic to Stadium, one rule each (game.json) | one song per run |
+| Difficulty % stat | per 100%: +110% HP, +70% spawns, summon interval halved (s5, s13) | Take | "Heat" run stat: HP x(1 + 1.1 H), spawns x(1 + 0.7 H), shown on HUD; from heckler, rival poster, Encore demand gear | player-chosen danger for reward (s0 point 4) |
+| Heat sources | Cursed tome 3.5%, Skuleg 7%, Grabbies 10%, Greed 5%, Chadwell 10% (s13) | Take | heckler 5%, Encore demand 3.5%/lv, a Skuleg-style item 7% | same steps |
+| Challenges | oh no x1.25/1.5/2, Chonk, Hyper, Swarm, Turbo, Fragile, Pacifist, AFK, Floor is Lava (s13) | Take later | gig modifiers after M2: Chonk, Swarm, Fragile, Hyper (+10 to 15% tempo, genre-learnings rank 11), fans x1.5 to 2 | Pacifist and AFK need player attacks, ours are automatic |
+| Speedrun limits | 4.25 to 30 min (s13) | Skip | - | the song sets the length |
+| Easy/Normal/Hard/Cooked | labels only (s13) | Skip | - | venue tiers already |
+
+### 3b.9 Feel and audio
+
+| System | Megabonk (numbers, source) | Verdict | For Band Survivors | Why |
+|---|---|---|---|---|
+| Level-up cards | big rarity-coloured cards, number keys (s14) | Take | same, rarity colours | read at a glance |
+| XP pickup chain | pitch 0.8 to 1.8 as pickups chain; 20 to 60 per 2 s window; own volume slider (s14) | Take | same chain and caps; checked against the stems, made unpitched if it clashes | top juice in the genre; sound design is wanted (2026-11-25) |
+| Sound variety | pitch 0.94 to 1.06, vol +-0.1, same sound blocked 0.06 s (s14) | Take | in the effects player (web sfx/cues.json has cap and gap) | stops machine-gun repeats |
+| Speed wind | rises 7 to 55, pitch to 1.8 (s14) | Skip | - | no speed tech |
+| Damage numbers | pool 100, rise 8, scale 4, fade after 0.5 s over 0.4 s; crit and megacrit text; toggle (s14) | Take | same; web cap 30 and big at 40+ kept on phone | feel |
+| Enemy hit | flash 0.08 s, interval 0.14 s, dissolve 0.3 s (s14) | Take | flash 0.08 s, death pop-and-shrink 0.3 s | web flash is 0.1 s, same |
+| Crits | x2, overcrit, megacrit x4 (s14, s9.2) | Change | crits only from gear and items | the base game has none |
+| Camera shake | Damage 0.75/14/0.25 s, cd 0.25 s; Landing 0.4/0.6 s; Explosion 1/1.3 s; toggle (s14) | Take | same presets | measured values |
+| Player hurt | flash, low-HP vignette, music low-pass 1400 Hz at low HP (s14) | Change | flash and vignette; low-pass 1400 Hz under 25% HP on every part except voice_lead | tension cue; the singer (you) stays clear |
+| Pop-ups | +XP/+gold 0.75 s, item feed, toast 0.75 s in 4 s stay, map title 2 s (s14) | Take | place and song title 2 s; feat toast; item feed | free |
+| Alerts | "Boss Spawned!", "Swarm Incoming!", "Final Swarm Incoming!" (s14) | Change | announcer lines plus text: elite on the chorus, ring on the fill, "full band", "encore"; placed between vocal phrases | announcers wanted (2026-11-25) |
+| Chest show | slot-machine rise, coin fountain (s14) | Change | see case opening (3b.5) | on the beat |
+| Death | slow-mo 1 s, desaturate -40, contrast +20, joke line, damage by source (s14) | Take | same, damage by band member; song stops on the next bar line | shows which part did the work |
+| Win | silver count 1.75 s, records (s14) | Take | fans count 1.75 s while the full song plays | the reward stays the song |
+| Music per map | 4 tracks (intro + loop) random, a boss track, character themes, jukebox (s14, s4.1) | Change | one song per place: intro + loop (plan 2.3), the finale vamp and drop of the same song as the boss music; no boss track, no theme songs | parts from one song; Claude never composes |
+| Humour | every text has a joke (s14) | Take | joke lines on booth, merch, items, death | tone fits the vinyl monsters |
+| Performance guards | auto particle opacity, enemies past 50 u simplified, shard merge, 700 pool (s14) | Take | same; 50 u is the LOD1 switch | phone budget |
+
+### 3b.10 What the full picture changes in this plan
+
+1. 3.1 Body and 6.1/6.5 sizes. Now: cast at the card height 1.45 u; at 11 behind, FOV 85 it is 29 px on a phone, so the phone
+   camera moves to FOV 60. Should say: world heights = web px x 0.08 (singer 5.3 u, members 4.0, crew 3.2 to 4.2, elites
+   6.2 to 6.7; Megabonk's player 3.85 u, s2.2); smallest crew is then about 64 px at 11 behind FOV 85 on 402 CSS. Rerun 6.5.
+2. 3.1 "Jump over the crowd" and the 3d block `jump_safe_u 1.5`. Now: no contact hits with feet above 1.5 u. Should say: the
+   jump apex is 0.8 to 1.25 u (s2.2), so 1.5 is never reached; set 0.6 u or drop the rule.
+3. 4.1 Spacing. Now: 1.6 m between members. Should say: spacing in body widths (about 3.5 u at 4.0 u bodies), two wide from
+   8 members (13 = about 23 u); stopped, the band takes the web ring 4.8 + 0.4 n u.
+4. 5.1 Merch stand. Now: "one of three cards at 0.65 price". Should say: price 30 x 1.22^(0.65 n) x case multiplier, x2/x4/x8
+   for Rare/Epic/Legendary, leaves after one buy (s10.2).
+5. 5.1 Heckler. Now: "+0.1 Difficulty". Should say: +5% Heat per talk (prefab 0.05, s10.2), with Heat = HP x(1 + 1.1 H),
+   spawns x(1 + 0.7 H) (s13); add `heat` to the 3d block, never to the ramp.
+6. 5.1 Cases and jars. Now: whether placed cases cost tips is open. Should say: placed cases cost tips on 30 x 1.22^n + 35n x
+   a bot-set multiplier, 1 free near the start, drop cases free; jars pay 0.3 x current case price, big x2 (s10.1).
+7. 5.1 Shrines. Add the spotlight (Succ, pull notes 100 u) and the fortune booth (Moai, 4 luck modes); small stage pays from
+   Megabonk's charge-stat list x rarity, 0.8% golden; loop pedal (microwave) from stop 4.
+8. 3.4 and 4.3 Level-up. Now: XP row only. Should say: 1 note per crew kill (elite 8, boss 30/72); 3 cards rolled at 5
+   rarities (60/25/10/4/1, x1/1.2/1.4/1.6/2); a member level rolls 2 stats from its family pool x rarity (MAXLV 5); gear as a
+   third kind (8 kinds, 3 slots); reroll/skip/banish max 3, banish never a part. Web game first, then the bot check.
+9. Cases (README, plan 4.5). Now: a case gives a combo, else a member level. Should say: combo first, else an item from a pool
+   of about 20 taken from Megabonk (table 3b.4) at 70/15/6/1.5 with Luck (s9.3); members level from cards only.
+10. 3.4 XP pickups. Add: shard merging radius 0.5 to 8 u over the run length (Megabonk: over 900 s, s11), value colours.
+11. 3.4 Swarms and mini-bosses. Add: when a song's moments are missing or too early (Night Market, Marsh: drop at bar 4), the
+    director uses Megabonk's shares, mini at 30% and 80% of the run, rings at 40% and 70% (s4.3), until the cue sheet exists.
+12. 5.3 (B) vamp. Now: "ours softer, set by the bot check" and two open questions. Should say: HP +25% and spawns +10% per
+    8-bar vamp loop, fans x(1 + 0.25 per loop) max x2 (Megabonk silver max 8x, s6.3); the curtain opens by itself after the
+    4th loop; no weapon (member) stealing; 10 s grace after the boss = the outro.
+13. 6.1 Slot scale. Now: elite x1.3, boss x2.0. Should say: elite = web h ratio (x1.6 to 1.9, Megabonk floor x1.5, s5), crown
+    marker; boss x2.0 stays.
+14. 7.1 "No sound effects today". Now stale: the web effects player exists (commit 24b64d8, sfx/cues.json, empty). Should say:
+    effects player with Megabonk's variety rules (s14), XP chain 0.8 to 1.8, low-pass 1400 Hz under 25% HP except voice_lead,
+    announcer lines for the alerts.
+15. 7.2 Music per place. Add: Megabonk uses 4 random tracks plus a boss track per map (s14); ours is one song: intro + loop, the
+    finale section and drop are the boss music; the Songbook replaces the jukebox.
+16. New 3.7 Powerups. 1% per kill x powerup chance, max 50 on the ground (s5, s10.3); 6 kinds with durations in bars
+    (Mic drop, Freeze crowd 2 bars, Shield 1 hit, Solo x1.5 dmg 4 bars, Quick feet 4 bars, Magnet) plus Snack.
+17. New 4.7 Singers. 3 at M2 (2 free): starting member, passive +1 to 1.5% per player level (s7), mods within +-15%; the lead
+    is the same song's lead line re-voiced by the voice pipeline.
+18. 5.2 Each place adds a loot-pinata fan (Golden/XP Skeleton: 50 HP, spd 6, runs, never teleports, s6.1) and one hidden rival
+    busker (Bandit/Bush, s6.1) from M2.
+19. 9 Milestones. M2 adds tips, case prices, gear, items, rarity, Heat and powerups to the C# sim and the web sim together;
+    the kite bot gets a loot goal (walk to the nearest affordable case or shrine when nothing is within 15 u). M3 adds the
+    meta (about 50 feats, fans, shop with 3-level reroll/skip/banish, features opening over the first 4 runs, s12).
+20. 3.6 The 3d block gains `"heat_per_heckler": 0.05, "case_price": [30, 1.22, 35], "jar_frac": 0.3, "merge_r": [0.5, 8],
+    "powerup_chance": 0.01, "powerup_max": 50, "jump_safe_u": 0.6`; every new number still sim-checked.
+
+### 3b.11 New decisions for Vyas
+
+None new. Each choice above has a default that follows his rulings. Two cards already on the plan's list get Megabonk
+defaults to show him with the options: bs3d-finale (B now has a measured cost and a fan multiplier, edit 12) and the M2
+"cases cost" question (default: placed cases cost tips, drops free, edit 6). Edits 8 and 9 change the web game he played
+(cards with rarity, gear, items from cases); they go into the web build first and he plays it before 3D uses them.
 
 
 ---
@@ -972,14 +1241,15 @@ Already answered, so not asked (source):
 | World look | The soft vinyl-toy style, each place its own colours | Music Battler DECISIONS 2026-11-21: "sure do what u need with that style now" |
 | Moves: squash and stretch or rigged limbs | Squash and stretch, per character size | Music Battler DECISIONS 2026-11-22 |
 | Outline | None, the approved vinyl look; revisited only if the look gate fails | Same ruling; look gate 6.5 |
-| Camera | Phone 11 behind at FOV 60, fixed pitch; PC adds FOV 85 | Look gate numbers 6.5 (his 2026-11-20 size concern) |
+| Camera | Megabonk's: 11 behind, FOV 85; fixed pitch on phone | 3b.10 edit 1: at our world scale the smallest crew is about 64 px on a phone, over the 40 px floor (his 2026-11-20 size concern) |
 | Where the project lives | New 6000.7.0b9 project at music-battler/unity-survivors | Section 2.2; Unity version rule from the master |
 | Phone jump | None on phone; one jump on PC and pad | Section 3.1; one-thumb play |
 | Combat on the ground plane | Yes | Keeps the balance check (9) |
 | Floor iPhone | A14/A15 class, measured at the phone milestone | Section 8 proposal |
 | Elite and boss scale | x1.3 and x2.0, tuned at the look gate | Section 6.5 |
 | Bell Garden's boss | A variant of the gong golem until art time | Section 5.2 |
-| Run length, singer switching, cases cost | One song per run, no switching, cases free: as the web game he played | The web game; still open in DECISIONS.md and asked when 3D reaches the tour (M2) |
+| Run length, singer switching | One song per run, no switching: as the web game he played | The web game; still open in DECISIONS.md and asked when 3D reaches the tour (M2) |
+| Do instrument cases cost | Cases dropped by elites stay free; placed cases cost tips on Megabonk's price curve | 3b.10 edit 6; shown to him with the M2 changes in the web game first |
 
 Asked when their step comes (not before):
 - Spend: the five missing band models (only if free TRELLIS fails), band backs (only if the free repaint fails), place

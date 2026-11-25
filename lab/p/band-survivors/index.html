@@ -242,8 +242,8 @@ function saveOpt(){try{localStorage.setItem(OPT_KEY,JSON.stringify(OPT));}catch(
 let sfxBus=null,CUES={};const SFXBUF={},SFXLIVE={},SFXLAST={};
 async function loadSfx(){if(SIM)return;try{CUES=await loadJSON('sfx/cues.json');}catch(e){CUES={};return;}
   for(const id in CUES)for(const f of (CUES[id].files||[]))if(!SFXBUF[f])fetch('sfx/'+f).then(r=>r.arrayBuffer()).then(decode).then(b=>{SFXBUF[f]=b;}).catch(()=>{});}
-function sfx(id,vol){
-  if(SIM||!ac||!sfxBus||!OPT.sound)return;const c=CUES[id];if(!c||!c.files||!c.files.length)return;
+function sfx(id,vol){ // a level's own cue (win@day-lawn, cut from its song) wins over the shared one
+  if(SIM||!ac||!sfxBus||!OPT.sound)return;if(LV&&CUES[id+'@'+LV.id])id=id+'@'+LV.id;const c=CUES[id];if(!c||!c.files||!c.files.length)return;
   const t=ac.currentTime,live=SFXLIVE[id]||0;
   if(!c.keep&&(live>=(c.cap||4)||t-(SFXLAST[id]||-9)<(c.gap||0)))return;
   const f=c.files[Math.floor(Math.random()*c.files.length)],buf=SFXBUF[f];if(!buf)return;
