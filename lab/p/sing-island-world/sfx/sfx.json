@@ -1,0 +1,5 @@
+{
+ "about": "Recorded effect files for Sing Island World. Put <event>.m4a beside this file and add the event name to files; the page plays it instead of the made-up sound. Events: tap, buy, place, coin, feed, levelup, breed, hatch, travel, full, bad, dup.",
+ "ext": ".m4a",
+ "files": []
+}

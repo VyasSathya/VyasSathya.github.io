@@ -274,6 +274,7 @@ body.rail #eggs{left:max(10px,env(safe-area-inset-left));right:auto;bottom:8px!i
   <button class="ring load" id="playBtn" aria-label="Play"><svg class="ld" width="104" height="104" viewBox="0 0 104 104"><circle cx="52" cy="52" r="48" fill="none" stroke="rgba(29,34,48,.12)" stroke-width="5"/><circle id="ldArc" cx="52" cy="52" r="48" fill="none" stroke="#2F8F67" stroke-width="5" stroke-dasharray="0 302" transform="rotate(-90 52 52)" stroke-linecap="round"/></svg><svg class="i" width="38" height="38"><use href="#play"/></svg></button>
 </div>
 
+<script src="web-sound.js"></script>
 <script>
 (function(){
 'use strict';
@@ -315,7 +316,7 @@ function rescale(t){if(!t||!t.k)return;var now=Date.now(),f=Math.min(1,Math.max(
 /* ---------- state ---------- */
 var KEY='sing-island-world-v2';
 function freshIsl(){return {plots:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],castle:0,tree:0,nurs:0,build:null,bake:null,breeds:[],nest:[],wait:[],full:false,traveled:false};}
-function fresh(){var o={coins:E.start.coins,treats:E.start.treats,fast:true,mute:false,cur:'day',open:{day:1},seen:{},tut:{done:{},off:false},isl:{},t0:Date.now(),saved:Date.now(),log:[]};ORDER.forEach(function(k){o.isl[k]=freshIsl();});return o;}
+function fresh(){var o={coins:E.start.coins,treats:E.start.treats,fast:true,sfxOn:true,musOn:true,cur:'day',open:{day:1},seen:{},tut:{done:{},off:false},isl:{},t0:Date.now(),saved:Date.now(),log:[]};ORDER.forEach(function(k){o.isl[k]=freshIsl();});return o;}
 var S=null;
 function save(){S.saved=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function X(k){return S.isl[k||S.cur];}
@@ -437,15 +438,17 @@ function setMouth(pe,c){if(!pe.mouth||pe.mc===c)return;pe.mc=c;pe.mouth.style.ba
 var PICS={};function preloadPics(){var ps=[];Object.keys(SP).forEach(function(k){var p=SP[k].pic;if(!PICS[p]){var im=new Image();PICS[p]=im;ps.push(new Promise(function(res){im.onload=im.onerror=res;}));im.src=IMG+p+'.webp';}});return Promise.all(ps);}
 
 /* ---------- audio: one song clock per island; only the current island plays ---------- */
-var AC=window.AudioContext||window.webkitAudioContext,ac=null,master=null,bus=null;
+var AC=window.AudioContext||window.webkitAudioContext,ac=null,master=null,bus=null,musG=null,sfxG=null;
 var MONO=window.matchMedia&&matchMedia('(pointer:coarse)').matches;
 var AU={isl:null,ready:false,have:[],bufs:{},notes:{},trim:{},LS:0,LE:1,L:1,BAR:2,T0:null,srcs:[],layer:{},partOn:{},tok:0};
 var ENTRIES=[];
 function ensureAC(){
   if(ac)return;ac=new AC({latencyHint:'interactive'});
-  master=ac.createGain();master.gain.value=S.mute?0:.9;master.connect(ac.destination);
+  master=ac.createGain();master.gain.value=.9;master.connect(ac.destination);
   var lim=ac.createDynamicsCompressor();lim.threshold.value=-3;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.002;lim.release.value=.12;
-  bus=ac.createGain();bus.gain.value=.95;bus.connect(lim);lim.connect(master);
+  /* two switches: Music is the song parts, Sound is the effects */
+  musG=ac.createGain();musG.gain.value=S.musOn?1:0;sfxG=ac.createGain();sfxG.gain.value=S.sfxOn?1:0;sfxG.connect(master);
+  bus=ac.createGain();bus.gain.value=.95;bus.connect(lim);lim.connect(musG);musG.connect(master);
 }
 function decode(ab){return new Promise(function(res,rej){var p=ac.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);});}
 function mono(b){if(b.numberOfChannels<2)return b;var m=ac.createBuffer(1,b.length,b.sampleRate),d=m.getChannelData(0),l=b.getChannelData(0),r=b.getChannelData(1);for(var i=0;i<d.length;i++)d[i]=(l[i]+r[i])*.5;return m;}
@@ -509,14 +512,32 @@ function enterIsland(){
 }
 
 /* sound effects, tuned to what the song is playing */
-function tone(f,dur,type,vol,when,slide){if(!ac||!started||S.mute)return;var t=ac.currentTime+(when||0);var o=ac.createOscillator(),g=ac.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+dur);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.02);}
+function tone(f,dur,type,vol,when,slide){if(!ac||!started||!S.sfxOn)return;var t=ac.currentTime+(when||0);var o=ac.createOscillator(),g=ac.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+dur);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(sfxG);o.start(t);o.stop(t+dur+.02);}
 function chordNow(){if(!playing())return [0,4,7];var st=songT(ac.currentTime),pcs={};['bass','keyboard','guitar','strings'].forEach(function(id){(AU.notes[id]||[]).forEach(function(n){if(n[0]>st-AU.BAR&&n[0]<st+.2)pcs[n[1]%12]=1;});});var a=Object.keys(pcs).map(Number);return a.length>=2?a:[0,4,7];}
-function arp(n,base,gap,vol){var pcs=chordNow().sort(function(a,b){return a-b;}),out=[];for(var m=base;out.length<n&&m<110;m++){if(pcs.indexOf(m%12)>=0)out.push(m);}out.forEach(function(m,k){tone(440*Math.pow(2,(m-69)/12),.45,'triangle',vol,k*gap);tone(880*Math.pow(2,(m-69)/12),.25,'sine',vol*.4,k*gap);});}
-function sfx(k){if(!started)return;
-  if(k==='coin'){tone(1568,.1,'sine',.05);tone(2093,.16,'sine',.04,.05);}
-  else if(k==='buy')arp(3,72,.06,.05);else if(k==='place'){tone(170,.16,'sine',.12,0,70);arp(2,79,.05,.04);}
-  else if(k==='bad')tone(150,.14,'square',.03);else if(k==='breed')arp(3,67,.08,.045);else if(k==='feed'){arp(2,76,.05,.045);tone(300,.12,'sine',.06,0,520);}
-  else if(k==='tap')tone(880,.05,'sine',.025);else if(k==='party')arp(9,67,.07,.06);else if(k==='miss'){tone(392,.18,'triangle',.05);tone(330,.24,'triangle',.05,.12);}}
+function arp(n,base,gap,vol,late){var pcs=chordNow().sort(function(a,b){return a-b;}),out=[];for(var m=base;out.length<n&&m<110;m++){if(pcs.indexOf(m%12)>=0)out.push(m);}out.forEach(function(m,k){tone(440*Math.pow(2,(m-69)/12),.45,'triangle',vol,(late||0)+k*gap);tone(880*Math.pow(2,(m-69)/12),.25,'sine',vol*.4,(late||0)+k*gap);});}
+/* one function per sound event. A recorded file sfx/<event>.m4a named in sfx/sfx.json ({"files":["tap",...]})
+   replaces the made-up sound for that event; nothing else changes. */
+var FX={
+  tap:function(){tone(880,.05,'sine',.025);},
+  buy:function(){arp(3,72,.06,.05);},
+  place:function(){tone(170,.16,'sine',.12,0,70);arp(2,79,.05,.04);},
+  coin:function(){tone(1568,.1,'sine',.05);tone(2093,.16,'sine',.04,.05);},
+  feed:function(){arp(2,76,.05,.045);tone(300,.12,'sine',.06,0,520);},
+  levelup:function(){arp(4,72,.05,.05);tone(330,.22,'sine',.07,0,880);},
+  breed:function(){arp(3,67,.08,.045);},
+  hatch:function(){tone(520,.08,'triangle',.05);arp(3,79,.05,.04,.06);},
+  travel:function(){arp(6,67,.06,.055);},
+  full:function(){arp(9,67,.07,.06);},
+  bad:function(){tone(150,.14,'square',.03);},
+  dup:function(){tone(392,.18,'triangle',.05);tone(330,.24,'triangle',.05,.12);}
+};
+var FXFILES=[],snd=null,FXLOG=[];
+function fx(k){FXLOG.push(k);if(FXLOG.length>200)FXLOG.shift();if(!started||!S.sfxOn)return;if(snd&&FXFILES.indexOf(k)>=0){snd.play(k,1);return;}var f=FX[k];if(f)f();}
+/* Toybox ios-web-sound (C:/Dev/toybox/app-kit/ios-web-sound/web): it sets the page's audio session to playback while a
+   switch is on, so the song plays with the iPhone's silent switch on in Web Lab. The song layers are this page's own
+   WebAudio, so the page always keeps the session (no native handler). */
+function setupSnd(files,ext){FXFILES=files||[];if(typeof WebSound!=='function')return;snd=WebSound({files:FXFILES,path:'sfx/',ext:ext||'.m4a',handler:'__page_only__'});snd.switches(S.sfxOn,S.musOn);}
+function applySwitches(){if(snd)snd.switches(S.sfxOn,S.musOn);if(ac){musG.gain.setTargetAtTime(S.musOn?1:0,ac.currentTime,.05);sfxG.gain.setTargetAtTime(S.sfxOn?1:0,ac.currentTime,.05);}}
 
 /* ---------- song strip: the island's 15 parts; dashed = song part coming ---------- */
 var song=$('song'),slots={};
@@ -541,7 +562,7 @@ function renderIsles(){
   isles.innerHTML='';
   ORDER.forEach(function(k){var Is=ISL[k],open=!!S.open[k]&&!!Is.dir;
     var b=el('button','isl'+(k===S.cur?' cur':'')+(open?'':' lock')+(S.fresh===k?' new':''),'',(open?'<i style="background:'+Is.dot+'"></i>':'<svg class="i" width="13" height="13"><use href="#lock"/></svg>')+'<span>'+(window.innerWidth<560||railMode?Is.sn:Is.n)+'</span>');
-    b.dataset.isl=k;tap(b,function(){if(open)travel(k);else sfx('bad');});isles.appendChild(b);});
+    b.dataset.isl=k;tap(b,function(){if(open)travel(k);else fx('bad');});isles.appendChild(b);});
 }
 var traveling=false;
 function travel(k){
@@ -561,14 +582,14 @@ function ratePerSec(m){return S.fast?rpm(m)*E.coins.fast_share:rpm(m)/60;}
 function cap(m){return S.fast?ratePerSec(m)*E.coins.store.fast_seconds:rpm(m)*E.coins.store.real_minutes;}
 function priceOf(id,k){return Math.round(E.shop.singles[id]*ISL[k||S.cur].price/10)*10;}
 function feedCost(m){return m.lv>=E.levels.max?null:E.levels.treats_per_feed[m.lv];}
-function bad(pill){sfx('bad');if(pill){pill.classList.remove('bad');void pill.offsetWidth;pill.classList.add('bad');}}
+function bad(pill){fx('bad');if(pill){pill.classList.remove('bad');void pill.offsetWidth;pill.classList.add('bad');}}
 function collect(i,quiet){
   var m=X().plots[i];if(!m)return 0;var v=Math.floor(m.st);if(v<1)return 0;m.st-=v;S.coins+=v;tut('collect');
   var pe=plotEls[i];if(pe.bub){var c=spos(pe.bub);flyIcons('coin',c.x,c.y,Math.max(2,Math.min(6,Math.round(v/20))),quiet);}
   if(pe.fig)pe.fig.animate([{transform:'scale(1,1)'},{transform:'scale(1.1,.88)'},{transform:'scale(1,1)'}],{duration:260});
   updBub(i);return v;
 }
-function collectAll(){var t=0;X().plots.forEach(function(m,i){if(m)t+=collect(i,true);});if(t>0)sfx('coin');var tr=takeTreats(true);save();refresh();return t+tr;}
+function collectAll(){var t=0;X().plots.forEach(function(m,i){if(m)t+=collect(i,true);});if(t>0)fx('coin');var tr=takeTreats(true);save();refresh();return t+tr;}
 function updBub(i){var pe=plotEls[i],m=X().plots[i];if(!pe.bub||!m)return;pe.bub.style.display=m.st>=Math.max(1,cap(m)*.3)?'flex':'none';pe.bub.classList.toggle('full',m.st>=cap(m));}
 
 /* shop: singles are bought and placed straight away */
@@ -577,7 +598,7 @@ function buy(id){
   if(here(id)||placing)return false;
   var pr=priceOf(id);if(S.coins<pr){bad($('coinPill'));return false;}
   if(freePlot()<0){toast('Castle is full','Castle',function(){openSheet('castle');});bad(null);return false;}
-  S.coins-=pr;sfx('buy');logEv('buy',id);tut('buy');closeSheet();startPlace({id:id,src:'buy',refund:pr});save();refresh();return true;
+  S.coins-=pr;fx('buy');logEv('buy',id);tut('buy');closeSheet();startPlace({id:id,src:'buy',refund:pr});save();refresh();return true;
 }
 function freePlot(k){var P=X(k).plots,n=plotsOpen(k);for(var i=0;i<n;i++)if(!P[i])return i;return -1;}
 
@@ -597,14 +618,14 @@ function placeAt(i){
 }
 function putMon(i,id,lv){
   var k=S.cur;X(k).plots[i]={id:id,lv:lv||1,st:0};S.seen[id]=1;logEv('place',id+'@'+k);
-  buildMon(i,id,true);sfx('place');partIn(partOf(k,id));checkFull(k);
+  buildMon(i,id,true);fx('place');partIn(partOf(k,id));checkFull(k);
 }
 
 /* feeding: treats level a monster 1 to 10; level raises its coins, level 4 lets it breed */
 function feed(i){
   var m=X().plots[i];if(!m)return false;var c=feedCost(m);if(c==null)return false;
   if(S.treats<c){bad($('treatPill'));return false;}
-  S.treats-=c;m.fd=(m.fd||0)+1;var up=m.fd>=E.levels.feeds_per_level;if(up){m.fd=0;m.lv++;}sfx('feed');logEv('feed',m.id+':'+m.lv+'.'+m.fd);tut('feed');
+  S.treats-=c;m.fd=(m.fd||0)+1;var up=m.fd>=E.levels.feeds_per_level;if(up){m.fd=0;m.lv++;}fx(up?'levelup':'feed');logEv('feed',m.id+':'+m.lv+'.'+m.fd);tut('feed');
   var pe=plotEls[i];if(pe.fig){if(up){pe.fig.animate([{transform:'scale(1,1)'},{transform:'scale(1.18,.8)'},{transform:'translateY(-18px) scale(.9,1.14)'},{transform:'scale(1,1)'}],{duration:520,easing:'ease-out'});var pt=LAY[lay].pts[i];puff(pt[0],pt[1]-monH(m.id)*.5,'#E8B275');}
     else pe.fig.animate([{transform:'scale(1,1)'},{transform:'scale(1.08,.92)'},{transform:'scale(1,1)'}],{duration:260,easing:'ease-out'});}
   save();refresh();return true;
@@ -614,10 +635,10 @@ function feed(i){
 function bake(rid){
   var x=X(),r=E.bakery.recipes.filter(function(q){return q.id===rid;})[0];if(!r||x.bake)return false;
   if(S.coins<r.coins){bad($('coinPill'));return false;}
-  S.coins-=r.coins;x.bake=newTimer('bake',rid);x.bake.treats=r.treats;sfx('tap');logEv('bake',rid);tut('bake');save();refresh();return true;
+  S.coins-=r.coins;x.bake=newTimer('bake',rid);x.bake.treats=r.treats;fx('tap');logEv('bake',rid);tut('bake');save();refresh();return true;
 }
 function takeTreats(quiet){var x=X();if(!x.bake||!done(x.bake))return 0;var n=x.bake.treats;x.bake=null;S.treats+=n;
-  var d=stEls.bakery;if(d){var c=spos(d);flyIcons('treat',c.x,c.y-20,5,quiet,'treatIc');}if(!quiet)sfx('coin');logEv('treats',n);save();refresh();return n;}
+  var d=stEls.bakery;if(d){var c=spos(d);flyIcons('treat',c.x,c.y-20,5,quiet,'treatIc');}if(!quiet)fx('coin');logEv('treats',n);save();refresh();return n;}
 
 /* breeding: two monsters at level 4+; the child is drawn from the union of their elements */
 function outcomes(a,b,k){
@@ -640,7 +661,7 @@ function breed(a,b){
   if(x.breeds.length>=treeSlots())return false;
   var O=outcomes(a,b),r=Math.random(),acc=0,pick=O[O.length-1].id;for(var j=0;j<O.length;j++){acc+=O[j].p;if(r<acc){pick=O[j].id;break;}}
   var t=newTimer('breed',SP[pick].tier);t.child=pick;t.par=[a,b];x.breeds.push(t);
-  sfx('breed');logEv('breed',a+'+'+b);tut('breed');save();refresh();return true;
+  fx('breed');logEv('breed',a+'+'+b);tut('breed');save();refresh();return true;
 }
 /* timers: tree results go to the Nursery (or are sold if the island already has that monster) */
 function tick(){
@@ -648,17 +669,18 @@ function tick(){
   ORDER.forEach(function(k){var x=S.isl[k];if(!x)return;
     for(var j=x.breeds.length-1;j>=0;j--){var t=x.breeds[j];if(now<t.end)continue;x.breeds.splice(j,1);var c=t.child;
       var dup=here(c,k)||x.nest.some(function(e){return e.id===c;})||x.wait.some(function(e){return e.id===c;});
-      if(dup){var v=E.sell_duplicate.by_tier[SP[c].tier];S.coins+=v;logEv('dup',c);if(k===S.cur){toast('<img src="'+IMG+SP[c].pic+'.webp" alt="">'+SP[c].n+' again '+ico('coin',18)+'+'+v);sfx('miss');}}
+      if(dup){var v=E.sell_duplicate.by_tier[SP[c].tier];S.coins+=v;logEv('dup',c);if(k===S.cur){toast('<img src="'+IMG+SP[c].pic+'.webp" alt="">'+SP[c].n+' again '+ico('coin',18)+'+'+v);fx('dup');}}
       else{x.wait.push({id:c});logEv('bred',c);if(SP[c].tier===E.breeding.travel_egg.from_tier&&ISL[k].next&&!x.traveled){x.wait.push({id:'travel',travel:ISL[k].next});x.traveled=true;}}
       if(k===S.cur)refresh();}
+    x.nest.forEach(function(e){if(!e.rung&&now>=e.end){e.rung=1;if(k===S.cur)fx('hatch');}});
     while(x.wait.length&&x.nest.length<nestSlots(k)){var w=x.wait.shift();var e=w.travel?newTimer('travel'):newTimer('hatch',SP[w.id].tier);e.id=w.id;if(w.travel)e.travel=w.travel;x.nest.push(e);if(k===S.cur)refresh();}
-    if(x.build&&now>=x.build.end){var p=x.build.a.split(':');if(p[0]==='castle')x.castle=+p[1];else if(p[0]==='tree')x.tree=+p[1];else if(p[0]==='nursery')x.nurs=+p[1];x.build=null;logEv('built',p.join(':'));if(k===S.cur){renderPlots();refresh();sfx('buy');}}
+    if(x.build&&now>=x.build.end){var p=x.build.a.split(':');if(p[0]==='castle')x.castle=+p[1];else if(p[0]==='tree')x.tree=+p[1];else if(p[0]==='nursery')x.nurs=+p[1];x.build=null;logEv('built',p.join(':'));if(k===S.cur){renderPlots();refresh();fx('buy');}}
   });
 }
 function tapEgg(e){
   var x=X();if(!done(e)){openSheet('nursery');return;}
   if(e.travel){var ix=x.nest.indexOf(e);x.nest.splice(ix,1);var nx=e.travel;tut('hatch');
-    if(!S.open[nx]){S.open[nx]=1;S.fresh=nx;logEv('open',nx);}renderIsles();sfx('party');
+    if(!S.open[nx]){S.open[nx]=1;S.fresh=nx;logEv('open',nx);}renderIsles();fx('travel');
     toast(ico('boat',20)+ISL[nx].n+' is open','Sail',function(){travel(nx);});save();refresh();return;}
   if(placing)return;
   if(freePlot()<0){toast('Castle is full','Castle',function(){openSheet('castle');});bad(null);return;}
@@ -667,7 +689,7 @@ function tapEgg(e){
 function upgrade(what){
   var x=X(),lv=what==='castle'?x.castle:what==='tree'?x.tree:x.nurs,L=E.structures[what].levels;
   if(lv+1>=L.length||x.build)return false;var nx=L[lv+1];if(S.coins<nx.coins){bad($('coinPill'));return false;}
-  S.coins-=nx.coins;var t=newTimer('build',what+':'+(lv+1));x.build=t;logEv('build',what+':'+(lv+1));sfx('buy');tut('castle');save();refresh();return true;
+  S.coins-=nx.coins;var t=newTimer('build',what+':'+(lv+1));x.build=t;logEv('build',what+':'+(lv+1));fx('buy');tut('castle');save();refresh();return true;
 }
 function bringHere(id,from){
   if(from===S.cur||!here(id,from)||here(id)||!partOf(S.cur,id)||placing)return false;
@@ -679,7 +701,7 @@ function checkFull(k){var x=X(k);if(x.full)return;if(ISL[k].parts.every(function
 
 /* ---------- sheets ---------- */
 var sheetOn=null,sheetArg=null,pickA=null,pickB=null;
-function openSheet(k,arg){if(placing&&k!=='castle')return;sheetOn=k;sheetArg=arg;if(k==='breed'){pickA=pickB=null;}renderSheet();$('sheet').classList.add('on');$('scrim').classList.add('on');sfx('tap');}
+function openSheet(k,arg){if(placing&&k!=='castle')return;sheetOn=k;sheetArg=arg;if(k==='breed'){pickA=pickB=null;}renderSheet();$('sheet').classList.add('on');$('scrim').classList.add('on');fx('tap');}
 function closeSheet(){sheetOn=null;$('sheet').classList.remove('on');$('scrim').classList.remove('on');}
 tap($('scrim'),closeSheet);tap($('shX'),closeSheet);
 tap($('bShop'),function(){openSheet('shop');});tap($('bBreed'),function(){openSheet('breed');});tap($('bBake'),function(){if(X().bake&&done(X().bake))takeTreats();else openSheet('bakery');});
@@ -725,8 +747,8 @@ function renderSheet(){
     var g2=el('div','pickgrid');
     mons().slice().sort(function(a,b){return SP[a.id].tier-SP[b.id].tier;}).forEach(function(m){var p=SP[m.id],ok=canParent(m),sel=m.id===pickA||m.id===pickB;
       var t=el('button','pick'+(sel?' sel':'')+(ok?'':' low'),'');t.dataset.pick=m.id;t.innerHTML='<div class="pic" style="background:'+tint(p.col)+'"><img src="'+IMG+p.pic+'.webp" alt=""></div>'+pipsHtml(m.lv,p.col);
-      tap(t,function(){if(!ok){sfx('bad');t.classList.remove('no');void t.offsetWidth;t.classList.add('no');return;}
-        if(m.id===pickA)pickA=null;else if(m.id===pickB)pickB=null;else if(!pickA)pickA=m.id;else if(!pickB)pickB=m.id;else pickB=m.id;sfx('tap');renderSheet();});g2.appendChild(t);});
+      tap(t,function(){if(!ok){fx('bad');t.classList.remove('no');void t.offsetWidth;t.classList.add('no');return;}
+        if(m.id===pickA)pickA=null;else if(m.id===pickB)pickB=null;else if(!pickA)pickA=m.id;else if(!pickB)pickB=m.id;else pickB=m.id;fx('tap');renderSheet();});g2.appendChild(t);});
     B.appendChild(g2);
     if(x.tree+1<E.structures.tree.levels.length)B.appendChild(upRow('tree','Second branch',ico('heart',22)));}
   else if(k==='nursery'){$('shTitle').textContent='Nursery';
@@ -738,6 +760,10 @@ function renderSheet(){
   else if(k==='castle'){$('shTitle').textContent='Castle';
     var L=E.structures.castle.levels,r=el('div','rowi');r.innerHTML='<div class="av" style="--t:'+tint('#D9A22C')+';display:grid;place-items:center">'+'<svg width="32" height="30" viewBox="0 0 110 104">'+ST_SVG.castle.s.replace(/^<svg[^>]*>|<\/svg>$/g,'')+'</svg>'+'</div><div class="nm">'+mons().length+' of '+plotsOpen()+' plots</div>';B.appendChild(r);
     if(x.castle+1<L.length)B.appendChild(upRow('castle',L[x.castle+1].plots+' plots',ico('up',22)));}
+  else if(k==='sound'){$('shTitle').textContent='Settings';
+    [['sfxOn','Sound','snd'],['musOn','Music','note']].forEach(function(o){var r=el('div','rowi');r.innerHTML='<div class="av" style="--t:rgba(29,34,48,.06);display:grid;place-items:center">'+ico(o[2],22)+'</div><div class="nm">'+o[1]+'</div>';
+      var b=el('button','tg'+(S[o[0]]?' on':''),'','<span class="sw"></span>');b.dataset.sw=o[0];b.setAttribute('aria-pressed',S[o[0]]);b.setAttribute('aria-label',o[1]);
+      tap(b,function(){S[o[0]]=!S[o[0]];applySwitches();save();refresh();});r.appendChild(b);B.appendChild(r);});}
   else if(k==='move'){$('shTitle').textContent='Bring here';
     var any=false;
     ORDER.forEach(function(from){if(from===S.cur||!S.open[from])return;mons(from).forEach(function(m){var id=m.id;if(!partOf(S.cur,id)||here(id))return;any=true;
@@ -765,12 +791,12 @@ function refresh(){
   var opens=ORDER.filter(function(k){return S.open[k];}).length;$('bMove').classList.toggle('hide',opens<2);$('bMove').classList.toggle('has',canBring());
   $('bCollect').classList.toggle('has',x.plots.some(function(m){return m&&m.st>=1;})||!!(x.bake&&done(x.bake)));
   $('fastBtn').classList.toggle('on',S.fast);$('fastBtn').setAttribute('aria-pressed',S.fast);
-  $('sndBtn').innerHTML='<svg class="i" width="18" height="18"><use href="#'+(S.mute?'mute':'snd')+'"/></svg>';
+  $('sndBtn').innerHTML='<svg class="i" width="18" height="18"><use href="#'+(!S.sfxOn&&!S.musOn?'mute':'snd')+'"/></svg>';
   refreshSong();refreshStructs();
   if(sheetOn)renderSheet();
 }
-tap($('fastBtn'),function(){S.fast=!S.fast;ORDER.forEach(function(k){var x=S.isl[k];x.breeds.forEach(rescale);x.nest.forEach(rescale);rescale(x.bake);rescale(x.build);});save();refresh();sfx('tap');});
-tap($('sndBtn'),function(){S.mute=!S.mute;if(master)master.gain.setTargetAtTime(S.mute?0:.9,ac.currentTime,.05);save();refresh();});
+tap($('fastBtn'),function(){S.fast=!S.fast;ORDER.forEach(function(k){var x=S.isl[k];x.breeds.forEach(rescale);x.nest.forEach(rescale);rescale(x.bake);rescale(x.build);});save();refresh();fx('tap');});
+tap($('sndBtn'),function(){openSheet('sound');});
 var resetArm=0;tap($('resetBtn'),function(){if(Date.now()-resetArm<2500){try{localStorage.removeItem(KEY);}catch(e){}location.href=location.pathname;return;}resetArm=Date.now();toast('Tap again to start over');});
 var toastT=null;
 /* a toast with a button (Sail, Castle) is never covered by a plain one */
@@ -794,9 +820,9 @@ function puff(x,y,col){for(var k=0;k<10;k++){var a=k/10*Math.PI*2,d=el('i','fx',
   d.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate('+Math.cos(a)*46+'px,'+(Math.sin(a)*16-6)+'px) scale(.2)',opacity:0}],{duration:520,easing:'cubic-bezier(.2,.8,.4,1)'}).onfinish=(function(n){return function(){n.remove();};})(d);}}
 function flyIcons(icon,x,y,n,quiet,to){var t=spos($(to||'coinIc'));for(var k=0;k<n;k++){(function(k){var d=el('div','','position:fixed;left:'+(x-10)+'px;top:'+(y-10)+'px;width:20px;height:20px;z-index:75;pointer-events:none',ico(icon,20));document.body.appendChild(d);
   var an=d.animate([{transform:'translate(0,0) scale(.5)',opacity:0},{transform:'translate('+((Math.random()-.5)*50)+'px,'+(-24-Math.random()*30)+'px) scale(1.1)',opacity:1,offset:.3},{transform:'translate('+(t.x-x)+'px,'+(t.y-y)+'px) scale(.8)',opacity:1}],{duration:600+k*50,easing:'cubic-bezier(.5,0,.6,1)'});
-  an.onfinish=function(){d.remove();if(!quiet&&icon==='coin')sfx('coin');};})(k);}}
+  an.onfinish=function(){d.remove();if(!quiet&&icon==='coin')fx('coin');};})(k);}}
 function party(isl){
-  var P=$('party'),cols=['#E0694B','#D9A22C','#3E97CF','#3F9E6C','#8467D3','#fff'];sfx('party');
+  var P=$('party'),cols=['#E0694B','#D9A22C','#3E97CF','#3F9E6C','#8467D3','#fff'];fx('full');
   for(var k=0;k<60;k++){var d=el('i','cf','left:'+(Math.random()*100)+'%;background:'+cols[k%cols.length]);P.appendChild(d);
     var a=d.animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate('+((Math.random()-.5)*160)+'px,'+(window.innerHeight+60)+'px) rotate('+(360+Math.random()*720)+'deg)'}],{duration:2200+Math.random()*1600,delay:Math.random()*700,easing:'cubic-bezier(.3,.1,.6,1)',fill:'both'});
     a.onfinish=(function(n){return function(){n.remove();};})(d);}
@@ -892,11 +918,13 @@ function frame(){
 }
 
 /* ---------- start ---------- */
-loadData().then(function(){return preloadPics();}).then(function(){
+var sfxList=fetch('sfx/sfx.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+loadData().then(function(){return preloadPics();}).then(function(){return sfxList;}).then(function(sj){
   S=fresh();
   if(/[?&]fresh/.test(location.search)){try{localStorage.removeItem(KEY);}catch(e){}}
-  else{try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&o.isl&&o.isl.day&&o.tut){S=o;ORDER.forEach(function(k){if(!S.isl[k])S.isl[k]=freshIsl();});}}}catch(e){}}
+  else{try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&o.isl&&o.isl.day&&o.tut){S=o;if(S.sfxOn===undefined){S.sfxOn=S.musOn=!S.mute;delete S.mute;}ORDER.forEach(function(k){if(!S.isl[k])S.isl[k]=freshIsl();});}}}catch(e){}}
   /* coins earned while away (capped by each monster's store) */
+  setupSnd(sj&&sj.files,sj&&sj.ext);
   var away=Math.max(0,(Date.now()-(S.saved||Date.now()))/1000);if(away>1)accrue(away);
   shownCoins=S.coins;shownTreats=S.treats;
   ['drums','voice_bom','tiny_peep','guitar','masquerade_mezzo','brass','skip_chorister'].forEach(function(p,k){var im=el('img','','animation-delay:'+(k*.14)+'s');im.src=IMG+p+'.webp';im.alt='';$('startRow').appendChild(im);});
@@ -906,7 +934,7 @@ loadData().then(function(){return preloadPics();}).then(function(){
 });
 tap($('playBtn'),function(){
   if($('playBtn').classList.contains('load')||!S)return;
-  try{ac.resume();}catch(e){}started=true;lastWall=performance.now();
+  try{ac.resume();}catch(e){}if(snd&&FXFILES.length)snd.start();applySwitches();started=true;lastWall=performance.now();
   var st=$('start');st.style.opacity=0;st.style.pointerEvents='none';setTimeout(function(){st.remove();},450);
   enterIsland();refresh();save();
 });
@@ -920,6 +948,7 @@ window.SIW={S:function(){return S;},SP:SP,ISL:ISL,E:function(){return E;},partOf
   buy:buy,placeAt:placeAt,placing:function(){return placing;},freePlot:freePlot,collectAll:collectAll,feed:feed,bake:bake,takeTreats:takeTreats,breed:breed,outcomes:outcomes,
   tapEgg:function(j){var e=X().nest[j];if(e)tapEgg(e);},upgrade:upgrade,travel:travel,bringHere:bringHere,plotOf:plotOf,here:here,priceOf:priceOf,feedCost:feedCost,plotsOpen:plotsOpen,
   treeSlots:treeSlots,nestSlots:nestSlots,ptr:function(){return ptrStep;},closeSheet:closeSheet,openSheet:openSheet,
+  fxLog:function(){return FXLOG.slice();},fxFiles:function(){return FXFILES.slice();},snd:function(){return snd&&snd.state();},musGain:function(){return musG&&musG.gain.value;},sfxGain:function(){return sfxG&&sfxG.gain.value;},
   setFast:function(b){if(!!b!==S.fast)$('fastBtn').click();}};
 })();
 </script>
