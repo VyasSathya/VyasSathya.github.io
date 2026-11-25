@@ -1,0 +1,645 @@
+{
+ "about": "Sing Island World species. One species = one kind of sound, kept on every island it lives on; islands.json says which part it plays there. tier = number of elements. picture = img/<picture>.webp (from docs/design/cast/img/chars or the prototype). size = body scale on top of the tier height. home = the only island a quad (or the stage pair) lives on.",
+ "elements": {
+  "thump": {
+   "name": "Thump",
+   "colour": "#E0694B",
+   "leans": "the beat: kit, kick, hats"
+  },
+  "hum": {
+   "name": "Hum",
+   "colour": "#3F9E6C",
+   "leans": "low voices: bom, bass line sung"
+  },
+  "chime": {
+   "name": "Chime",
+   "colour": "#D9A22C",
+   "leans": "bells, keys, shakers, la"
+  },
+  "twang": {
+   "name": "Twang",
+   "colour": "#8467D3",
+   "leans": "plucked: bass guitar, guitar"
+  },
+  "puff": {
+   "name": "Puff",
+   "colour": "#3E97CF",
+   "leans": "breath: woodwinds, brass, hoo"
+  }
+ },
+ "species": [
+  {
+   "id": "thumpling",
+   "name": "Thumpling",
+   "elements": [
+    "thump"
+   ],
+   "tier": 1,
+   "kind": "beat",
+   "picture": "drums",
+   "colour": "#E0694B",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "drumline",
+    "x": 0.515,
+    "y": 0.305,
+    "width": 0.12
+   }
+  },
+  {
+   "id": "bommo",
+   "name": "Bommo",
+   "elements": [
+    "hum"
+   ],
+   "tier": 1,
+   "kind": "low voice",
+   "picture": "voice_bom",
+   "colour": "#3F9E6C",
+   "size": 1.04,
+   "mouth": {
+    "atlas": "shanty",
+    "x": 0.54,
+    "y": 0.4,
+    "width": 0.34
+   }
+  },
+  {
+   "id": "tinka",
+   "name": "Tinka",
+   "elements": [
+    "chime"
+   ],
+   "tier": 1,
+   "kind": "bells and shakers",
+   "picture": "bell_bear",
+   "colour": "#D9A22C",
+   "size": 0.94,
+   "mouth": {
+    "atlas": "strings",
+    "x": 0.532,
+    "y": 0.49,
+    "width": 0.15
+   }
+  },
+  {
+   "id": "plinker",
+   "name": "Plinker",
+   "elements": [
+    "twang"
+   ],
+   "tier": 1,
+   "kind": "plucked low",
+   "picture": "bass",
+   "colour": "#8467D3",
+   "size": 1.02,
+   "mouth": {
+    "atlas": "low_end",
+    "x": 0.45,
+    "y": 0.515,
+    "width": 0.09
+   }
+  },
+  {
+   "id": "hoot",
+   "name": "Hoot",
+   "elements": [
+    "puff"
+   ],
+   "tier": 1,
+   "kind": "breath low",
+   "picture": "bone_thimble",
+   "colour": "#3E97CF",
+   "size": 0.98,
+   "mouth": {
+    "atlas": "brass",
+    "x": 0.417,
+    "y": 0.38,
+    "width": 0.13
+   }
+  },
+  {
+   "id": "doowop",
+   "name": "Doowop",
+   "elements": [
+    "thump",
+    "hum"
+   ],
+   "tier": 2,
+   "kind": "low harmony voice",
+   "picture": "voice_doowah_lo",
+   "colour": "#7C8F3F",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "session",
+    "x": 0.47,
+    "y": 0.29,
+    "width": 0.14
+   }
+  },
+  {
+   "id": "clonk",
+   "name": "Clonk",
+   "elements": [
+    "thump",
+    "chime"
+   ],
+   "tier": 2,
+   "kind": "hats and sticks",
+   "picture": "pebble_drummer",
+   "colour": "#D9873A",
+   "size": 0.92,
+   "mouth": {
+    "atlas": "drumline",
+    "x": 0.5,
+    "y": 0.5,
+    "width": 0.123
+   }
+  },
+  {
+   "id": "chopper",
+   "name": "Chopper",
+   "elements": [
+    "thump",
+    "twang"
+   ],
+   "tier": 2,
+   "kind": "comping keys",
+   "picture": "rib_whisper",
+   "colour": "#C65B6A",
+   "size": 0.96,
+   "mouth": {
+    "atlas": "strings",
+    "x": 0.5,
+    "y": 0.435,
+    "width": 0.12
+   }
+  },
+  {
+   "id": "tubbo",
+   "name": "Tubbo",
+   "elements": [
+    "thump",
+    "puff"
+   ],
+   "tier": 2,
+   "kind": "squeezebox",
+   "picture": "harbor_taxman",
+   "colour": "#D98A2E",
+   "size": 1.04,
+   "mouth": {
+    "atlas": "shanty",
+    "x": 0.564,
+    "y": 0.371,
+    "width": 0.161
+   }
+  },
+  {
+   "id": "fizz",
+   "name": "Fizz",
+   "elements": [
+    "hum",
+    "chime"
+   ],
+   "tier": 2,
+   "kind": "synth",
+   "picture": "skip_chorister",
+   "colour": "#5BAE3A",
+   "size": 1.06,
+   "mouth": {
+    "atlas": "weather",
+    "x": 0.512,
+    "y": 0.44,
+    "width": 0.2
+   }
+  },
+  {
+   "id": "buzzle",
+   "name": "Buzzle",
+   "elements": [
+    "hum",
+    "twang"
+   ],
+   "tier": 2,
+   "kind": "reeds",
+   "picture": "woodwinds",
+   "colour": "#5D7FC9",
+   "size": 0.9,
+   "mouth": {
+    "atlas": "undertone",
+    "x": 0.535,
+    "y": 0.505,
+    "width": 0.08
+   }
+  },
+  {
+   "id": "shanty",
+   "name": "Shanty",
+   "elements": [
+    "hum",
+    "puff"
+   ],
+   "tier": 2,
+   "kind": "breath voice",
+   "picture": "cutlass_baritone",
+   "colour": "#3C8DA8",
+   "size": 1.02,
+   "mouth": {
+    "atlas": "shanty",
+    "x": 0.573,
+    "y": 0.4,
+    "width": 0.14
+   }
+  },
+  {
+   "id": "strummer",
+   "name": "Strummer",
+   "elements": [
+    "chime",
+    "twang"
+   ],
+   "tier": 2,
+   "kind": "guitar",
+   "picture": "guitar",
+   "colour": "#C65BA8",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "overdrive",
+    "x": 0.4,
+    "y": 0.375,
+    "width": 0.1
+   }
+  },
+  {
+   "id": "flutey",
+   "name": "Flutey",
+   "elements": [
+    "chime",
+    "puff"
+   ],
+   "tier": 2,
+   "kind": "flute",
+   "picture": "island_whistler",
+   "colour": "#2FA7A0",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "undertone",
+    "x": 0.414,
+    "y": 0.39,
+    "width": 0.14
+   }
+  },
+  {
+   "id": "banjoot",
+   "name": "Banjoot",
+   "elements": [
+    "twang",
+    "puff"
+   ],
+   "tier": 2,
+   "kind": "harp",
+   "picture": "rite_singer",
+   "colour": "#7FB23A",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "chorus",
+    "x": 0.516,
+    "y": 0.479,
+    "width": 0.169
+   }
+  },
+  {
+   "id": "blarp",
+   "name": "Blarp",
+   "elements": [
+    "thump",
+    "hum",
+    "chime"
+   ],
+   "tier": 3,
+   "kind": "horns",
+   "picture": "brass",
+   "colour": "#E8923A",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "brass",
+    "x": 0.56,
+    "y": 0.345,
+    "width": 0.13
+   }
+  },
+  {
+   "id": "bumble",
+   "name": "Bumble",
+   "elements": [
+    "thump",
+    "hum",
+    "twang"
+   ],
+   "tier": 3,
+   "kind": "high harmony voice",
+   "picture": "moss_riffer",
+   "colour": "#A78BDB",
+   "size": 1.06,
+   "mouth": {
+    "atlas": "chorus",
+    "x": 0.554,
+    "y": 0.557,
+    "width": 0.177
+   }
+  },
+  {
+   "id": "hoompa",
+   "name": "Hoompa",
+   "elements": [
+    "thump",
+    "hum",
+    "puff"
+   ],
+   "tier": 3,
+   "kind": "gang voice",
+   "picture": "thunder_ox",
+   "colour": "#3A7FC0",
+   "size": 1.06,
+   "mouth": {
+    "atlas": "brass",
+    "x": 0.556,
+    "y": 0.364,
+    "width": 0.142
+   }
+  },
+  {
+   "id": "clapjack",
+   "name": "Clapjack",
+   "elements": [
+    "thump",
+    "chime",
+    "twang"
+   ],
+   "tier": 3,
+   "kind": "scat voice",
+   "picture": "voice_scat",
+   "colour": "#22A3A0",
+   "size": 0.98,
+   "mouth": {
+    "atlas": "weather",
+    "x": 0.52,
+    "y": 0.295,
+    "width": 0.12
+   }
+  },
+  {
+   "id": "pipsqueal",
+   "name": "Pipsqueal",
+   "elements": [
+    "thump",
+    "chime",
+    "puff"
+   ],
+   "tier": 3,
+   "kind": "la voice",
+   "picture": "rain_step_singer",
+   "colour": "#E8C21E",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "chorus",
+    "x": 0.548,
+    "y": 0.371,
+    "width": 0.193
+   }
+  },
+  {
+   "id": "stompjug",
+   "name": "Stompjug",
+   "elements": [
+    "thump",
+    "twang",
+    "puff"
+   ],
+   "tier": 3,
+   "kind": "strings",
+   "picture": "powder_monkey",
+   "colour": "#2DB59A",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "drumline",
+    "x": 0.479,
+    "y": 0.471,
+    "width": 0.166
+   }
+  },
+  {
+   "id": "lalabelle",
+   "name": "Lalabelle",
+   "elements": [
+    "hum",
+    "chime",
+    "twang"
+   ],
+   "tier": 3,
+   "kind": "la voice",
+   "picture": "gilded_chanter",
+   "colour": "#D9A22C",
+   "size": 1.04,
+   "mouth": {
+    "atlas": "chorus",
+    "x": 0.551,
+    "y": 0.446,
+    "width": 0.179
+   }
+  },
+  {
+   "id": "cellow",
+   "name": "Cellow",
+   "elements": [
+    "hum",
+    "chime",
+    "puff"
+   ],
+   "tier": 3,
+   "kind": "strings",
+   "picture": "scythe_hand",
+   "colour": "#D07A3E",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "strings",
+    "x": 0.342,
+    "y": 0.29,
+    "width": 0.1
+   }
+  },
+  {
+   "id": "moanjo",
+   "name": "Moanjo",
+   "elements": [
+    "hum",
+    "twang",
+    "puff"
+   ],
+   "tier": 3,
+   "kind": "la voice",
+   "picture": "drifting_throat",
+   "colour": "#3E97CF",
+   "size": 1.04,
+   "mouth": {
+    "atlas": "weather",
+    "x": 0.558,
+    "y": 0.325,
+    "width": 0.196
+   }
+  },
+  {
+   "id": "zither",
+   "name": "Zither",
+   "elements": [
+    "chime",
+    "twang",
+    "puff"
+   ],
+   "tier": 3,
+   "kind": "harp voice",
+   "picture": "tomorrow_soprano",
+   "colour": "#7CC24A",
+   "size": 1.0,
+   "mouth": {
+    "atlas": "chorus",
+    "x": 0.485,
+    "y": 0.368,
+    "width": 0.185
+   }
+  },
+  {
+   "id": "sunny",
+   "name": "Sunny",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "twang"
+   ],
+   "tier": 4,
+   "kind": "lead voice",
+   "picture": "tiny_peep",
+   "colour": "#E7B21E",
+   "size": 1.0,
+   "home": "day",
+   "mouth": {
+    "atlas": "chorus",
+    "x": 0.477,
+    "y": 0.47,
+    "width": 0.2
+   }
+  },
+  {
+   "id": "moony",
+   "name": "Moony",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "puff"
+   ],
+   "tier": 4,
+   "kind": "lead voice",
+   "picture": "masquerade_mezzo",
+   "colour": "#D9467E",
+   "size": 1.0,
+   "home": "night",
+   "mouth": {
+    "atlas": "chorus",
+    "x": 0.5,
+    "y": 0.5,
+    "width": 0.14
+   }
+  },
+  {
+   "id": "foghorn",
+   "name": "Foghorn",
+   "elements": [
+    "thump",
+    "hum",
+    "twang",
+    "puff"
+   ],
+   "tier": 4,
+   "kind": "lead voice",
+   "picture": "murk_singer",
+   "colour": "#2F8FC9",
+   "size": 1.0,
+   "home": "fog",
+   "mouth": {
+    "atlas": "shanty",
+    "x": 0.549,
+    "y": 0.357,
+    "width": 0.169
+   }
+  },
+  {
+   "id": "zingo",
+   "name": "Zingo",
+   "elements": [
+    "thump",
+    "chime",
+    "twang",
+    "puff"
+   ],
+   "tier": 4,
+   "kind": "lead voice",
+   "picture": "pit_bellower",
+   "colour": "#3D7FD0",
+   "size": 1.0,
+   "home": "roof",
+   "mouth": {
+    "atlas": "brass",
+    "x": 0.544,
+    "y": 0.321,
+    "width": 0.15
+   }
+  },
+  {
+   "id": "hushwind",
+   "name": "Hushwind",
+   "elements": [
+    "hum",
+    "chime",
+    "twang",
+    "puff"
+   ],
+   "tier": 4,
+   "kind": "lead voice",
+   "picture": "reef_augur",
+   "colour": "#E8C21E",
+   "size": 1.0,
+   "home": "stage",
+   "mouth": {
+    "atlas": "weather",
+    "x": 0.512,
+    "y": 0.507,
+    "width": 0.158
+   }
+  },
+  {
+   "id": "wondo",
+   "name": "Wondo",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "twang",
+    "puff"
+   ],
+   "tier": 5,
+   "kind": "lead voice",
+   "picture": "mind_hum",
+   "colour": "#3AA0E0",
+   "size": 1.0,
+   "home": "stage",
+   "mouth": {
+    "atlas": "undertone",
+    "x": 0.509,
+    "y": 0.371,
+    "width": 0.16
+   }
+  }
+ ]
+}

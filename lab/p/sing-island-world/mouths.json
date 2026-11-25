@@ -1,21 +1,189 @@
 {
- "about": "Painted mouth per species picture: x and y (top line) as shares of the picture width and height, width = atlas cell size as a share of the picture height. Atlases are mouths-<atlas>.webp (9 cells: closed, small, ah, oh, ee, smile, frown, open-cheer, hurt). The sing-island pictures keep their sing-island spots; the new ones are placed from the eye whites (top line just under the eyes) and checked by eye.",
- "thumpling": {"picture": "drums", "atlas": "drumline", "x": 0.515, "y": 0.305, "width": 0.12},
- "bommo": {"picture": "voice_bom", "atlas": "shanty", "x": 0.54, "y": 0.40, "width": 0.34},
- "tinka": {"picture": "bell_bear", "atlas": "strings", "x": 0.532, "y": 0.49, "width": 0.15},
- "plinker": {"picture": "bass", "atlas": "low_end", "x": 0.45, "y": 0.515, "width": 0.09},
- "hoot": {"picture": "bone_thimble", "atlas": "brass", "x": 0.417, "y": 0.38, "width": 0.13},
- "doowop": {"picture": "voice_doowah_lo", "atlas": "session", "x": 0.47, "y": 0.29, "width": 0.14},
- "clonk": {"picture": "rib_whisper", "atlas": "strings", "x": 0.5, "y": 0.435, "width": 0.12},
- "fizz": {"picture": "skip_chorister", "atlas": "weather", "x": 0.512, "y": 0.44, "width": 0.2},
- "strummer": {"picture": "guitar", "atlas": "overdrive", "x": 0.40, "y": 0.375, "width": 0.10},
- "reedle": {"picture": "woodwinds", "atlas": "undertone", "x": 0.535, "y": 0.505, "width": 0.08},
- "flutey": {"picture": "island_whistler", "atlas": "undertone", "x": 0.414, "y": 0.39, "width": 0.14},
- "shanty": {"picture": "cutlass_baritone", "atlas": "shanty", "x": 0.573, "y": 0.40, "width": 0.14},
- "blarp": {"picture": "brass", "atlas": "brass", "x": 0.56, "y": 0.345, "width": 0.13},
- "fiddlewisp": {"picture": "strings", "atlas": "strings", "x": 0.43, "y": 0.32, "width": 0.08},
- "cellow": {"picture": "scythe_hand", "atlas": "strings", "x": 0.342, "y": 0.29, "width": 0.1},
- "sunny": {"picture": "tiny_peep", "atlas": "chorus", "x": 0.477, "y": 0.47, "width": 0.2},
- "moony": {"picture": "masquerade_mezzo", "atlas": "chorus", "x": 0.5, "y": 0.50, "width": 0.14},
- "foghorn": {"picture": "voice_scat", "atlas": "weather", "x": 0.52, "y": 0.295, "width": 0.12}
+ "about": "Painted mouth per picture: x and y (top line) as shares of the picture width and height, width = atlas cell size as a share of the picture height. Atlases are mouths-<atlas>.webp (9 cells: closed, small, ah, oh, ee, smile, frown, open-cheer, hurt). Placed from the eye whites (top line just under the eyes) and checked on screen. data/species.json carries the same values per species.",
+ "bass": {
+  "atlas": "low_end",
+  "x": 0.45,
+  "y": 0.515,
+  "width": 0.09
+ },
+ "bell_bear": {
+  "atlas": "strings",
+  "x": 0.532,
+  "y": 0.49,
+  "width": 0.15
+ },
+ "bone_thimble": {
+  "atlas": "brass",
+  "x": 0.417,
+  "y": 0.38,
+  "width": 0.13
+ },
+ "brass": {
+  "atlas": "brass",
+  "x": 0.56,
+  "y": 0.345,
+  "width": 0.13
+ },
+ "cutlass_baritone": {
+  "atlas": "shanty",
+  "x": 0.573,
+  "y": 0.4,
+  "width": 0.14
+ },
+ "drifting_throat": {
+  "atlas": "weather",
+  "x": 0.558,
+  "y": 0.325,
+  "width": 0.196
+ },
+ "drums": {
+  "atlas": "drumline",
+  "x": 0.515,
+  "y": 0.305,
+  "width": 0.12
+ },
+ "gilded_chanter": {
+  "atlas": "chorus",
+  "x": 0.551,
+  "y": 0.446,
+  "width": 0.179
+ },
+ "guitar": {
+  "atlas": "overdrive",
+  "x": 0.4,
+  "y": 0.375,
+  "width": 0.1
+ },
+ "harbor_taxman": {
+  "atlas": "shanty",
+  "x": 0.564,
+  "y": 0.371,
+  "width": 0.161
+ },
+ "island_whistler": {
+  "atlas": "undertone",
+  "x": 0.414,
+  "y": 0.39,
+  "width": 0.14
+ },
+ "masquerade_mezzo": {
+  "atlas": "chorus",
+  "x": 0.5,
+  "y": 0.5,
+  "width": 0.14
+ },
+ "mind_hum": {
+  "atlas": "undertone",
+  "x": 0.509,
+  "y": 0.371,
+  "width": 0.16
+ },
+ "moss_riffer": {
+  "atlas": "chorus",
+  "x": 0.554,
+  "y": 0.557,
+  "width": 0.177
+ },
+ "murk_singer": {
+  "atlas": "shanty",
+  "x": 0.549,
+  "y": 0.357,
+  "width": 0.169
+ },
+ "pebble_drummer": {
+  "atlas": "drumline",
+  "x": 0.5,
+  "y": 0.5,
+  "width": 0.123
+ },
+ "pit_bellower": {
+  "atlas": "brass",
+  "x": 0.544,
+  "y": 0.321,
+  "width": 0.15
+ },
+ "powder_monkey": {
+  "atlas": "drumline",
+  "x": 0.479,
+  "y": 0.471,
+  "width": 0.166
+ },
+ "rain_step_singer": {
+  "atlas": "chorus",
+  "x": 0.548,
+  "y": 0.371,
+  "width": 0.193
+ },
+ "reef_augur": {
+  "atlas": "weather",
+  "x": 0.512,
+  "y": 0.507,
+  "width": 0.158
+ },
+ "rib_whisper": {
+  "atlas": "strings",
+  "x": 0.5,
+  "y": 0.435,
+  "width": 0.12
+ },
+ "rite_singer": {
+  "atlas": "chorus",
+  "x": 0.516,
+  "y": 0.479,
+  "width": 0.169
+ },
+ "scythe_hand": {
+  "atlas": "strings",
+  "x": 0.342,
+  "y": 0.29,
+  "width": 0.1
+ },
+ "skip_chorister": {
+  "atlas": "weather",
+  "x": 0.512,
+  "y": 0.44,
+  "width": 0.2
+ },
+ "thunder_ox": {
+  "atlas": "brass",
+  "x": 0.556,
+  "y": 0.364,
+  "width": 0.142
+ },
+ "tiny_peep": {
+  "atlas": "chorus",
+  "x": 0.477,
+  "y": 0.47,
+  "width": 0.2
+ },
+ "tomorrow_soprano": {
+  "atlas": "chorus",
+  "x": 0.485,
+  "y": 0.368,
+  "width": 0.185
+ },
+ "voice_bom": {
+  "atlas": "shanty",
+  "x": 0.54,
+  "y": 0.4,
+  "width": 0.34
+ },
+ "voice_doowah_lo": {
+  "atlas": "session",
+  "x": 0.47,
+  "y": 0.29,
+  "width": 0.14
+ },
+ "voice_scat": {
+  "atlas": "weather",
+  "x": 0.52,
+  "y": 0.295,
+  "width": 0.12
+ },
+ "woodwinds": {
+  "atlas": "undertone",
+  "x": 0.535,
+  "y": 0.505,
+  "width": 0.08
+ }
 }

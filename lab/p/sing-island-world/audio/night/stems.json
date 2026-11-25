@@ -5,53 +5,53 @@
  "sr": 48000,
  "seconds": 150.792,
  "stems": {
+  "drums": {
+   "lufs": -23.5,
+   "peak_db": -1.6
+  },
+  "voice_bom": {
+   "lufs": -27.0,
+   "peak_db": -7.1
+  },
+  "percussion": {
+   "lufs": -37.4,
+   "peak_db": -6.4
+  },
   "bass": {
-   "lufs": -27.4,
+   "lufs": -25.8,
+   "peak_db": -5.4
+  },
+  "voice_doowah_lo": {
+   "lufs": -27.5,
+   "peak_db": -5.6
+  },
+  "keyboard": {
+   "lufs": -43.2,
+   "peak_db": -19.8
+  },
+  "synth": {
+   "lufs": -29.5,
+   "peak_db": -9.1
+  },
+  "guitar": {
+   "lufs": -42.4,
+   "peak_db": -15.1
+  },
+  "woodwinds": {
+   "lufs": -29.9,
    "peak_db": -10.0
   },
   "brass": {
-   "lufs": -23.0,
-   "peak_db": -7.0
-  },
-  "drums": {
-   "lufs": -24.9,
-   "peak_db": -6.0
-  },
-  "guitar": {
-   "lufs": -42.5,
-   "peak_db": -19.3
-  },
-  "keyboard": {
-   "lufs": -44.1,
-   "peak_db": -23.4
-  },
-  "percussion": {
-   "lufs": -38.0,
-   "peak_db": -10.6
+   "lufs": -22.3,
+   "peak_db": -2.3
   },
   "strings": {
-   "lufs": -28.1,
-   "peak_db": -8.4
+   "lufs": -28.3,
+   "peak_db": -4.6
   },
-  "synth": {
-   "lufs": -30.7,
-   "peak_db": -13.5
-  },
-  "woodwinds": {
-   "lufs": -31.3,
-   "peak_db": -13.8
-  },
-  "voice_voice_lead": {
-   "lufs": -22.3,
-   "peak_db": -9.3
-  },
-  "voice_voice_bom": {
-   "lufs": -22.4,
-   "peak_db": -10.0
-  },
-  "voice_voice_doowah_lo": {
-   "lufs": -22.3,
-   "peak_db": -6.6
+  "voice_lead": {
+   "lufs": -29.6,
+   "peak_db": -10.4
   }
  },
  "check": {
@@ -141,5 +141,7 @@
     "median_ms": 10.9
    }
   ]
- }
+ },
+ "lead": "dry (Band Survivors voices_fit, no distance, early reflections or room), 2026-11-25",
+ "format": "mono mp3, lead 80k, rest 56k, 44.1 kHz"
 }

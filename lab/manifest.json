@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "sing-island-world",
+   "key": "sing-island-world",
+   "title": "Sing Island World",
+   "url": "p/sing-island-world/index.html",
+   "added": "2026-11-25",
+   "v": "20261125010445"
+  },
+  {
    "id": "band-survivors",
    "key": "band-survivors",
    "title": "Band Survivors",
@@ -79,14 +87,6 @@
    "url": "p/band-hand/index.html",
    "added": "2026-11-24",
    "v": "20261124013906"
-  },
-  {
-   "id": "sing-island-world",
-   "key": "sing-island-world",
-   "title": "Sing Island World",
-   "url": "p/sing-island-world/index.html",
-   "added": "2026-11-24",
-   "v": "20261124013849"
   },
   {
    "id": "pl-songs-116",

@@ -6,55 +6,76 @@
  "seconds": 151.259,
  "stems": {
   "bass": {
-   "lufs": -29.1,
-   "peak_db": -14.2
+   "lufs": -27.0,
+   "peak_db": -12.1
   },
   "brass": {
-   "lufs": -24.8,
-   "peak_db": -7.1
-  },
-  "drums": {
-   "lufs": -23.6,
-   "peak_db": -6.8
+   "lufs": -22.7,
+   "peak_db": -5.0
   },
   "guitar": {
-   "lufs": -38.6,
-   "peak_db": -15.3
+   "lufs": -36.5,
+   "peak_db": -13.2
   },
   "keyboard": {
-   "lufs": -39.5,
-   "peak_db": -15.5
+   "lufs": -37.4,
+   "peak_db": -13.4
   },
   "percussion": {
-   "lufs": -45.4,
-   "peak_db": -16.4
+   "lufs": -43.3,
+   "peak_db": -14.3
   },
   "synth": {
-   "lufs": -30.4,
-   "peak_db": -13.0
+   "lufs": -28.4,
+   "peak_db": -10.9
   },
   "woodwinds": {
-   "lufs": -31.3,
-   "peak_db": -16.0
+   "lufs": -29.2,
+   "peak_db": -13.9
   },
-  "voice_voice_lead": {
-   "lufs": -22.5,
+  "voice_bom": {
+   "lufs": -27.0,
    "peak_db": -9.6
   },
-  "voice_voice_bom": {
-   "lufs": -22.5,
-   "peak_db": -8.9
+  "voice_doowah_lo": {
+   "lufs": -25.7,
+   "peak_db": -7.5
   },
-  "voice_voice_doowah_lo": {
-   "lufs": -22.5,
-   "peak_db": -8.0
+  "voice_lead": {
+   "lufs": -29.2,
+   "peak_db": -11.9
+  },
+  "voice_la": {
+   "lufs": -30.5,
+   "peak_db": -10.6
+  },
+  "voice_doowah_hi": {
+   "lufs": -30.6,
+   "peak_db": -10.2
+  },
+  "voice_scat": {
+   "lufs": -28.3,
+   "peak_db": -10.2
+  },
+  "kit": {
+   "lufs": -21.8,
+   "peak_db": -4.8
+  },
+  "hats": {
+   "lufs": -34.4,
+   "peak_db": -15.0
+  },
+  "drums": {
+   "lufs": -21.5,
+   "peak_db": -1.6
   }
  },
  "check": {
   "sum_vs_full_db": -300.0,
   "full_lufs": -16.5,
   "full_clipped": 0,
-  "parts_vs_source_mix_db": -10.0
+  "parts_vs_source_mix_db": -10.0,
+  "parts15_summed_full_lufs": -16.5
  },
  "voices_fit": {
   "band_tuning_cents": 4.0,
@@ -139,5 +160,32 @@
     "median_ms": 9.1
    }
   ]
+ },
+ "lead": "dry (Band Survivors voices_fit, no distance, early reflections or room), 2026-11-25",
+ "format": "mono mp3, lead 80k, rest 56k, 44.1 kHz",
+ "parts15": [
+  "kit",
+  "hats",
+  "percussion",
+  "bass",
+  "guitar",
+  "keyboard",
+  "synth",
+  "woodwinds",
+  "brass",
+  "voice_bom",
+  "voice_doowah_lo",
+  "voice_doowah_hi",
+  "voice_la",
+  "voice_scat",
+  "voice_lead"
+ ],
+ "drums_note": "drums.mp3 is the whole kit; the 15-part list uses kit + hats instead of it",
+ "new_parts": {
+  "kit": "kick + snare + toms of Suno drum stem (MDX23C DrumSep)",
+  "hats": "hi-hat + ride + crash of the same (MDX23C DrumSep)",
+  "voice_la": "la on the top note of Suno's keyboard+guitar chords",
+  "voice_doowah_hi": "doo-wah on the second chord tone from the top (keyboard+guitar)",
+  "voice_scat": "scat (da doo ba la) on Suno's synth top line"
  }
 }

@@ -1,0 +1,163 @@
+{
+ "about": "Sing Island World islands. parts: the island's 15 song parts (MSM shape: 4 singles, 6 doubles, 4 triples, 1 quad) and the species that owns each. A part listed here that the island's audio/<dir>/stems.json does not have yet shows as 'song part coming' and its monster still breeds. Order = the order the song builds. Checked by tools/check_data.mjs.",
+ "islands": [
+  {
+   "id": "day",
+   "name": "Day Lawn",
+   "short": "Day",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "twang"
+   ],
+   "leaves_out": "puff",
+   "audio": "audio/day/",
+   "dot": "#8CCB6A",
+   "next": "night",
+   "feel": "sunny bounce, plucky and bright",
+   "parts": {
+    "kit": "thumpling",
+    "voice_bom": "bommo",
+    "percussion": "tinka",
+    "bass": "plinker",
+    "voice_doowah_lo": "doowop",
+    "hats": "clonk",
+    "keyboard": "chopper",
+    "synth": "fizz",
+    "woodwinds": "buzzle",
+    "guitar": "strummer",
+    "brass": "blarp",
+    "voice_doowah_hi": "bumble",
+    "voice_scat": "clapjack",
+    "voice_la": "lalabelle",
+    "voice_lead": "sunny"
+   }
+  },
+  {
+   "id": "night",
+   "name": "Night Market",
+   "short": "Night",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "puff"
+   ],
+   "leaves_out": "twang",
+   "audio": "audio/night/",
+   "dot": "#3B4A86",
+   "next": "fog",
+   "feel": "sneaky night jazz, walking bom, muted horns",
+   "parts": {
+    "drums": "thumpling",
+    "voice_bom": "bommo",
+    "percussion": "tinka",
+    "bass": "hoot",
+    "voice_doowah_lo": "doowop",
+    "hats": "clonk",
+    "keyboard": "tubbo",
+    "synth": "fizz",
+    "voice_doowah_hi": "shanty",
+    "woodwinds": "flutey",
+    "brass": "blarp",
+    "voice_scat": "hoompa",
+    "voice_la": "pipsqueal",
+    "strings": "cellow",
+    "voice_lead": "moony"
+   }
+  },
+  {
+   "id": "fog",
+   "name": "Harbour Fog",
+   "short": "Fog",
+   "elements": [
+    "thump",
+    "hum",
+    "twang",
+    "puff"
+   ],
+   "leaves_out": "chime",
+   "audio": "audio/fog/",
+   "dot": "#8EA7AC",
+   "next": "roof",
+   "feel": "sea-shanty stomp, breathy horns, gang hoo",
+   "parts": {
+    "drums": "thumpling",
+    "voice_bom": "bommo",
+    "bass": "plinker",
+    "percussion": "hoot",
+    "voice_doowah_lo": "doowop",
+    "keyboard": "chopper",
+    "hats": "tubbo",
+    "synth": "buzzle",
+    "voice_suno_line": "shanty",
+    "woodwinds": "banjoot",
+    "voice_doowah_hi": "bumble",
+    "brass": "hoompa",
+    "strings": "stompjug",
+    "voice_la": "moanjo",
+    "voice_lead": "foghorn"
+   }
+  },
+  {
+   "id": "roof",
+   "name": "Rooftops",
+   "short": "Roof",
+   "elements": [
+    "thump",
+    "chime",
+    "twang",
+    "puff"
+   ],
+   "leaves_out": "hum",
+   "audio": null,
+   "dot": "#C46A5A",
+   "next": "stage",
+   "feel": "rooftop funk, guitars and chimes, no low voices",
+   "parts": {
+    "drums": "thumpling",
+    "percussion": "tinka",
+    "bass": "plinker",
+    "woodwinds": "hoot",
+    "hats": "clonk",
+    "keyboard": "chopper",
+    "synth": "tubbo",
+    "guitar": "strummer",
+    "voice_doowah_lo": "flutey",
+    "voice_doowah_hi": "banjoot",
+    "voice_scat": "clapjack",
+    "voice_la": "pipsqueal",
+    "strings": "stompjug",
+    "brass": "zither",
+    "voice_lead": "zingo"
+   }
+  },
+  {
+   "id": "stage",
+   "name": "Big Stage",
+   "short": "Stage",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "twang",
+    "puff"
+   ],
+   "stage": true,
+   "audio": "audio/stage/",
+   "dot": "#C9893F",
+   "next": null,
+   "feel": "big brass and choir; the finale",
+   "note": "Only every island's lead plus Hushwind and Wondo live here; they are sent from their home islands (M2). Planned parts; the finale song is still to be picked.",
+   "parts": {
+    "voice_doowah_lo": "sunny",
+    "voice_scat": "moony",
+    "brass": "foghorn",
+    "strings": "zingo",
+    "voice_la": "hushwind",
+    "voice_lead": "wondo"
+   }
+  }
+ ]
+}
