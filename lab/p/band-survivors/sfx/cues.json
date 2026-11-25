@@ -169,5 +169,195 @@
   "gap": 0.05,
   "keep": false,
   "pitch": 0
+ },
+ "pickup_heal": {
+  "files": [
+   "pickup_heal_1.mp3"
+  ],
+  "gain": 0.7,
+  "cap": 2,
+  "gap": 0.05,
+  "keep": false,
+  "pitch": 0.05
+ },
+ "win@bell-garden": {
+  "files": [
+   "win_bell-garden.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@bell-garden": {
+  "files": [
+   "lose_bell-garden.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "win@canal": {
+  "files": [
+   "win_canal.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@canal": {
+  "files": [
+   "lose_canal.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "win@day-lawn": {
+  "files": [
+   "win_day-lawn.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@day-lawn": {
+  "files": [
+   "lose_day-lawn.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "win@harbour-fog": {
+  "files": [
+   "win_harbour-fog.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@harbour-fog": {
+  "files": [
+   "lose_harbour-fog.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "win@lantern-night": {
+  "files": [
+   "win_lantern-night.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@lantern-night": {
+  "files": [
+   "lose_lantern-night.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "win@marsh": {
+  "files": [
+   "win_marsh.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@marsh": {
+  "files": [
+   "lose_marsh.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "win@night-market": {
+  "files": [
+   "win_night-market.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@night-market": {
+  "files": [
+   "lose_night-market.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "win@rooftops": {
+  "files": [
+   "win_rooftops.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@rooftops": {
+  "files": [
+   "lose_rooftops.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "win@sneaky": {
+  "files": [
+   "win_sneaky.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
+ },
+ "lose@sneaky": {
+  "files": [
+   "lose_sneaky.mp3"
+  ],
+  "gain": 1.0,
+  "cap": 1,
+  "gap": 1.0,
+  "keep": true,
+  "pitch": 0
  }
 }

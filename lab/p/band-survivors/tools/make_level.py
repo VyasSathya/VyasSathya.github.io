@@ -114,7 +114,8 @@ dens = dens / max(1, dens.max())
 lift = []
 for b in range(0, nb, 4):
     nxt = energy[b:b + 8].mean(); prv = energy[max(0, b - 4):b].mean() if b else energy[:4].mean() - .2
-    lift.append((float(.6 * nxt + .4 * (nxt - prv) + .15 * dens[b:b + 8].mean()), b))
+    rise = (nxt - prv) if b >= 8 else 0   # the song coming in from silence is not a big moment (Marsh and Night Market had the drop at bar 4)
+    lift.append((float(.6 * nxt + .4 * rise + .15 * dens[b:b + 8].mean()), b))
 lift.sort(reverse=True); moments = []
 for s, b in lift:
     if all(abs(b - m) >= 12 for m in moments): moments.append(b)
