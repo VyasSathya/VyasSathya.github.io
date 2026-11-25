@@ -1,2 +1,0 @@
-# Level audio (about 100 MB of mp3s) is rebuilt from the song sets on D: by tools/build_all.sh and is served from Web Lab.
-levels/*/*.mp3
