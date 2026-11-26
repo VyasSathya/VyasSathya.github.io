@@ -2,7 +2,7 @@
 
 POST endpoint: https://ihmayqzxqyednchbezya.supabase.co/functions/v1/portfolio-inquiry
 
-The form saves to `portfolio.inquiries` in the existing sparktory-prod project. The schema/table are private, with RLS enabled and no anonymous table or RPC access. Only the isolated server function can submit through the service-role RPC. Public contact-config.json contains the existing anonymous client key, never a service-role key.
+The form saves to `portfolio.inquiries` in the existing production database project. The schema/table are private, with RLS enabled and no anonymous table or RPC access. Only the isolated server function can submit through the service-role RPC. Public contact-config.json contains the existing anonymous client key, never a service-role key.
 
 Owner retrieval: sign in to the Supabase project and open https://supabase.com/dashboard/project/ihmayqzxqyednchbezya/editor/880365?schema=portfolio . Select portfolio.inquiries if the editor resets its schema selection. The SQL editor or authenticated owner MCP can also run:
 
