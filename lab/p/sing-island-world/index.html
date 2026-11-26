@@ -405,6 +405,8 @@ var IMG='img/';
 var $=function(id){return document.getElementById(id);};
 function el(tag,cls,css,html){var e=document.createElement(tag);if(cls)e.className=cls;if(css)e.style.cssText=css;if(html!=null)e.innerHTML=html;return e;}
 function fmt(n){return Math.floor(n).toLocaleString('en-US');}
+/* the two pills at the top share one row with three buttons: big piles are shortened */
+function fmtPill(n){n=Math.floor(n);return n<10000?fmt(n):(n<100000?(Math.floor(n/100)/10):Math.floor(n/1000))+'k';}
 function tap(e,fn){e.addEventListener('click',function(ev){ev.stopPropagation();fn(ev);});}
 function tint(c){return 'linear-gradient('+c+'26,'+c+'55)';}
 function sub(a,b){return a.every(function(e){return b.indexOf(e)>=0;});}
@@ -811,7 +813,8 @@ function showCard(html,label,fn){var C=$('card');C.innerHTML=html;C.appendChild(
 function closeCard(){if($('card').className){$('card').className='';stopPreview();}}
 function arrivalCard(k){
   var I=ISL[k],lead=leadOf(k),c=MAPC[k]||[I.dot,'#EEE'];if(!lead)return;bookId=null;
-  showCard('<div class="pic">'+IslandArt.mini(k,c[0],c[1])+'<img src="'+IMG+SP[lead].pic+'.webp" alt=""></div><h2>'+I.n+'</h2>','Go ashore');
+  /* a bare island: step ashore straight into Bring, so the first voice here is one you already have */
+  showCard('<div class="pic">'+IslandArt.mini(k,c[0],c[1])+'<img src="'+IMG+SP[lead].pic+'.webp" alt=""></div><h2>'+I.n+'</h2>','Go ashore',function(){if(S.cur===k&&!mons().length&&canBring())openSheet('move');});
   preview(k,partOf(k,lead));var im=$('card').querySelector('.pic>img'),beat=setInterval(function(){if(!$('card').className||!document.body.contains(im)){clearInterval(beat);return;}im.animate([{transform:'translateX(-50%) scale(1,1)'},{transform:'translateX(-50%) scale(.94,1.07)',offset:.35},{transform:'translateX(-50%) scale(1,1)'}],{duration:320});},800);
 }
 /* the Big Stage is full: everyone you collected takes a bow */
@@ -1213,8 +1216,8 @@ function frame(){
   var wall=performance.now(),dt=Math.min(1,(wall-lastWall)/1000);lastWall=wall;
   if(!S)return;
   if(started)accrue(dt);
-  shownCoins+=(S.coins-shownCoins)*.2;if(Math.abs(S.coins-shownCoins)<.6)shownCoins=S.coins;$('coinN').textContent=fmt(shownCoins);
-  shownTreats+=(S.treats-shownTreats)*.2;if(Math.abs(S.treats-shownTreats)<.6)shownTreats=S.treats;$('treatN').textContent=fmt(shownTreats);
+  shownCoins+=(S.coins-shownCoins)*.2;if(Math.abs(S.coins-shownCoins)<.6)shownCoins=S.coins;$('coinN').textContent=fmtPill(shownCoins);
+  shownTreats+=(S.treats-shownTreats)*.2;if(Math.abs(S.treats-shownTreats)<.6)shownTreats=S.treats;$('treatN').textContent=fmtPill(shownTreats);
   if(wall-lastSlow>250){lastSlow=wall;if(started){tick();save();}renderEggs();for(var b=0;b<15;b++)updBub(b);refreshStructs();
     $('bCollect').classList.toggle('has',X().plots.some(function(m){return m&&m.st>=1;})||!!(X().bake&&done(X().bake)));refreshSong();
     document.querySelectorAll('#shBody [data-end]').forEach(function(s){s.textContent=fmtT(+s.dataset.end-Date.now());});
