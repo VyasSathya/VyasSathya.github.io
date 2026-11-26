@@ -1,224 +1,227 @@
 {
- "about": "Sing Island World economy. Every timer has a real value and a fast value in seconds (the Fast switch: island 1 in about 10 minutes). Coin rates are coins per minute in the real game; Fast pays coins.fast_share of that number every second. Read by the web page and later by Unity.",
- "start": {
-  "coins": 200,
-  "treats": 30
- },
- "coins": {
-  "per_minute_by_tier": {
-   "1": 4,
-   "2": 9,
-   "3": 20,
-   "4": 45
+  "about": "Sing Island World economy. Every timer has a real value and a fast value in seconds (the Fast switch: island 1 in about 10 minutes). Coin rates are coins per minute in the real game; Fast pays coins.fast_share of that number every second. Read by the web page and later by Unity.",
+  "start": {
+    "coins": 200,
+    "treats": 30
   },
-  "level_step": 0.2,
-  "fast_share": 0.5,
-  "store": {
-   "real_minutes": 120,
-   "fast_seconds": 40
-  },
-  "note": "rate = per_minute_by_tier * (1 + level_step * (level-1)); a monster holds that many minutes (real) or seconds (Fast) of pay before its bubble is full"
- },
- "shop": {
-  "singles": {
-   "thumpling": 40,
-   "bommo": 80,
-   "tinka": 150,
-   "plinker": 250,
-   "hoot": 250
-  },
-  "island_price_factor": {
-   "day": 1,
-   "night": 1.6,
-   "fog": 2.2,
-   "roof": 2.8
-  },
-  "place_on_buy": true
- },
- "sell_duplicate": {
-  "note": "a bred monster the island already has is sold on hatching for these coins",
-  "by_tier": {
-   "1": 20,
-   "2": 60,
-   "3": 160,
-   "4": 400
-  }
- },
- "levels": {
-  "max": 10,
-  "breed_gate": 4,
-  "feeds_per_level": 3,
-  "treats_per_feed": [
-   0,
-   3,
-   5,
-   8,
-   12,
-   18,
-   25,
-   35,
-   45,
-   60
-  ],
-  "note": "treats_per_feed[L] = treats for one feed at level L (index 0 unused); feeds_per_level feeds raise one level"
- },
- "bakery": {
-  "recipes": [
-   {
-    "id": "cookie",
-    "name": "Cookies",
-    "coins": 30,
-    "treats": 10,
-    "real": 120,
-    "fast": 3
-   },
-   {
-    "id": "pie",
-    "name": "Pie",
-    "coins": 150,
-    "treats": 60,
-    "real": 1800,
-    "fast": 8
-   },
-   {
-    "id": "cake",
-    "name": "Cake",
-    "coins": 600,
-    "treats": 280,
-    "real": 14400,
-    "fast": 18
-   }
-  ],
-  "slots": 1
- },
- "breeding": {
-  "tree_slots": [
-   1,
-   2
-  ],
-  "gate_level": 4,
-  "times": {
-   "note": "seconds by child tier; the same time again in the Nursery to hatch",
-   "breed": {
-    "real": {
-     "1": 30,
-     "2": 1800,
-     "3": 10800,
-     "4": 28800
+  "coins": {
+    "per_minute_by_tier": {
+      "1": 4,
+      "2": 9,
+      "3": 20,
+      "4": 45
     },
-    "fast": {
-     "1": 2,
-     "2": 5,
-     "3": 10,
-     "4": 16
+    "level_step": 0.2,
+    "fast_share": 0.5,
+    "store": {
+      "real_minutes": 120,
+      "fast_seconds": 40
+    },
+    "note": "rate = per_minute_by_tier * (1 + level_step * (level-1)); a monster holds that many minutes (real) or seconds (Fast) of pay before its bubble is full"
+  },
+  "shop": {
+    "singles": {
+      "thumpling": 40,
+      "bommo": 80,
+      "tinka": 150,
+      "plinker": 250,
+      "hoot": 250
+    },
+    "island_price_factor": {
+      "day": 1,
+      "night": 1.6,
+      "fog": 2.2,
+      "roof": 2.8,
+      "canal": 3.4,
+      "marsh": 4.0,
+      "bell": 4.6
+    },
+    "place_on_buy": true
+  },
+  "sell_duplicate": {
+    "note": "a bred monster the island already has is sold on hatching for these coins",
+    "by_tier": {
+      "1": 20,
+      "2": 60,
+      "3": 160,
+      "4": 400
     }
-   },
-   "hatch": {
-    "real": {
-     "1": 30,
-     "2": 900,
-     "3": 3600,
-     "4": 7200
-    },
-    "fast": {
-     "1": 2,
-     "2": 3,
-     "3": 5,
-     "4": 8
-    }
-   }
   },
-  "odds": {
-   "note": "Two singles always make their double (MSM). From triples up the child is drawn from the union of both parents' elements. Weights: each parent's own species = parent; species strictly between the bigger parent's tier and the union = between; the union = union[tier] plus union_per_level for every level both parents have above the gate. Only species that live on the island count.",
-   "parent": 3,
-   "between": 2,
-   "union": {
-    "2": 4,
-    "3": 3,
-    "4": 2
-   },
-   "union_per_level": 0.5,
-   "sure_union_tiers": [
-    2
-   ]
-  },
-  "travel_egg": {
-   "from_tier": 4,
-   "hatch": {
-    "real": 9000,
-    "fast": 10
-   },
-   "note": "hatching the island's quad also puts a Travel Egg in the Nursery; it hatches after the quad so the lead sings first; hatching it opens the island's next island"
-  }
- },
- "nursery": {
-  "slots": [
-   1,
-   2
-  ]
- },
- "structures": {
-  "castle": {
-   "levels": [
-    {
-     "plots": 6,
-     "coins": 0,
-     "real": 0,
-     "fast": 0
-    },
-    {
-     "plots": 10,
-     "coins": 1200,
-     "real": 1800,
-     "fast": 4
-    },
-    {
-     "plots": 15,
-     "coins": 5000,
-     "real": 10800,
-     "fast": 8
-    }
-   ]
-  },
-  "tree": {
-   "levels": [
-    {
-     "slots": 1,
-     "coins": 0
-    },
-    {
-     "slots": 2,
-     "coins": 4000,
-     "real": 7200,
-     "fast": 6
-    }
-   ]
-  },
-  "nursery": {
-   "levels": [
-    {
-     "slots": 1,
-     "coins": 0
-    },
-    {
-     "slots": 2,
-     "coins": 2500,
-     "real": 3600,
-     "fast": 5
-    }
-   ]
+  "levels": {
+    "max": 10,
+    "breed_gate": 4,
+    "feeds_per_level": 3,
+    "treats_per_feed": [
+      0,
+      3,
+      5,
+      8,
+      12,
+      18,
+      25,
+      35,
+      45,
+      60
+    ],
+    "note": "treats_per_feed[L] = treats for one feed at level L (index 0 unused); feeds_per_level feeds raise one level"
   },
   "bakery": {
-   "levels": [
-    {
-     "recipes": 3,
-     "coins": 0
+    "recipes": [
+      {
+        "id": "cookie",
+        "name": "Cookies",
+        "coins": 30,
+        "treats": 10,
+        "real": 120,
+        "fast": 3
+      },
+      {
+        "id": "pie",
+        "name": "Pie",
+        "coins": 150,
+        "treats": 60,
+        "real": 1800,
+        "fast": 8
+      },
+      {
+        "id": "cake",
+        "name": "Cake",
+        "coins": 600,
+        "treats": 280,
+        "real": 14400,
+        "fast": 18
+      }
+    ],
+    "slots": 1
+  },
+  "breeding": {
+    "tree_slots": [
+      1,
+      2
+    ],
+    "gate_level": 4,
+    "times": {
+      "note": "seconds by child tier; the same time again in the Nursery to hatch",
+      "breed": {
+        "real": {
+          "1": 30,
+          "2": 1800,
+          "3": 10800,
+          "4": 28800
+        },
+        "fast": {
+          "1": 2,
+          "2": 5,
+          "3": 10,
+          "4": 16
+        }
+      },
+      "hatch": {
+        "real": {
+          "1": 30,
+          "2": 900,
+          "3": 3600,
+          "4": 7200
+        },
+        "fast": {
+          "1": 2,
+          "2": 3,
+          "3": 5,
+          "4": 8
+        }
+      }
+    },
+    "odds": {
+      "note": "Two singles always make their double (MSM). From triples up the child is drawn from the union of both parents' elements. Weights: each parent's own species = parent; species strictly between the bigger parent's tier and the union = between; the union = union[tier] plus union_per_level for every level both parents have above the gate. Only species that live on the island count.",
+      "parent": 3,
+      "between": 2,
+      "union": {
+        "2": 4,
+        "3": 3,
+        "4": 2
+      },
+      "union_per_level": 0.5,
+      "sure_union_tiers": [
+        2
+      ]
+    },
+    "travel_egg": {
+      "from_tier": 4,
+      "hatch": {
+        "real": 9000,
+        "fast": 10
+      },
+      "note": "hatching the island's quad also puts a Travel Egg in the Nursery; it hatches after the quad so the lead sings first; hatching it opens the island's next island"
     }
-   ]
+  },
+  "nursery": {
+    "slots": [
+      1,
+      2
+    ]
+  },
+  "structures": {
+    "castle": {
+      "levels": [
+        {
+          "plots": 6,
+          "coins": 0,
+          "real": 0,
+          "fast": 0
+        },
+        {
+          "plots": 10,
+          "coins": 1200,
+          "real": 1800,
+          "fast": 4
+        },
+        {
+          "plots": 15,
+          "coins": 5000,
+          "real": 10800,
+          "fast": 8
+        }
+      ]
+    },
+    "tree": {
+      "levels": [
+        {
+          "slots": 1,
+          "coins": 0
+        },
+        {
+          "slots": 2,
+          "coins": 4000,
+          "real": 7200,
+          "fast": 6
+        }
+      ]
+    },
+    "nursery": {
+      "levels": [
+        {
+          "slots": 1,
+          "coins": 0
+        },
+        {
+          "slots": 2,
+          "coins": 2500,
+          "real": 3600,
+          "fast": 5
+        }
+      ]
+    },
+    "bakery": {
+      "levels": [
+        {
+          "recipes": 3,
+          "coins": 0
+        }
+      ]
+    }
+  },
+  "island_full_bonus": {
+    "coins": 1000,
+    "treats": 200
   }
- },
- "island_full_bonus": {
-  "coins": 1000,
-  "treats": 200
- }
 }

@@ -1,5 +1,5 @@
 {
- "about": "Sing Island World islands. parts: the island's 15 song parts (MSM shape: 4 singles, 6 doubles, 4 triples, 1 quad) and the species that owns each. A part listed here that the island's audio/<dir>/stems.json does not have yet shows as 'song part coming' and its monster still breeds. Order = the order the song builds. Checked by tools/check_data.mjs.",
+ "about": "Sing Island World islands. parts: each island's song parts and the singer (species) that owns each; the same singers sing different parts on different islands. visit: a finished island you can drop in on, already singing. next: the island a bred lead's Travel Egg opens. Checked by tools/check_data.mjs.",
  "islands": [
   {
    "id": "day",
@@ -35,6 +35,39 @@
    }
   },
   {
+   "id": "lantern",
+   "name": "Lantern Night",
+   "short": "Lanterns",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "twang",
+    "puff"
+   ],
+   "leaves_out": null,
+   "audio": "audio/lantern/",
+   "dot": "#E58A3C",
+   "next": null,
+   "feel": "a festival already in full voice",
+   "parts": {
+    "percussion": "thumpling",
+    "drums": "clapjack",
+    "bass": "tubbo",
+    "brass": "blarp",
+    "guitar": "zither",
+    "keyboard": "fizz",
+    "strings": "lalabelle",
+    "synth": "hushwind",
+    "woodwinds": "flutey",
+    "voice_bom": "moanjo",
+    "voice_doowah_lo": "pipsqueal",
+    "voice_lead": "foghorn"
+   },
+   "visit": true,
+   "look": "stage"
+  },
+  {
    "id": "night",
    "name": "Night Market",
    "short": "Night",
@@ -55,14 +88,11 @@
     "percussion": "tinka",
     "bass": "hoot",
     "voice_doowah_lo": "doowop",
-    "hats": "clonk",
+    "guitar": "clonk",
     "keyboard": "tubbo",
     "synth": "fizz",
-    "voice_doowah_hi": "shanty",
     "woodwinds": "flutey",
     "brass": "blarp",
-    "voice_scat": "hoompa",
-    "voice_la": "pipsqueal",
     "strings": "cellow",
     "voice_lead": "moony"
    }
@@ -89,14 +119,11 @@
     "percussion": "hoot",
     "voice_doowah_lo": "doowop",
     "keyboard": "chopper",
-    "hats": "tubbo",
     "synth": "buzzle",
     "voice_suno_line": "shanty",
     "woodwinds": "banjoot",
-    "voice_doowah_hi": "bumble",
     "brass": "hoompa",
     "strings": "stompjug",
-    "voice_la": "moanjo",
     "voice_lead": "foghorn"
    }
   },
@@ -111,27 +138,114 @@
     "puff"
    ],
    "leaves_out": "hum",
-   "audio": null,
+   "audio": "audio/roof/",
    "dot": "#C46A5A",
-   "next": "stage",
+   "next": "canal",
    "feel": "rooftop funk, guitars and chimes, no low voices",
    "parts": {
     "drums": "thumpling",
     "percussion": "tinka",
     "bass": "plinker",
-    "woodwinds": "hoot",
-    "hats": "clonk",
-    "keyboard": "chopper",
-    "synth": "tubbo",
+    "voice_bom": "hoot",
+    "synth": "clonk",
     "guitar": "strummer",
     "voice_doowah_lo": "flutey",
-    "voice_doowah_hi": "banjoot",
-    "voice_scat": "clapjack",
-    "voice_la": "pipsqueal",
-    "strings": "stompjug",
+    "woodwinds": "banjoot",
     "brass": "zither",
     "voice_lead": "zingo"
    }
+  },
+  {
+   "id": "canal",
+   "name": "Canal",
+   "short": "Canal",
+   "elements": [
+    "thump",
+    "hum",
+    "twang",
+    "puff"
+   ],
+   "leaves_out": "chime",
+   "audio": "audio/canal/",
+   "dot": "#4FA3A5",
+   "next": "marsh",
+   "feel": "water-town strut",
+   "parts": {
+    "drums": "thumpling",
+    "voice_bom": "bommo",
+    "bass": "plinker",
+    "woodwinds": "hoot",
+    "percussion": "tubbo",
+    "keyboard": "banjoot",
+    "voice_doowah_lo": "shanty",
+    "guitar": "buzzle",
+    "brass": "bumble",
+    "strings": "moanjo",
+    "voice_lead": "foghorn"
+   },
+   "look": "fog"
+  },
+  {
+   "id": "marsh",
+   "name": "Marsh",
+   "short": "Marsh",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "puff"
+   ],
+   "leaves_out": "twang",
+   "audio": "audio/marsh/",
+   "dot": "#6E8B4E",
+   "next": "bell",
+   "feel": "swamp swing",
+   "parts": {
+    "drums": "thumpling",
+    "voice_bom": "bommo",
+    "percussion": "tinka",
+    "woodwinds": "hoot",
+    "bass": "tubbo",
+    "voice_doowah_lo": "flutey",
+    "voice_suno_line": "doowop",
+    "keyboard": "fizz",
+    "strings": "shanty",
+    "synth": "clonk",
+    "brass": "pipsqueal",
+    "guitar": "cellow",
+    "voice_lead": "moony"
+   },
+   "look": "night"
+  },
+  {
+   "id": "bell",
+   "name": "Bell Garden",
+   "short": "Bells",
+   "elements": [
+    "thump",
+    "hum",
+    "chime",
+    "twang"
+   ],
+   "leaves_out": "puff",
+   "audio": "audio/bell/",
+   "dot": "#C77DA6",
+   "next": "stage",
+   "feel": "bright bells",
+   "parts": {
+    "drums": "thumpling",
+    "voice_bom": "bommo",
+    "bass": "plinker",
+    "percussion": "tinka",
+    "keyboard": "strummer",
+    "synth": "clonk",
+    "guitar": "chopper",
+    "voice_doowah_lo": "fizz",
+    "woodwinds": "lalabelle",
+    "brass": "clapjack",
+    "voice_lead": "sunny"
+   },
+   "look": "day"
   },
   {
    "id": "stage",
@@ -149,13 +263,15 @@
    "dot": "#C9893F",
    "next": null,
    "feel": "big brass and choir; the finale",
-   "note": "Only every island's lead plus Hushwind and Wondo live here; they are sent from their home islands (M2). Planned parts; the finale song is still to be picked.",
    "parts": {
+    "drums": "thumpling",
+    "voice_bom": "bommo",
+    "bass": "plinker",
     "voice_doowah_lo": "sunny",
     "voice_scat": "moony",
     "brass": "foghorn",
     "strings": "zingo",
-    "voice_la": "hushwind",
+    "woodwinds": "hushwind",
     "voice_lead": "wondo"
    }
   }
