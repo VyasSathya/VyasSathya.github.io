@@ -1,0 +1,141 @@
+{
+ "idea": "sneaky",
+ "bpm": 143.91,
+ "bar_seconds": 1.6677,
+ "first_downbeat_s": 2.3601,
+ "sr": 48000,
+ "seconds": 59.801,
+ "source": {
+  "suno_clip": "bd151f71-8a92-42ad-95b5-2b2b430ef518",
+  "take": 1
+ },
+ "stems": {
+  "drums": {
+   "lufs": -27.9,
+   "peak_db": -8.0
+  },
+  "voice_bom": {
+   "lufs": -18.5,
+   "peak_db": -4.900000095367432
+  },
+  "bass": {
+   "lufs": -26.8,
+   "peak_db": -11.399999618530273
+  },
+  "voice_doowah_lo": {
+   "lufs": -22.5,
+   "peak_db": -10.5
+  },
+  "voice_scat": {
+   "lufs": -22.4,
+   "peak_db": -9.800000190734863
+  },
+  "guitar": {
+   "lufs": -33.6,
+   "peak_db": -10.300000190734863
+  },
+  "strings": {
+   "lufs": -27.1,
+   "peak_db": -10.600000381469727
+  },
+  "woodwinds": {
+   "lufs": -28.5,
+   "peak_db": -15.5
+  },
+  "brass": {
+   "lufs": -24.8,
+   "peak_db": -8.800000190734863
+  },
+  "voice_lead": {
+   "lufs": -20.4,
+   "peak_db": -9.699999809265137
+  }
+ },
+ "check": {
+  "sum_vs_full_db": -141.4,
+  "full_lufs": -16.5,
+  "full_clipped": 0,
+  "suno_parts_vs_suno_mix_db": -9.300000190734863
+ },
+ "voices_fit": {
+  "band_tuning_cents": 3.0,
+  "voices": {
+   "voice_bom": {
+    "tuning_cents": [
+     -20.0,
+     3.0
+    ],
+    "average_offset_ms_kept": 5.8,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": -1.2
+   },
+   "voice_lead": {
+    "tuning_cents": [
+     -23.0,
+     3.0
+    ],
+    "average_offset_ms_kept": 17.4,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": 0.0
+   },
+   "voice_scat": {
+    "tuning_cents": [
+     -21.0,
+     3.0
+    ],
+    "average_offset_ms_kept": 14.5,
+    "groove_shift_ms_median": 14.5,
+    "lufs_vs_partner": -1.2
+   },
+   "voice_doowah_lo": {
+    "tuning_cents": [
+     -36.0,
+     3.0
+    ],
+    "average_offset_ms_kept": -5.8,
+    "groove_shift_ms_median": 17.4,
+    "lufs_vs_partner": -5.4
+   }
+  },
+  "voices_vs_band_lu": -3.1
+ },
+ "voices_v2": "lead: the sax tune all the way, the trombone where it rests; doo-wah: guitar chord bottoms, strings where the guitar is thin",
+ "loop": {
+  "start_s": 2.3601,
+  "end_s": 59.0623,
+  "bars": 34,
+  "note": "play bar 0 (the pickup) once, then loop start_s..end_s; the files run on to let the last notes ring out"
+ },
+ "retimed": {
+  "set": "sneaky_parts/set_clean",
+  "bpm": [
+   143.9,
+   143.91
+  ],
+  "first_downbeat_s": [
+   1.6678,
+   2.3601
+  ],
+  "band_midi_lag_ms": 18.0,
+  "drum_audio": [
+   {
+    "within_30ms": 1.0,
+    "median_ms": 8.2
+   },
+   {
+    "within_30ms": 0.966,
+    "median_ms": 9.5
+   }
+  ],
+  "drum_notes": [
+   {
+    "within_30ms": 0.993,
+    "median_ms": 7.9
+   },
+   {
+    "within_30ms": 0.829,
+    "median_ms": 15.4
+   }
+  ]
+ }
+}

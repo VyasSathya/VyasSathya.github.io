@@ -230,7 +230,7 @@
    "leaves_out": "puff",
    "audio": "audio/bell/",
    "dot": "#C77DA6",
-   "next": "stage",
+   "next": "cove",
    "feel": "bright bells",
    "parts": {
     "drums": "thumpling",
@@ -246,6 +246,35 @@
     "voice_lead": "sunny"
    },
    "look": "day"
+  },
+  {
+   "id": "cove",
+   "name": "Sneaky Cove",
+   "short": "Cove",
+   "elements": [
+    "thump",
+    "hum",
+    "twang",
+    "puff"
+   ],
+   "leaves_out": "chime",
+   "audio": "audio/cove/",
+   "dot": "#2F8E86",
+   "next": "stage",
+   "feel": "sneaky spy-surf, tiptoe bass, a cheeky chorus",
+   "parts": {
+    "drums": "thumpling",
+    "voice_bom": "bommo",
+    "bass": "tubbo",
+    "voice_doowah_lo": "hoot",
+    "voice_scat": "shanty",
+    "guitar": "banjoot",
+    "strings": "plinker",
+    "woodwinds": "moanjo",
+    "brass": "buzzle",
+    "voice_lead": "foghorn"
+   },
+   "look": "night"
   },
   {
    "id": "stage",

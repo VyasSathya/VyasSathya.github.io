@@ -17,6 +17,7 @@ body[data-isl=stage]{--sky1:#231A30;--sky2:#47294C;--land:#B98450;--land2:#A9754
 body[data-isl=roof]{--sky1:#FBE3D2;--sky2:#E9AF9C;--land:#C98C74;--land2:#BC8069;--sand:#EBD3C0;--rim:#9F6C5A;--deco:#B87763}
 body[data-isl=canal]{--sky1:#D8F1EE;--sky2:#8FCBC8;--land:#8CC29A;--land2:#7FB58E;--sand:#E8DDBE;--rim:#B9AB86;--deco:#6FAE86}
 body[data-isl=marsh]{--sky1:#DCE5CC;--sky2:#9DB38A;--land:#7F9A55;--land2:#738E4C;--sand:#BBAE7E;--rim:#8E825C;--deco:#6C8A49}
+body[data-isl=cove]{--sky1:#F6C9A0;--sky2:#5C7F8E;--land:#6E9F86;--land2:#63927A;--sand:#E9D3A1;--rim:#B79F72;--deco:#4F8A72}
 body[data-isl=bell]{--sky1:#FBE6F1;--sky2:#D9B3DC;--land:#A9CF8E;--land2:#9CC382;--sand:#F4E2D8;--rim:#D3B6A8;--deco:#8FBE74}
 body[data-isl=lantern]{--sky1:#2A1B36;--sky2:#6A3450;--land:#7C5A63;--land2:#72515A;--sand:#E0A45E;--rim:#8A5A38;--deco:#A8717A}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -63,7 +64,7 @@ body.visit #bot,body.visit #eggs,body.visit #structs{display:none}
 #route>svg{position:absolute;left:0;top:0;width:100%;height:100%}
 .mi{position:absolute;width:66%;height:118px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;transition:transform .1s}
 .mi:active{transform:scale(.97)}
-.mi .land{position:absolute;left:0;right:0;top:34px;bottom:20px;border-radius:50%;background:var(--g);box-shadow:0 0 0 6px var(--e),0 12px 18px rgba(20,60,80,.28)}
+.mi .land{position:absolute;left:-2%;right:-2%;bottom:6px;height:122px;filter:drop-shadow(0 10px 8px rgba(20,60,80,.26))}.mi .land svg{width:100%;height:100%;display:block;overflow:visible}
 .mi .crew{position:relative;display:flex;justify-content:center;align-items:flex-end;height:66px;margin-bottom:6px}
 .mi .crew img{height:48px;margin:0 -7px;filter:drop-shadow(0 3px 2px rgba(0,0,0,.25))}
 .mi .crew img:nth-child(even){height:40px}
@@ -73,12 +74,12 @@ body.visit #bot,body.visit #eggs,body.visit #structs{display:none}
 .mi.lock .land{filter:grayscale(.8) brightness(1.08);opacity:.6}
 .mi.lock b{color:var(--sub)}
 .mi.new b{animation:pulse 1.1s ease-in-out infinite}
-.mi.visit .land{box-shadow:0 0 0 6px var(--e),0 0 28px 10px rgba(255,205,110,.85)}
+.mi.visit .land{filter:drop-shadow(0 0 14px rgba(255,205,110,.95))}
 #voyage{position:fixed;inset:0;z-index:110;display:none;overflow:hidden;background:linear-gradient(#C3D3DB 0,#AFC6D0 34%,#5E97AB 36%,#2F6D84 100%);touch-action:none}
 #voyage.on{display:block}
 #voyage .fogv{position:absolute;left:-20%;width:90%;height:110px;border-radius:60px;background:rgba(236,241,243,.9);filter:blur(22px);animation:wisp 18s linear infinite;pointer-events:none}
 #vIsle{position:absolute;top:30%;width:230px;margin-left:-115px;height:90px;opacity:0;pointer-events:none}
-#vIsle .g{position:absolute;left:0;right:0;bottom:0;height:46px;border-radius:50%;background:var(--g);box-shadow:0 0 0 6px var(--e)}
+#vIsle svg{position:absolute;left:0;bottom:-6px;width:100%;height:140px;overflow:visible}
 #vIsle img{position:absolute;bottom:20px;height:64px}
 #vShip{position:absolute;bottom:128px;width:240px;margin-left:-120px;height:150px;pointer-events:none;animation:bob 2.2s ease-in-out infinite}
 #vShip .hull{position:absolute;left:6px;right:6px;bottom:0;height:56px;background:#9A6544;border-radius:10px 10px 90px 90px;box-shadow:inset 0 11px 0 #C08A5E,0 14px 18px rgba(0,30,45,.35)}
@@ -98,9 +99,25 @@ body.visit #bot,body.visit #eggs,body.visit #structs{display:none}
 .mi.fogged::before{content:"";position:absolute;left:-6%;right:-6%;top:30px;bottom:6px;border-radius:50%;background:rgba(240,246,248,.92);filter:blur(14px)}
 .mi.voice b{color:var(--ink)}
 .sl{cursor:pointer}
+/* arriving somewhere new, and the concert at the end */
+#card{position:fixed;inset:0;z-index:130;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;background:rgba(14,22,34,.55);backdrop-filter:blur(3px)}
+#card.on{display:flex;animation:cardin .5s ease-out}
+@keyframes cardin{from{opacity:0}to{opacity:1}}
+#card .pic{position:relative;width:min(340px,86vw);height:230px;animation:rise .7s cubic-bezier(.2,.9,.3,1.2)}
+#card .pic svg{position:absolute;left:0;bottom:0;width:100%;height:160px;overflow:visible}
+#card .pic>img{position:absolute;left:50%;bottom:50px;height:150px;transform:translateX(-50%);filter:drop-shadow(0 6px 4px rgba(0,0,0,.3));transform-origin:50% 100%}
+@keyframes rise{from{transform:translateY(40px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+#card h2{color:#fff;font-size:30px;font-weight:700;letter-spacing:-.02em;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+#card .band{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;max-width:520px;gap:2px 2px}
+#card .band img{height:62px;margin:0 -3px;filter:drop-shadow(0 3px 2px rgba(0,0,0,.3));transform-origin:50% 100%;animation:hop 1.1s ease-in-out infinite}
+@keyframes hop{40%{transform:translateY(-12px) scale(.96,1.05)}70%{transform:translateY(0) scale(1.05,.95)}}
+#card .cta{background:#fff;color:var(--ink);height:52px;padding:0 28px}
+@media (max-height:520px){#card{gap:8px;padding:10px}#card .pic{height:170px}#card .pic>img{height:108px}#card .band{max-width:760px}#card .band img{height:42px}}
+#voyage .wave{position:absolute;width:44px;height:12px;border-top:3px solid rgba(255,255,255,.34);border-radius:50%;pointer-events:none;animation:sea linear infinite}
+@keyframes sea{from{transform:translateY(0) scale(.5);opacity:0}25%{opacity:1}to{transform:translateY(42vh) scale(1.35);opacity:0}}
 /* map: where you are, and the one next thing */
 .mi .me{position:absolute;right:6px;top:30px;width:36px;height:36px;border-radius:18px;background:#fff;display:grid;place-items:center;box-shadow:0 3px 8px rgba(0,0,0,.25);animation:bob 1.8s ease-in-out infinite;z-index:2}
-.mi.next::after{content:"";position:absolute;left:-4%;right:-4%;top:26px;bottom:12px;border-radius:50%;border:3px solid #FFD87A;animation:ring 1.5s ease-out infinite}
+.mi.next::after{content:"";position:absolute;left:-4%;right:-4%;top:50px;bottom:8px;border-radius:50%;border:3px solid #FFD87A;animation:ring 1.5s ease-out infinite}
 @keyframes ring{0%{transform:scale(.94);opacity:1}100%{transform:scale(1.08);opacity:0}}
 #goal{flex:none;width:calc(100% - 24px);max-width:420px;margin:0 auto max(12px,env(safe-area-inset-bottom));background:#fff;border-radius:20px;box-shadow:0 8px 24px rgba(10,50,70,.28);padding:10px;display:none;align-items:center;gap:10px}
 #goal.on{display:flex}
@@ -368,6 +385,7 @@ body.rail #eggs{left:max(10px,env(safe-area-inset-left));right:auto;bottom:8px!i
 <div class="full" id="book"><div class="fh"><button class="x" id="bookBack" aria-label="Back to all singers" style="visibility:hidden">&#8249;</button><h3 id="bookTitle" style="flex:1">Singers</h3><button class="x" id="bookX" aria-label="Close singers"><svg class="i" width="16" height="16"><use href="#x"/></svg></button></div><div class="fb"><div class="col" id="bookBody"></div></div></div>
 <div id="sheet"><div class="sh-h"><h3 id="shTitle"></h3><button class="x" id="shX" aria-label="Close"><svg class="i" width="16" height="16"><use href="#x"/></svg></button></div><div id="shBody"></div></div>
 <div id="toast"></div>
+<div id="card"></div>
 <div id="party"></div>
 <div id="ptr"><svg class="hand i" width="44" height="44"><use href="#hand"/></svg><div class="lbl"><span id="ptrT"></span><button id="ptrX" aria-label="Hide hints"><svg class="i" width="12" height="12"><use href="#x"/></svg></button></div></div>
 <div id="loader"><div class="ring"><svg class="ld" width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="none" stroke="rgba(29,34,48,.1)" stroke-width="5"/><circle id="ldArc2" cx="40" cy="40" r="36" fill="none" stroke="#2F8F67" stroke-width="5" stroke-dasharray="0 227" transform="rotate(-90 40 40)" stroke-linecap="round"/></svg><svg class="i" width="24" height="24" style="color:var(--ink)"><use href="#boat"/></svg></div></div>
@@ -379,6 +397,7 @@ body.rail #eggs{left:max(10px,env(safe-area-inset-left));right:auto;bottom:8px!i
 </div>
 
 <script src="web-sound.js"></script>
+<script src="island-art.js"></script>
 <script>
 (function(){
 'use strict';
@@ -464,22 +483,9 @@ function layout(){
   placeStructs();
 }
 function drawLand(){
-  var L=LAY[lay],w=L.w,h=L.h,st=ISL[S.cur].stage,y0=L.y0,y1=h-4,r=lay==='tall'?130:150;
+  var L=LAY[lay],w=L.w,h=L.h,y0=L.y0,y1=h-4;
   land.setAttribute('width',w);land.setAttribute('height',h);land.setAttribute('viewBox','0 0 '+w+' '+h);
-  var s='';
-  if(st){
-    s+='<rect x="6" y="'+(y0+8)+'" width="'+(w-12)+'" height="'+(y1-y0-8)+'" rx="26" fill="var(--rim)"/>';
-    s+='<rect x="6" y="'+y0+'" width="'+(w-12)+'" height="'+(y1-y0-14)+'" rx="26" fill="var(--land)"/>';
-    for(var k=1;k<8;k++){var yy=y0+(y1-y0-14)*k/8;s+='<path d="M20 '+yy.toFixed(0)+'H'+(w-20)+'" stroke="var(--land2)" stroke-width="2"/>';}
-  }else{
-    s+='<rect x="4" y="'+(y0+14)+'" width="'+(w-8)+'" height="'+(y1-y0-14)+'" rx="'+r+'" fill="rgba(0,0,0,.10)"/>';
-    s+='<rect x="4" y="'+(y0+4)+'" width="'+(w-8)+'" height="'+(y1-y0-12)+'" rx="'+r+'" fill="var(--sand)"/>';
-    s+='<rect x="16" y="'+y0+'" width="'+(w-32)+'" height="'+(y1-y0-26)+'" rx="'+(r-12)+'" fill="var(--land)"/>';
-    var seed=7;function rnd(){seed=(seed*9301+49297)%233280;return seed/233280;}
-    for(var j=0;j<30;j++){var x=40+rnd()*(w-80),y=y0+30+rnd()*(y1-y0-90);s+='<ellipse cx="'+x.toFixed(0)+'" cy="'+y.toFixed(0)+'" rx="'+(6+rnd()*10).toFixed(0)+'" ry="3" fill="var(--land2)"/>';}
-    (L.paths||[]).forEach(function(d){s+='<path d="'+d+'" fill="none" stroke="var(--sand)" stroke-width="16" stroke-linecap="round" opacity=".75"/><path d="'+d+'" fill="none" stroke="rgba(0,0,0,.05)" stroke-width="16" stroke-linecap="round" stroke-dasharray="2 22"/>';});
-  }
-  land.innerHTML=s;
+  land.innerHTML=IslandArt.draw(S.cur,L,lay);
   var d='';
   if(S.cur==='night'){for(var q=0;q<26;q++){d+='<i class="deco" style="left:'+((q*97)%w)+'px;top:'+(-140+(q*53)%(y0+120))+'px;width:3px;height:3px;border-radius:50%;background:#fff;animation:twinkle '+(2+q%3)+'s ease-in-out '+(q*.3)+'s infinite"></i>';}
     d+='<i class="deco" style="left:'+(w-64)+'px;top:'+(y0-70)+'px;width:36px;height:36px;border-radius:50%;background:#F4EBC7;box-shadow:0 0 30px rgba(244,235,199,.6)"></i>';}
@@ -676,7 +682,7 @@ function crewOf(k){var I=ISL[k],ids=I.parts.map(function(p){return I.of[p];});
   var mine=ids.filter(function(id){return I.visit||here(id,k);}),rest=ids.filter(function(id){return mine.indexOf(id)<0;});
   var pickd=mine.slice(-6);while(pickd.length<5&&rest.length)pickd.push(rest.pop());
   return pickd.map(function(id){return '<img src="'+IMG+SP[id].pic+'.webp" alt="" class="'+(mine.indexOf(id)<0?'no':'')+'">';}).join('');}
-var MAPC={day:['#9CCF7E','#F2E4BC'],lantern:['#7C5A63','#E0A45E'],night:['#4F7464','#9C977F'],fog:['#89AC95','#DDD6C3'],roof:['#C98C74','#EBD3C0'],canal:['#8CC29A','#E8DDBE'],marsh:['#7F9A55','#BBAE7E'],bell:['#A9CF8E','#F4E2D8'],stage:['#B98450','#E3BA63']};
+var MAPC={day:['#9CCF7E','#F2E4BC'],lantern:['#7C5A63','#E0A45E'],night:['#4F7464','#9C977F'],fog:['#89AC95','#DDD6C3'],roof:['#C98C74','#EBD3C0'],canal:['#8CC29A','#E8DDBE'],marsh:['#7F9A55','#BBAE7E'],bell:['#A9CF8E','#F4E2D8'],cove:['#6E9F86','#E9D3A1'],stage:['#B98450','#E3BA63']};
 function openMap(){
   closeSheet();cancelPlace(true);var R=$('route'),H=128,top=8;R.innerHTML='';R.style.height=(ORDER.length*H+24)+'px';
   var d='';for(var i=0;i<ORDER.length;i++){var cx=i%2?67:33,cy=top+i*H+76;d+=i?' S '+(i%2?67:33)+' '+(cy-H*.5)+' '+cx+' '+cy:'M'+cx+' '+cy;}
@@ -685,7 +691,7 @@ function openMap(){
   ORDER.forEach(function(k,i){var I=ISL[k],open=isOpen(k),c=MAPC[k]||[I.dot,'#EEE'];
     var heard=!open&&opener(k)&&isOpen(opener(k)),fogged=!open&&!heard;
     var b=el('button','mi'+(fogged?' fogged':'')+(heard?' voice':'')+(open?'':' lock')+(k===S.cur?' cur':'')+(I.visit?' visit':'')+(S.fresh===k?' new':''),'left:'+(i%2?34:0)+'%;top:'+(top+i*H)+'px;--g:'+c[0]+';--e:'+c[1],
-      fogged?'':'<span class="land"></span><span class="crew">'+crewOf(k)+'</span><b>'+(open?'':ico('note',13))+(open?I.n:'A voice in the fog')+(I.visit?' '+ico('note',13):'')+(open&&!I.visit&&k!=='day'&&!S.sailed[k]?' '+ico('boat',14):'')+'</b>');
+      fogged?'':'<span class="land">'+IslandArt.mini(k,c[0],c[1])+'</span><span class="crew">'+crewOf(k)+'</span><b>'+(open?'':ico('note',13))+(open?I.n:'A voice in the fog')+(I.visit?' '+ico('note',13):'')+(open&&!I.visit&&k!=='day'&&!S.sailed[k]?' '+ico('boat',14):'')+'</b>');
     if(k===S.cur)b.insertAdjacentHTML('beforeend','<span class="me">'+ico('boat',20)+'</span>');
     if(k===nextK)b.classList.add('next');
     b.dataset.isl=k;tap(b,function(){
@@ -797,7 +803,22 @@ function travel(k){
   traveling=true;$('loader').classList.add('on');
   loadIsland(k,function(f){$('ldArc2').setAttribute('stroke-dasharray',(227*f).toFixed(1)+' 227');}).then(function(ok){
     if(!ok)return;traveling=false;$('loader').classList.remove('on');$('ldArc2').setAttribute('stroke-dasharray','0 227');
-    if(started)enterIsland();refresh();});
+    if(started)enterIsland();refresh();if(landed===k){landed=null;arrivalCard(k);}});
+}
+
+/* the first time ashore: the island, and the voice you followed singing on its own */
+function showCard(html,label,fn){var C=$('card');C.innerHTML=html;C.appendChild(cta(label,function(){closeCard();if(fn)fn();}));C.className='on';}
+function closeCard(){if($('card').className){$('card').className='';stopPreview();}}
+function arrivalCard(k){
+  var I=ISL[k],lead=leadOf(k),c=MAPC[k]||[I.dot,'#EEE'];if(!lead)return;bookId=null;
+  showCard('<div class="pic">'+IslandArt.mini(k,c[0],c[1])+'<img src="'+IMG+SP[lead].pic+'.webp" alt=""></div><h2>'+I.n+'</h2>','Go ashore');
+  preview(k,partOf(k,lead));var im=$('card').querySelector('.pic>img'),beat=setInterval(function(){if(!$('card').className||!document.body.contains(im)){clearInterval(beat);return;}im.animate([{transform:'translateX(-50%) scale(1,1)'},{transform:'translateX(-50%) scale(.94,1.07)',offset:.35},{transform:'translateX(-50%) scale(1,1)'}],{duration:320});},800);
+}
+/* the Big Stage is full: everyone you collected takes a bow */
+function finale(){
+  var all=allIds().filter(function(id){return S.got[id];});
+  showCard('<h2>The whole world is singing</h2><div class="band">'+all.map(function(id,i){return '<img src="'+IMG+SP[id].pic+'.webp" alt="'+SP[id].n+'" style="animation-delay:'+(-(i%7)*.16).toFixed(2)+'s">';}).join('')+'</div>','Tour the islands',openMap);
+  logEv('finale',all.length);
 }
 
 /* a visit island: its crew is already there; dropping in puts them in the Singers book as met */
@@ -809,7 +830,8 @@ function arrive(k){var I=ISL[k];document.body.classList.toggle('visit',!!I.visit
    with your own singers on deck singing the song you are leaving ---------- */
 var V=null;
 function deckPool(){var from=S.cur;return Object.keys(S.got).filter(function(id){var p=partOf(from,id);return p&&AU.have.indexOf(p)>=0;});}
-function sailTo(){S.sailed[V.to]=1;var to=V.to;logEv('sailed',to);endVoyage();S.fresh=null;travel(to);}
+var landed=null;
+function sailTo(){S.sailed[V.to]=1;var to=V.to;landed=to;logEv('sailed',to);endVoyage();S.fresh=null;travel(to);}
 function endVoyage(){if(!V)return;clearInterval(V.timer);V.srcs.forEach(function(x){try{x.stop();}catch(e){}});V=null;$('voyage').classList.remove('on');}
 function deckLayers(){if(!playing())return;var on={};V.deck.forEach(function(id){on[partOf(S.cur,id)]=1;});
   AU.have.forEach(function(s){var g=AU.layer[s].gain;g.cancelScheduledValues(ac.currentTime);g.setTargetAtTime(on[s]?1:0,ac.currentTime,.25);});}
@@ -823,8 +845,10 @@ function startVoyage(k){
   closeMap();$('voyage').classList.add('on');$('vSteer').value=500;$('vWheel').className='';$('vShip').style.left=$('vWheel').style.left='50%';$('vTrack').firstChild.style.width='0';
   $('vTitle').innerHTML=ico('note',16)+'A voice in the fog';
   var isle=$('vIsle');isle.style.setProperty('--g',c[0]);isle.style.setProperty('--e',c[1]);isle.style.left=(side*100)+'%';isle.style.opacity=0;
-  isle.innerHTML='<div class="g"></div><img src="'+IMG+SP[lead].pic+'.webp" alt="" style="left:88px">';
+  isle.innerHTML=IslandArt.mini(k,c[0],c[1])+'<img src="'+IMG+SP[lead].pic+'.webp" alt="" style="left:88px">';
   drawDeck();deckLayers();
+  [].slice.call($('voyage').querySelectorAll('.wave')).forEach(function(n){n.remove();});
+  for(var w=0;w<12;w++)$('voyage').insertBefore(el('i','wave','left:'+((w*37+9)%96)+'%;top:'+(38+(w*7)%12)+'%;animation-duration:'+(4+w%3)+'s;animation-delay:-'+(w*.7).toFixed(1)+'s'),$('vIsle'));
   var me=V,pan=ac.createStereoPanner?ac.createStereoPanner():null,g=ac.createGain();g.gain.value=0;if(pan){g.connect(pan);pan.connect(musG);}else g.connect(musG);me.gain=g;me.pan=pan;
   Promise.all([fetch(I.dir+'notes.json').then(function(r){return r.json();}),fetch(I.dir+part+'.mp3').then(function(r){return r.arrayBuffer();}).then(decode)]).then(function(a){
     if(V!==me)return;var nj=a[0],LS=nj.loop.start_s,LE=nj.loop.end_s;me.notes=(nj.compact[part]||[]).filter(function(x){return x[0]>=LS&&x[0]<LE;}).map(function(x){return x[0];}).sort(function(x,y){return x-y;});
@@ -1120,7 +1144,7 @@ function party(isl){
     var a=d.animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate('+((Math.random()-.5)*160)+'px,'+(window.innerHeight+60)+'px) rotate('+(360+Math.random()*720)+'deg)'}],{duration:2200+Math.random()*1600,delay:Math.random()*700,easing:'cubic-bezier(.3,.1,.6,1)',fill:'both'});
     a.onfinish=(function(n){return function(){n.remove();};})(d);}
   plotEls.forEach(function(pe,i){if(pe.fig)pe.fig.animate([{transform:'translateY(0)'},{transform:'translateY(-36px) rotate(-5deg)'},{transform:'translateY(0) scale(1.12,.88)'},{transform:'translateY(0)'}],{duration:900,delay:i*60,easing:'ease-in-out'});});
-  if(isl===S.cur)toast(ISL[isl].n+': the whole band is in');
+  if(isl===S.cur){if(ISL[isl].stage)setTimeout(function(){if(S.cur===isl)finale();},6500);else toast(ISL[isl].n+': the whole band is in');}
 }
 
 /* ---------- first-run pointer: one hand at the next thing to do, each shown once ---------- */
@@ -1238,7 +1262,7 @@ window.addEventListener('resize',function(){if(!S)return;layout();renderIsles();
 document.addEventListener('visibilitychange',function(){if(!S)return;save();if(!ac||!started)return;if(document.hidden)ac.suspend();else ac.resume();});
 
 /* debug hook for tests */
-window.SIW={closeMap:closeMap,audioState:function(){return ac?ac.state:"none";},resume:function(){if(ac&&ac.state!=="running"&&!document.hidden)ac.resume();},voyage:function(){return V&&{to:V.to,p:V.p,x:V.x,at:V.at,deck:V.deck,voice:V.srcs.length};},tease:tease,openMap:openMap,openBook:openBook,closeBook:closeBook,previewKey:function(){return pvKey;},ORDER:ORDER,S:function(){return S;},SP:SP,ISL:ISL,E:function(){return E;},partOf:partOf,entries:ENTRIES,au:AU,ctx:function(){return ac;},
+window.SIW={finale:finale,closeCard:closeCard,arrivalCard:arrivalCard,closeMap:closeMap,audioState:function(){return ac?ac.state:"none";},resume:function(){if(ac&&ac.state!=="running"&&!document.hidden)ac.resume();},voyage:function(){return V&&{to:V.to,p:V.p,x:V.x,at:V.at,deck:V.deck,voice:V.srcs.length};},tease:tease,openMap:openMap,openBook:openBook,closeBook:closeBook,previewKey:function(){return pvKey;},ORDER:ORDER,S:function(){return S;},SP:SP,ISL:ISL,E:function(){return E;},partOf:partOf,entries:ENTRIES,au:AU,ctx:function(){return ac;},
   sounding:function(){var n=[];for(var k in AU.layer)if(AU.layer[k].gain.value>.5)n.push(k);return n;},
   playing:playing,ready:function(){return AU.ready&&AU.isl===S.cur&&!traveling;},have:function(){return AU.have.slice();},
   buy:buy,placeAt:placeAt,placing:function(){return placing;},freePlot:freePlot,collectAll:collectAll,feed:feed,bake:bake,takeTreats:takeTreats,breed:breed,outcomes:outcomes,

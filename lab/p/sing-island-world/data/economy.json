@@ -34,7 +34,8 @@
       "roof": 2.8,
       "canal": 3.4,
       "marsh": 4.0,
-      "bell": 4.6
+      "bell": 4.6,
+      "cove": 5.2
     },
     "place_on_buy": true
   },
