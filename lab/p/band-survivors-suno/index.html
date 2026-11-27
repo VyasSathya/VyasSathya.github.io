@@ -179,6 +179,7 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
 
 <div id="rpov"></div>
 
+<script src="vendor/hotkeys.js"></script>
 <script src="vendor/replay.js"></script>
 <script>
 (()=>{
@@ -306,10 +307,13 @@ function buildNotes(nj){
     RATE[p]=Math.max(.2,sw/LL); // weighted notes per second over the loop
   }
 }
+let master=null,muted=false;
+const masterLevel=()=>muted?0:(OPT.vol===undefined?1:OPT.vol);
+function applyMaster(){if(master)master.gain.setTargetAtTime(masterLevel(),ac.currentTime,.03);}
 function ensureCtx(){if(SIM||ac)return;ac=new AC({latencyHint:'interactive',sampleRate:44100});
   try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
   const lim=ac.createDynamicsCompressor();lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.002;lim.release.value=.12;
-  bus=ac.createGain();bus.gain.value=0;bus.connect(lim);lim.connect(ac.destination);
+  bus=ac.createGain();bus.gain.value=0;bus.connect(lim);master=ac.createGain();master.gain.value=masterLevel();lim.connect(master);master.connect(ac.destination);
   sfxBus=ac.createGain();sfxBus.gain.value=OPT.sound?1:0;sfxBus.connect(lim);loadSfx();}
 async function loadLevel(lv,prog){
   LV=lv;PARTS=lv.parts.slice().sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
@@ -1015,6 +1019,23 @@ function togglePause(){
 }
 function toMap(){if(perkChoices.length){SAVE.perks[perkChoices[0]]=perk(perkChoices[0])+1;persist();perkChoices=[];}
   stopSong();if(ac){bus.gain.cancelScheduledValues(ac.currentTime);bus.gain.value=0;if(ac.state!=='running')ac.resume();}renderMap();}
+/* desktop keys (vendor/hotkeys.js, the Toybox default). Movement, 1 2 3 and P / Esc are in the input section above. */
+if(!SIM&&window.ToyboxHotkeys){
+  const on=id=>$(id).classList.contains('on');
+  const press=()=>{ // Enter or Space: the main button of whatever is on show
+    if(on('#sPause'))$('#bResume').click();
+    else if(on('#sOver')){const a=$('#bAgain'),m=$('#bMap');if(document.querySelector('#oP .card'))return false;(S.won||a.style.display==='none'?m:a).click();}
+    else if(on('#sPick')){if(!$('#bGo').disabled)$('#bGo').click();}
+    else if(on('#sStart')){if(!$('#bStart').disabled)$('#bStart').click();}
+    else if(on('#sMap')){const n=document.querySelector('#path .node.next')||document.querySelector('#path .node:not(.lock)');if(n)n.click();}
+    else return false;};
+  ToyboxHotkeys({
+    volume:{get:()=>OPT.vol===undefined?1:OPT.vol,set:v=>{OPT.vol=v;muted=false;saveOpt();applyMaster();}},
+    mute:{get:()=>muted,set:x=>{muted=x;applyMaster();}},
+    actions:[{keys:['enter',' '],run:press},{keys:['escape','backspace'],run:()=>{if(!on('#sPick'))return false;$('#bBack').click();}}],
+    hints:()=>on('#sPause')?[[['P'],'Resume']]:on('#sLevel')?[[['1','2','3'],'Pick a card']]:
+      S.mode==='play'?[[['W','A','S','D'],'Move'],[['P'],'Pause']]:on('#sPick')?[[['Enter'],'Play'],[['Esc'],'Back']]:[[['Enter'],'Play']]});
+}
 if(!SIM){
   $('#pb').addEventListener('click',togglePause);
   $('#bResume').addEventListener('click',togglePause);
