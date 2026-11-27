@@ -1,0 +1,72 @@
+{
+ "voice_lead": {
+  "picture": "player",
+  "atlas": "chorus",
+  "x": 0.5527,
+  "y": 0.6176,
+  "width": 0.223
+ },
+ "drums": {
+  "picture": "drums",
+  "atlas": "drumline",
+  "x": 0.5169,
+  "y": 0.3141,
+  "width": 0.135
+ },
+ "bass": {
+  "picture": "bass",
+  "atlas": "low_end",
+  "x": 0.5222,
+  "y": 0.5358,
+  "width": 0.0315
+ },
+ "guitar": {
+  "picture": "guitar",
+  "atlas": "overdrive",
+  "x": 0.3411,
+  "y": 0.3355,
+  "width": 0.1072
+ },
+ "strings": {
+  "picture": "strings",
+  "atlas": "strings",
+  "x": 0.5062,
+  "y": 0.4475,
+  "width": 0.105
+ },
+ "brass": {
+  "picture": "brass",
+  "atlas": "brass",
+  "x": 0.459,
+  "y": 0.2901,
+  "width": 0.139
+ },
+ "woodwinds": {
+  "picture": "woodwinds",
+  "atlas": "undertone",
+  "x": 0.4746,
+  "y": 0.4454,
+  "width": 0.1271
+ },
+ "voice_bom": {
+  "picture": "voice_bom",
+  "atlas": "shanty",
+  "x": 0.5098,
+  "y": 0.5033,
+  "width": 0.3918
+ },
+ "voice_doowah_lo": {
+  "picture": "voice_doowah_lo",
+  "atlas": "session",
+  "x": 0.5529,
+  "y": 0.3144,
+  "width": 0.1261
+ },
+ "voice_scat": {
+  "picture": "voice_scat",
+  "atlas": "weather",
+  "x": 0.4985,
+  "y": 0.4172,
+  "width": 0.2753
+ }
+}
