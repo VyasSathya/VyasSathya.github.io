@@ -1,4 +1,4 @@
-# Band Survivors decisions
+# One Monster Band (was Band Survivors) decisions
 
 Vyas's rulings in his exact words, with date and source. Binding for every chat that changes this game; read before
 changing it. New rulings are added the same day. The game also follows Music Battler's DECISIONS.md
@@ -34,6 +34,8 @@ changing it. New rulings are added the same day. The game also follows Music Bat
   better", "thisis wat we need for music games ro the most part", "obviously discrete oens are lil different but this
   ones are our defautl for music games". This game's music build is the default for our music games.
 
+- 2026-11-26, d approved (relayed by Studio): rebuild all levels from the WAV stems, stereo 192k, streaming on phones. Done: 10 s chunks, `tools/stream_encode.py`, streamed in index.html.
+
 ## Open (his to decide)
 - The experience line ("I get to ..."), proposed 2026-11-25.
 - Run length: one song per run, or a set of songs.
@@ -41,3 +43,10 @@ changing it. New rulings are added the same day. The game also follows Music Bat
 - How the phone version makes money.
 - Whether the band rides something: a float train that grows car by car and opens into a stage on the drop, a tour bus,
   or a conga line on foot.
+
+## Name
+- 2026-11-25 17:43 PT, picked on the Studio Deck (store name card): "One Monster Band". The game's name is One Monster Band.
+  The folder, Web Lab id, bundle id (com.vyassathya.bandsurvivors) and save keys keep the old slug, so links, installs
+  and saved tours still work.
+- 2026-11-25, Studio Deck, d pressed Approve on the card relayed as "Band Survivors name: go with One Monster Band, and start
+  the rough 3D box": start the M0 rough 3D box (3D-PLAN.md section 9). (Card wording, not d typing.)

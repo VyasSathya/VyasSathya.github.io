@@ -1,4 +1,4 @@
-# Band Survivors 3D: the plan
+# One Monster Band 3D (was Band Survivors): the plan
 
 Plan only. Nothing is built, no Unity project exists, nothing was bought (Vyas, 2026-11-25: "deeply plan it otu dotn
 start yet"). Written 2026-11-25 by the Band Survivors lead from three drafts (engine and feel, band and places and audio,

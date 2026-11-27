@@ -132,5 +132,12 @@
  "source": "Pull Lanes rooftop, idea 4, at 116",
  "set_folder": "D:/music-battler-work/songs/pl116/rooftop_idea4_out/set",
  "lead": "as in the set",
- "hard": 1.15
+ "hard": 1.15,
+ "stream": {
+  "chunk": 10.0,
+  "pad": 0.5,
+  "n": 16,
+  "kbps": 192,
+  "channels": 2
+ }
 }

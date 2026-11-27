@@ -89,5 +89,12 @@
  "source": "Suno clip bd151f71 (Sneaky)",
  "set_folder": "D:/music-battler-work/songs/sneaky_parts/set_clean",
  "lead": "as in the set",
- "hard": 0.85
+ "hard": 0.85,
+ "stream": {
+  "chunk": 10.0,
+  "pad": 0.5,
+  "n": 6,
+  "kbps": 192,
+  "channels": 2
+ }
 }

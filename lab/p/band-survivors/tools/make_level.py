@@ -9,8 +9,8 @@ What it does:
   2. the lead singer dry: voices_fit.py again on the set's raw folder with distance, early reflections and room left out
      (Vyas 2026-11-24: the roomy lead sounded "like its in a room like at th bak with a bak mic like ahome recording"),
      matched to the wet lead's loudness; backing voices keep their room;
-  3. every part as mono mp3 (lead 80k, the rest 56k, 44.1 kHz): a level is about 8 MB to download and about 300 MB
-     decoded, which a phone holds (13 stereo parts of a 150 s song would be about 690 MB);
+  3. every part as stereo mp3 192k in 10 s chunks (stream_encode.py, 2026-11-26): the page streams a few seconds ahead,
+     so a phone holds a couple of chunks per part, not the whole song (a level is about 35 to 55 MB to stream);
   4. notes.json cut down to what the game reads (loop, bar grid, sections, every note of every part);
   5. the song's big moments from the full mix (per-bar loudness): the section starts with the biggest lift, where the
      bosses come in, and a per-bar energy curve the spawner follows;
@@ -85,15 +85,7 @@ if 'voice_lead' in parts and not a.keep_room and not a.meta_only:
     os.makedirs(os.path.join(WORK, 'dry'), exist_ok=True); lead_src = os.path.join(WORK, 'dry', a.id + '_voice_lead.wav')
     sf.write(lead_src, dry, SR, subtype='FLOAT'); log['lead_lufs'] = round(target, 1)
 
-# ---------- 3. mp3 per part
-sizes = {p: os.path.getsize(os.path.join(L, p + '.mp3')) for p in parts if os.path.exists(os.path.join(L, p + '.mp3'))}
-for p in ([] if a.meta_only else parts):
-    src = lead_src if p == 'voice_lead' else os.path.join(S, p + '.wav'); dst = os.path.join(L, p + '.mp3')
-    run('ffmpeg', '-v', 'error', '-y', '-i', src, '-ac', '1', '-ar', '44100', '-b:a', '80k' if p == 'voice_lead' else '56k', dst)
-    sizes[p] = os.path.getsize(dst)
-for f in ([] if a.meta_only else os.listdir(L)):   # parts no longer in the set
-    if f.endswith('.mp3') and f[:-4] not in parts: os.remove(os.path.join(L, f))
-
+# ---------- 3. streamed chunks per part (stereo mp3 192k, 10 s chunks; tools/stream_encode.py), written after level.json below
 # ---------- 4. notes
 loop = nj['loop']; BAR = nj['bar_seconds']; LS, LE = loop['start_s'], loop['end_s']
 compact = {p: [[round(n[0], 3), int(n[1]), round(n[2], 3)] for n in nj['compact'][p]] for p in parts}
@@ -158,7 +150,12 @@ level = dict(id=a.id, title=a.title, blurb=a.blurb, order=a.order, diff=a.diff,
              source=a.source or info.get('source') or S, set_folder=os.path.abspath(S).replace(os.sep, '/'), lead=log.get('lead', 'as in the set'))
 old = os.path.join(L, 'level.json')
 if os.path.exists(old): level['hard'] = json.load(open(old)).get('hard', 1)   # keep the balance check's knob
+if os.path.exists(old) and 'stream' in json.load(open(old)): level['stream'] = json.load(open(old))['stream']
 json.dump(level, open(os.path.join(L, 'level.json'), 'w'), indent=1)
+sizes = {}
+if not a.meta_only and not a.out:
+    sys.path.insert(0, HERE); import stream_encode; stream_encode.encode_level(a.id)
+    sizes = {p: 0 for p in parts}
 idx = None if a.out else os.path.join(GAME, 'levels', 'levels.json')
 lv = json.load(open(idx)) if idx and os.path.exists(idx) else []
 lv = [x for x in lv if x['id'] != a.id] + [dict(id=a.id, order=a.order)]

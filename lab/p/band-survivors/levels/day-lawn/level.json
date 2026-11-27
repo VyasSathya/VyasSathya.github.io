@@ -138,5 +138,12 @@
  "source": "Suno clip 18b55201 (Day lawn A, take 1)",
  "set_folder": "D:/music-battler-work/songs/picks/a1_out/set",
  "lead": "as in the set",
- "hard": 0.85
+ "hard": 0.85,
+ "stream": {
+  "chunk": 10.0,
+  "pad": 0.5,
+  "n": 15,
+  "kbps": 192,
+  "channels": 2
+ }
 }

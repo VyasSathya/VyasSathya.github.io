@@ -115,5 +115,12 @@
  "source": "Pull Lanes day lawn, idea 2, at 116",
  "set_folder": "D:/music-battler-work/songs/pl116/daylawn_idea2_out/set",
  "lead": "as in the set",
- "hard": 1.32
+ "hard": 1.32,
+ "stream": {
+  "chunk": 10.0,
+  "pad": 0.5,
+  "n": 13,
+  "kbps": 192,
+  "channels": 2
+ }
 }

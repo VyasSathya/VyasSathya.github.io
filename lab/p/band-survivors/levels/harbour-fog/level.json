@@ -120,5 +120,12 @@
  "source": "Suno clip 008465a1 (Harbour fog B, take 1)",
  "set_folder": "D:/music-battler-work/songs/picks/f1_out/set",
  "lead": "as in the set",
- "hard": 1.1
+ "hard": 1.1,
+ "stream": {
+  "chunk": 10.0,
+  "pad": 0.5,
+  "n": 16,
+  "kbps": 192,
+  "channels": 2
+ }
 }

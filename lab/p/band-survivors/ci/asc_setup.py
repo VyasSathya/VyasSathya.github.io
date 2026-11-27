@@ -20,7 +20,7 @@ sys.path.insert(0, str(hub / 'scripts'))
 import apps  # noqa: E402
 
 KEY = {'ascApiKeyId': '3F24P2VZAU', 'ascApiKeyIssuerId': 'c4f4536a-2518-4f23-b614-58d5e6984278'}
-BUNDLE, NAME = 'com.vyassathya.bandsurvivors', 'Band Survivors'
+BUNDLE, NAME = 'com.vyassathya.bandsurvivors', 'One Monster Band'
 SOURCE = hub / 'signing' / 'paint'
 OUT = hub / 'signing' / 'band-survivors'
 

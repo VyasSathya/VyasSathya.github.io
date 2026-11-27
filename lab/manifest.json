@@ -1,20 +1,20 @@
 {
  "items": [
   {
+   "id": "band-survivors",
+   "key": "band-survivors",
+   "title": "One Monster Band",
+   "url": "p/band-survivors/index.html",
+   "added": "2026-11-26",
+   "v": "20261126162914"
+  },
+  {
    "id": "sing-island-world",
    "key": "sing-island-world",
    "title": "Sing Island",
    "url": "p/sing-island-world/index.html",
    "added": "2026-11-26",
    "v": "20261126092857"
-  },
-  {
-   "id": "band-survivors",
-   "key": "band-survivors",
-   "title": "Band Survivors",
-   "url": "p/band-survivors/index.html",
-   "added": "2026-11-25",
-   "v": "20261125104231"
   },
   {
    "id": "pl-march-ab",

@@ -111,5 +111,12 @@
  "source": "Pull Lanes canal, idea 1, at 116",
  "set_folder": "D:/music-battler-work/songs/pl116/canal_idea1_out/set",
  "lead": "as in the set",
- "hard": 1
+ "hard": 1,
+ "stream": {
+  "chunk": 10.0,
+  "pad": 0.5,
+  "n": 12,
+  "kbps": 192,
+  "channels": 2
+ }
 }

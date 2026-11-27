@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#16403C">
 <link rel="icon" href="img/player.webp">
-<title>Band Survivors</title>
+<title>One Monster Band</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
@@ -133,7 +133,7 @@ h2{font-size:clamp(34px,8vw,52px);font-weight:700;line-height:1}
 </div>
 
 <div class="screen dim on" id="sStart">
-  <h1 class="num">Band<br>Survivors</h1>
+  <h1 class="num">One Monster<br>Band</h1>
   <div class="troupe" id="troupe"></div>
   <button class="go" id="bStart" disabled>Loading</button>
   <div class="opts"><button class="opt" data-opt="sound">Sound on</button><button class="opt" data-opt="music">Music on</button></div>
@@ -282,7 +282,7 @@ function unlocked(i){return UNLOCK_ALL||i===0||bestTier(LEVELS[i-1].id)>=0;}
 
 /* ---------- audio: one clock ---------- */
 const AC=window.AudioContext||window.webkitAudioContext;
-let ac=null,bus=null,simT=0;const BUF={},NOTES={},RATE={},LAYER={};
+let ac=null,bus=null,simT=0;const NOTES={},RATE={},LAYER={};
 let LS=2,LE=60,LL=58,BEAT=.5,BAR=2,NB=29,t0=0,srcs=[],audioFor=null;
 const now=()=>SIM?simT:ac.currentTime;
 function lat(){return SIM?0:(ac.outputLatency||ac.baseLatency||0);}
@@ -319,21 +319,46 @@ async function loadLevel(lv,prog){
   const pics=[...new Set([...PARTS.map(p=>FAM[p].img),...PARTS.map(p=>'mouths-'+MOUTH[p].atlas),...lv.enemies,...lv.elites,lv.boss])];
   if(SIM){audioFor=lv.id;return;}
   ensureCtx();
-  if(audioFor!==lv.id){for(const k in BUF)delete BUF[k];audioFor=null;
+  if(audioFor!==lv.id){audioFor=null;
     let done=0;const total=PARTS.length+1;
     await Promise.all(pics.map(loadImg));prog(++done/total);
-    for(const p of PARTS){const ab=await (await fetch('levels/'+lv.id+'/'+p+'.mp3')).arrayBuffer();BUF[p]=await decode(ab);prog(++done/total);}
+    STR=lv.stream;CH.clear();
+    await Promise.all(PARTS.map(async p=>{await chunkFor(p,0);prog(++done/total);}));
     audioFor=lv.id;}
+}
+/* streamed music: each part is 10 s stereo chunks (levels/<id>/s/<part>_<k>.mp3, 0.5 s of song on both sides); a few seconds
+   ahead are fetched, decoded and scheduled back to back, so memory holds a couple of chunks per part, not the whole song */
+let STR=null,pumpT=0,cur={};const CH=new Map();
+function chunkFor(p,k){const key=p+'_'+k;let e=CH.get(key);
+  if(!e){e={use:0,buf:null,p:null};e.p=fetch('levels/'+LV.id+'/s/'+key+'.mp3').then(r=>{if(!r.ok)throw new Error(key);return r.arrayBuffer();}).then(decode).then(b=>{e.buf=b;return b;}).catch(()=>{CH.delete(key);});CH.set(key,e);}
+  e.use=ac.currentTime;return e.p;}
+function pump(){
+  if(SIM||!ac||!STR||pumpT===0)return;
+  const u=ac.currentTime-t0,hz=u+16,C=STR.chunk,P=STR.pad;
+  for(const p of PARTS){const g=LAYER[p];if(!g)continue;
+    while(cur[p]<hz){
+      const c=pos(cur[p]),k=Math.floor(c/C),end=Math.min((k+1)*C,LE),dur=end-c;
+      if(dur<1e-4){cur[p]+=1e-4;continue;} // float dust at the loop end: skip it, never spin
+      const key=p+'_'+k,e=CH.get(key);
+      if(!e){chunkFor(p,k);break;}
+      if(!e.buf)break;
+      e.use=ac.currentTime;
+      let at=t0+cur[p],off=P+(c-k*C),d=dur;
+      if(at<ac.currentTime){const sk=ac.currentTime-at;at=ac.currentTime;off+=sk;d-=sk;}
+      if(d>.005){const s=ac.createBufferSource();s.buffer=e.buf;s.connect(g);s.start(at,off,d);srcs.push(s);s.onended=()=>{const i=srcs.indexOf(s);if(i>=0)srcs.splice(i,1);};}
+      cur[p]+=dur;if(end===LE){const m=Math.round((cur[p]-LE)/LL);cur[p]=LE+m*LL;}
+      const nc=pos(cur[p]);chunkFor(p,Math.floor(nc/C)); // fetch the next one while this one plays
+    }}
+  for(const [key,e] of CH)if(ac.currentTime-e.use>30)CH.delete(key);
 }
 function startSong(){
   stopSong();if(SIM){t0=simT;return;}const when=ac.currentTime+.06;t0=when;
-  const mk=(buf,gain)=>{const s=ac.createBufferSource();s.buffer=buf;s.loop=true;s.loopStart=LS;s.loopEnd=LE;const gn=ac.createGain();gn.gain.value=gain;
-    s.connect(gn);gn.connect(bus);s.start(when,0);srcs.push(s);return gn;};
-  for(const k in LAYER)delete LAYER[k];
-  for(const p of PARTS)LAYER[p]=mk(BUF[p],partGain(p));
+  for(const k in LAYER)delete LAYER[k];cur={};
+  for(const p of PARTS){const gn=ac.createGain();gn.gain.value=partGain(p);gn.connect(bus);LAYER[p]=gn;cur[p]=0;}
+  pumpT=setInterval(pump,120);pump();
   levelBus(.05);
 }
-function stopSong(){for(const s of srcs){try{s.stop();}catch(e){}}srcs=[];}
+function stopSong(){clearInterval(pumpT);pumpT=0;for(const s of srcs){try{s.stop();}catch(e){}}srcs=[];for(const p in cur)cur[p]=0;}
 function levelBus(tc){if(SIM)return;const n=PARTS.filter(p=>owned[p]).length;const v=OPT.music?.95/(1+.06*n):0;bus.gain.cancelScheduledValues(ac.currentTime);bus.gain.setTargetAtTime(v,ac.currentTime,tc||.3);}
 function nextBarCtx(){const u=now()-t0;if(u<LS)return t0+LS;return t0+LS+Math.ceil((u-LS)/BAR-1e-6)*BAR;}
 function setLayer(){if(SIM)return;const at=Math.max(ac.currentTime,nextBarCtx());for(const q of PARTS){if(!LAYER[q])continue;const gp=LAYER[q].gain;gp.cancelScheduledValues(ac.currentTime);gp.setValueAtTime(gp.value,ac.currentTime);gp.setTargetAtTime(partGain(q),at,.02);}levelBus();}

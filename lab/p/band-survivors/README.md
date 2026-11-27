@@ -1,4 +1,4 @@
-# Band Survivors
+# One Monster Band
 
 A survivors game where your band of monster musicians fights around the singer (you) to the beat of a Suno song.
 Each band member is one part of that song: it attacks on its own part's notes, and its part is heard only while it is
@@ -41,7 +41,7 @@ Everything a level needs is plain data, with nothing tied to the web page:
   chorus downbeats, crew, elites, boss, colours, run length, difficulty, `hard`, and `set_folder` (the full-quality
   wav set on D:).
 - `levels/<id>/notes.json`: tempo, bar and beat length, the loop, and every note of every part (time, pitch, length).
-- `levels/<id>/<part>.mp3`: one per part, mono. The wavs are in `set_folder`.
+- `levels/<id>/s/<part>_<k>.mp3`: each part in 10 s stereo chunks, 192k, 44.1 kHz, with 0.5 s of song on both sides (`tools/stream_encode.py`; `level.json` "stream" holds chunk, pad, count). The page fetches and plays a few seconds ahead, so memory holds a couple of chunks per part. The wavs are in `set_folder`. (Until 2026-11-26 each part was one mono 56k mp3, decoded whole.)
 Times inside a run are VS minutes (`m = 15 x t / run length`), and song events are bars, so a Unity version with its own
 run length and clock plays the same schedule.
 
@@ -58,8 +58,8 @@ One command per song. From this folder:
 - The lead singer is sung dry: the tool runs `voices_fit.py` again on the set's `raw` folder with distance, early
   reflections and room left out, matched to the old lead's loudness. Backing voices keep their room. `--lead-pair`
   names the part the lead rides (default woodwinds, then brass, then bass), `--lead-wav` uses a lead that is already dry.
-- Every part becomes a mono mp3 (lead 80k, the rest 56k), so a level is about 10 to 14 MB to download and about
-  300 MB decoded, which a phone holds.
+- Every part becomes stereo 192k mp3 chunks (`tools/stream_encode.py`), streamed: a level is 35 to 55 MB over the run, and the
+  phone holds only the chunks about to play.
 - The song's big moments come from the full mix's loudness per bar: the section starts with the biggest lift (bosses),
   and an energy value per bar (spawns).
 - `--enemies` (weakest first, up to 7), `--elites` (2) and `--boss` are names from `docs/design/cast/img/chars`; the
@@ -75,7 +75,7 @@ Then balance it and publish:
 
     node tools/sim.mjs <id> --calibrate --seeds 6     # sets the stop's "hard" so it is beatable but not trivial
     node tools/sim.mjs <id> --seeds 6                 # check: kite bot wins 4 of 6 or more, median low health under 75%, idle bot loses
-    python C:/Dev/vyas-lab/tools/publish.py add band-survivors . --title "Band Survivors"
+    python C:/Dev/vyas-lab/tools/publish.py add band-survivors . --title "One Monster Band"
 
 `tools/build_all.sh` rebuilds every stop from its song. A new part name (one the game has no character for) needs an
 entry in `FAM`, `ORDER` and `MOUTH` in index.html and a picture in `img/`.

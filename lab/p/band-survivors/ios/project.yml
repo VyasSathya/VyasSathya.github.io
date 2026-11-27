@@ -25,8 +25,8 @@ targets:
     info:
       path: BandSurvivors/Info.plist
       properties:
-        CFBundleDisplayName: Band Survivors   # working title until he picks the store name
-        CFBundleName: Band Survivors
+        CFBundleDisplayName: One Monster Band
+        CFBundleName: One Monster Band
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         ITSAppUsesNonExemptEncryption: false

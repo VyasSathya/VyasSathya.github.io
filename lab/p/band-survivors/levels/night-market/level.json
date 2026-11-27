@@ -128,5 +128,12 @@
  "source": "Suno clip 5b50ffee (Night B, take 1)",
  "set_folder": "D:/music-battler-work/songs/picks/b1_out/set",
  "lead": "as in the set",
- "hard": 1.15
+ "hard": 1.15,
+ "stream": {
+  "chunk": 10.0,
+  "pad": 0.5,
+  "n": 15,
+  "kbps": 192,
+  "channels": 2
+ }
 }
