@@ -1,6 +1,14 @@
 {
  "items": [
   {
+   "id": "suno-singer-ab",
+   "key": "suno-singer-ab",
+   "title": "Day Lawn singer: current vs Suno",
+   "url": "p/suno-singer-ab/index.html",
+   "added": "2026-11-27",
+   "v": "20261127084641"
+  },
+  {
    "id": "band-survivors",
    "key": "band-survivors",
    "title": "One Monster Band",
